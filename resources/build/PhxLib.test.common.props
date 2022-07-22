@@ -20,6 +20,8 @@
     <PackageReference Include="NUnit" Version="$(VersionNUnit)" />
     <PackageReference Include="NUnit3TestAdapter" Version="$(VersionNUnit3TestAdapter)"/>
     <PackageReference Include="NUnit.Analyzers" Version="$(VersionNUnitAnalyzers)" />
+    <PackageReference Include="Phx.Test" Version="$(VersionPhxTest)" />
+    <PackageReference Include="Phx.Validation" Version="$(VersionPhxValidation)" />
   </ItemGroup>
 
   <!-- Test Logging configuration -->
