@@ -1,0 +1,110 @@
+{
+    // ----- Vayeate  psi-header -------------------------------------------- //
+    "psi-header.config": {
+        "company": "Star Cruise Studios LLC",
+        "license": "Apache-2.0",
+        "forceToTop": true,
+    },
+    "psi-header.changes-tracking": {
+        "isActive": true,
+        "autoHeader": "autoSave",
+        "enforceHeader": true,
+        "include": [
+            "csharp",
+            "java",
+            "kotlin",
+            "powershell",
+            "rust",
+            "xml"
+        ],
+        "exclude": [
+            "*"
+        ]
+    },
+    "psi-header.lang-config": [
+        {
+            "language": "csharp",
+            "begin": "// -----------------------------------------------------------------------------",
+            "prefix": "//",
+            "end": "// -----------------------------------------------------------------------------",
+            "blankLinesAfter": 1
+        },
+        {
+            "language": "java",
+            "begin": "/* ",
+            "prefix": " * ",
+            "end": " */",
+            "blankLinesAfter": 1
+        },
+        {
+            "language": "kotlin",
+            "begin": "/* ",
+            "prefix": " * ",
+            "end": " */",
+            "blankLinesAfter": 1
+        },
+        {
+            "language": "powershell",
+            "begin": "# -----------------------------------------------------------------------------",
+            "prefix": "#",
+            "end": "# -----------------------------------------------------------------------------",
+            "blankLinesAfter": 1
+        },
+        {
+            "language": "rust",
+            "begin": "",
+            "prefix": "// ",
+            "end": "",
+            "blankLinesAfter": 1
+        },
+        {
+            "language": "xml",
+            "begin": "<!--",
+            "prefix": "",
+            "end": "-->",
+            "blankLinesAfter": 1
+        },
+    ],
+    "psi-header.templates": [
+        {
+            "language": "*",
+            "template": [
+                "<<filename>>",
+                "",
+                "Copyright (c) <<yeartoyear>> <<company>>. All rights reserved.",
+                "Licensed under the <<licensename>> License.",
+                "See <<licenseurl>> for full license information.",
+            ],
+        },
+        {
+            "language": "csharp",
+            "template": [
+                "  <copyright file=\"<<filename>>\" company=\"<<company>>\">",
+                "      Copyright (c) <<yeartoyear>> <<company>>. All rights reserved.",
+                "      Licensed under the <<licensename>> License.",
+                "      See <<licenseurl>> for full license information.",
+                "  </copyright>",
+            ],
+        },
+        {
+            "language": "powershell",
+            "template": [
+                "  <copyright file=\"<<filename>>\" company=\"<<company>>\">",
+                "      Copyright (c) <<yeartoyear>> <<company>>. All rights reserved.",
+                "      Licensed under the <<licensename>> License.",
+                "      See <<licenseurl>> for full license information.",
+                "  </copyright>",
+            ],
+        },
+        {
+            "language": "xml",
+            "template": [
+                "  <copyright file=\"<<filename>>\" company=\"<<company>>\">",
+                "      Copyright (c) <<yeartoyear>> <<company>>. All rights reserved.",
+                "      Licensed under the <<licensename>> License.",
+                "      See <<licenseurl>> for full license information.",
+                "  </copyright>",
+            ],
+        },
+    ]
+}
