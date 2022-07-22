@@ -44,6 +44,9 @@
         <!-- Convert lambda expression body to expression-body
          https://github.com/JosefPihrt/Roslynator/blob/master/docs/analyzers/RCS1021.md -->
         <Rule Id="RCS1021" Action="None" />
+        <!-- Remove trailing white-space.
+         https://github.com/JosefPihrt/Roslynator/blob/master/docs/analyzers/RCS1037.md -->
+        <Rule Id="RCS1037" Action="None" />
         <!-- Remove argument list from attribute
          https://github.com/JosefPihrt/Roslynator/blob/master/docs/analyzers/RCS1039.md -->
         <Rule Id="RCS1039" Action="Error" />
