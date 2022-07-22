@@ -1,0 +1,20 @@
+<!--
+  <copyright file="Versions.props" company="Star Cruise Studios LLC">
+      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
+      Licensed under the Apache License 2.0 License.
+      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
+  </copyright>
+-->
+
+<Project>
+    <PropertyGroup>
+        <PhxLibMajorVersion>0</PhxLibMajorVersion>
+
+        <VersionCoverletCollector>3.1.2</VersionCoverletCollector>
+        <VersionMicrosoftNETTestSdk>17.1.0</VersionMicrosoftNETTestSdk>
+        <VersionNLog>5.0.1</VersionNLog>
+        <VersionNUnit>3.13.3</VersionNUnit>
+        <VersionNUnit3TestAdapter>4.2.1</VersionNUnit3TestAdapter>
+        <VersionNUnitAnalyzers>3.3.0</VersionNUnitAnalyzers>
+    </PropertyGroup>
+</Project>

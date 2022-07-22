@@ -1,0 +1,34 @@
+<!--
+  <copyright file="PhxLib.test.common.props" company="Star Cruise Studios LLC">
+      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
+      Licensed under the Apache License 2.0 License.
+      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
+  </copyright>
+-->
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <!-- Common test framework references. -->
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="$(VersionCoverletCollector)" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(VersionMicrosoftNETTestSdk)" />
+    <PackageReference Include="NLog" Version="$(VersionNLog)" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="$(VersionNLog)" />
+    <PackageReference Include="NUnit" Version="$(VersionNUnit)" />
+    <PackageReference Include="NUnit3TestAdapter" Version="$(VersionNUnit3TestAdapter)"/>
+    <PackageReference Include="NUnit.Analyzers" Version="$(VersionNUnitAnalyzers)" />
+  </ItemGroup>
+
+  <!-- Test Logging configuration -->
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)\..\nlog\nlog.config" CopyToOutputDirectory="Always"/>
+  </ItemGroup>
+
+  <!-- Run settings file with coverage properties. -->
+  <PropertyGroup>
+    <RunSettingsFilePath>$(MSBuildProjectDirectory)\..\..\test.runsettings</RunSettingsFilePath>
+  </PropertyGroup>
+</Project>

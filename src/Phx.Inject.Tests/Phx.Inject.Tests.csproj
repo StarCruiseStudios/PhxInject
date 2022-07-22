@@ -7,21 +7,31 @@
 -->
 
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+  <Import Project="../../resources/build/PhxLib.common.props" 
+          Condition="Exists('../../resources/build/PhxLib.common.props')" />
+  <Import Project="../../resources/build/PhxLib.test.common.props"
+          Condition="Exists('../../resources/build/PhxLib.test.common.props')" />
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-    <PackageReference Include="NUnit" Version="3.13.3" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
-    <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
-    <PackageReference Include="coverlet.collector" Version="3.1.2" />
+    <ProjectReference Include="..\Phx.Inject.Generator\Phx.Inject.Generator.csproj"/>
+    <ProjectReference Include="..\Phx.Inject\Phx.Inject.csproj"/>
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Csharp.SourceGenerators.Testing.NUnit" Version="1.1.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.11.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.11.0" />
+  </ItemGroup>
+
+  <Target Name="EnsureBuildFileImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This package relies on imported build files that are not found. Missing: {0}</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('../../resources/build/PhxLib.common.props')" 
+           Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/PhxLib.common.props'))" />
+    <Error Condition="!Exists('../../resources/build/PhxLib.test.common.props')"
+           Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/PhxLib.test.common.props'))" />
+  </Target>
 </Project>

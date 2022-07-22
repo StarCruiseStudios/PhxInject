@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator;
-public class Class1 {
-
+namespace Phx.Inject.Generator {
+    public class Class1 {
+    }
 }

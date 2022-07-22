@@ -1,0 +1,21 @@
+<!--
+  <copyright file="PhxLib.common.props" company="Star Cruise Studios LLC">
+      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
+      Licensed under the Apache License 2.0 License.
+      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
+  </copyright>
+-->
+
+<Project>
+  <Import Project="$(MSBuildThisFileDirectory)\Versions.props" Condition="Exists('$(MSBuildThisFileDirectory)\Versions.props')"/>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)\..\ruleset\roslynator.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)\PostClean.targets" Condition="Exists('$(MSBuildThisFileDirectory)\PostClean.targets')"/>
+</Project>

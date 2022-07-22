@@ -7,11 +7,19 @@
 -->
 
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../resources/build/PhxLib.common.props" 
+          Condition="Exists('../../resources/build/PhxLib.common.props')" />
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Version>$(PhxLibMajorVersion).0.1</Version>
+    <Description>Roslyn based Dependency Injection.</Description>
   </PropertyGroup>
-
+  
+  <Target Name="EnsureBuildFileImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This package relies on imported build files that are not found. Missing: {0}</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('../../resources/build/PhxLib.common.props')" 
+           Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/PhxLib.common.props'))" />
+  </Target>
 </Project>
