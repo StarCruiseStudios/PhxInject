@@ -71,7 +71,7 @@ namespace Phx.Inject.Tests {
                 references: references,
                 options: compilationOptions);
 
-            if (generators.Length == 0) {
+            if (generators.Length > 0) {
                 return RunGenerators(compilation, generators);
             }
 

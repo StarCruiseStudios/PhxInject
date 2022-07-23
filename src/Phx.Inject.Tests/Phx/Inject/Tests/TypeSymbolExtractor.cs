@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Generators {
+namespace Phx.Inject.Tests {
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
 

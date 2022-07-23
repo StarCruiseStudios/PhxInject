@@ -6,10 +6,10 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Test {
+namespace Phx.Inject.Tests {
     public static class TestFiles {
         public static readonly string RootDirectory = "Phx/Inject/";
-        public static readonly string TestDataDirectory = RootDirectory + "Data/";
+        public static readonly string TestDataDirectory = RootDirectory + "Tests/Data/";
         public static readonly string FactoryAttributeFile = RootDirectory + "FactoryAttribute.cs";
         public static readonly string FabricationModeFile = RootDirectory + "FabricationMode.cs";
         public static readonly string InjectorAttributeFile = RootDirectory + "InjectorAttribute.cs";

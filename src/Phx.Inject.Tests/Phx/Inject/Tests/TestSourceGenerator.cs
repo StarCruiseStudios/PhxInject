@@ -6,12 +6,10 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-
 namespace Phx.Inject.Tests {
     using System;
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Generators;
 
     public class TestSourceGenerator : ISourceGenerator {
         private readonly Predicate<SyntaxNode> shouldCapture;
