@@ -22,5 +22,5 @@ namespace Phx.Inject.Tests.Data {
 
     [Specification]
     [Link(typeof(StringLeaf), typeof(ILeaf))]
-    internal static class LeafBindings { }
+    internal static class LeafLinks { }
 }

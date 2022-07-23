@@ -15,7 +15,7 @@ namespace Phx.Inject.Generator.Extract {
     
     internal class SpecificationModelBuilder : IModelBuilder<SpecificationModel> {
         public SpecificationModel Build(ITypeSymbol symbol) {
-            var bindings = GetLinks(symbol);
+            var links = GetLinks(symbol);
 
             var specType = symbol.ToTypeModel();
             var factories = new List<FactoryModel>();
@@ -41,7 +41,7 @@ namespace Phx.Inject.Generator.Extract {
                 }
             }
 
-            return new SpecificationModel(specType, factories, bindings);
+            return new SpecificationModel(specType, factories, links);
         }
 
         private IReadOnlyList<LinkModel> GetLinks(ITypeSymbol symbol) {
