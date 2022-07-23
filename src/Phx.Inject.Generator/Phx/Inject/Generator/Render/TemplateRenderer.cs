@@ -8,6 +8,7 @@
 
 namespace Phx.Inject.Generator.Render {
     using System;
+    using System.IO;
     using System.Text;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Text;
@@ -28,6 +29,8 @@ namespace Phx.Inject.Generator.Render {
             template.Render(renderWriter);
 
             var classSource = renderWriter.GetRenderedString();
+            File.WriteAllText(RenderConstants.GeneratedSourceDir + fileName, classSource);
+            
             var classSourceText = SourceText.From(classSource, Encoding.UTF8);
 
             context.AddSource(fileName, classSourceText);

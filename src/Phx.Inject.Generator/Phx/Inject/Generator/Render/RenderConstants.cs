@@ -8,6 +8,7 @@
 
 namespace Phx.Inject.Generator.Render {
     internal static class RenderConstants {
+        public const string GeneratedSourceDir = "Generated/";
         public const string SpecContainersMemberName = "specContainers";
         public const string SpecContainersArgumentName = SpecContainersMemberName;
     }

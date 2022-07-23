@@ -25,8 +25,9 @@ namespace Phx.Inject.Tests {
 
         public static Compilation CompileDirectory(string directory, params ISourceGenerator[] generators) {
             string directoryAbsolutePath = Path.Combine(TestContext.CurrentContext.TestDirectory, directory);
-            var enumerationOptions = new EnumerationOptions();
-            enumerationOptions.RecurseSubdirectories = true;
+            var enumerationOptions = new EnumerationOptions {
+                RecurseSubdirectories = true
+            };
             string[] filesInDirectory = Directory.GetFiles(directoryAbsolutePath, "*.cs", enumerationOptions);
 
             var syntaxTrees = filesInDirectory.Select(filePath => File.ReadAllText(filePath))
