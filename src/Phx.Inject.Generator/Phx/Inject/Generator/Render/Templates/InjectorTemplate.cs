@@ -16,7 +16,8 @@ namespace Phx.Inject.Generator.Render.Templates {
         string InjectorInterfaceQualifiedName,
         SpecContainerCollectionInterfaceTemplate SpecContainerCollectionInterfaceTemplate,
         SpecContainerCollectionImplementationTemplate SpecContainerCollectionImplementationTemplate,
-        IEnumerable<InjectorMethodTemplate> InjectorMethods
+        IEnumerable<InjectorMethodTemplate> InjectorMethods,
+        IEnumerable<InjectorBuilderMethodTemplate> InjectorBuilderMethods
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
             writer.AppendLine($"internal partial class {InjectorClassName} : {InjectorInterfaceQualifiedName} {{").IncreaseIndent(1);
@@ -30,6 +31,10 @@ namespace Phx.Inject.Generator.Render.Templates {
             foreach (var injectorMethod in InjectorMethods) {
                 writer.AppendBlankLine();
                 injectorMethod.Render(writer);
+            }
+            foreach (var injectorBuilderMethod in InjectorBuilderMethods) {
+                writer.AppendBlankLine();
+                injectorBuilderMethod.Render(writer);
             }
             writer.DecreaseIndent(1).AppendLine("}");
         }

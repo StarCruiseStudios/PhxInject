@@ -19,6 +19,7 @@ namespace Phx.Inject.Generator.Extract {
 
             var specType = symbol.ToTypeModel();
             var factories = new List<FactoryModel>();
+            var builders = new List<BuilderModel>();
 
             foreach (var member in symbol.GetMembers()) {
                 if (member is IMethodSymbol methodSymbol) {
@@ -37,11 +38,19 @@ namespace Phx.Inject.Generator.Extract {
                             argumentTypes,
                             fabricationMode
                         ));
+                    } else if (IsBuilder(methodSymbol)) {
+                        var builtType = argumentTypes[0];
+                        var builderArguments = argumentTypes.GetRange(1, argumentTypes.Count - 1);
+                        builders.Add(new BuilderModel(
+                            builtType,
+                            methodName,
+                            builderArguments
+                        ));
                     }
                 }
             }
 
-            return new SpecificationModel(specType, factories, links);
+            return new SpecificationModel(specType, factories, builders, links);
         }
 
         private IReadOnlyList<LinkModel> GetLinks(ITypeSymbol symbol) {
@@ -85,6 +94,16 @@ namespace Phx.Inject.Generator.Extract {
             }
 
             return FabricationMode.Recurrent;
+        }
+
+        private bool IsBuilder(IMethodSymbol builderModel) {
+            var builderAttributes = builderModel.GetAttributes()
+                .Where((attributeData) => attributeData.AttributeClass!.ToString() == BuilderAttributeClassName);
+            if (!builderAttributes.Any()) {
+                return false;
+            }
+
+            return builderModel.IsStatic;
         }
     }
 }

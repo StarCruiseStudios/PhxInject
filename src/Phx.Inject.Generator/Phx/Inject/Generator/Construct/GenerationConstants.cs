@@ -12,6 +12,7 @@ namespace Phx.Inject.Generator.Construct {
         public const string SpecificationAttributeClassName = "Phx.Inject.SpecificationAttribute";
         public const string LinkAttributeClassName = "Phx.Inject.LinkAttribute";
         public const string FactoryAttributeClassName = "Phx.Inject.FactoryAttribute";
+        public const string BuilderAttributeClassName = "Phx.Inject.BuilderAttribute";
 
         public const string SpecificationContainerSuffix = "Container";
 

@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Construct {
+    using System.Collections.Generic;
     using System.Linq;
     using Phx.Inject.Generator.Construct.Definitions;
     using Phx.Inject.Generator.Render.Templates;
@@ -22,6 +23,9 @@ namespace Phx.Inject.Generator.Construct {
             var injectorMethods = definition.InjectorMethods
                 .Select(injectorMethodBuilder.Build);
 
+            // TODO:
+            var injectorBuilderMethods = new List<InjectorBuilderMethodTemplate>();
+
             var specContainerCollectionInterfaceTemplate = new SpecContainerCollectionInterfaceTemplate(
                 definition.SpecContainerTypes.Select(specContainer => new SpecContainerPropertyDeclarationTemplate(specContainer.NamespaceName, specContainer.Name)));
             var specContainerCollectionImplementationTemplate = new SpecContainerCollectionImplementationTemplate(
@@ -33,7 +37,8 @@ namespace Phx.Inject.Generator.Construct {
                     InjectorInterfaceQualifiedName: definition.InjectorInterfaceType.QualifiedName,
                     SpecContainerCollectionInterfaceTemplate: specContainerCollectionInterfaceTemplate,
                     SpecContainerCollectionImplementationTemplate: specContainerCollectionImplementationTemplate,
-                    InjectorMethods: injectorMethods));
+                    InjectorMethods: injectorMethods,
+                    InjectorBuilderMethods: injectorBuilderMethods));
         }
     }
 }

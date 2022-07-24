@@ -11,10 +11,14 @@ namespace Phx.Inject.Tests.Data {
         generatedClassName: "CustomInjector",
         specifications: new[] {
             typeof(RootSpecification),
+            typeof(LazySpecification),
             typeof(LeafSpecification)
         }
     )]
     internal interface ITestInjector {
         public Root GetRoot();
+
+        // TODO:
+        // public void Build(LazyType lazyType);
     }
 }

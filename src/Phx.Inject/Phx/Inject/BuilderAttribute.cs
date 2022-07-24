@@ -1,18 +1,18 @@
 // -----------------------------------------------------------------------------
-//  <copyright file="SpecificationModel.cs" company="Star Cruise Studios LLC">
+//  <copyright file="BuilderAttribute.cs" company="Star Cruise Studios LLC">
 //      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
 //      Licensed under the Apache License 2.0 License.
 //      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Extract.Model {
-    using System.Collections.Generic;
+namespace Phx.Inject {
+    using System;
 
-    internal record SpecificationModel(
-        TypeModel SpecificationType,
-        IReadOnlyList<FactoryModel> Factories,
-        IReadOnlyList<BuilderModel> Builders,
-        IReadOnlyList<LinkModel> Links
-    );
+    /// <summary>
+    ///     Annotates a builder method that will be invoked to complete the
+    ///     construction of a given dependency.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    public class BuilderAttribute : Attribute { }
 }

@@ -25,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="..\Phx.Inject\Phx\Inject\BuilderAttribute.cs" Link="Phx\Inject\BuilderAttribute.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\Phx.Inject\Phx\Inject\FabricationMode.cs" Link="Phx\Inject\FabricationMode.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
