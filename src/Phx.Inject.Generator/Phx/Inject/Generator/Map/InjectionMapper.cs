@@ -20,6 +20,10 @@ namespace Phx.Inject.Generator.Map {
         private readonly IDictionary<TypeDefinition, FactoryRegistration> factoryRegistrations
             = new Dictionary<TypeDefinition, FactoryRegistration>();
 
+        // TODO:
+        private readonly IDictionary<TypeDefinition, BuilderRegistration> builderRegistrations
+            = new Dictionary<TypeDefinition, BuilderRegistration>();
+
         public InjectionMapper(IInjectorMapper injectorMapper, ISpecContainerMapper specContainerMapper) {
             this.injectorMapper = injectorMapper;
             this.specContainerMapper = specContainerMapper;
@@ -42,7 +46,7 @@ namespace Phx.Inject.Generator.Map {
                 }
             }
 
-            var injectorDefinition = injectorMapper.MapToDefinition(injectorModel, factoryRegistrations);
+            var injectorDefinition = injectorMapper.MapToDefinition(injectorModel, factoryRegistrations, builderRegistrations);
             var specContainerDefintions = specModels.Where(specModel => specModel.Factories.Count > 0)
                 .Select(specModel =>
                     specContainerMapper.MapToDefinition(specModel, injectorModel, factoryRegistrations));

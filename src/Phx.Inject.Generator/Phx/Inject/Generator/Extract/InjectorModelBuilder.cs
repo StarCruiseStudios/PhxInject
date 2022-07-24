@@ -22,14 +22,19 @@ namespace Phx.Inject.Generator.Extract {
             var injectorClassName = GetGeneratedClassName(symbol);
             var injectorType = injectorInterfaceType with { Name = injectorClassName };
             var injectionMethods = GetInjectionMethods(symbol);
+            var injectionBuilderMethods = GetInjectionBuilderMethods(symbol);
             var specifications = GetSpecificationTypes(symbol);
-            return new InjectorModel(injectorType, injectorInterfaceType, injectionMethods, specifications);
+            return new InjectorModel(injectorType, injectorInterfaceType, injectionMethods, injectionBuilderMethods, specifications);
         }
 
         private List<InjectionMethodModel> GetInjectionMethods(ITypeSymbol injectorInterfaceSymbol) {
             var injectorMethods = new List<InjectionMethodModel>();
             foreach (var member in injectorInterfaceSymbol.GetMembers()) {
                 if (member is IMethodSymbol methodSymbol) {
+                    if (methodSymbol.ReturnsVoid) {
+                        continue;
+                    }
+
                     var returnTypeSymbol = methodSymbol.ReturnType;
                     var returnType = returnTypeSymbol.ToTypeModel();
                     var methodName = methodSymbol.Name;
@@ -42,6 +47,31 @@ namespace Phx.Inject.Generator.Extract {
 
             return injectorMethods;
         }
+
+        private List<InjectionBuilderMethodModel> GetInjectionBuilderMethods(ITypeSymbol injectorInterfaceSymbol) {
+            var injectorBuilderMethods = new List<InjectionBuilderMethodModel>();
+            foreach (var member in injectorInterfaceSymbol.GetMembers()) {
+                if (member is IMethodSymbol methodSymbol) {
+                    if (!methodSymbol.ReturnsVoid) {
+                        continue;
+                    }
+                    if (methodSymbol.Parameters.Length != 1) {
+                        continue;
+                    }
+
+                    var builtTypeSymbol = methodSymbol.Parameters[0].Type;
+                    var builtType = builtTypeSymbol.ToTypeModel();
+                    var methodName = methodSymbol.Name;
+                    injectorBuilderMethods.Add(new InjectionBuilderMethodModel(
+                        builtType,
+                        methodName
+                    ));
+                }
+            }
+
+            return injectorBuilderMethods;
+        }
+
         private List<TypeModel> GetSpecificationTypes(ITypeSymbol injectorInterfaceSymbol) {
             return GetSpecifications(injectorInterfaceSymbol)
                 .Select(specification => specification.Value as ITypeSymbol)

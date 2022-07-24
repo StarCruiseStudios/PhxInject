@@ -7,25 +7,28 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Construct {
-    using System.Collections.Generic;
     using System.Linq;
     using Phx.Inject.Generator.Construct.Definitions;
     using Phx.Inject.Generator.Render.Templates;
 
     internal class InjectorTemplateBuilder : IFileTemplateBuilder<InjectorDefinition> {
         private readonly ITemplateBuilder<InjectorMethodDefinition, InjectorMethodTemplate> injectorMethodBuilder;
+        private readonly ITemplateBuilder<InjectorBuilderMethodDefinition, InjectorBuilderMethodTemplate> injectorBuilderMethodBuilder;
 
-        public InjectorTemplateBuilder(ITemplateBuilder<InjectorMethodDefinition, InjectorMethodTemplate> injectorMethodBuilder) {
+        public InjectorTemplateBuilder(
+                ITemplateBuilder<InjectorMethodDefinition, InjectorMethodTemplate> injectorMethodBuilder,
+                ITemplateBuilder<InjectorBuilderMethodDefinition, InjectorBuilderMethodTemplate> injectorBuilderMethodBuilder) {
             this.injectorMethodBuilder = injectorMethodBuilder;
+            this.injectorBuilderMethodBuilder = injectorBuilderMethodBuilder;
         }
 
         public GeneratedFileTemplate Build(InjectorDefinition definition) {
             var injectorMethods = definition.InjectorMethods
                 .Select(injectorMethodBuilder.Build);
 
-            // TODO:
-            var injectorBuilderMethods = new List<InjectorBuilderMethodTemplate>();
-
+            var injectorBuilderMethods = definition.InjectorBuilderMethods
+                .Select(injectorBuilderMethodBuilder.Build);
+            
             var specContainerCollectionInterfaceTemplate = new SpecContainerCollectionInterfaceTemplate(
                 definition.SpecContainerTypes.Select(specContainer => new SpecContainerPropertyDeclarationTemplate(specContainer.NamespaceName, specContainer.Name)));
             var specContainerCollectionImplementationTemplate = new SpecContainerCollectionImplementationTemplate(

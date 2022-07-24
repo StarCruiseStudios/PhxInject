@@ -69,7 +69,9 @@ namespace Phx.Inject.Generator {
                     new FactoryMethodContainerInvocationTemplateBuilder())),
             injectorTemplateBuilder: new InjectorTemplateBuilder(
                 new InjectorMethodTemplateBuilder(
-                    new FactoryMethodContainerInvocationTemplateBuilder())),
+                    new FactoryMethodContainerInvocationTemplateBuilder()),
+                new InjectorBuilderMethodTemplateBuilder(
+                    new BuilderMethodContainerInvocationTemplateBuilder())),
             templateRenderer: new TemplateRenderer(() => new RenderWriter())
         ) { }
 

@@ -17,7 +17,8 @@ namespace Phx.Inject.Generator.Map {
     internal class InjectorMapper : IInjectorMapper {
         public InjectorDefinition MapToDefinition(
             InjectorModel injectorModel,
-            IDictionary<TypeDefinition, FactoryRegistration> factoryRegistrations
+            IDictionary<TypeDefinition, FactoryRegistration> factoryRegistrations,
+            IDictionary<TypeDefinition, BuilderRegistration> builderRegistrations
         ) {
             var injectorMethods = injectorModel.InjectionMethods.Select(method => {
                 if (!factoryRegistrations.TryGetValue(method.ReturnType.ToTypeDefinition(), out var factoryMethodRegistration)) {
@@ -35,6 +36,22 @@ namespace Phx.Inject.Generator.Map {
                 );
             });
 
+            var injectorBuilderMethods = injectorModel.InjectionBuilderMethods.Select(method => {
+                if (!builderRegistrations.TryGetValue(method.BuiltType.ToTypeDefinition(), out var builderMethodRegistration)) {
+                    throw new InvalidOperationException($"No Builder found for type {method.BuiltType.QualifiedName}.");
+                }
+
+                var builderMethodContainerInvocation = new BuilderMethodContainerInvocationDefinition(
+                    builderMethodRegistration.SpecificationType.Name + SpecificationContainerSuffix,
+                    builderMethodRegistration.BuilderModel.Name
+                );
+                return new InjectorBuilderMethodDefinition(
+                    method.BuiltType.ToTypeDefinition(),
+                    method.Name,
+                    builderMethodContainerInvocation
+                );
+            });
+
             var specContainerTypes = injectorModel.Specifications.Select(spec => {
                 var specContainerName = spec.Name + SpecificationContainerSuffix;
                 return (spec with { Name = specContainerName }).ToTypeDefinition();
@@ -44,7 +61,8 @@ namespace Phx.Inject.Generator.Map {
                 injectorModel.InjectorType.ToTypeDefinition(),
                 injectorModel.InjectorInterface.ToTypeDefinition(),
                 specContainerTypes,
-                injectorMethods);
+                injectorMethods,
+                injectorBuilderMethods);
         }
     }
 }
