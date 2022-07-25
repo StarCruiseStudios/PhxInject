@@ -15,7 +15,7 @@ namespace Phx.Inject.Tests {
     public class FactoryMethodTests : LoggingTestClass {
         [Test]
         public void AScopedFactoryIsInvoked() {
-            ITestInjector injector = Given("A CustomInjector.", () => new CustomInjector());
+            IRawInjector injector = Given("A test injector.", () => new GeneratedRawInjector());
 
             var (root1, root2) = When("A factory method with scoped fabrication mode is invoked twice.", 
                     () => (injector.GetRoot(), injector.GetRoot()));
@@ -25,23 +25,21 @@ namespace Phx.Inject.Tests {
 
         [Test]
         public void ARecurrentFactoryIsInvoked() {
-            ITestInjector injector = Given("A CustomInjector.", () => new CustomInjector());
-            var root = Given("A root instance created by the injector.", () => injector.GetRoot());
+            IRawInjector injector = Given("A test injector.", () => new GeneratedRawInjector());
 
-            var (node1, node2) = When("A factory method with recurrent fabrication mode is invoked twice while constructing the root.",
-                    () => (root.Node, root.SecondaryNode));
+            var (node1, node2) = When("A factory method with recurrent fabrication mode is invoked twice.",
+                    () => (injector.GetNode(), injector.GetNode()));
 
             Then("Different instances are returned each time.", () => Verify.That(ReferenceEquals(node1, node2).IsFalse()));
         }
 
         [Test]
         public void ALinkedFactoryIsInvoked() {
-            ITestInjector injector = Given("A CustomInjector.", () => new CustomInjector());
-            var node = Given("A node instance created by the injector.", () => injector.GetRoot().Node);
+            IRawInjector injector = Given("A test injector.", () => new GeneratedRawInjector());
 
-            var leaf = When("The leaf of the node is constructed via a linked factory.", () => node.Right);
+            var leaf = When("A factory method is constructed via a linked factory.", () => injector.GetILeaf());
 
-            Then("The leaf was constructed using the linked factory.", () => Verify.That(leaf.IsType<StringLeaf>()));
+            Then("The instance was constructed using the linked factory.", () => Verify.That(leaf.IsType<StringLeaf>()));
         }
     }
 }

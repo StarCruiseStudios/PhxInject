@@ -24,7 +24,9 @@ namespace Phx.Inject.Generator.Map {
             InjectorModel injectorModel,
             IDictionary<TypeDefinition, FactoryRegistration> factoryRegistrations
         ) {
-            var specContainerName = specModel.SpecificationType.Name + SpecificationContainerSuffix;
+            var specContainerName = GetSpecificationContainerName(specModel.SpecificationType.Name, injectorModel.InjectorType.Name);
+
+            Logger.Info($"Renaming {specModel.SpecificationType.Name} to {specContainerName}");
             var specContainerType = specModel.SpecificationType with { Name = specContainerName };
 
             var instanceHolders = new List<InstanceHolderDefinition>();
@@ -55,7 +57,7 @@ namespace Phx.Inject.Generator.Map {
                     }
 
                     return new FactoryMethodContainerInvocationDefinition(
-                        factoryMethodRegistration.SpecificationType.Name + SpecificationContainerSuffix,
+                        GetSpecificationContainerName(factoryMethodRegistration.SpecificationType.Name, injectorModel.InjectorType.Name),
                         factoryMethodRegistration.FactoryModel.Name
                     );
                 }).ToImmutableList();
@@ -77,7 +79,7 @@ namespace Phx.Inject.Generator.Map {
                     }
 
                     return new FactoryMethodContainerInvocationDefinition(
-                        factoryMethodRegistration.SpecificationType.Name + SpecificationContainerSuffix,
+                        GetSpecificationContainerName(factoryMethodRegistration.SpecificationType.Name, injectorModel.InjectorType.Name),
                         factoryMethodRegistration.FactoryModel.Name
                     );
                 }).ToImmutableList();

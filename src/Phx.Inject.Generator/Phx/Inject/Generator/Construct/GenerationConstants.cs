@@ -15,6 +15,9 @@ namespace Phx.Inject.Generator.Construct {
         public const string BuilderAttributeClassName = "Phx.Inject.BuilderAttribute";
 
         public const string SpecificationContainerSuffix = "Container";
+        public static string GetSpecificationContainerName(string specificationName, string injectorName) {
+            return $"{injectorName}_{specificationName}{SpecificationContainerSuffix}";
+        }
 
         public const string SpecContainerCollectionClassName = "SpecContainerCollection";
         public const string SpecContainerCollectionInterfaceName = "ISpecContainerCollection";

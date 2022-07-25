@@ -15,7 +15,7 @@ namespace Phx.Inject.Tests {
     public class InjectorTests : LoggingTestClass {
         [Test]
         public void AnInjectorMethodIsGenerated() {
-            ITestInjector injector = Given("A CustomInjector.", () => new CustomInjector());
+            IRawInjector injector = Given("A test injector.", () => new GeneratedRawInjector());
 
             var root = When("An injector method is invoked on the injector.", () => injector.GetRoot());
 
@@ -24,7 +24,7 @@ namespace Phx.Inject.Tests {
 
         [Test]
         public void AnInjectorBuilderMethodIsGenerated() {
-            ITestInjector injector = Given("A CustomInjector.", () => new CustomInjector());
+            IRawInjector injector = Given("A test injector.", () => new GeneratedRawInjector());
             LazyType lazyType = Given("An uninitialized lazy type.", () => new LazyType());
 
             When("An injector builder method is invoked on the injector.", () => injector.Build(lazyType));
@@ -34,8 +34,8 @@ namespace Phx.Inject.Tests {
 
         [Test]
         public void InjectorsHaveDifferentScopes() {
-            ITestInjector injector = Given("A CustomInjector.", () => new CustomInjector());
-            ITestInjector injector2 = Given("A second CustomInjector.", () => new CustomInjector());
+            IRawInjector injector = Given("A test injector.", () => new GeneratedRawInjector());
+            IRawInjector injector2 = Given("A second test injector.", () => new GeneratedRawInjector());
 
             var (root, root2) = When("The same scoped injector method is invoked on each injector.", 
                     () => (injector.GetRoot(), injector2.GetRoot()));

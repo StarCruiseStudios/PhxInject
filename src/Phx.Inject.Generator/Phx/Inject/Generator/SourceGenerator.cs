@@ -14,7 +14,6 @@ namespace Phx.Inject.Generator {
 #endif
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Construct;
     using Phx.Inject.Generator.Construct.Definitions;
@@ -94,7 +93,10 @@ namespace Phx.Inject.Generator {
 
                 // Extract
                 var injectorModels = InjectorExtractor.Extract(syntaxReceiver.InjectorCandidates, context);
+                Logger.Info($"Discovered {injectorModels.Count} injectors.");
+
                 var specModels = SpecificationExtractor.Extract(syntaxReceiver.SpecificationCandidates, context);
+                Logger.Info($"Discovered {specModels.Count} specifications.");
 
                 foreach (var injectorModel in injectorModels) {
                     // Map
@@ -104,17 +106,20 @@ namespace Phx.Inject.Generator {
                     var templates = new List<(TypeDefinition, IRenderTemplate)>();
                     foreach (var specDefinition in injectionDefinition.SpecContainers) {
                         templates.Add((specDefinition.ContainerType, SpecContainerTemplateBuilder.Build(specDefinition)));
+                        Logger.Info($"Generated spec container {specDefinition.ContainerType.Name} for injector {injectorModel.InjectorType.Name}.");
                     }
                     templates.Add((injectorModel.InjectorType.ToTypeDefinition(), InjectorTemplateBuilder.Build(injectionDefinition.Injector)));
+                    Logger.Info($"Generated injector {injectorModel.InjectorType.Name}.");
 
                     // Render
                     foreach (var (classType, template) in templates) {
                         var fileName = $"{classType.QualifiedName}.{GeneratedFileExtension}";
+                        Logger.Info($"Rendering source for {fileName}");
                         TemplateRenderer.RenderTemplate(fileName, template, context);
                     }
                 }
             } catch (Exception ex) {
-                Console.Error.WriteLine(ex);
+                Logger.Error("An unexpected error occurred while generating source.", ex);
                 throw;
             }
         }

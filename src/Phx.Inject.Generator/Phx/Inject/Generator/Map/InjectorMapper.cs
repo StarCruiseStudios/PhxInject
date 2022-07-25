@@ -27,7 +27,7 @@ namespace Phx.Inject.Generator.Map {
                 }
 
                 var factoryMethodContainerInvocation = new FactoryMethodContainerInvocationDefinition(
-                    factoryMethodRegistration.SpecificationType.Name + SpecificationContainerSuffix,
+                    GetSpecificationContainerName(factoryMethodRegistration.SpecificationType.Name, injectorModel.InjectorType.Name),
                     factoryMethodRegistration.FactoryModel.Name
                 );
                 return new InjectorMethodDefinition(
@@ -43,7 +43,7 @@ namespace Phx.Inject.Generator.Map {
                 }
 
                 var builderMethodContainerInvocation = new BuilderMethodContainerInvocationDefinition(
-                    builderMethodRegistration.SpecificationType.Name + SpecificationContainerSuffix,
+                    GetSpecificationContainerName(builderMethodRegistration.SpecificationType.Name, injectorModel.InjectorType.Name),
                     builderMethodRegistration.BuilderModel.Name
                 );
                 return new InjectorBuilderMethodDefinition(
@@ -54,7 +54,7 @@ namespace Phx.Inject.Generator.Map {
             }).ToImmutableList();
 
             var specContainerTypes = injectorModel.Specifications.Select(spec => {
-                var specContainerName = spec.Name + SpecificationContainerSuffix;
+                var specContainerName = GetSpecificationContainerName(spec.Name, injectorModel.InjectorType.Name);
                 return (spec with { Name = specContainerName }).ToTypeDefinition();
             }).ToImmutableList();
 
