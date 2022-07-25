@@ -16,6 +16,4 @@
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)\..\ruleset\roslynator.ruleset</CodeAnalysisRuleSet>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
-
-  <Import Project="$(MSBuildThisFileDirectory)\PostClean.targets" Condition="Exists('$(MSBuildThisFileDirectory)\PostClean.targets')"/>
 </Project>

@@ -7,27 +7,16 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Tests {
-    using System.Linq;
-    using Microsoft.CodeAnalysis;
     using NUnit.Framework;
-    using Phx.Inject.Generator;
+    using Phx.Inject.Tests.Data;
 
     public class Tests {
         [Test]
         public void Test1() {
-            var compilation = TestCompiler.CompileDirectory(TestFiles.RootDirectory, new SourceGenerator());
+            ITestInjector injector = new CustomInjector();
 
-            var phxNamespace = compilation.GlobalNamespace.GetMembers("Phx").Single() as INamespaceSymbol;
-            Assert.That(phxNamespace, Is.Not.Null);
-            var injectNamespace = phxNamespace!.GetMembers("Inject").Single() as INamespaceSymbol;
-            Assert.That(injectNamespace, Is.Not.Null);
-            var testsNamespace = injectNamespace!.GetMembers("Tests").Single() as INamespaceSymbol;
-            Assert.That(testsNamespace, Is.Not.Null);
-            var dataNamespace = testsNamespace!.GetMembers("Data").Single() as INamespaceSymbol;
-            Assert.That(dataNamespace, Is.Not.Null);
-
-            var customInjector = dataNamespace!.GetTypeMembers("CustomInjector").Single();
-            Assert.That(customInjector.Locations.Single().IsInSource, Is.True);
+            ILeaf leftLeaf = injector.GetRoot().Node.Left;
+            Assert.That((leftLeaf as IntLeaf)!.Value, Is.EqualTo(10));
         }
     }
 }

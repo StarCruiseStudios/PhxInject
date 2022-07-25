@@ -108,10 +108,6 @@ namespace Phx.Inject.Generator {
                     templates.Add((injectorModel.InjectorType.ToTypeDefinition(), InjectorTemplateBuilder.Build(injectionDefinition.Injector)));
 
                     // Render
-                    if (!Directory.Exists(RenderConstants.GeneratedSourceDir)) {
-                        Directory.CreateDirectory(RenderConstants.GeneratedSourceDir);
-                    }
-
                     foreach (var (classType, template) in templates) {
                         var fileName = $"{classType.QualifiedName}.{GeneratedFileExtension}";
                         TemplateRenderer.RenderTemplate(fileName, template, context);

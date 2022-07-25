@@ -43,7 +43,8 @@
     <Content Include="..\Phx.Inject\Phx\Inject\SpecificationAttribute.cs" Link="Phx\Inject\SpecificationAttribute.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Phx\Inject\Tests\Data\**\*.*">
+    <Content Include="..\Phx.Inject.Tests\Phx\Inject\Tests\Data\**\*.*">
+      <Link>Phx\Inject\Tests\Data\%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
