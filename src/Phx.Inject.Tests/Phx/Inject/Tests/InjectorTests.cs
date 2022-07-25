@@ -31,5 +31,16 @@ namespace Phx.Inject.Tests {
 
             Then("The lazy type is initialized.", () => Verify.That(lazyType.Value.IsNotNull()));
         }
+
+        [Test]
+        public void InjectorsHaveDifferentScopes() {
+            ITestInjector injector = Given("A CustomInjector.", () => new CustomInjector());
+            ITestInjector injector2 = Given("A second CustomInjector.", () => new CustomInjector());
+
+            var (root, root2) = When("The same scoped injector method is invoked on each injector.", 
+                    () => (injector.GetRoot(), injector2.GetRoot()));
+
+            Then("Different instances are returned.", () => Verify.That(ReferenceEquals(root, root2).IsFalse()));
+        }
     }
 }
