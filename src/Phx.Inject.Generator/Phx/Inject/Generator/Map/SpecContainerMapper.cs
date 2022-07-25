@@ -25,8 +25,6 @@ namespace Phx.Inject.Generator.Map {
             IDictionary<TypeDefinition, FactoryRegistration> factoryRegistrations
         ) {
             var specContainerName = GetSpecificationContainerName(specModel.SpecificationType.Name, injectorModel.InjectorType.Name);
-
-            Logger.Info($"Renaming {specModel.SpecificationType.Name} to {specContainerName}");
             var specContainerType = specModel.SpecificationType with { Name = specContainerName };
 
             var instanceHolders = new List<InstanceHolderDefinition>();
