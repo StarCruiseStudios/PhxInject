@@ -14,13 +14,16 @@ namespace Phx.Inject.Generator.Construct {
     internal class SpecContainerTemplateBuilder : IFileTemplateBuilder<SpecContainerDefinition> {
         private readonly ITemplateBuilder<InstanceHolderDefinition, InstanceHolderDeclarationTemplate> instanceHolderDeclarationBuilder;
         private readonly ITemplateBuilder<FactoryMethodContainerDefinition, FactoryMethodContainerTemplate> factoryMethodContainerBuilder;
+        private readonly ITemplateBuilder<BuilderMethodContainerDefinition, BuilderMethodContainerTemplate> builderMethodContainerBuilder;
 
         public SpecContainerTemplateBuilder(
             ITemplateBuilder<InstanceHolderDefinition, InstanceHolderDeclarationTemplate> instanceHolderDeclarationBuilder,
-            ITemplateBuilder<FactoryMethodContainerDefinition, FactoryMethodContainerTemplate> factoryMethodContainerBuilder
+            ITemplateBuilder<FactoryMethodContainerDefinition, FactoryMethodContainerTemplate> factoryMethodContainerBuilder,
+            ITemplateBuilder<BuilderMethodContainerDefinition, BuilderMethodContainerTemplate> builderMethodContainerBuilder
         ) {
             this.instanceHolderDeclarationBuilder = instanceHolderDeclarationBuilder;
             this.factoryMethodContainerBuilder = factoryMethodContainerBuilder;
+            this.builderMethodContainerBuilder = builderMethodContainerBuilder;
         }
 
         public GeneratedFileTemplate Build(SpecContainerDefinition definition) {
@@ -30,11 +33,15 @@ namespace Phx.Inject.Generator.Construct {
             var factoryMethodContainers = definition.FactoryMethodContainers
                 .Select(factoryMethodContainerBuilder.Build);
 
+            var builderMethodContainers = definition.BuilderMethodContainers
+                .Select(builderMethodContainerBuilder.Build);
+
             return new GeneratedFileTemplate(definition.ContainerType.NamespaceName,
                 new SpecContainerTemplate(
                     SpecContainerClassName: definition.ContainerType.Name,
                     InstanceHolderDeclarations: instanceHolders,
-                    FactoryMethodContainers: factoryMethodContainers));
+                    FactoryMethodContainers: factoryMethodContainers,
+                    BuilderMethodContainers: builderMethodContainers));
         }
     }
 }

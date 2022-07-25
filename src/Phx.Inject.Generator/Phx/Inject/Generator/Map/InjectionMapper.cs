@@ -47,7 +47,7 @@ namespace Phx.Inject.Generator.Map {
             }
 
             var injectorDefinition = injectorMapper.MapToDefinition(injectorModel, factoryRegistrations, builderRegistrations);
-            var specContainerDefintions = specModels.Where(specModel => specModel.Factories.Count > 0)
+            var specContainerDefintions = specModels.Where(specModel => specModel.Factories.Count > 0 || specModel.Builders.Count > 0)
                 .Select(specModel =>
                     specContainerMapper.MapToDefinition(specModel, injectorModel, factoryRegistrations));
 

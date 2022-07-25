@@ -66,6 +66,8 @@ namespace Phx.Inject.Generator {
             specContainerTemplateBuilder: new SpecContainerTemplateBuilder(
                 new InstanceHolderDeclarationTemplateBuilder(),
                 new FactoryMethodContainerTemplateBuilder(
+                    new FactoryMethodContainerInvocationTemplateBuilder()),
+                new BuilderMethodContainerTemplateBuilder(
                     new FactoryMethodContainerInvocationTemplateBuilder())),
             injectorTemplateBuilder: new InjectorTemplateBuilder(
                 new InjectorMethodTemplateBuilder(
@@ -86,33 +88,38 @@ namespace Phx.Inject.Generator {
         }
 
         public void Execute(GeneratorExecutionContext context) {
-            InjectorSyntaxReceiver syntaxReceiver = context.SyntaxReceiver as InjectorSyntaxReceiver
-                ?? throw new InvalidOperationException("Incorrect Syntax Receiver."); // This should never happen.
+            try {
+                InjectorSyntaxReceiver syntaxReceiver = context.SyntaxReceiver as InjectorSyntaxReceiver
+                    ?? throw new InvalidOperationException("Incorrect Syntax Receiver."); // This should never happen.
 
-            // Extract
-            var injectorModels = InjectorExtractor.Extract(syntaxReceiver.InjectorCandidates, context);
-            var specModels = SpecificationExtractor.Extract(syntaxReceiver.SpecificationCandidates, context);
+                // Extract
+                var injectorModels = InjectorExtractor.Extract(syntaxReceiver.InjectorCandidates, context);
+                var specModels = SpecificationExtractor.Extract(syntaxReceiver.SpecificationCandidates, context);
 
-            foreach (var injectorModel in injectorModels) {
-                // Map
-                var injectionDefinition = InjectionMapper.MapToDefinition(injectorModel, specModels);
+                foreach (var injectorModel in injectorModels) {
+                    // Map
+                    var injectionDefinition = InjectionMapper.MapToDefinition(injectorModel, specModels);
 
-                // Construct
-                var templates = new List<(TypeDefinition, IRenderTemplate)>();
-                foreach (var specDefinition in injectionDefinition.SpecContainers) {
-                    templates.Add((specDefinition.ContainerType, SpecContainerTemplateBuilder.Build(specDefinition)));
+                    // Construct
+                    var templates = new List<(TypeDefinition, IRenderTemplate)>();
+                    foreach (var specDefinition in injectionDefinition.SpecContainers) {
+                        templates.Add((specDefinition.ContainerType, SpecContainerTemplateBuilder.Build(specDefinition)));
+                    }
+                    templates.Add((injectorModel.InjectorType.ToTypeDefinition(), InjectorTemplateBuilder.Build(injectionDefinition.Injector)));
+
+                    // Render
+                    if (!Directory.Exists(RenderConstants.GeneratedSourceDir)) {
+                        Directory.CreateDirectory(RenderConstants.GeneratedSourceDir);
+                    }
+
+                    foreach (var (classType, template) in templates) {
+                        var fileName = $"{classType.QualifiedName}.{GeneratedFileExtension}";
+                        TemplateRenderer.RenderTemplate(fileName, template, context);
+                    }
                 }
-                templates.Add((injectorModel.InjectorType.ToTypeDefinition(), InjectorTemplateBuilder.Build(injectionDefinition.Injector)));
-
-                // Render
-                if (!Directory.Exists(RenderConstants.GeneratedSourceDir)) {
-                    Directory.CreateDirectory(RenderConstants.GeneratedSourceDir);
-                }
-                
-                foreach (var (classType, template) in templates) {
-                    var fileName = $"{classType.QualifiedName}.{GeneratedFileExtension}";
-                    TemplateRenderer.RenderTemplate(fileName, template, context);
-                }
+            } catch (Exception ex) {
+                Console.Error.WriteLine(ex);
+                throw;
             }
         }
     }

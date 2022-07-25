@@ -28,10 +28,12 @@ namespace Phx.Inject.Generator.Map {
 
             var instanceHolders = new List<InstanceHolderDefinition>();
             var factoryMethodContainers = new List<FactoryMethodContainerDefinition>();
+            var builderMethodContainers = new List<BuilderMethodContainerDefinition>();
+
+            var specContainerCollectionName = $"{injectorModel.InjectorType.Name}.{SpecContainerCollectionInterfaceName}";
+            TypeModel specContainerCollectionType = injectorModel.InjectorType with { Name = specContainerCollectionName };
 
             foreach (var factory in specModel.Factories) {
-                var specContainerCollectionName = $"{injectorModel.InjectorType.Name}.{SpecContainerCollectionInterfaceName}";
-                TypeModel specContainerCollectionType = injectorModel.InjectorType with { Name = specContainerCollectionName };
                 InstanceHolderDefinition? instanceHolderDefinition = null;
                 if (factory.FabricationMode == FabricationMode.Scoped) {
                     var instanceHolderName = factory.Name + InstanceHolderSuffix;
@@ -67,10 +69,32 @@ namespace Phx.Inject.Generator.Map {
                 factoryMethodContainers.Add(factoryMethodContainerDefinition);
             }
 
+            foreach (var builder in specModel.Builders) {
+                var arguments = builder.Arguments.Select(argumentType => {
+                    if (!factoryRegistrations.TryGetValue(argumentType.ToTypeDefinition(), out var factoryMethodRegistration)) {
+                        throw new InvalidOperationException($"No Factory found for type {argumentType.QualifiedName}.");
+                    }
+
+                    return new FactoryMethodContainerInvocationDefinition(
+                        factoryMethodRegistration.SpecificationType.Name + SpecificationContainerSuffix,
+                        factoryMethodRegistration.FactoryModel.Name
+                    );
+                });
+
+                var builderMethodContainerDefinition = new BuilderMethodContainerDefinition(
+                    builder.BuiltType.ToTypeDefinition(),
+                    specModel.SpecificationType.ToTypeDefinition(),
+                    specContainerCollectionType.ToTypeDefinition(),
+                    builder.Name,
+                    arguments);
+                builderMethodContainers.Add(builderMethodContainerDefinition);
+            }
+
             return new SpecContainerDefinition(
                 specContainerType.ToTypeDefinition(),
                 instanceHolders,
-                factoryMethodContainers);
+                factoryMethodContainers,
+                builderMethodContainers);
         }
     }
 }

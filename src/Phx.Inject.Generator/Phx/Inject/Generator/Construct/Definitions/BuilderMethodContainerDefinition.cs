@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-//  <copyright file="SpecContainerDefinition.cs" company="Star Cruise Studios LLC">
+//  <copyright file="BuilderMethodContainerDefinition.cs" company="Star Cruise Studios LLC">
 //      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
 //      Licensed under the Apache License 2.0 License.
 //      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -9,10 +9,11 @@
 namespace Phx.Inject.Generator.Construct.Definitions {
     using System.Collections.Generic;
 
-    internal record SpecContainerDefinition(
-        TypeDefinition ContainerType,
-        IEnumerable<InstanceHolderDefinition> InstanceHolderDeclarations,
-        IEnumerable<FactoryMethodContainerDefinition> FactoryMethodContainers,
-        IEnumerable<BuilderMethodContainerDefinition> BuilderMethodContainers
+    internal record BuilderMethodContainerDefinition(
+        TypeDefinition BuiltType,
+        TypeDefinition SpecType,
+        TypeDefinition SpecContainerCollectionType,
+        string BuilderMethodName,
+        IEnumerable<FactoryMethodContainerInvocationDefinition> Arguments
     ) { }
 }

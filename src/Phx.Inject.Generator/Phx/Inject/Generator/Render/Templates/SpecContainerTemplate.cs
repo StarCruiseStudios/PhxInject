@@ -8,11 +8,13 @@
 
 namespace Phx.Inject.Generator.Render.Templates {
     using System.Collections.Generic;
+    using System.Linq;
 
     internal record SpecContainerTemplate(
         string SpecContainerClassName,
         IEnumerable<InstanceHolderDeclarationTemplate> InstanceHolderDeclarations,
-        IEnumerable<FactoryMethodContainerTemplate> FactoryMethodContainers
+        IEnumerable<FactoryMethodContainerTemplate> FactoryMethodContainers,
+        IEnumerable<BuilderMethodContainerTemplate> BuilderMethodContainers
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
             writer
@@ -20,13 +22,24 @@ namespace Phx.Inject.Generator.Render.Templates {
             foreach (var instanceHolder in InstanceHolderDeclarations) {
                 instanceHolder.Render(writer);
             }
-            writer.AppendBlankLine();
-            foreach (var factoryMethod in FactoryMethodContainers) {
-                factoryMethod.Render(writer);
+            
+            if (FactoryMethodContainers.Any()) {
                 writer.AppendBlankLine();
+                foreach (var factoryMethod in FactoryMethodContainers) {
+                    factoryMethod.Render(writer);
+                    writer.AppendBlankLine();
+                }
             }
-            writer
-                .DecreaseIndent(1).AppendLine("}");
+
+            if (BuilderMethodContainers.Any()) {
+                writer.AppendBlankLine();
+                foreach (var builderMethod in BuilderMethodContainers) {
+                    builderMethod.Render(writer);
+                    writer.AppendBlankLine();
+                }
+            }
+
+            writer.DecreaseIndent(1).AppendLine("}");
         }
     }
 }
