@@ -18,7 +18,6 @@ namespace Phx.Inject.Tests.Data {
     internal interface ITestInjector {
         public Root GetRoot();
 
-        // TODO:
-        // public void Build(LazyType lazyType);
+        public void Build(LazyType lazyType);
     }
 }

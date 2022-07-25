@@ -18,22 +18,22 @@ namespace Phx.Inject.Generator.Map {
         private readonly IInjectorMapper injectorMapper;
         private readonly ISpecContainerMapper specContainerMapper;
 
-        private readonly IDictionary<TypeDefinition, FactoryRegistration> factoryRegistrations
-            = new Dictionary<TypeDefinition, FactoryRegistration>();
-
-        // TODO:
-        private readonly IDictionary<TypeDefinition, BuilderRegistration> builderRegistrations
-            = new Dictionary<TypeDefinition, BuilderRegistration>();
-
         public InjectionMapper(IInjectorMapper injectorMapper, ISpecContainerMapper specContainerMapper) {
             this.injectorMapper = injectorMapper;
             this.specContainerMapper = specContainerMapper;
         }
 
         public InjectionDefinition MapToDefinition(InjectorModel injectorModel, IEnumerable<SpecificationModel> specModels) {
+            IDictionary<TypeDefinition, FactoryRegistration> factoryRegistrations = new Dictionary<TypeDefinition, FactoryRegistration>();
+            IDictionary<TypeDefinition, BuilderRegistration> builderRegistrations = new Dictionary<TypeDefinition, BuilderRegistration>();
+
             foreach (var specModel in specModels) {
                 foreach (var factory in specModel.Factories) {
                     factoryRegistrations.Add(factory.ReturnType.ToTypeDefinition(), new FactoryRegistration(specModel.SpecificationType, factory));
+                }
+
+                foreach (var builder in specModel.Builders) {
+                    builderRegistrations.Add(builder.BuiltType.ToTypeDefinition(), new BuilderRegistration(specModel.SpecificationType, builder));
                 }
             }
 
