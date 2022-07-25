@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests {
+namespace Phx.Inject.Tests.Helpers {
     using System;
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;

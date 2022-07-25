@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests {
+namespace Phx.Inject.Tests.Helpers {
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;

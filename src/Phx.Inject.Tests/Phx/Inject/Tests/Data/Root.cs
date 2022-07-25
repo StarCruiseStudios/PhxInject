@@ -10,8 +10,11 @@ namespace Phx.Inject.Tests.Data {
     public class Root {
         public Node Node { get; }
 
-        public Root(Node node) {
+        public Node SecondaryNode { get; }
+
+        public Root(Node node, Node secondaryNode) {
             Node = node;
+            SecondaryNode = secondaryNode;
         }
     }
 }

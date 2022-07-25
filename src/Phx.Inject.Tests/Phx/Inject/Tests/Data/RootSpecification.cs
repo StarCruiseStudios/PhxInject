@@ -10,8 +10,8 @@ namespace Phx.Inject.Tests.Data {
     [Specification]
     internal static class RootSpecification {
         [Factory(FabricationMode.Scoped)]
-        internal static Root GetRoot(Node node) {
-            return new Root(node);
+        internal static Root GetRoot(Node node, Node secondaryNode) {
+            return new Root(node, secondaryNode);
         }
 
         [Factory]

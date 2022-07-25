@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests {
+namespace Phx.Inject.Tests.Helpers {
     public static class TestFiles {
         public static readonly string RootDirectory = "Phx/Inject/";
         public static readonly string TestDataDirectory = RootDirectory + "Tests/Data/";
