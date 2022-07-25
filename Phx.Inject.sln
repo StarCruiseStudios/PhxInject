@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phx.Inject.Generator", "src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phx.Inject.Tests", "src\Phx.Inject.Tests\Phx.Inject.Tests.csproj", "{0EF5577B-56FE-4245-A52E-233C4D45D397}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phx.Inject.Generator.Tests", "src\Phx.Inject.Generator.Tests\Phx.Inject.Generator.Tests.csproj", "{0692EE18-FF68-4DE3-97FC-A63640D7D0D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,10 +34,15 @@ Global
 		{0EF5577B-56FE-4245-A52E-233C4D45D397}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EF5577B-56FE-4245-A52E-233C4D45D397}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EF5577B-56FE-4245-A52E-233C4D45D397}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0692EE18-FF68-4DE3-97FC-A63640D7D0D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0692EE18-FF68-4DE3-97FC-A63640D7D0D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0692EE18-FF68-4DE3-97FC-A63640D7D0D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0692EE18-FF68-4DE3-97FC-A63640D7D0D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EB8ADAF7-A901-46D9-8226-6925A45B0BE5} = {C5B303DF-87DB-4835-AED9-9CACF543A0F4}
 		{34DDF258-9F3F-4FDA-B887-BA1B3586284A} = {C5B303DF-87DB-4835-AED9-9CACF543A0F4}
 		{0EF5577B-56FE-4245-A52E-233C4D45D397} = {C5B303DF-87DB-4835-AED9-9CACF543A0F4}
+		{0692EE18-FF68-4DE3-97FC-A63640D7D0D5} = {C5B303DF-87DB-4835-AED9-9CACF543A0F4}
 	EndGlobalSection
 EndGlobal

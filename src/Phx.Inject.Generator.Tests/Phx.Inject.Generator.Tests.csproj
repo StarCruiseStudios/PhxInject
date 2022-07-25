@@ -1,0 +1,58 @@
+<!--
+  <copyright file="Phx.Inject.Generator.Tests.csproj" company="Star Cruise Studios LLC">
+      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
+      Licensed under the Apache License 2.0 License.
+      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
+  </copyright>
+-->
+
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../resources/build/PhxLib.common.props" Condition="Exists('../../resources/build/PhxLib.common.props')" />
+  <Import Project="../../resources/build/PhxLib.test.common.props" Condition="Exists('../../resources/build/PhxLib.test.common.props')" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\Phx.Inject.Generator\Phx.Inject.Generator.csproj" />
+    <ProjectReference Include="..\Phx.Inject\Phx.Inject.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Csharp.SourceGenerators.Testing.NUnit" Version="1.1.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.Csharp" Version="3.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\Phx.Inject\Phx\Inject\BuilderAttribute.cs" Link="Phx\Inject\BuilderAttribute.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Phx.Inject\Phx\Inject\FabricationMode.cs" Link="Phx\Inject\FabricationMode.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Phx.Inject\Phx\Inject\FactoryAttribute.cs" Link="Phx\Inject\FactoryAttribute.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Phx.Inject\Phx\Inject\InjectorAttribute.cs" Link="Phx\Inject\InjectorAttribute.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Phx.Inject\Phx\Inject\LinkAttribute.cs" Link="Phx\Inject\LinkAttribute.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Phx.Inject\Phx\Inject\SpecificationAttribute.cs" Link="Phx\Inject\SpecificationAttribute.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Phx\Inject\Tests\Data\**\*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <Target Name="EnsureBuildFileImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This package relies on imported build files that are not found. Missing: {0}</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('../../resources/build/PhxLib.common.props')" Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/PhxLib.common.props'))" />
+    <Error Condition="!Exists('../../resources/build/PhxLib.test.common.props')" Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/PhxLib.test.common.props'))" />
+  </Target>
+</Project>
