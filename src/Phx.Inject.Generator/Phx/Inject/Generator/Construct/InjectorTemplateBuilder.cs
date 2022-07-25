@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Construct {
+    using System.Collections.Immutable;
     using System.Linq;
     using Phx.Inject.Generator.Construct.Definitions;
     using Phx.Inject.Generator.Render.Templates;
@@ -24,15 +25,22 @@ namespace Phx.Inject.Generator.Construct {
 
         public GeneratedFileTemplate Build(InjectorDefinition definition) {
             var injectorMethods = definition.InjectorMethods
-                .Select(injectorMethodBuilder.Build);
+                .Select(injectorMethodBuilder.Build)
+                .ToImmutableList();
 
             var injectorBuilderMethods = definition.InjectorBuilderMethods
-                .Select(injectorBuilderMethodBuilder.Build);
+                .Select(injectorBuilderMethodBuilder.Build)
+                .ToImmutableList();
             
-            var specContainerCollectionInterfaceTemplate = new SpecContainerCollectionInterfaceTemplate(
-                definition.SpecContainerTypes.Select(specContainer => new SpecContainerPropertyDeclarationTemplate(specContainer.NamespaceName, specContainer.Name)));
-            var specContainerCollectionImplementationTemplate = new SpecContainerCollectionImplementationTemplate(
-                definition.SpecContainerTypes.Select(specContainer => new SpecContainerPropertyDefinitionTemplate(specContainer.NamespaceName, specContainer.Name)));
+            var specContainerDeclarations = definition.SpecContainerTypes
+                    .Select(specContainer => new SpecContainerPropertyDeclarationTemplate(specContainer.NamespaceName, specContainer.Name))
+                    .ToImmutableArray();
+            var specContainerCollectionInterfaceTemplate = new SpecContainerCollectionInterfaceTemplate(specContainerDeclarations);
+
+            var specContainerDefinitions = definition.SpecContainerTypes
+                    .Select(specContainer => new SpecContainerPropertyDefinitionTemplate(specContainer.NamespaceName, specContainer.Name))
+                    .ToImmutableArray();
+            var specContainerCollectionImplementationTemplate = new SpecContainerCollectionImplementationTemplate(specContainerDefinitions);
 
             return new GeneratedFileTemplate(definition.InjectorType.NamespaceName,
                 new InjectorTemplate(

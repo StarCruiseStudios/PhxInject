@@ -31,7 +31,8 @@ namespace Phx.Inject.Tests {
             string[] filesInDirectory = Directory.GetFiles(directoryAbsolutePath, "*.cs", enumerationOptions);
 
             var syntaxTrees = filesInDirectory.Select(filePath => File.ReadAllText(filePath))
-                .Select(ParseText);
+                .Select(ParseText)
+                .ToImmutableList();
 
             return Compile(syntaxTrees, generators);
         }

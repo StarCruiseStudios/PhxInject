@@ -9,6 +9,7 @@
 namespace Phx.Inject.Generator.Map {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
     using Phx.Inject.Generator.Construct.Definitions;
     using Phx.Inject.Generator.Extract.Model;
@@ -34,7 +35,7 @@ namespace Phx.Inject.Generator.Map {
                     method.Name,
                     factoryMethodContainerInvocation
                 );
-            });
+            }).ToImmutableList();
 
             var injectorBuilderMethods = injectorModel.InjectionBuilderMethods.Select(method => {
                 if (!builderRegistrations.TryGetValue(method.BuiltType.ToTypeDefinition(), out var builderMethodRegistration)) {
@@ -50,12 +51,12 @@ namespace Phx.Inject.Generator.Map {
                     method.Name,
                     builderMethodContainerInvocation
                 );
-            });
+            }).ToImmutableList();
 
             var specContainerTypes = injectorModel.Specifications.Select(spec => {
                 var specContainerName = spec.Name + SpecificationContainerSuffix;
                 return (spec with { Name = specContainerName }).ToTypeDefinition();
-            });
+            }).ToImmutableList();
 
             return new InjectorDefinition(
                 injectorModel.InjectorType.ToTypeDefinition(),

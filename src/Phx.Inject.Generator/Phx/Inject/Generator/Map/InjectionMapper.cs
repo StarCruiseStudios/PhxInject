@@ -9,6 +9,7 @@
 namespace Phx.Inject.Generator.Map {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
     using Phx.Inject.Generator.Construct.Definitions;
     using Phx.Inject.Generator.Extract.Model;
@@ -48,8 +49,8 @@ namespace Phx.Inject.Generator.Map {
 
             var injectorDefinition = injectorMapper.MapToDefinition(injectorModel, factoryRegistrations, builderRegistrations);
             var specContainerDefintions = specModels.Where(specModel => specModel.Factories.Count > 0 || specModel.Builders.Count > 0)
-                .Select(specModel =>
-                    specContainerMapper.MapToDefinition(specModel, injectorModel, factoryRegistrations));
+                .Select(specModel => specContainerMapper.MapToDefinition(specModel, injectorModel, factoryRegistrations))
+                .ToImmutableList();
 
             return new InjectionDefinition(
                 injectorDefinition,

@@ -8,7 +8,9 @@
 
 namespace Phx.Inject.Generator.Extract {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Extract.Model;
@@ -72,13 +74,13 @@ namespace Phx.Inject.Generator.Extract {
             return injectorBuilderMethods;
         }
 
-        private List<TypeModel> GetSpecificationTypes(ITypeSymbol injectorInterfaceSymbol) {
+        private IReadOnlyList<TypeModel> GetSpecificationTypes(ITypeSymbol injectorInterfaceSymbol) {
             return GetSpecifications(injectorInterfaceSymbol)
                 .Select(specification => specification.Value as ITypeSymbol)
                 .Select(specificationType => specificationType!.ToTypeModel())
-                .ToList();
+                .ToImmutableList();
         }
-        private List<TypedConstant> GetSpecifications(ITypeSymbol interfaceModel) {
+        private IReadOnlyList<TypedConstant> GetSpecifications(ITypeSymbol interfaceModel) {
             var injectorAttribute = GetInjectorAttribute(interfaceModel);
             var specifications = new List<TypedConstant>();
             foreach (var argument in injectorAttribute.ConstructorArguments) {

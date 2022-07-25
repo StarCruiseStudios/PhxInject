@@ -10,6 +10,7 @@
 namespace Phx.Inject.Generator.Map {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Globalization;
     using System.Linq;
     using Phx.Inject.Generator.Construct.Definitions;
@@ -57,7 +58,7 @@ namespace Phx.Inject.Generator.Map {
                         factoryMethodRegistration.SpecificationType.Name + SpecificationContainerSuffix,
                         factoryMethodRegistration.FactoryModel.Name
                     );
-                });
+                }).ToImmutableList();
 
                 var factoryMethodContainerDefinition = new FactoryMethodContainerDefinition(
                     factory.ReturnType.ToTypeDefinition(),
@@ -79,7 +80,7 @@ namespace Phx.Inject.Generator.Map {
                         factoryMethodRegistration.SpecificationType.Name + SpecificationContainerSuffix,
                         factoryMethodRegistration.FactoryModel.Name
                     );
-                });
+                }).ToImmutableList();
 
                 var builderMethodContainerDefinition = new BuilderMethodContainerDefinition(
                     builder.BuiltType.ToTypeDefinition(),

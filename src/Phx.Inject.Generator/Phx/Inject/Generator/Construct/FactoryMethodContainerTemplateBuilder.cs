@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Construct {
+    using System.Collections.Immutable;
     using System.Linq;
     using Phx.Inject.Generator.Construct.Definitions;
     using Phx.Inject.Generator.Render.Templates;
@@ -22,7 +23,8 @@ namespace Phx.Inject.Generator.Construct {
 
         public FactoryMethodContainerTemplate Build(FactoryMethodContainerDefinition definition) {
             var arguments = definition.Arguments
-                .Select(factoryMethodContainerInvocationBuilder.Build);
+                .Select(factoryMethodContainerInvocationBuilder.Build)
+                .ToImmutableList();
 
             return new FactoryMethodContainerTemplate(
                 ReturnTypeQualifiedName: definition.ReturnType.QualifiedName,

@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Construct {
+    using System.Collections.Immutable;
     using System.Linq;
     using Phx.Inject.Generator.Construct.Definitions;
     using Phx.Inject.Generator.Render.Templates;
@@ -28,13 +29,16 @@ namespace Phx.Inject.Generator.Construct {
 
         public GeneratedFileTemplate Build(SpecContainerDefinition definition) {
             var instanceHolders = definition.InstanceHolderDeclarations
-                .Select(instanceHolderDeclarationBuilder.Build);
+                .Select(instanceHolderDeclarationBuilder.Build)
+                .ToImmutableList();
 
             var factoryMethodContainers = definition.FactoryMethodContainers
-                .Select(factoryMethodContainerBuilder.Build);
+                .Select(factoryMethodContainerBuilder.Build)
+                .ToImmutableList();
 
             var builderMethodContainers = definition.BuilderMethodContainers
-                .Select(builderMethodContainerBuilder.Build);
+                .Select(builderMethodContainerBuilder.Build)
+                .ToImmutableList();
 
             return new GeneratedFileTemplate(definition.ContainerType.NamespaceName,
                 new SpecContainerTemplate(
