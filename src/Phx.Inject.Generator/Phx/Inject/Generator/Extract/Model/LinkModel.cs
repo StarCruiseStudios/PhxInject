@@ -9,6 +9,8 @@
 namespace Phx.Inject.Generator.Extract.Model {
     internal record LinkModel(
         TypeModel InputType,
-        TypeModel ReturnType
+        string InputQualifier,
+        TypeModel ReturnType,
+        string ReturnQualifier
     );
 }

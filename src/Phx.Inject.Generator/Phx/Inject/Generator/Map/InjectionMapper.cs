@@ -39,10 +39,10 @@ namespace Phx.Inject.Generator.Map {
 
             foreach (var specModel in specModels) {
                 foreach (var link in specModel.Links) {
-                    if (factoryRegistrations.TryGetValue(new RegistrationIdentifier(link.InputType.ToTypeDefinition()), out var targetRegistration)) {
-                        factoryRegistrations.Add(new RegistrationIdentifier(link.ReturnType.ToTypeDefinition()), targetRegistration);
+                    if (factoryRegistrations.TryGetValue(new RegistrationIdentifier(link.InputType.ToTypeDefinition(), link.InputQualifier), out var targetRegistration)) {
+                        factoryRegistrations.Add(new RegistrationIdentifier(link.ReturnType.ToTypeDefinition(), link.ReturnQualifier), targetRegistration);
                     } else {
-                        throw new InvalidOperationException($"Cannot link {link.ReturnType} to unknown type {link.InputType}.");
+                        throw new InvalidOperationException($"Cannot link {link.ReturnType}[{link.ReturnQualifier}] to unknown type {link.InputType}[{link.InputQualifier}].");
                     }
                 }
             }

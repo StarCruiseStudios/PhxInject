@@ -72,7 +72,7 @@ namespace Phx.Inject.Generator.Extract {
                 var returnType = new TypeModel(
                     returnTypeArgument!.ContainingNamespace.ToString(),
                     returnTypeArgument.Name);
-                links.Add(new LinkModel(inputType, returnType));
+                links.Add(new LinkModel(inputType, RegistrationIdentifier.DefaultQualifier, returnType, RegistrationIdentifier.DefaultQualifier));
             }
 
             return links;
