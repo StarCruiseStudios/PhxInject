@@ -31,7 +31,7 @@ namespace Phx.Inject.Generator.Construct {
             var injectorBuilderMethods = definition.InjectorBuilderMethods
                 .Select(injectorBuilderMethodBuilder.Build)
                 .ToImmutableList();
-            
+
             var specContainerDeclarations = definition.SpecContainerTypes
                     .Select(specContainer => new SpecContainerPropertyDeclarationTemplate(specContainer.NamespaceName, specContainer.Name))
                     .ToImmutableArray();

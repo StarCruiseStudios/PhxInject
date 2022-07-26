@@ -14,7 +14,7 @@ namespace Phx.Inject.Generator.Extract {
     using Phx.Inject.Generator.Extract.Model;
     using Phx.Inject.Generator.Map;
     using static Phx.Inject.Generator.Construct.GenerationConstants;
-    
+
     internal class SpecificationModelBuilder : IModelBuilder<SpecificationModel> {
         public SpecificationModel Build(ITypeSymbol symbol) {
             var links = GetLinks(symbol);
@@ -119,7 +119,7 @@ namespace Phx.Inject.Generator.Extract {
             } else if (numLabels > 0) {
                 foreach (var argument in labelAttributes.Single().ConstructorArguments) {
                     if (argument.Type!.Name == "String") {
-                        return (string)argument.Value!;
+                        return (string) argument.Value!;
                     }
                 }
                 throw new InvalidOperationException($"Factory {factoryModel.Name} label must provide a value."); // This should never happen.

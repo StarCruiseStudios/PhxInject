@@ -17,7 +17,7 @@ namespace Phx.Inject.Tests {
         public void AScopedFactoryIsInvoked() {
             IRawInjector injector = Given("A test injector.", () => new GeneratedRawInjector());
 
-            var (root1, root2) = When("A factory method with scoped fabrication mode is invoked twice.", 
+            var (root1, root2) = When("A factory method with scoped fabrication mode is invoked twice.",
                     () => (injector.GetRoot(), injector.GetRoot()));
 
             Then("The same instance is returned both times.", () => Verify.That(ReferenceEquals(root1, root2).IsTrue()));

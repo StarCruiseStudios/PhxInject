@@ -8,8 +8,7 @@
 
 namespace Phx.Inject.Tests.Data {
     // [Specification]
-    internal static class LabeledLeafSpecification
-    {
+    internal static class LabeledLeafSpecification {
         public const string DefaultLeafData = "Default";
         public const string NonDefaultLeafAData = "NonDefaultLeafA";
         public const string NonDefaultLeafBData = "NonDefaultLeafB";

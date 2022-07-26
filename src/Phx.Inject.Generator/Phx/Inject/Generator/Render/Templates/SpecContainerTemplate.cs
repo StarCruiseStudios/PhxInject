@@ -22,7 +22,7 @@ namespace Phx.Inject.Generator.Render.Templates {
             foreach (var instanceHolder in InstanceHolderDeclarations) {
                 instanceHolder.Render(writer);
             }
-            
+
             if (FactoryMethodContainers.Any()) {
                 writer.AppendBlankLine();
                 foreach (var factoryMethod in FactoryMethodContainers) {

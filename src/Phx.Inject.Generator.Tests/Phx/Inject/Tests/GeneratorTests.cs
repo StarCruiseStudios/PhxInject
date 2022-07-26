@@ -21,7 +21,7 @@ namespace Phx.Inject.Tests {
             var generator = Given("A source generator.", () => new SourceGenerator());
             var rootDirectory = Given("A directory with source files.", () => TestFiles.RootDirectory);
 
-            var compilation = When("The source is compiled with the generator.", 
+            var compilation = When("The source is compiled with the generator.",
                     () => TestCompiler.CompileDirectory(rootDirectory, generator));
 
             var dataNamespace = Then("The test data's namespace exists.", "Phx.Inject.Tests.Data", (_) => {

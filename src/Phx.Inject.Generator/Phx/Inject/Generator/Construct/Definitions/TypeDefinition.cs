@@ -8,7 +8,7 @@
 
 namespace Phx.Inject.Generator.Construct.Definitions {
     using Phx.Inject.Generator.Extract.Model;
-    
+
     internal record TypeDefinition(string NamespaceName, string Name) {
         public string QualifiedName => $"{NamespaceName}.{Name}";
     }

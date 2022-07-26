@@ -13,7 +13,7 @@ namespace Phx.Inject.Generator.Render {
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Text;
     using Phx.Inject.Generator.Render.Templates;
- 
+
     internal class TemplateRenderer : ITemplateRenderer {
         private readonly Func<IRenderWriter> newRenderWriter;
 

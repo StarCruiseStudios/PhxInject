@@ -16,7 +16,7 @@ namespace Phx.Inject.Generator.Map {
     using Phx.Inject.Generator.Construct.Definitions;
     using Phx.Inject.Generator.Extract.Model;
     using static Phx.Inject.Generator.Construct.GenerationConstants;
-    
+
     internal class SpecContainerMapper : ISpecContainerMapper {
         private const string InstanceHolderSuffix = "Instance";
         public SpecContainerDefinition MapToDefinition(

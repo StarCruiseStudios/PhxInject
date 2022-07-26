@@ -11,7 +11,7 @@ namespace Phx.Inject.Generator.Construct {
     using System.Linq;
     using Phx.Inject.Generator.Construct.Definitions;
     using Phx.Inject.Generator.Render.Templates;
-    
+
     internal class SpecContainerTemplateBuilder : IFileTemplateBuilder<SpecContainerDefinition> {
         private readonly ITemplateBuilder<InstanceHolderDefinition, InstanceHolderDeclarationTemplate> instanceHolderDeclarationBuilder;
         private readonly ITemplateBuilder<FactoryMethodContainerDefinition, FactoryMethodContainerTemplate> factoryMethodContainerBuilder;

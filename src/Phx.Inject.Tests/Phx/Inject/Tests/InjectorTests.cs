@@ -37,7 +37,7 @@ namespace Phx.Inject.Tests {
             IRawInjector injector = Given("A test injector.", () => new GeneratedRawInjector());
             IRawInjector injector2 = Given("A second test injector.", () => new GeneratedRawInjector());
 
-            var (root, root2) = When("The same scoped injector method is invoked on each injector.", 
+            var (root, root2) = When("The same scoped injector method is invoked on each injector.",
                     () => (injector.GetRoot(), injector2.GetRoot()));
 
             Then("Different instances are returned.", () => Verify.That(ReferenceEquals(root, root2).IsFalse()));

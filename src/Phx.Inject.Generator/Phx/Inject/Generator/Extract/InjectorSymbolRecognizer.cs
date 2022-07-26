@@ -11,7 +11,7 @@ namespace Phx.Inject.Generator.Extract {
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Extract.Model;
     using static Phx.Inject.Generator.Construct.GenerationConstants;
-    
+
     internal class InjectorSymbolRecognizer : ISymbolRecognizer<InjectorModel> {
         public bool IsExpectedSymbol(ITypeSymbol symbol) {
             var specificationAttributes = symbol.GetAttributes()

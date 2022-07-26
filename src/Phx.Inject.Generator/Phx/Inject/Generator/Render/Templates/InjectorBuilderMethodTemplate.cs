@@ -8,7 +8,7 @@
 
 namespace Phx.Inject.Generator.Render.Templates {
     using static Phx.Inject.Generator.Render.RenderConstants;
-    
+
     internal record InjectorBuilderMethodTemplate(
         string BuilderTypeQualifiedName,
         string MethodName,

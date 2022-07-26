@@ -12,7 +12,7 @@ namespace Phx.Inject.Tests.Data {
     //         typeof(LabeledLeafSpecification)
     //     }
     //  )]
-     internal interface ILabelInjector {
+    internal interface ILabelInjector {
         public ILeaf GetDefaultLeaf();
 
         [Label("NonDefaultLeafA")]
