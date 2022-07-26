@@ -43,7 +43,7 @@ namespace Phx.Inject.Generator.Map {
                     instanceHolderName = char.ToLower(instanceHolderName[0]) + instanceHolderName[1..];
 
                     instanceHolderDefinition = new InstanceHolderDefinition(
-                        factory.ReturnType.ToTypeDefinition(),
+                        factory.ReturnType.TypeModel.ToTypeDefinition(),
                         instanceHolderName);
                     instanceHolders.Add(instanceHolderDefinition);
                 }
@@ -60,7 +60,7 @@ namespace Phx.Inject.Generator.Map {
                 }).ToImmutableList();
 
                 var factoryMethodContainerDefinition = new FactoryMethodContainerDefinition(
-                    factory.ReturnType.ToTypeDefinition(),
+                    factory.ReturnType.TypeModel.ToTypeDefinition(),
                     specModel.SpecificationType.ToTypeDefinition(),
                     specContainerCollectionType.ToTypeDefinition(),
                     factory.Name,
@@ -82,7 +82,7 @@ namespace Phx.Inject.Generator.Map {
                 }).ToImmutableList();
 
                 var builderMethodContainerDefinition = new BuilderMethodContainerDefinition(
-                    builder.BuiltType.ToTypeDefinition(),
+                    builder.BuiltType.TypeModel.ToTypeDefinition(),
                     specModel.SpecificationType.ToTypeDefinition(),
                     specContainerCollectionType.ToTypeDefinition(),
                     builder.Name,

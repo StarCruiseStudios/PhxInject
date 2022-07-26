@@ -42,8 +42,7 @@ namespace Phx.Inject.Generator.Extract {
                     var qualifier = GetMethodQualifier(methodSymbol);
                     var methodName = methodSymbol.Name;
                     injectorMethods.Add(new InjectionMethodModel(
-                        returnType,
-                        qualifier,
+                        new QualifiedTypeModel(returnType, qualifier),
                         methodName
                     ));
                 }
@@ -68,8 +67,7 @@ namespace Phx.Inject.Generator.Extract {
                     var qualifier = GetMethodQualifier(methodSymbol);
                     var methodName = methodSymbol.Name;
                     injectorBuilderMethods.Add(new InjectionBuilderMethodModel(
-                        builtType,
-                        qualifier,
+                        new QualifiedTypeModel(builtType, qualifier),
                         methodName
                     ));
                 }

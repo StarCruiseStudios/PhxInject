@@ -10,8 +10,7 @@ namespace Phx.Inject.Generator.Extract.Model {
     using System.Collections.Generic;
 
     internal record BuilderModel(
-        TypeModel BuiltType,
-        string Qualifier,
+        QualifiedTypeModel BuiltType,
         string Name,
         List<QualifiedTypeModel> Arguments
     );

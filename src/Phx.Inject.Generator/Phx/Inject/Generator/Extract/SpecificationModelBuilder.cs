@@ -40,8 +40,7 @@ namespace Phx.Inject.Generator.Extract {
                         var qualifier = GetQualifier(methodSymbol);
 
                         factories.Add(new FactoryModel(
-                            returnType,
-                            qualifier,
+                            new QualifiedTypeModel(returnType, qualifier),
                             methodName,
                             argumentTypes,
                             fabricationMode
@@ -51,8 +50,7 @@ namespace Phx.Inject.Generator.Extract {
                         var builderArguments = argumentTypes.GetRange(1, argumentTypes.Count - 1);
                         var qualifier = GetQualifier(methodSymbol);
                         builders.Add(new BuilderModel(
-                            builtType.TypeModel,
-                            qualifier,
+                            new QualifiedTypeModel(builtType.TypeModel, qualifier), // Use qualifier from method not from parameter
                             methodName,
                             builderArguments
                         ));

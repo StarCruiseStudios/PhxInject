@@ -29,11 +29,11 @@ namespace Phx.Inject.Generator.Map {
 
             foreach (var specModel in specModels) {
                 foreach (var factory in specModel.Factories) {
-                    factoryRegistrations.Add(new RegistrationIdentifier(factory.ReturnType.ToTypeDefinition(), factory.Qualifier), new FactoryRegistration(specModel.SpecificationType, factory));
+                    factoryRegistrations.Add(factory.ReturnType.ToRegistrationIdentifier(), new FactoryRegistration(specModel.SpecificationType, factory));
                 }
 
                 foreach (var builder in specModel.Builders) {
-                    builderRegistrations.Add(new RegistrationIdentifier(builder.BuiltType.ToTypeDefinition(), builder.Qualifier), new BuilderRegistration(specModel.SpecificationType, builder));
+                    builderRegistrations.Add(builder.BuiltType.ToRegistrationIdentifier(), new BuilderRegistration(specModel.SpecificationType, builder));
                 }
             }
 
