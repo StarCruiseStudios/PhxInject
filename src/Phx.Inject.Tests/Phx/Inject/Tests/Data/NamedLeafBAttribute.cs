@@ -9,7 +9,7 @@
 namespace Phx.Inject.Tests.Data {
     using System;
 
-    [Label("NamedLeafB")]
-    [AttributeUsage(LabelAttribute.Usage)]
+    [Qualifier]
+    [AttributeUsage(QualifierAttribute.Usage)]
     internal class NamedLeafBAttribute : Attribute { }
 }
