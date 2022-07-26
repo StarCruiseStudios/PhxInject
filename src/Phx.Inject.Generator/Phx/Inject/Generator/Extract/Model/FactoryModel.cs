@@ -13,7 +13,7 @@ namespace Phx.Inject.Generator.Extract.Model {
         TypeModel ReturnType,
         string Qualifier,
         string Name,
-        List<TypeModel> Arguments,
+        List<QualifiedTypeModel> Arguments,
         FabricationMode FabricationMode
     );
 }

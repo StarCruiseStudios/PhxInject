@@ -13,6 +13,6 @@ namespace Phx.Inject.Generator.Extract.Model {
         TypeModel BuiltType,
         string Qualifier,
         string Name,
-        List<TypeModel> Arguments
+        List<QualifiedTypeModel> Arguments
     );
 }

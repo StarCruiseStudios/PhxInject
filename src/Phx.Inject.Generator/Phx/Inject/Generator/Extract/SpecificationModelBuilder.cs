@@ -28,13 +28,16 @@ namespace Phx.Inject.Generator.Extract {
                     var returnTypeSymbol = methodSymbol.ReturnType;
                     var returnType = returnTypeSymbol.ToTypeModel();
                     var methodName = methodSymbol.Name;
-                    var argumentTypes = new List<TypeModel>();
+                    var argumentTypes = new List<QualifiedTypeModel>();
                     foreach (var argument in methodSymbol.Parameters) {
-                        argumentTypes.Add(argument.Type.ToTypeModel());
+                        var argumentQualifier = GetQualifier(argument);
+                        argumentTypes.Add(new QualifiedTypeModel(
+                            argument.Type.ToTypeModel(),
+                            argumentQualifier));
                     }
 
                     if (GetFactoryFabricationMode(methodSymbol) is FabricationMode fabricationMode) {
-                        var qualifier = GetMethodQualifier(methodSymbol);
+                        var qualifier = GetQualifier(methodSymbol);
 
                         factories.Add(new FactoryModel(
                             returnType,
@@ -46,9 +49,9 @@ namespace Phx.Inject.Generator.Extract {
                     } else if (IsBuilder(methodSymbol)) {
                         var builtType = argumentTypes[0];
                         var builderArguments = argumentTypes.GetRange(1, argumentTypes.Count - 1);
-                        var qualifier = GetMethodQualifier(methodSymbol);
+                        var qualifier = GetQualifier(methodSymbol);
                         builders.Add(new BuilderModel(
-                            builtType,
+                            builtType.TypeModel,
                             qualifier,
                             methodName,
                             builderArguments
@@ -103,11 +106,11 @@ namespace Phx.Inject.Generator.Extract {
             return FabricationMode.Recurrent;
         }
 
-        private string GetMethodQualifier(IMethodSymbol methodSymbol) {
-            var labelAttributes = methodSymbol.GetAttributes()
+        private string GetQualifier(ISymbol qualifiedSymbol) {
+            var labelAttributes = qualifiedSymbol.GetAttributes()
                 .Where((attributeData) => attributeData.AttributeClass!.ToString() == LabelAttributeClassName);
 
-            var qualifierAttributes = methodSymbol.GetAttributes()
+            var qualifierAttributes = qualifiedSymbol.GetAttributes()
                 .Where((attributeData) => {
                     return attributeData.AttributeClass!.GetAttributes()
                             .Any((parentAttributeData) => parentAttributeData.AttributeClass!.ToString() == QualifierAttributeClassName);
@@ -117,14 +120,14 @@ namespace Phx.Inject.Generator.Extract {
             var numQualifiers = qualifierAttributes.Count();
 
             if (numLabels + numQualifiers > 1) {
-                throw new InvalidOperationException($"Method {methodSymbol.Name} can only have one Label or Qualifier attribute.");
+                throw new InvalidOperationException($"Method {qualifiedSymbol.Name} can only have one Label or Qualifier attribute.");
             } else if (numLabels > 0) {
                 foreach (var argument in labelAttributes.Single().ConstructorArguments) {
                     if (argument.Type!.Name == "String") {
                         return (string) argument.Value!;
                     }
                 }
-                throw new InvalidOperationException($"Method {methodSymbol.Name} label must provide a value."); // This should never happen.
+                throw new InvalidOperationException($"Method {qualifiedSymbol.Name} label must provide a value."); // This should never happen.
             } else if (numQualifiers > 0) {
                 return qualifierAttributes.Single().AttributeClass!.ToString();
             } else {

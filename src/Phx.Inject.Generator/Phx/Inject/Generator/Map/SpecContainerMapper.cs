@@ -49,8 +49,8 @@ namespace Phx.Inject.Generator.Map {
                 }
 
                 var arguments = factory.Arguments.Select(argumentType => {
-                    if (!factoryRegistrations.TryGetValue(new RegistrationIdentifier(argumentType.ToTypeDefinition()), out var factoryMethodRegistration)) {
-                        throw new InvalidOperationException($"No Factory found for type {argumentType.QualifiedName}.");
+                    if (!factoryRegistrations.TryGetValue(argumentType.ToRegistrationIdentifier(), out var factoryMethodRegistration)) {
+                        throw new InvalidOperationException($"No Factory found for type {argumentType}.");
                     }
 
                     return new FactoryMethodContainerInvocationDefinition(
@@ -71,8 +71,8 @@ namespace Phx.Inject.Generator.Map {
 
             foreach (var builder in specModel.Builders) {
                 var arguments = builder.Arguments.Select(argumentType => {
-                    if (!factoryRegistrations.TryGetValue(new RegistrationIdentifier(argumentType.ToTypeDefinition()), out var factoryMethodRegistration)) {
-                        throw new InvalidOperationException($"No Factory found for type {argumentType.QualifiedName}.");
+                    if (!factoryRegistrations.TryGetValue(argumentType.ToRegistrationIdentifier(), out var factoryMethodRegistration)) {
+                        throw new InvalidOperationException($"No Factory found for type {argumentType}.");
                     }
 
                     return new FactoryMethodContainerInvocationDefinition(
