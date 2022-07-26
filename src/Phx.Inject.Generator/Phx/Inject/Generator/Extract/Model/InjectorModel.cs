@@ -14,6 +14,7 @@ namespace Phx.Inject.Generator.Extract.Model {
         TypeModel InjectorInterface,
         IReadOnlyList<InjectionMethodModel> InjectionMethods,
         IReadOnlyList<InjectionBuilderMethodModel> InjectionBuilderMethods,
-        IReadOnlyList<TypeModel> Specifications
+        IReadOnlyList<TypeModel> Specifications,
+        IReadOnlyList<TypeModel> ConstructedSpecifications
     );
 }

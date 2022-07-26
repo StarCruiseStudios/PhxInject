@@ -15,6 +15,6 @@ namespace Phx.Inject.Tests.Data.Specification {
         internal int GetIntValue();
 
         [Factory]
-        internal IntLeaf GetIntLeaf();
+        internal IntLeaf GetIntLeaf(int intValue);
     }
 }

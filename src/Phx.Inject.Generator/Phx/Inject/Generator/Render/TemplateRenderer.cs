@@ -29,6 +29,7 @@ namespace Phx.Inject.Generator.Render {
             template.Render(renderWriter);
 
             var classSource = renderWriter.GetRenderedString();
+            // File.WriteAllText(fileName, classSource);
             var classSourceText = SourceText.From(classSource, Encoding.UTF8);
 
             context.AddSource(fileName, classSourceText);

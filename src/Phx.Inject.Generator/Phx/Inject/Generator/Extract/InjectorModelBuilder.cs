@@ -26,7 +26,8 @@ namespace Phx.Inject.Generator.Extract {
             var injectionMethods = GetInjectionMethods(symbol);
             var injectionBuilderMethods = GetInjectionBuilderMethods(symbol);
             var specifications = GetSpecificationTypes(symbol);
-            return new InjectorModel(injectorType, injectorInterfaceType, injectionMethods, injectionBuilderMethods, specifications);
+            var constructedSpecifications = GetConstructedSpecificationTypes(symbol);
+            return new InjectorModel(injectorType, injectorInterfaceType, injectionMethods, injectionBuilderMethods, specifications, constructedSpecifications);
         }
 
         private List<InjectionMethodModel> GetInjectionMethods(ITypeSymbol injectorInterfaceSymbol) {
@@ -79,9 +80,18 @@ namespace Phx.Inject.Generator.Extract {
         private IReadOnlyList<TypeModel> GetSpecificationTypes(ITypeSymbol injectorInterfaceSymbol) {
             return GetSpecifications(injectorInterfaceSymbol)
                 .Select(specification => specification.Value as ITypeSymbol)
+                .Where(specificationType => specificationType!.IsStatic)
                 .Select(specificationType => specificationType!.ToTypeModel())
                 .ToImmutableList();
         }
+        private IReadOnlyList<TypeModel> GetConstructedSpecificationTypes(ITypeSymbol injectorInterfaceSymbol) {
+            return GetSpecifications(injectorInterfaceSymbol)
+                .Select(specification => specification.Value as ITypeSymbol)
+                .Where(specificationType => specificationType!.IsAbstract)
+                .Select(specificationType => specificationType!.ToTypeModel())
+                .ToImmutableList();
+        }
+
         private IReadOnlyList<TypedConstant> GetSpecifications(ITypeSymbol interfaceModel) {
             var injectorAttribute = GetInjectorAttribute(interfaceModel);
             var specifications = new List<TypedConstant>();
