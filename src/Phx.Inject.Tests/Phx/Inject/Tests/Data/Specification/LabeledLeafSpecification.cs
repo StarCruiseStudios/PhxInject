@@ -6,7 +6,9 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data {
+namespace Phx.Inject.Tests.Data.Specification {
+    using Phx.Inject.Tests.Data.Model;
+
     [Specification]
     internal static class LabeledLeafSpecification {
         public const string DefaultLeafData = "Default";

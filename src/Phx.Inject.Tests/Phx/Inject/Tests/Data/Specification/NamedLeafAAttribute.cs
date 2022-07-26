@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data {
+namespace Phx.Inject.Tests.Data.Specification {
     using System;
 
     [Qualifier]

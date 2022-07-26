@@ -8,7 +8,8 @@
 
 namespace Phx.Inject.Tests {
     using NUnit.Framework;
-    using Phx.Inject.Tests.Data;
+    using Phx.Inject.Tests.Data.Inject;
+    using Phx.Inject.Tests.Data.Model;
     using Phx.Test;
     using Phx.Validation;
 
