@@ -7,7 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Tests.Data {
-    // [Specification]
+    [Specification]
     internal static class LabeledLeafSpecification {
         public const string DefaultLeafData = "Default";
         public const string NonDefaultLeafAData = "NonDefaultLeafA";
@@ -17,11 +17,11 @@ namespace Phx.Inject.Tests.Data {
         public const string StringNamedLeafAData = "StringNamedLeafA";
         public const string NamedStringLeafData = "NamedStringLeaf";
 
-        // [Factory]
-        // internal static ILeaf GetDefaultLeaf()
-        // {
-        //     return new StringLeaf(DefaultLeafData);
-        // }
+        [Factory]
+        internal static ILeaf GetDefaultLeaf()
+        {
+            return new StringLeaf(DefaultLeafData);
+        }
 
         [Label("NonDefaultLeafA")]
         [Factory]
@@ -59,6 +59,7 @@ namespace Phx.Inject.Tests.Data {
             return new StringLeaf(NamedStringLeafData);
         }
 
+        [Factory]
         internal static Node GetNode(
             [Label("NonDefaultLeafA")] ILeaf left,
             [NamedLeafA] ILeaf right

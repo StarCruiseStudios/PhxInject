@@ -7,11 +7,11 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Tests.Data {
-    // [Injector(
-    //     specifications: new[] { 
-    //         typeof(LabeledLeafSpecification)
-    //     }
-    //  )]
+    [Injector(
+        specifications: new[] { 
+            typeof(LabeledLeafSpecification)
+        }
+     )]
     internal interface ILabelInjector {
         public ILeaf GetDefaultLeaf();
 

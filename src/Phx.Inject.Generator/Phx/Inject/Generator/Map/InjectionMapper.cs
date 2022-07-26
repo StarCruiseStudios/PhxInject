@@ -27,7 +27,15 @@ namespace Phx.Inject.Generator.Map {
             IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations = new Dictionary<RegistrationIdentifier, FactoryRegistration>();
             IDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations = new Dictionary<RegistrationIdentifier, BuilderRegistration>();
 
-            foreach (var specModel in specModels) {
+            var injectorSpecModels = injectorModel.Specifications.Select((specType) => {
+                var specModel = specModels.Where((model) => model.SpecificationType == specType).DefaultIfEmpty().Single();
+                if (specModel == null) {
+                    throw new InvalidOperationException($"Cannot find specification of type {specType} required by injector {injectorModel.InjectorInterface}.");
+                }
+                return specModel;
+            });
+
+            foreach (var specModel in injectorSpecModels) {
                 foreach (var factory in specModel.Factories) {
                     factoryRegistrations.Add(factory.ReturnType.ToRegistrationIdentifier(), new FactoryRegistration(specModel.SpecificationType, factory));
                 }
@@ -37,7 +45,7 @@ namespace Phx.Inject.Generator.Map {
                 }
             }
 
-            foreach (var specModel in specModels) {
+            foreach (var specModel in injectorSpecModels) {
                 foreach (var link in specModel.Links) {
                     if (factoryRegistrations.TryGetValue(new RegistrationIdentifier(link.InputType.ToTypeDefinition(), link.InputQualifier), out var targetRegistration)) {
                         factoryRegistrations.Add(new RegistrationIdentifier(link.ReturnType.ToTypeDefinition(), link.ReturnQualifier), targetRegistration);
@@ -48,7 +56,7 @@ namespace Phx.Inject.Generator.Map {
             }
 
             var injectorDefinition = injectorMapper.MapToDefinition(injectorModel, factoryRegistrations, builderRegistrations);
-            var specContainerDefintions = specModels.Where(specModel => specModel.Factories.Count > 0 || specModel.Builders.Count > 0)
+            var specContainerDefintions = injectorSpecModels
                 .Select(specModel => specContainerMapper.MapToDefinition(specModel, injectorModel, factoryRegistrations))
                 .ToImmutableList();
 

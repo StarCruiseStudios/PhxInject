@@ -11,7 +11,8 @@ namespace Phx.Inject.Tests.Data {
         specifications: new[] {
             typeof(RootSpecification),
             typeof(LazySpecification),
-            typeof(LeafSpecification)
+            typeof(LeafSpecification),
+            typeof(LeafLinks)
         }
     )]
     internal interface IRawInjector {
