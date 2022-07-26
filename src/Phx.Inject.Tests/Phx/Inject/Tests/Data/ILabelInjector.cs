@@ -38,5 +38,10 @@ namespace Phx.Inject.Tests.Data {
         public StringLeaf GetNamedStringLeaf();
 
         public Node GetNode();
+
+        [Label("NonDefaultLeafA")]
+        public void BuildLabeledLazyType(LazyType type);
+
+        public void BuildUnlabeledLazyType(LazyType type);
     }
 }

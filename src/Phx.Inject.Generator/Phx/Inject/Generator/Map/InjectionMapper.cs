@@ -33,7 +33,7 @@ namespace Phx.Inject.Generator.Map {
                 }
 
                 foreach (var builder in specModel.Builders) {
-                    builderRegistrations.Add(new RegistrationIdentifier(builder.BuiltType.ToTypeDefinition()), new BuilderRegistration(specModel.SpecificationType, builder));
+                    builderRegistrations.Add(new RegistrationIdentifier(builder.BuiltType.ToTypeDefinition(), builder.Qualifier), new BuilderRegistration(specModel.SpecificationType, builder));
                 }
             }
 

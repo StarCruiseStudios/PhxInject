@@ -34,7 +34,7 @@ namespace Phx.Inject.Generator.Extract {
                     }
 
                     if (GetFactoryFabricationMode(methodSymbol) is FabricationMode fabricationMode) {
-                        var qualifier = GetFactoryQualifier(methodSymbol);
+                        var qualifier = GetMethodQualifier(methodSymbol);
 
                         factories.Add(new FactoryModel(
                             returnType,
@@ -46,8 +46,10 @@ namespace Phx.Inject.Generator.Extract {
                     } else if (IsBuilder(methodSymbol)) {
                         var builtType = argumentTypes[0];
                         var builderArguments = argumentTypes.GetRange(1, argumentTypes.Count - 1);
+                        var qualifier = GetMethodQualifier(methodSymbol);
                         builders.Add(new BuilderModel(
                             builtType,
+                            qualifier,
                             methodName,
                             builderArguments
                         ));
@@ -101,7 +103,7 @@ namespace Phx.Inject.Generator.Extract {
             return FabricationMode.Recurrent;
         }
 
-        private string GetFactoryQualifier(IMethodSymbol factoryModel) {
+        private string GetMethodQualifier(IMethodSymbol factoryModel) {
             var labelAttributes = factoryModel.GetAttributes()
                 .Where((attributeData) => attributeData.AttributeClass!.ToString() == LabelAttributeClassName);
 

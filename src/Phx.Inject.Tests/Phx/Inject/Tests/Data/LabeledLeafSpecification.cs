@@ -65,5 +65,16 @@ namespace Phx.Inject.Tests.Data {
         ) {
             return new Node(left, right);
         }
+
+        [Label("NonDefaultLeafA")]
+        [Builder]
+        internal static void BuildLazyTypeLeafA(LazyType type, [Label("NonDefaultLeafA")] ILeaf leaf) {
+            type.Value = leaf;
+        }
+
+        [Builder]
+        internal static void BuildLazyTypeDefault(LazyType type, ILeaf leaf) {
+            type.Value = leaf;
+        }
     }
 }
