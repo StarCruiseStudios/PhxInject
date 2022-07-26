@@ -18,11 +18,11 @@ namespace Phx.Inject.Generator.Map {
     internal class InjectorMapper : IInjectorMapper {
         public InjectorDefinition MapToDefinition(
             InjectorModel injectorModel,
-            IDictionary<TypeDefinition, FactoryRegistration> factoryRegistrations,
-            IDictionary<TypeDefinition, BuilderRegistration> builderRegistrations
+            IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations,
+            IDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations
         ) {
             var injectorMethods = injectorModel.InjectionMethods.Select(method => {
-                if (!factoryRegistrations.TryGetValue(method.ReturnType.ToTypeDefinition(), out var factoryMethodRegistration)) {
+                if (!factoryRegistrations.TryGetValue(new RegistrationIdentifier(method.ReturnType.ToTypeDefinition()), out var factoryMethodRegistration)) {
                     throw new InvalidOperationException($"No Factory found for type {method.ReturnType.QualifiedName}.");
                 }
 
@@ -38,7 +38,7 @@ namespace Phx.Inject.Generator.Map {
             }).ToImmutableList();
 
             var injectorBuilderMethods = injectorModel.InjectionBuilderMethods.Select(method => {
-                if (!builderRegistrations.TryGetValue(method.BuiltType.ToTypeDefinition(), out var builderMethodRegistration)) {
+                if (!builderRegistrations.TryGetValue(new RegistrationIdentifier(method.BuiltType.ToTypeDefinition()), out var builderMethodRegistration)) {
                     throw new InvalidOperationException($"No Builder found for type {method.BuiltType.QualifiedName}.");
                 }
 

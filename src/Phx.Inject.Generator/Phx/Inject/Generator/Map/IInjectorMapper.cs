@@ -14,8 +14,8 @@ namespace Phx.Inject.Generator.Map {
     internal interface IInjectorMapper {
         InjectorDefinition MapToDefinition(
             InjectorModel injectorModel,
-            IDictionary<TypeDefinition, FactoryRegistration> factoryRegistrations,
-            IDictionary<TypeDefinition, BuilderRegistration> builderRegistrations
+            IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations,
+            IDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations
         );
     }
 }

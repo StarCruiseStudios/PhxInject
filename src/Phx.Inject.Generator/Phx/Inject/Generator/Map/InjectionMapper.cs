@@ -24,23 +24,23 @@ namespace Phx.Inject.Generator.Map {
         }
 
         public InjectionDefinition MapToDefinition(InjectorModel injectorModel, IEnumerable<SpecificationModel> specModels) {
-            IDictionary<TypeDefinition, FactoryRegistration> factoryRegistrations = new Dictionary<TypeDefinition, FactoryRegistration>();
-            IDictionary<TypeDefinition, BuilderRegistration> builderRegistrations = new Dictionary<TypeDefinition, BuilderRegistration>();
+            IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations = new Dictionary<RegistrationIdentifier, FactoryRegistration>();
+            IDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations = new Dictionary<RegistrationIdentifier, BuilderRegistration>();
 
             foreach (var specModel in specModels) {
                 foreach (var factory in specModel.Factories) {
-                    factoryRegistrations.Add(factory.ReturnType.ToTypeDefinition(), new FactoryRegistration(specModel.SpecificationType, factory));
+                    factoryRegistrations.Add(new RegistrationIdentifier(factory.ReturnType.ToTypeDefinition()), new FactoryRegistration(specModel.SpecificationType, factory));
                 }
 
                 foreach (var builder in specModel.Builders) {
-                    builderRegistrations.Add(builder.BuiltType.ToTypeDefinition(), new BuilderRegistration(specModel.SpecificationType, builder));
+                    builderRegistrations.Add(new RegistrationIdentifier(builder.BuiltType.ToTypeDefinition()), new BuilderRegistration(specModel.SpecificationType, builder));
                 }
             }
 
             foreach (var specModel in specModels) {
                 foreach (var link in specModel.Links) {
-                    if (factoryRegistrations.TryGetValue(link.InputType.ToTypeDefinition(), out var targetRegistration)) {
-                        factoryRegistrations.Add(link.ReturnType.ToTypeDefinition(), targetRegistration);
+                    if (factoryRegistrations.TryGetValue(new RegistrationIdentifier(link.InputType.ToTypeDefinition()), out var targetRegistration)) {
+                        factoryRegistrations.Add(new RegistrationIdentifier(link.ReturnType.ToTypeDefinition()), targetRegistration);
                     } else {
                         throw new InvalidOperationException($"Cannot link {link.ReturnType} to unknown type {link.InputType}.");
                     }

@@ -22,7 +22,7 @@ namespace Phx.Inject.Generator.Map {
         public SpecContainerDefinition MapToDefinition(
             SpecificationModel specModel,
             InjectorModel injectorModel,
-            IDictionary<TypeDefinition, FactoryRegistration> factoryRegistrations
+            IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
         ) {
             var specContainerName = GetSpecificationContainerName(specModel.SpecificationType.Name, injectorModel.InjectorType.Name);
             var specContainerType = specModel.SpecificationType with { Name = specContainerName };
@@ -50,7 +50,7 @@ namespace Phx.Inject.Generator.Map {
                 }
 
                 var arguments = factory.Arguments.Select(argumentType => {
-                    if (!factoryRegistrations.TryGetValue(argumentType.ToTypeDefinition(), out var factoryMethodRegistration)) {
+                    if (!factoryRegistrations.TryGetValue(new RegistrationIdentifier(argumentType.ToTypeDefinition()), out var factoryMethodRegistration)) {
                         throw new InvalidOperationException($"No Factory found for type {argumentType.QualifiedName}.");
                     }
 
@@ -72,7 +72,7 @@ namespace Phx.Inject.Generator.Map {
 
             foreach (var builder in specModel.Builders) {
                 var arguments = builder.Arguments.Select(argumentType => {
-                    if (!factoryRegistrations.TryGetValue(argumentType.ToTypeDefinition(), out var factoryMethodRegistration)) {
+                    if (!factoryRegistrations.TryGetValue(new RegistrationIdentifier(argumentType.ToTypeDefinition()), out var factoryMethodRegistration)) {
                         throw new InvalidOperationException($"No Factory found for type {argumentType.QualifiedName}.");
                     }
 
