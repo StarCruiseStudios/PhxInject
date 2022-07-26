@@ -11,6 +11,7 @@ namespace Phx.Inject.Generator.Extract.Model {
 
     internal record FactoryModel(
         TypeModel ReturnType,
+        string Qualifier,
         string Name,
         List<TypeModel> Arguments,
         FabricationMode FabricationMode

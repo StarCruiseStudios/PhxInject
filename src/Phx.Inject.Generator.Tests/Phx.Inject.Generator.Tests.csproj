@@ -37,7 +37,13 @@
     <Content Include="..\Phx.Inject\Phx\Inject\InjectorAttribute.cs" Link="Phx\Inject\InjectorAttribute.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\Phx.Inject\Phx\Inject\LabelAttribute.cs" Link="Phx\Inject\LabelAttribute.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\Phx.Inject\Phx\Inject\LinkAttribute.cs" Link="Phx\Inject\LinkAttribute.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Phx.Inject\Phx\Inject\QualifierAttribute.cs" Link="Phx\Inject\QualifierAttribute.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="..\Phx.Inject\Phx\Inject\SpecificationAttribute.cs" Link="Phx\Inject\SpecificationAttribute.cs">

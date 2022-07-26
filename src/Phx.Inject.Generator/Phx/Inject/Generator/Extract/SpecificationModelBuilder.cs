@@ -7,10 +7,12 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Extract {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Extract.Model;
+    using Phx.Inject.Generator.Map;
     using static Phx.Inject.Generator.Construct.GenerationConstants;
     
     internal class SpecificationModelBuilder : IModelBuilder<SpecificationModel> {
@@ -32,8 +34,11 @@ namespace Phx.Inject.Generator.Extract {
                     }
 
                     if (GetFactoryFabricationMode(methodSymbol) is FabricationMode fabricationMode) {
+                        var qualifier = GetFactoryQualifier(methodSymbol);
+
                         factories.Add(new FactoryModel(
                             returnType,
+                            qualifier,
                             methodName,
                             argumentTypes,
                             fabricationMode
@@ -94,6 +99,35 @@ namespace Phx.Inject.Generator.Extract {
             }
 
             return FabricationMode.Recurrent;
+        }
+
+        private string GetFactoryQualifier(IMethodSymbol factoryModel) {
+            var labelAttributes = factoryModel.GetAttributes()
+                .Where((attributeData) => attributeData.AttributeClass!.ToString() == LabelAttributeClassName);
+
+            var qualifierAttributes = factoryModel.GetAttributes()
+                .Where((attributeData) => {
+                    return attributeData.AttributeClass!.GetAttributes()
+                            .Any((parentAttributeData) => parentAttributeData.AttributeClass!.ToString() == QualifierAttributeClassName);
+                });
+
+            var numLabels = labelAttributes.Count();
+            var numQualifiers = qualifierAttributes.Count();
+
+            if (numLabels + numQualifiers > 1) {
+                throw new InvalidOperationException($"Factory {factoryModel.Name} can only have one Label or Qualifier attribute.");
+            } else if (numLabels > 0) {
+                foreach (var argument in labelAttributes.Single().ConstructorArguments) {
+                    if (argument.Type!.Name == "String") {
+                        return (string)argument.Value!;
+                    }
+                }
+                throw new InvalidOperationException($"Factory {factoryModel.Name} label must provide a value."); // This should never happen.
+            } else if (numQualifiers > 0) {
+                return qualifierAttributes.Single().AttributeClass!.ToString();
+            } else {
+                return RegistrationIdentifier.DefaultQualifier;
+            }
         }
 
         private bool IsBuilder(IMethodSymbol builderModel) {

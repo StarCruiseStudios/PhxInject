@@ -11,6 +11,8 @@ using Phx.Inject.Generator.Construct.Definitions;
 namespace Phx.Inject.Generator.Map {
     internal record RegistrationIdentifier(
         TypeDefinition TypeDefinition,
-        string Qualifier = ""
-    );
+        string Qualifier = RegistrationIdentifier.DefaultQualifier
+    ) {
+        public const string DefaultQualifier = "";
+    };
 }

@@ -18,37 +18,33 @@ namespace Phx.Inject.Tests.Data {
         public const string StringNamedLeafAData = "StringNamedLeafA";
         public const string NamedStringLeafData = "NamedStringLeaf";
 
-        [Factory]
-        internal static ILeaf GetDefaultLeaf()
-        {
-            return new StringLeaf(DefaultLeafData);
-        }
+        // [Factory]
+        // internal static ILeaf GetDefaultLeaf()
+        // {
+        //     return new StringLeaf(DefaultLeafData);
+        // }
 
         [Label("NonDefaultLeafA")]
         [Factory]
-        internal static ILeaf GetNonDefaultLeafA()
-        {
+        internal static ILeaf GetNonDefaultLeafA() {
             return new StringLeaf(NonDefaultLeafAData);
         }
 
         [Label("NonDefaultLeafB")]
         [Factory]
-        internal static ILeaf GetNonDefaultLeafB()
-        {
+        internal static ILeaf GetNonDefaultLeafB() {
             return new StringLeaf(NonDefaultLeafBData);
         }
 
         [NamedLeafA]
         [Factory]
-        internal static ILeaf GetAttributeNamedLeafA()
-        {
+        internal static ILeaf GetAttributeNamedLeafA() {
             return new StringLeaf(AttributeNamedLeafAData);
         }
 
         [NamedLeafB]
         [Factory]
-        internal static ILeaf GetAttributeNamedLeafB()
-        {
+        internal static ILeaf GetAttributeNamedLeafB() {
             return new StringLeaf(AttributeNamedLeafBData);
         }
 
