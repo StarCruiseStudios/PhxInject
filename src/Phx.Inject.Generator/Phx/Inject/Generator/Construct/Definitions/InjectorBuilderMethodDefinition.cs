@@ -11,5 +11,5 @@ namespace Phx.Inject.Generator.Construct.Definitions {
         TypeDefinition BuiltType,
         string InjectorBuilderMethodName,
         BuilderMethodContainerInvocationDefinition BuilderMethodContainerInvocation
-    ) { }
+    );
 }

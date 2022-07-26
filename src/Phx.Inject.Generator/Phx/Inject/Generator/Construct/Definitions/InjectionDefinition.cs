@@ -12,5 +12,5 @@ namespace Phx.Inject.Generator.Construct.Definitions {
     internal record InjectionDefinition(
         InjectorDefinition Injector,
         IEnumerable<SpecContainerDefinition> SpecContainers
-    ) { }
+    );
 }

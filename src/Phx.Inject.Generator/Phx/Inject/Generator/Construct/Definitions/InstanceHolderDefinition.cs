@@ -10,5 +10,5 @@ namespace Phx.Inject.Generator.Construct.Definitions {
     internal record InstanceHolderDefinition(
         TypeDefinition HeldInstanceType,
         string ReferenceName
-    ) { }
+    );
 }

@@ -16,5 +16,5 @@ namespace Phx.Inject.Generator.Construct.Definitions {
         string FactoryMethodName,
         InstanceHolderDefinition? InstanceHolder,
         IEnumerable<FactoryMethodContainerInvocationDefinition> Arguments
-    ) { }
+    );
 }

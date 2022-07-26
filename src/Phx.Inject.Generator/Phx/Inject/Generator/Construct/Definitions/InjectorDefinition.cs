@@ -15,5 +15,5 @@ namespace Phx.Inject.Generator.Construct.Definitions {
         IEnumerable<TypeDefinition> SpecContainerTypes,
         IEnumerable<InjectorMethodDefinition> InjectorMethods,
         IEnumerable<InjectorBuilderMethodDefinition> InjectorBuilderMethods
-    ) { }
+    );
 }

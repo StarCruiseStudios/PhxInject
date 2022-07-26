@@ -14,5 +14,5 @@ namespace Phx.Inject.Generator.Construct.Definitions {
         IEnumerable<InstanceHolderDefinition> InstanceHolderDeclarations,
         IEnumerable<FactoryMethodContainerDefinition> FactoryMethodContainers,
         IEnumerable<BuilderMethodContainerDefinition> BuilderMethodContainers
-    ) { }
+    );
 }

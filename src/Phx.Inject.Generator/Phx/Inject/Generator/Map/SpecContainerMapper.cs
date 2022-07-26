@@ -6,7 +6,6 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-
 namespace Phx.Inject.Generator.Map {
     using System;
     using System.Collections.Generic;

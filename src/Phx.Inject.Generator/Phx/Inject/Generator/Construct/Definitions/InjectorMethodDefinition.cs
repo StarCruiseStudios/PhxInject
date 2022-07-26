@@ -11,5 +11,5 @@ namespace Phx.Inject.Generator.Construct.Definitions {
         TypeDefinition ReturnType,
         string InjectorMethodName,
         FactoryMethodContainerInvocationDefinition FactoryMethodContainerInvocation
-    ) { }
+    );
 }

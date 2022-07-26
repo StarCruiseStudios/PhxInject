@@ -65,8 +65,7 @@ namespace Phx.Inject.Tests.Helpers {
                     }
                 });
             var compilation = TestCompiler.CompileText(code, additionalFiles, sourceGenerator);
-            var extractor = new TypeSymbolExtractor();
-            return extractor.Extract<TSyntax, TSymbol>(syntaxNodes, compilation);
+            return TypeSymbolExtractor.Extract<TSyntax, TSymbol>(syntaxNodes, compilation);
         }
     }
 }

@@ -10,8 +10,8 @@ namespace Phx.Inject.Tests.Helpers {
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
 
-    internal class TypeSymbolExtractor {
-        public IEnumerable<TSymbol> Extract<TSyntax, TSymbol>(
+    internal static class TypeSymbolExtractor {
+        public static IEnumerable<TSymbol> Extract<TSyntax, TSymbol>(
             IEnumerable<TSyntax> syntaxNodes,
             Compilation compilation)
         where TSyntax : SyntaxNode
