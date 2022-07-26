@@ -8,12 +8,12 @@
 
 namespace Phx.Inject.Generator.Extract {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Extract.Model;
+    using Phx.Inject.Generator.Map;
     using static Phx.Inject.Generator.Construct.GenerationConstants;
 
     internal class InjectorModelBuilder : IModelBuilder<InjectorModel> {
@@ -39,9 +39,11 @@ namespace Phx.Inject.Generator.Extract {
 
                     var returnTypeSymbol = methodSymbol.ReturnType;
                     var returnType = returnTypeSymbol.ToTypeModel();
+                    var qualifier = GetMethodQualifier(methodSymbol);
                     var methodName = methodSymbol.Name;
                     injectorMethods.Add(new InjectionMethodModel(
                         returnType,
+                        qualifier,
                         methodName
                     ));
                 }
@@ -63,9 +65,11 @@ namespace Phx.Inject.Generator.Extract {
 
                     var builtTypeSymbol = methodSymbol.Parameters[0].Type;
                     var builtType = builtTypeSymbol.ToTypeModel();
+                    var qualifier = GetMethodQualifier(methodSymbol);
                     var methodName = methodSymbol.Name;
                     injectorBuilderMethods.Add(new InjectionBuilderMethodModel(
                         builtType,
+                        qualifier,
                         methodName
                     ));
                 }
@@ -95,6 +99,35 @@ namespace Phx.Inject.Generator.Extract {
         private AttributeData GetInjectorAttribute(ITypeSymbol interfaceModel) {
             return interfaceModel.GetAttributes()
                 .First((attributeData) => attributeData.AttributeClass!.ToString() == InjectorAttributeClassName);
+        }
+
+        private string GetMethodQualifier(IMethodSymbol methodSymbol) {
+            var labelAttributes = methodSymbol.GetAttributes()
+                .Where((attributeData) => attributeData.AttributeClass!.ToString() == LabelAttributeClassName);
+
+            var qualifierAttributes = methodSymbol.GetAttributes()
+                .Where((attributeData) => {
+                    return attributeData.AttributeClass!.GetAttributes()
+                            .Any((parentAttributeData) => parentAttributeData.AttributeClass!.ToString() == QualifierAttributeClassName);
+                });
+
+            var numLabels = labelAttributes.Count();
+            var numQualifiers = qualifierAttributes.Count();
+
+            if (numLabels + numQualifiers > 1) {
+                throw new InvalidOperationException($"Method {methodSymbol.Name} can only have one Label or Qualifier attribute.");
+            } else if (numLabels > 0) {
+                foreach (var argument in labelAttributes.Single().ConstructorArguments) {
+                    if (argument.Type!.Name == "String") {
+                        return (string) argument.Value!;
+                    }
+                }
+                throw new InvalidOperationException($"Method {methodSymbol.Name} label must provide a value."); // This should never happen.
+            } else if (numQualifiers > 0) {
+                return qualifierAttributes.Single().AttributeClass!.ToString();
+            } else {
+                return RegistrationIdentifier.DefaultQualifier;
+            }
         }
 
         private string GetGeneratedClassName(ITypeSymbol interfaceModel) {

@@ -103,11 +103,11 @@ namespace Phx.Inject.Generator.Extract {
             return FabricationMode.Recurrent;
         }
 
-        private string GetMethodQualifier(IMethodSymbol factoryModel) {
-            var labelAttributes = factoryModel.GetAttributes()
+        private string GetMethodQualifier(IMethodSymbol methodSymbol) {
+            var labelAttributes = methodSymbol.GetAttributes()
                 .Where((attributeData) => attributeData.AttributeClass!.ToString() == LabelAttributeClassName);
 
-            var qualifierAttributes = factoryModel.GetAttributes()
+            var qualifierAttributes = methodSymbol.GetAttributes()
                 .Where((attributeData) => {
                     return attributeData.AttributeClass!.GetAttributes()
                             .Any((parentAttributeData) => parentAttributeData.AttributeClass!.ToString() == QualifierAttributeClassName);
@@ -117,14 +117,14 @@ namespace Phx.Inject.Generator.Extract {
             var numQualifiers = qualifierAttributes.Count();
 
             if (numLabels + numQualifiers > 1) {
-                throw new InvalidOperationException($"Factory {factoryModel.Name} can only have one Label or Qualifier attribute.");
+                throw new InvalidOperationException($"Method {methodSymbol.Name} can only have one Label or Qualifier attribute.");
             } else if (numLabels > 0) {
                 foreach (var argument in labelAttributes.Single().ConstructorArguments) {
                     if (argument.Type!.Name == "String") {
                         return (string) argument.Value!;
                     }
                 }
-                throw new InvalidOperationException($"Factory {factoryModel.Name} label must provide a value."); // This should never happen.
+                throw new InvalidOperationException($"Method {methodSymbol.Name} label must provide a value."); // This should never happen.
             } else if (numQualifiers > 0) {
                 return qualifierAttributes.Single().AttributeClass!.ToString();
             } else {
