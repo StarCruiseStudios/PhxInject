@@ -7,5 +7,10 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model.Descriptors {
-    internal record LinkDescriptor(QualifiedTypeDescriptor InputType, QualifiedTypeDescriptor ReturnType);
+    using Microsoft.CodeAnalysis;
+
+    internal record LinkDescriptor(
+            QualifiedTypeDescriptor InputType,
+            QualifiedTypeDescriptor ReturnType,
+            Location Location) : IDescriptor;
 }

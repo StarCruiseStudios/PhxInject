@@ -8,11 +8,13 @@
 
 namespace Phx.Inject.Generator.Model.Definitions {
     using System.Collections.Generic;
+    using Microsoft.CodeAnalysis;
 
     internal record SpecContainerDefinition(
             TypeModel ContainerType,
             SpecReferenceDefinition SpecReference,
             IEnumerable<SpecContainerFactoryInstanceHolderDefinition> InstanceHolderDeclarations,
             IEnumerable<SpecContainerFactoryMethodDefinition> FactoryMethodDefinitions,
-            IEnumerable<SpecContainerBuilderMethodDefinition> BuilderMethodDefinitions);
+            IEnumerable<SpecContainerBuilderMethodDefinition> BuilderMethodDefinitions,
+            Location Location) : IDefinition;
 }

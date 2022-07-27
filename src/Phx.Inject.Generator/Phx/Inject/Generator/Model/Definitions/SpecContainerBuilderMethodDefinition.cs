@@ -8,6 +8,7 @@
 
 namespace Phx.Inject.Generator.Model.Definitions {
     using System.Collections.Generic;
+    using Microsoft.CodeAnalysis;
 
     internal record SpecContainerBuilderMethodDefinition(
             TypeModel BuiltType,
@@ -15,5 +16,6 @@ namespace Phx.Inject.Generator.Model.Definitions {
             string MethodName,
             TypeModel SpecContainerType,
             TypeModel SpecContainerCollectionType,
-            IEnumerable<SpecContainerFactoryMethodDefinition> Arguments);
+            IEnumerable<SpecContainerFactoryMethodDefinition> Arguments,
+            Location Location) : IDefinition;
 }

@@ -7,5 +7,10 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model.Descriptors {
-    internal record InjectorBuilderMethodDescriptor(QualifiedTypeDescriptor BuiltType, string BuilderMethodName);
+    using Microsoft.CodeAnalysis;
+
+    internal record InjectorBuilderMethodDescriptor(
+            QualifiedTypeDescriptor BuiltType,
+            string BuilderMethodName,
+            Location Location) : IDescriptor;
 }

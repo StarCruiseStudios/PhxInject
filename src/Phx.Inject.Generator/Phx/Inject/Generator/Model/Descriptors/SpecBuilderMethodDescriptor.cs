@@ -8,9 +8,11 @@
 
 namespace Phx.Inject.Generator.Model.Descriptors {
     using System.Collections.Generic;
+    using Microsoft.CodeAnalysis;
 
     internal record SpecBuilderMethodDescriptor(
             QualifiedTypeDescriptor BuiltType,
             string MethodName,
-            List<QualifiedTypeDescriptor> Arguments);
+            List<QualifiedTypeDescriptor> Arguments,
+            Location Location) : IDescriptor;
 }

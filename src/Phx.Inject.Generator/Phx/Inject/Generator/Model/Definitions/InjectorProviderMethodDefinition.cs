@@ -7,8 +7,11 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model.Definitions {
+    using Microsoft.CodeAnalysis;
+
     internal record InjectorProviderMethodDefinition(
             TypeModel ProvidedType,
             string InjectorMethodName,
-            SpecContainerFactoryMethodDefinition SpecContainerFactoryMethod);
+            SpecContainerFactoryMethodDefinition SpecContainerFactoryMethod,
+            Location Location) : IDefinition;
 }

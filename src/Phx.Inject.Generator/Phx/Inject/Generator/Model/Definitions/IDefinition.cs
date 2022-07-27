@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------------
-//  <copyright file="InjectorBuilderMethodDefinition.cs" company="Star Cruise Studios LLC">
+//  <copyright file="IDefinition.cs" company="Star Cruise Studios LLC">
 //      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
 //      Licensed under the Apache License 2.0 License.
 //      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -9,9 +9,7 @@
 namespace Phx.Inject.Generator.Model.Definitions {
     using Microsoft.CodeAnalysis;
 
-    internal record InjectorBuilderMethodDefinition(
-            TypeModel BuiltType,
-            string InjectorMethodName,
-            SpecContainerBuilderMethodDefinition SpecContainerBuilderMethod,
-            Location Location) : IDefinition;
+    public interface IDefinition {
+        Location Location { get; }
+    }
 }

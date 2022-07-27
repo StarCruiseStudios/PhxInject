@@ -8,8 +8,10 @@
 
 namespace Phx.Inject.Generator.Model.Definitions {
     using System.Collections.Generic;
+    using Microsoft.CodeAnalysis;
 
     internal record InjectionContextDefinition(
             InjectorDefinition Injector,
-            IEnumerable<SpecContainerDefinition> SpecContainers);
+            IEnumerable<SpecContainerDefinition> SpecContainers,
+            Location Location) : IDefinition;
 }

@@ -7,5 +7,10 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model.Descriptors {
-    internal record QualifiedTypeDescriptor(TypeModel TypeModel, string Qualifier);
+    using Microsoft.CodeAnalysis;
+
+    internal record QualifiedTypeDescriptor(
+            TypeModel TypeModel,
+            string Qualifier,
+            Location Location) : IDescriptor;
 }

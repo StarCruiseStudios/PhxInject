@@ -8,11 +8,13 @@
 
 namespace Phx.Inject.Generator.Model.Descriptors {
     using System.Collections.Generic;
+    using Microsoft.CodeAnalysis;
 
     internal record InjectorDescriptor(
             TypeModel InjectorType,
             TypeModel InjectorInterface,
             IEnumerable<InjectorProviderMethodDescriptor> Providers,
             IEnumerable<InjectorBuilderMethodDescriptor> Builders,
-            IEnumerable<TypeModel> Specifications);
+            IEnumerable<TypeModel> Specifications,
+            Location Location) : IDescriptor;
 }

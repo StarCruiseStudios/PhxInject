@@ -7,7 +7,10 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model.Definitions {
+    using Microsoft.CodeAnalysis;
+
     internal record SpecContainerFactoryInstanceHolderDefinition(
             TypeModel HeldInstanceType,
-            string ReferenceName);
+            string ReferenceName,
+            Location Location) : IDefinition;
 }

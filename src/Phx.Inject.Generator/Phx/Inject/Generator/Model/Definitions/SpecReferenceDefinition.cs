@@ -7,7 +7,10 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model.Definitions {
+    using Microsoft.CodeAnalysis;
+
     internal record SpecReferenceDefinition(
             TypeModel SpecType,
-            SpecInstantiationMode InstantiationMode);
+            SpecInstantiationMode InstantiationMode,
+            Location Location) : IDefinition;
 }

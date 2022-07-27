@@ -8,10 +8,12 @@
 
 namespace Phx.Inject.Generator.Model.Descriptors {
     using System.Collections.Generic;
+    using Microsoft.CodeAnalysis;
 
     internal record SpecFactoryMethodDescriptor(
             QualifiedTypeDescriptor ReturnType,
             string MethodName,
             List<QualifiedTypeDescriptor> Arguments,
-            SpecFactoryMethodFabricationMode FabricationMode);
+            SpecFactoryMethodFabricationMode FabricationMode,
+            Location Location) : IDescriptor;
 }
