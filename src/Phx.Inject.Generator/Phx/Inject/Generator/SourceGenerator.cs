@@ -122,6 +122,15 @@ namespace Phx.Inject.Generator {
                     }
                 }
             } catch (Exception ex) {
+                context.ReportDiagnostic(Diagnostic.Create(
+                        new DiagnosticDescriptor(
+                                id: "PHXINJECT001",
+                                title: "Unexpected error",
+                                messageFormat: ex.ToString(),
+                                category: "Injection Generation",
+                                defaultSeverity: DiagnosticSeverity.Error,
+                                isEnabledByDefault: true),
+                        Location.None));
                 Logger.Error("An unexpected error occurred while generating source.", ex);
                 throw;
             }
