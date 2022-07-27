@@ -11,6 +11,8 @@ namespace Phx.Inject.Generator.Render {
         public const string SpecContainersMemberName = "specContainers";
         public const string SpecContainersArgumentName = SpecContainersMemberName;
 
+        public const string SpecificationMemberName = "specification";
+        
         public const string BuilderMethodTargetName = "value";
     }
 }

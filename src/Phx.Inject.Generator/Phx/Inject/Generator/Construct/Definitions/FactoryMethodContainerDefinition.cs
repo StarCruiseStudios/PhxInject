@@ -15,6 +15,7 @@ namespace Phx.Inject.Generator.Construct.Definitions {
         TypeDefinition SpecContainerCollectionType,
         string FactoryMethodName,
         InstanceHolderDefinition? InstanceHolder,
-        IEnumerable<FactoryMethodContainerInvocationDefinition> Arguments
+        IEnumerable<FactoryMethodContainerInvocationDefinition> Arguments,
+        bool IsConstructedSpecification = false
     );
 }

@@ -1,9 +1,9 @@
 ```cs
 internal class GeneratedConstructedInjector_IConstructedSpecificationContainer {
-    private IConstructedSpecification specification;
-    public GeneratedConstructedInjector_IConstructedSpecificationContainer(IConstructedSpecification specification) {
-        this.specification = specification;
-    }
+    // private IConstructedSpecification specification;
+    // public GeneratedConstructedInjector_IConstructedSpecificationContainer(IConstructedSpecification specification) {
+    //     this.specification = specification;
+    // }
 
     internal int GetIntValue(ISpecContainerCollection specContainers) {
         return specification.GetIntValue();

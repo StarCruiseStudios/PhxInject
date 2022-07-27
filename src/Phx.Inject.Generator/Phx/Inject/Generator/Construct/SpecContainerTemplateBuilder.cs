@@ -39,10 +39,11 @@ namespace Phx.Inject.Generator.Construct {
             var builderMethodContainers = definition.BuilderMethodContainers
                 .Select(builderMethodContainerBuilder.Build)
                 .ToImmutableList();
-
+                
             return new GeneratedFileTemplate(definition.ContainerType.NamespaceName,
                 new SpecContainerTemplate(
                     SpecContainerClassName: definition.ContainerType.Name,
+                    ConstructedSpecClassQualifiedName: null,
                     InstanceHolderDeclarations: instanceHolders,
                     FactoryMethodContainers: factoryMethodContainers,
                     BuilderMethodContainers: builderMethodContainers));

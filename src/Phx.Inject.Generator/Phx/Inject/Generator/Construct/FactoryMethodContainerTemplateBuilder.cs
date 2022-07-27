@@ -10,6 +10,7 @@ namespace Phx.Inject.Generator.Construct {
     using System.Collections.Immutable;
     using System.Linq;
     using Phx.Inject.Generator.Construct.Definitions;
+    using Phx.Inject.Generator.Render;
     using Phx.Inject.Generator.Render.Templates;
 
     internal class FactoryMethodContainerTemplateBuilder : ITemplateBuilder<FactoryMethodContainerDefinition, FactoryMethodContainerTemplate> {
@@ -26,12 +27,16 @@ namespace Phx.Inject.Generator.Construct {
                 .Select(factoryMethodContainerInvocationBuilder.Build)
                 .ToImmutableList();
 
+            var specContainerName = definition.IsConstructedSpecification
+                    ? RenderConstants.SpecificationMemberName
+                    : definition.SpecType.QualifiedName;
+
             return new FactoryMethodContainerTemplate(
                 ReturnTypeQualifiedName: definition.ReturnType.QualifiedName,
                 FactoryMethodName: definition.FactoryMethodName,
                 SpecContainerCollectionQualifiedName: definition.SpecContainerCollectionType.QualifiedName,
                 InstanceHolderReference: definition.InstanceHolder?.ReferenceName,
-                SpecificationQualifiedName: definition.SpecType.QualifiedName,
+                SpecificationQualifiedName: specContainerName,
                 Arguments: arguments
             );
         }
