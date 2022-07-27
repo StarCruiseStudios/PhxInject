@@ -8,6 +8,7 @@
 
 namespace Phx.Inject.Generator.Render {
     using System;
+    using System.Reflection;
     using System.Text;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Text;
