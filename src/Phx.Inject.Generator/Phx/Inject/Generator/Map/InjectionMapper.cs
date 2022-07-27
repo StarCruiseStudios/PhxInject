@@ -78,7 +78,7 @@ namespace Phx.Inject.Generator.Map {
                     injectorModel,
                     factoryRegistrations,
                     builderRegistrations);
-            var specContainerDefintions = injectorSpecModels
+            var specContainerDefinitions = injectorSpecModels
                     .Select(
                             specModel => specContainerMapper.MapToDefinition(
                                     specModel,
@@ -88,7 +88,7 @@ namespace Phx.Inject.Generator.Map {
 
             return new InjectionDefinition(
                     injectorDefinition,
-                    specContainerDefintions);
+                    specContainerDefinitions);
         }
     }
 }

@@ -7,12 +7,12 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Extract.Model {
+    using System.Diagnostics.CodeAnalysis;
     using Microsoft.CodeAnalysis;
 
-    internal record TypeModel(string NamespaceName, string Name) {
-        public string QualifiedName => $"{NamespaceName}.{Name}";
-    }
+    internal record TypeModel(string NamespaceName, string Name);
 
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     internal static class ITypeSymbolExtensions {
         public static TypeModel ToTypeModel(this ITypeSymbol typeSymbol) {
             return new TypeModel(

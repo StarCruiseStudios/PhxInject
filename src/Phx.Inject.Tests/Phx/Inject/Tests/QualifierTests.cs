@@ -20,8 +20,8 @@ namespace Phx.Inject.Tests {
             ILabelInjector injector = Given("A test injector.", () => new GeneratedLabelInjector());
 
             var (defaultLeaf, nonDefaultLeaf) = When(
-                    "An unlabeled and labeled depenency are retrieved.",
-                    () => { return (injector.GetDefaultLeaf(), injector.GetNonDefaultLeafA()); });
+                    "An unlabeled and labeled dependency are retrieved.",
+                    () => (injector.GetDefaultLeaf(), injector.GetNonDefaultLeafA()));
 
             Then(
                     "The correct default dependency was returned.",
@@ -38,8 +38,8 @@ namespace Phx.Inject.Tests {
             ILabelInjector injector = Given("A test injector.", () => new GeneratedLabelInjector());
 
             var (leafA, leafB) = When(
-                    "Two different labeled depenencies are retrieved.",
-                    () => { return (injector.GetNonDefaultLeafA(), injector.GetNonDefaultLeafB()); });
+                    "Two different labeled dependencies are retrieved.",
+                    () => (injector.GetNonDefaultLeafA(), injector.GetNonDefaultLeafB()));
 
             Then(
                     "The correct first dependency was returned.",
@@ -56,8 +56,8 @@ namespace Phx.Inject.Tests {
             ILabelInjector injector = Given("A test injector.", () => new GeneratedLabelInjector());
 
             var (leafA, leafB) = When(
-                    "Two different attribute qualified depenencies are retrieved.",
-                    () => { return (injector.GetAttributeNamedLeafA(), injector.GetAttributeNamedLeafB()); });
+                    "Two different attribute qualified dependencies are retrieved.",
+                    () => (injector.GetAttributeNamedLeafA(), injector.GetAttributeNamedLeafB()));
 
             Then(
                     "The correct first dependency was returned.",
@@ -74,8 +74,8 @@ namespace Phx.Inject.Tests {
             ILabelInjector injector = Given("A test injector.", () => new GeneratedLabelInjector());
 
             var (leafA, leafB) = When(
-                    "Two different attribute qualified depenencies are retrieved.",
-                    () => { return (injector.GetStringNamedLeafA(), injector.GetNamedStringLeaf()); });
+                    "Two different attribute qualified dependencies are retrieved.",
+                    () => (injector.GetStringNamedLeafA(), injector.GetNamedStringLeaf()));
 
             Then(
                     "The correct first dependency was returned.",
@@ -84,7 +84,7 @@ namespace Phx.Inject.Tests {
             Then(
                     "The correct second dependency was returned.",
                     LabeledLeafSpecification.NamedStringLeafData,
-                    expected => Verify.That(leafB!.Value.IsEqualTo(expected)));
+                    expected => Verify.That(leafB.Value.IsEqualTo(expected)));
         }
 
         [Test]
@@ -92,8 +92,8 @@ namespace Phx.Inject.Tests {
             ILabelInjector injector = Given("A test injector.", () => new GeneratedLabelInjector());
 
             var node = When(
-                    "A dependency is retrieved that was injected with two different qualified depenencies.",
-                    () => { return injector.GetNode(); });
+                    "A dependency is retrieved that was injected with two different qualified dependencies.",
+                    () => injector.GetNode());
 
             Then(
                     "The correct left dependency was returned.",

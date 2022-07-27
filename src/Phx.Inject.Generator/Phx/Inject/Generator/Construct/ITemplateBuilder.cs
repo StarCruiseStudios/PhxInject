@@ -9,9 +9,9 @@
 namespace Phx.Inject.Generator.Construct {
     using Phx.Inject.Generator.Render.Templates;
 
-    internal interface ITemplateBuilder<TDefinition, TTemplate> where TTemplate : IRenderTemplate {
+    internal interface ITemplateBuilder<in TDefinition, out TTemplate> where TTemplate : IRenderTemplate {
         TTemplate Build(TDefinition definition);
     }
 
-    internal interface IFileTemplateBuilder<TDefinition> : ITemplateBuilder<TDefinition, GeneratedFileTemplate> { }
+    internal interface IFileTemplateBuilder<in TDefinition> : ITemplateBuilder<TDefinition, GeneratedFileTemplate> { }
 }

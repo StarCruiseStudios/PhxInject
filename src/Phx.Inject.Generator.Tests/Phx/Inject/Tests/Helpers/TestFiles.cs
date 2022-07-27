@@ -8,10 +8,10 @@
 
 namespace Phx.Inject.Tests.Helpers {
     public static class TestFiles {
-        public static readonly string RootDirectory = "Phx/Inject/";
-        public static readonly string TestDataDirectory = RootDirectory + "Tests/Data/";
-        public static readonly string FactoryAttributeFile = RootDirectory + "FactoryAttribute.cs";
-        public static readonly string FabricationModeFile = RootDirectory + "FabricationMode.cs";
-        public static readonly string InjectorAttributeFile = RootDirectory + "InjectorAttribute.cs";
+        public const string RootDirectory = "Phx/Inject/";
+        public const string TestDataDirectory = RootDirectory + "Tests/Data/";
+        public const string FactoryAttributeFile = RootDirectory + "FactoryAttribute.cs";
+        public const string FabricationModeFile = RootDirectory + "FabricationMode.cs";
+        public const string InjectorAttributeFile = RootDirectory + "InjectorAttribute.cs";
     }
 }

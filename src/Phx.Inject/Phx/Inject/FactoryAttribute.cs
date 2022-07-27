@@ -27,7 +27,7 @@ namespace Phx.Inject {
         /// </summary>
         /// <param name="fabricationMode">
         ///     The <see cref="FabricationMode" /> used when invoking this factory method
-        ///     more than once. Defaults to <see cref="FabricationMode.Recurrent" />.
+        ///     more than once. Defaults to <see cref="Phx.Inject.FabricationMode.Recurrent" />.
         /// </param>
         public FactoryAttribute(FabricationMode fabricationMode = FabricationMode.Recurrent) {
             FabricationMode = fabricationMode;

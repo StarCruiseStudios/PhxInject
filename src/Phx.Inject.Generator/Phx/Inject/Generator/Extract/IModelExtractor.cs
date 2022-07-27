@@ -11,7 +11,7 @@ namespace Phx.Inject.Generator.Extract {
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-    internal interface IModelExtractor<TModel> where TModel : class {
+    internal interface IModelExtractor<out TModel> where TModel : class {
         IReadOnlyList<TModel> Extract(
                 IEnumerable<TypeDeclarationSyntax> syntaxNodes,
                 GeneratorExecutionContext context

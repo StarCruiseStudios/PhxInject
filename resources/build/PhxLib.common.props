@@ -15,5 +15,6 @@
     <Nullable>enable</Nullable>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)\..\ruleset\roslynator.ruleset</CodeAnalysisRuleSet>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace />
   </PropertyGroup>
 </Project>

@@ -9,6 +9,7 @@
 namespace Phx.Inject.Generator.Extract {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Extract.Model;
@@ -52,9 +53,9 @@ namespace Phx.Inject.Generator.Extract {
                         var qualifier = GetQualifier(methodSymbol);
                         builders.Add(
                                 new BuilderModel(
-                                        new QualifiedTypeModel(
-                                                builtType.TypeModel,
-                                                qualifier), // Use qualifier from method not from parameter
+                                        builtType with {
+                                            Qualifier = qualifier
+                                        }, // Use qualifier from method not from parameter
                                         methodName,
                                         builderArguments));
                     }
@@ -64,7 +65,7 @@ namespace Phx.Inject.Generator.Extract {
             return new SpecificationModel(specType, factories, builders, links);
         }
 
-        private IReadOnlyList<LinkModel> GetLinks(ITypeSymbol symbol) {
+        private static IReadOnlyList<LinkModel> GetLinks(ISymbol symbol) {
             var links = new List<LinkModel>();
             var linkAttributes = symbol.GetAttributes()
                     .Where(attributeData => attributeData.AttributeClass!.ToString() == LinkAttributeClassName);
@@ -91,18 +92,18 @@ namespace Phx.Inject.Generator.Extract {
             return links;
         }
 
-        private FabricationMode? GetFactoryFabricationMode(IMethodSymbol factoryModel) {
-            var factoryAttributes = factoryModel.GetAttributes()
-                    .Where(attributeData => attributeData.AttributeClass!.ToString() == FactoryAttributeClassName);
+        private static FabricationMode? GetFactoryFabricationMode(ISymbol model) {
+            var factoryAttributes = model.GetAttributes()
+                    .Where(attributeData => attributeData.AttributeClass!.ToString() == FactoryAttributeClassName)
+                    .ToImmutableList();
             if (!factoryAttributes.Any()) {
                 return null;
             }
 
-            if (!factoryModel.IsStatic) {
+            if (!model.IsStatic) {
                 return null;
             }
 
-            var specifications = new List<TypedConstant>();
             foreach (var attribute in factoryAttributes) {
                 foreach (var argument in attribute.ConstructorArguments) {
                     if (argument.Type!.Name == "FabricationMode") {
@@ -114,7 +115,7 @@ namespace Phx.Inject.Generator.Extract {
             return FabricationMode.Recurrent;
         }
 
-        private string GetQualifier(ISymbol qualifiedSymbol) {
+        private static string GetQualifier(ISymbol qualifiedSymbol) {
             var labelAttributes = qualifiedSymbol.GetAttributes()
                     .Where(attributeData => attributeData.AttributeClass!.ToString() == LabelAttributeClassName);
 
@@ -156,14 +157,14 @@ namespace Phx.Inject.Generator.Extract {
             return RegistrationIdentifier.DefaultQualifier;
         }
 
-        private bool IsBuilder(IMethodSymbol builderModel) {
-            var builderAttributes = builderModel.GetAttributes()
+        private static bool IsBuilder(ISymbol model) {
+            var builderAttributes = model.GetAttributes()
                     .Where(attributeData => attributeData.AttributeClass!.ToString() == BuilderAttributeClassName);
             if (!builderAttributes.Any()) {
                 return false;
             }
 
-            return builderModel.IsStatic;
+            return model.IsStatic;
         }
     }
 }

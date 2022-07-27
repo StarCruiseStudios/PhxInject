@@ -12,12 +12,10 @@ namespace Phx.Inject.Tests.Data.Inject {
 
     [Injector(
             "CustomInjector",
-            new[] {
-                typeof(RootSpecification),
-                typeof(LazySpecification),
-                typeof(LeafSpecification),
-                typeof(LeafLinks)
-            })]
+            typeof(RootSpecification),
+            typeof(LazySpecification),
+            typeof(LeafSpecification),
+            typeof(LeafLinks))]
     internal interface ITestInjector {
         public Root GetRoot();
 

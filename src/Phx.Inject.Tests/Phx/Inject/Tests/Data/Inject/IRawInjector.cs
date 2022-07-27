@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Tests.Data.Inject {
+    using System.Diagnostics.CodeAnalysis;
     using Phx.Inject.Tests.Data.Model;
     using Phx.Inject.Tests.Data.Specification;
 
@@ -15,6 +16,7 @@ namespace Phx.Inject.Tests.Data.Inject {
             typeof(LazySpecification),
             typeof(LeafSpecification),
             typeof(LeafLinks))]
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     internal interface IRawInjector {
         public Root GetRoot();
         public Node GetNode();

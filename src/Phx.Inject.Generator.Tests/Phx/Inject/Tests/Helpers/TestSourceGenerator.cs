@@ -52,7 +52,7 @@ namespace Phx.Inject.Tests.Helpers {
             return TypeSymbolExtractor.Extract<TSyntax, TSymbol>(syntaxNodes, compilation);
         }
 
-        public class TestSyntaxReceiver : ISyntaxReceiver {
+        private class TestSyntaxReceiver : ISyntaxReceiver {
             private readonly List<SyntaxNode> capturedNodes = new();
             private readonly Predicate<SyntaxNode> shouldCapture;
 

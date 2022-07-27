@@ -7,12 +7,14 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Construct.Definitions {
+    using System.Diagnostics.CodeAnalysis;
     using Phx.Inject.Generator.Extract.Model;
 
     internal record TypeDefinition(string NamespaceName, string Name) {
         public string QualifiedName => $"{NamespaceName}.{Name}";
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     internal static class ITypeModelExtensions {
         public static TypeDefinition ToTypeDefinition(this TypeModel typeModel) {
             return new TypeDefinition(

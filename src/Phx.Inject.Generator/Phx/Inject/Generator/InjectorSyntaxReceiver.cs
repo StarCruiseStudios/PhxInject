@@ -33,25 +33,25 @@ namespace Phx.Inject.Generator {
             }
         }
 
-        private bool HasInjectorAttribute(InterfaceDeclarationSyntax interfaceDeclaration) {
-            return interfaceDeclaration.AttributeLists
+        private static bool HasInjectorAttribute(MemberDeclarationSyntax memberDeclaration) {
+            return memberDeclaration.AttributeLists
                     .Any(
                             attributeList => attributeList.Attributes
                                     .Any(
                                             attribute => {
                                                 var name = attribute.Name.ToString();
-                                                return name == "Injector" || name == "InjectorAttribute";
+                                                return name is "Injector" or "InjectorAttribute";
                                             }));
         }
 
-        private bool HasSpecificationAttribute(ClassDeclarationSyntax classDeclaration) {
-            return classDeclaration.AttributeLists
+        private static bool HasSpecificationAttribute(MemberDeclarationSyntax memberDeclaration) {
+            return memberDeclaration.AttributeLists
                     .Any(
                             attributeList => attributeList.Attributes
                                     .Any(
                                             attribute => {
                                                 var name = attribute.Name.ToString();
-                                                return name == "Specification" || name == "SpecificationAttribute";
+                                                return name is "Specification" or "SpecificationAttribute";
                                             }));
         }
     }

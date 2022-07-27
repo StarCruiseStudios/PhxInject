@@ -9,7 +9,7 @@
 namespace Phx.Inject.Generator.Extract {
     using Microsoft.CodeAnalysis;
 
-    internal interface IModelBuilder<TModel> {
+    internal interface IModelBuilder<out TModel> {
         public TModel Build(ITypeSymbol symbol);
     }
 }

@@ -18,9 +18,9 @@ namespace Phx.Inject.Tests.Helpers {
     using NUnit.Framework;
 
     public static class TestCompiler {
-        public static readonly CSharpParseOptions parserOptions = new(LanguageVersion.CSharp9);
+        private static readonly CSharpParseOptions ParserOptions = new(LanguageVersion.CSharp9);
 
-        public static readonly CSharpCompilationOptions compilationOptions = new(
+        private static readonly CSharpCompilationOptions CompilationOptions = new(
                 OutputKind.ConsoleApplication,
                 nullableContextOptions: NullableContextOptions.Enable);
 
@@ -31,7 +31,7 @@ namespace Phx.Inject.Tests.Helpers {
             };
             var filesInDirectory = Directory.GetFiles(directoryAbsolutePath, "*.cs", enumerationOptions);
 
-            var syntaxTrees = filesInDirectory.Select(filePath => File.ReadAllText(filePath))
+            var syntaxTrees = filesInDirectory.Select(File.ReadAllText)
                     .Select(ParseText)
                     .ToImmutableList();
 
@@ -59,7 +59,7 @@ namespace Phx.Inject.Tests.Helpers {
         }
 
         private static SyntaxTree ParseText(string text) {
-            return CSharpSyntaxTree.ParseText(text, parserOptions, encoding: Encoding.UTF8);
+            return CSharpSyntaxTree.ParseText(text, ParserOptions, encoding: Encoding.UTF8);
         }
 
         private static Compilation Compile(IEnumerable<SyntaxTree> syntaxTrees, ISourceGenerator[] generators) {
@@ -77,7 +77,7 @@ namespace Phx.Inject.Tests.Helpers {
                     "Phx.Inject.Tests.Data",
                     syntaxTrees,
                     references,
-                    compilationOptions);
+                    CompilationOptions);
 
             if (generators.Length > 0) {
                 return RunGenerators(compilation, generators);
@@ -89,8 +89,8 @@ namespace Phx.Inject.Tests.Helpers {
         private static Compilation RunGenerators(Compilation compilation, ISourceGenerator[] generators) {
             CSharpGeneratorDriver.Create(
                             ImmutableArray.Create(generators),
-                            parseOptions: parserOptions)
-                    .RunGeneratorsAndUpdateCompilation(compilation, out var updatedCompilation, out var _);
+                            parseOptions: ParserOptions)
+                    .RunGeneratorsAndUpdateCompilation(compilation, out var updatedCompilation, out _);
 
             return updatedCompilation;
         }

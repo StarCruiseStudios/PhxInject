@@ -16,7 +16,7 @@ namespace Phx.Inject.Tests.Data.Specification {
             return new IntLeaf(10);
         }
 
-        [Factory()]
+        [Factory]
         internal static StringLeaf GetStringLeaf() {
             return new StringLeaf("Hello");
         }
