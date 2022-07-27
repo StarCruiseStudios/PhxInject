@@ -16,19 +16,18 @@ namespace Phx.Inject {
     [AttributeUsage(AttributeTargets.Method)]
     public class FactoryAttribute : Attribute {
         /// <summary>
-        ///     Indicates the <see cref="FabricationMode"/> used when invoking
-        ///     this factory method more than once.
+        ///     Indicates the <see cref="FabricationMode" /> used when invoking this
+        ///     factory method more than once.
         /// </summary>
         public FabricationMode FabricationMode { get; }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="FactoryAttribute"/>
+        ///     Initializes a new instance of the <see cref="FactoryAttribute" />
         ///     class.
         /// </summary>
         /// <param name="fabricationMode">
-        ///     The <see cref="FabricationMode"/> used when invoking this
-        ///     factory method more than once. Defaults to
-        ///     <see cref="FabricationMode.Recurrent"/>.
+        ///     The <see cref="FabricationMode" /> used when invoking this factory method
+        ///     more than once. Defaults to <see cref="FabricationMode.Recurrent" />.
         /// </param>
         public FactoryAttribute(FabricationMode fabricationMode = FabricationMode.Recurrent) {
             FabricationMode = fabricationMode;

@@ -12,8 +12,9 @@ namespace Phx.Inject.Generator.Render {
 
     internal interface ITemplateRenderer {
         void RenderTemplate(
-            string fileName,
-            IRenderTemplate template,
-            GeneratorExecutionContext context);
+                string fileName,
+                IRenderTemplate template,
+                GeneratorExecutionContext context
+        );
     }
 }

@@ -6,13 +6,13 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-using Phx.Inject.Generator.Construct.Definitions;
-
 namespace Phx.Inject.Generator.Map {
+    using Phx.Inject.Generator.Construct.Definitions;
+
     internal record RegistrationIdentifier(
-        TypeDefinition TypeDefinition,
-        string Qualifier
+            TypeDefinition TypeDefinition,
+            string Qualifier
     ) {
         public const string DefaultQualifier = "";
-    };
+    }
 }

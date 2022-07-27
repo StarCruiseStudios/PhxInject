@@ -12,27 +12,30 @@ namespace Phx.Inject.Generator.Construct {
     using Phx.Inject.Generator.Construct.Definitions;
     using Phx.Inject.Generator.Render.Templates;
 
-    internal class BuilderMethodContainerTemplateBuilder : ITemplateBuilder<BuilderMethodContainerDefinition, BuilderMethodContainerTemplate> {
-        private readonly ITemplateBuilder<FactoryMethodContainerInvocationDefinition, FactoryMethodContainerInvocationTemplate> factoryMethodContainerInvocationBuilder;
+    internal class BuilderMethodContainerTemplateBuilder
+            : ITemplateBuilder<BuilderMethodContainerDefinition, BuilderMethodContainerTemplate> {
+        private readonly
+                ITemplateBuilder<FactoryMethodContainerInvocationDefinition, FactoryMethodContainerInvocationTemplate>
+                factoryMethodContainerInvocationBuilder;
 
         public BuilderMethodContainerTemplateBuilder(
-            ITemplateBuilder<FactoryMethodContainerInvocationDefinition, FactoryMethodContainerInvocationTemplate> factoryMethodContainerInvocationBuilder
+                ITemplateBuilder<FactoryMethodContainerInvocationDefinition, FactoryMethodContainerInvocationTemplate>
+                        factoryMethodContainerInvocationBuilder
         ) {
             this.factoryMethodContainerInvocationBuilder = factoryMethodContainerInvocationBuilder;
         }
 
         public BuilderMethodContainerTemplate Build(BuilderMethodContainerDefinition definition) {
             var arguments = definition.Arguments
-                .Select(factoryMethodContainerInvocationBuilder.Build)
-                .ToImmutableList();
+                    .Select(factoryMethodContainerInvocationBuilder.Build)
+                    .ToImmutableList();
 
             return new BuilderMethodContainerTemplate(
-                BuiltTypeQualifiedName: definition.BuiltType.QualifiedName,
-                BuilderMethodName: definition.BuilderMethodName,
-                SpecContainerCollectionQualifiedName: definition.SpecContainerCollectionType.QualifiedName,
-                SpecificationQualifiedName: definition.SpecType.QualifiedName,
-                Arguments: arguments
-            );
+                    definition.BuiltType.QualifiedName,
+                    definition.BuilderMethodName,
+                    definition.SpecContainerCollectionType.QualifiedName,
+                    definition.SpecType.QualifiedName,
+                    arguments);
         }
     }
 }

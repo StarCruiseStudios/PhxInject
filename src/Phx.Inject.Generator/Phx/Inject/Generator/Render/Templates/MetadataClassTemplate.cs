@@ -8,15 +8,21 @@
 
 namespace Phx.Inject.Generator.Render.Templates {
     internal record MetadataClassTemplate(
-        string MetadataClassName,
-        string EscapedClassSource
+            string MetadataClassName,
+            string EscapedClassSource
     ) : IRenderTemplate {
         void IRenderTemplate.Render(IRenderWriter writer) {
-            writer.AppendLine($"public class {MetadataClassName} {{").IncreaseIndent(1)
-                .AppendLine("public string GetRawSource() {{").IncreaseIndent(1)
-                .Append("return @\"").Append(EscapedClassSource, autoIndent: false).AppendLine("\";")
-                .DecreaseIndent(1).AppendLine("}")
-                .DecreaseIndent(1).AppendLine("}");
+            writer.AppendLine($"public class {MetadataClassName} {{")
+                    .IncreaseIndent(1)
+                    .AppendLine("public string GetRawSource() {{")
+                    .IncreaseIndent(1)
+                    .Append("return @\"")
+                    .Append(EscapedClassSource, autoIndent: false)
+                    .AppendLine("\";")
+                    .DecreaseIndent(1)
+                    .AppendLine("}")
+                    .DecreaseIndent(1)
+                    .AppendLine("}");
         }
     }
 }

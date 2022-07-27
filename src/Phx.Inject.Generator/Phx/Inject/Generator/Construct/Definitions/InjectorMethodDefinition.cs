@@ -8,8 +8,8 @@
 
 namespace Phx.Inject.Generator.Construct.Definitions {
     internal record InjectorMethodDefinition(
-        TypeDefinition ReturnType,
-        string InjectorMethodName,
-        FactoryMethodContainerInvocationDefinition FactoryMethodContainerInvocation
+            TypeDefinition ReturnType,
+            string InjectorMethodName,
+            FactoryMethodContainerInvocationDefinition FactoryMethodContainerInvocation
     );
 }

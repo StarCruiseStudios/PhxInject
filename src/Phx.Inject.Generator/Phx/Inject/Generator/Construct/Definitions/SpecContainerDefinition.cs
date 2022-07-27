@@ -10,9 +10,9 @@ namespace Phx.Inject.Generator.Construct.Definitions {
     using System.Collections.Generic;
 
     internal record SpecContainerDefinition(
-        TypeDefinition ContainerType,
-        IEnumerable<InstanceHolderDefinition> InstanceHolderDeclarations,
-        IEnumerable<FactoryMethodContainerDefinition> FactoryMethodContainers,
-        IEnumerable<BuilderMethodContainerDefinition> BuilderMethodContainers
+            TypeDefinition ContainerType,
+            IEnumerable<InstanceHolderDefinition> InstanceHolderDeclarations,
+            IEnumerable<FactoryMethodContainerDefinition> FactoryMethodContainers,
+            IEnumerable<BuilderMethodContainerDefinition> BuilderMethodContainers
     );
 }

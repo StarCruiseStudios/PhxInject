@@ -36,12 +36,12 @@ namespace Phx.Inject.Generator {
         private ITemplateRenderer TemplateRenderer { get; }
 
         public SourceGenerator(
-            IModelExtractor<SpecificationModel> specificationExtractor,
-            IModelExtractor<InjectorModel> injectorExtractor,
-            IInjectionMapper injectionMapper,
-            IFileTemplateBuilder<SpecContainerDefinition> specContainerTemplateBuilder,
-            IFileTemplateBuilder<InjectorDefinition> injectorTemplateBuilder,
-            ITemplateRenderer templateRenderer
+                IModelExtractor<SpecificationModel> specificationExtractor,
+                IModelExtractor<InjectorModel> injectorExtractor,
+                IInjectionMapper injectionMapper,
+                IFileTemplateBuilder<SpecContainerDefinition> specContainerTemplateBuilder,
+                IFileTemplateBuilder<InjectorDefinition> injectorTemplateBuilder,
+                ITemplateRenderer templateRenderer
         ) {
             SpecificationExtractor = specificationExtractor;
             InjectorExtractor = injectorExtractor;
@@ -52,29 +52,26 @@ namespace Phx.Inject.Generator {
         }
 
         public SourceGenerator() : this(
-            specificationExtractor: new ModelExtractor<SpecificationModel>(
-                new SpecificationSymbolRecognizer(),
-                new SpecificationModelBuilder()),
-            injectorExtractor: new ModelExtractor<InjectorModel>(
-                new InjectorSymbolRecognizer(),
-                new InjectorModelBuilder()),
-            injectionMapper: new InjectionMapper(
-                new InjectorMapper(),
-                new SpecContainerMapper()
-            ),
-            specContainerTemplateBuilder: new SpecContainerTemplateBuilder(
-                new InstanceHolderDeclarationTemplateBuilder(),
-                new FactoryMethodContainerTemplateBuilder(
-                    new FactoryMethodContainerInvocationTemplateBuilder()),
-                new BuilderMethodContainerTemplateBuilder(
-                    new FactoryMethodContainerInvocationTemplateBuilder())),
-            injectorTemplateBuilder: new InjectorTemplateBuilder(
-                new InjectorMethodTemplateBuilder(
-                    new FactoryMethodContainerInvocationTemplateBuilder()),
-                new InjectorBuilderMethodTemplateBuilder(
-                    new BuilderMethodContainerInvocationTemplateBuilder())),
-            templateRenderer: new TemplateRenderer(() => new RenderWriter())
-        ) { }
+                new ModelExtractor<SpecificationModel>(
+                        new SpecificationSymbolRecognizer(),
+                        new SpecificationModelBuilder()),
+                new ModelExtractor<InjectorModel>(
+                        new InjectorSymbolRecognizer(),
+                        new InjectorModelBuilder()),
+                new InjectionMapper(
+                        new InjectorMapper(),
+                        new SpecContainerMapper()),
+                new SpecContainerTemplateBuilder(
+                        new InstanceHolderDeclarationTemplateBuilder(),
+                        new FactoryMethodContainerTemplateBuilder(
+                                new FactoryMethodContainerInvocationTemplateBuilder()),
+                        new BuilderMethodContainerTemplateBuilder(
+                                new FactoryMethodContainerInvocationTemplateBuilder())),
+                new InjectorTemplateBuilder(
+                        new InjectorMethodTemplateBuilder(new FactoryMethodContainerInvocationTemplateBuilder()),
+                        new InjectorBuilderMethodTemplateBuilder(
+                                new BuilderMethodContainerInvocationTemplateBuilder())),
+                new TemplateRenderer(() => new RenderWriter())) { }
 
         public void Initialize(GeneratorInitializationContext context) {
 #if ATTACH_DEBUGGER
@@ -88,8 +85,9 @@ namespace Phx.Inject.Generator {
 
         public void Execute(GeneratorExecutionContext context) {
             try {
-                InjectorSyntaxReceiver syntaxReceiver = context.SyntaxReceiver as InjectorSyntaxReceiver
-                    ?? throw new InvalidOperationException("Incorrect Syntax Receiver."); // This should never happen.
+                var syntaxReceiver = context.SyntaxReceiver as InjectorSyntaxReceiver
+                        ?? throw new InvalidOperationException(
+                                "Incorrect Syntax Receiver."); // This should never happen.
 
                 // Extract
                 var injectorModels = InjectorExtractor.Extract(syntaxReceiver.InjectorCandidates, context);
@@ -105,10 +103,15 @@ namespace Phx.Inject.Generator {
                     // Construct
                     var templates = new List<(TypeDefinition, IRenderTemplate)>();
                     foreach (var specDefinition in injectionDefinition.SpecContainers) {
-                        templates.Add((specDefinition.ContainerType, SpecContainerTemplateBuilder.Build(specDefinition)));
-                        Logger.Info($"Generated spec container {specDefinition.ContainerType.Name} for injector {injectorModel.InjectorType.Name}.");
+                        templates.Add(
+                                (specDefinition.ContainerType, SpecContainerTemplateBuilder.Build(specDefinition)));
+                        Logger.Info(
+                                $"Generated spec container {specDefinition.ContainerType.Name} for injector {injectorModel.InjectorType.Name}.");
                     }
-                    templates.Add((injectorModel.InjectorType.ToTypeDefinition(), InjectorTemplateBuilder.Build(injectionDefinition.Injector)));
+
+                    templates.Add(
+                            (injectorModel.InjectorType.ToTypeDefinition(),
+                                    InjectorTemplateBuilder.Build(injectionDefinition.Injector)));
                     Logger.Info($"Generated injector {injectorModel.InjectorType.Name}.");
 
                     // Render

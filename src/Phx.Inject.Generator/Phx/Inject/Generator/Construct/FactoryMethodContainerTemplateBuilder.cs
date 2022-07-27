@@ -13,32 +13,35 @@ namespace Phx.Inject.Generator.Construct {
     using Phx.Inject.Generator.Render;
     using Phx.Inject.Generator.Render.Templates;
 
-    internal class FactoryMethodContainerTemplateBuilder : ITemplateBuilder<FactoryMethodContainerDefinition, FactoryMethodContainerTemplate> {
-        private readonly ITemplateBuilder<FactoryMethodContainerInvocationDefinition, FactoryMethodContainerInvocationTemplate> factoryMethodContainerInvocationBuilder;
+    internal class FactoryMethodContainerTemplateBuilder
+            : ITemplateBuilder<FactoryMethodContainerDefinition, FactoryMethodContainerTemplate> {
+        private readonly
+                ITemplateBuilder<FactoryMethodContainerInvocationDefinition, FactoryMethodContainerInvocationTemplate>
+                factoryMethodContainerInvocationBuilder;
 
         public FactoryMethodContainerTemplateBuilder(
-            ITemplateBuilder<FactoryMethodContainerInvocationDefinition, FactoryMethodContainerInvocationTemplate> factoryMethodContainerInvocationBuilder
+                ITemplateBuilder<FactoryMethodContainerInvocationDefinition, FactoryMethodContainerInvocationTemplate>
+                        factoryMethodContainerInvocationBuilder
         ) {
             this.factoryMethodContainerInvocationBuilder = factoryMethodContainerInvocationBuilder;
         }
 
         public FactoryMethodContainerTemplate Build(FactoryMethodContainerDefinition definition) {
             var arguments = definition.Arguments
-                .Select(factoryMethodContainerInvocationBuilder.Build)
-                .ToImmutableList();
+                    .Select(factoryMethodContainerInvocationBuilder.Build)
+                    .ToImmutableList();
 
             var specContainerName = definition.IsConstructedSpecification
                     ? RenderConstants.SpecificationMemberName
                     : definition.SpecType.QualifiedName;
 
             return new FactoryMethodContainerTemplate(
-                ReturnTypeQualifiedName: definition.ReturnType.QualifiedName,
-                FactoryMethodName: definition.FactoryMethodName,
-                SpecContainerCollectionQualifiedName: definition.SpecContainerCollectionType.QualifiedName,
-                InstanceHolderReference: definition.InstanceHolder?.ReferenceName,
-                SpecificationQualifiedName: specContainerName,
-                Arguments: arguments
-            );
+                    definition.ReturnType.QualifiedName,
+                    definition.FactoryMethodName,
+                    definition.SpecContainerCollectionType.QualifiedName,
+                    definition.InstanceHolder?.ReferenceName,
+                    specContainerName,
+                    arguments);
         }
     }
 }

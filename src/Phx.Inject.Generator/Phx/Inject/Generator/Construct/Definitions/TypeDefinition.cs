@@ -16,8 +16,8 @@ namespace Phx.Inject.Generator.Construct.Definitions {
     internal static class ITypeModelExtensions {
         public static TypeDefinition ToTypeDefinition(this TypeModel typeModel) {
             return new TypeDefinition(
-                typeModel.NamespaceName,
-                typeModel.Name);
+                    typeModel.NamespaceName,
+                    typeModel.Name);
         }
     }
 }

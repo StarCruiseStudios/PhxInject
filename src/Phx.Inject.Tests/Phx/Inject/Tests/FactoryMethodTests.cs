@@ -18,20 +18,30 @@ namespace Phx.Inject.Tests {
         public void AScopedFactoryIsInvoked() {
             IRawInjector injector = Given("A test injector.", () => new GeneratedRawInjector());
 
-            var (root1, root2) = When("A factory method with scoped fabrication mode is invoked twice.",
+            var (root1, root2) = When(
+                    "A factory method with scoped fabrication mode is invoked twice.",
                     () => (injector.GetRoot(), injector.GetRoot()));
 
-            Then("The same instance is returned both times.", () => Verify.That(ReferenceEquals(root1, root2).IsTrue()));
+            Then(
+                    "The same instance is returned both times.",
+                    () => Verify.That(
+                            ReferenceEquals(root1, root2)
+                                    .IsTrue()));
         }
 
         [Test]
         public void ARecurrentFactoryIsInvoked() {
             IRawInjector injector = Given("A test injector.", () => new GeneratedRawInjector());
 
-            var (node1, node2) = When("A factory method with recurrent fabrication mode is invoked twice.",
+            var (node1, node2) = When(
+                    "A factory method with recurrent fabrication mode is invoked twice.",
                     () => (injector.GetNode(), injector.GetNode()));
 
-            Then("Different instances are returned each time.", () => Verify.That(ReferenceEquals(node1, node2).IsFalse()));
+            Then(
+                    "Different instances are returned each time.",
+                    () => Verify.That(
+                            ReferenceEquals(node1, node2)
+                                    .IsFalse()));
         }
 
         [Test]
@@ -40,7 +50,9 @@ namespace Phx.Inject.Tests {
 
             var leaf = When("A factory method is constructed via a linked factory.", () => injector.GetILeaf());
 
-            Then("The instance was constructed using the linked factory.", () => Verify.That(leaf.IsType<StringLeaf>()));
+            Then(
+                    "The instance was constructed using the linked factory.",
+                    () => Verify.That(leaf.IsType<StringLeaf>()));
         }
     }
 }

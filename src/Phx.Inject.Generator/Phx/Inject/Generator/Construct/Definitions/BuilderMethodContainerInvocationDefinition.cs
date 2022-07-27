@@ -8,7 +8,7 @@
 
 namespace Phx.Inject.Generator.Construct.Definitions {
     internal record BuilderMethodContainerInvocationDefinition(
-        string ContainerReference,
-        string BuilderMethodContainerName
+            string ContainerReference,
+            string BuilderMethodContainerName
     );
 }

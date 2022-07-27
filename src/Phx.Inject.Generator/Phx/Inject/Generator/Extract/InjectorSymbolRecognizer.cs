@@ -10,12 +10,12 @@ namespace Phx.Inject.Generator.Extract {
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Extract.Model;
-    using static Phx.Inject.Generator.Construct.GenerationConstants;
+    using static Construct.GenerationConstants;
 
     internal class InjectorSymbolRecognizer : ISymbolRecognizer<InjectorModel> {
         public bool IsExpectedSymbol(ITypeSymbol symbol) {
             var specificationAttributes = symbol.GetAttributes()
-                .Where((attributeData) => attributeData.AttributeClass!.ToString() == InjectorAttributeClassName);
+                    .Where(attributeData => attributeData.AttributeClass!.ToString() == InjectorAttributeClassName);
 
             if (!specificationAttributes.Any()) {
                 return false;

@@ -8,16 +8,18 @@
 
 namespace Phx.Inject.Generator.Render.Templates {
     internal record InjectorMethodTemplate(
-        string ReturnTypeQualifiedName,
-        string MethodName,
-        IRenderTemplate FactoryMethodContainerInvocation
+            string ReturnTypeQualifiedName,
+            string MethodName,
+            IRenderTemplate FactoryMethodContainerInvocation
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
-            writer.AppendLine($"public {ReturnTypeQualifiedName} {MethodName}() {{").IncreaseIndent(1)
-                .Append("return ");
+            writer.AppendLine($"public {ReturnTypeQualifiedName} {MethodName}() {{")
+                    .IncreaseIndent(1)
+                    .Append("return ");
             FactoryMethodContainerInvocation.Render(writer);
             writer.AppendLine(";")
-                .DecreaseIndent(1).AppendLine("}");
+                    .DecreaseIndent(1)
+                    .AppendLine("}");
         }
     }
 }

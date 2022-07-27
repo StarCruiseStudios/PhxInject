@@ -26,7 +26,7 @@ namespace Phx.Inject.Tests {
         [Test]
         public void AnInjectorBuilderMethodIsGenerated() {
             IRawInjector injector = Given("A test injector.", () => new GeneratedRawInjector());
-            LazyType lazyType = Given("An uninitialized lazy type.", () => new LazyType());
+            var lazyType = Given("An uninitialized lazy type.", () => new LazyType());
 
             When("An injector builder method is invoked on the injector.", () => injector.Build(lazyType));
 
@@ -38,10 +38,15 @@ namespace Phx.Inject.Tests {
             IRawInjector injector = Given("A test injector.", () => new GeneratedRawInjector());
             IRawInjector injector2 = Given("A second test injector.", () => new GeneratedRawInjector());
 
-            var (root, root2) = When("The same scoped injector method is invoked on each injector.",
+            var (root, root2) = When(
+                    "The same scoped injector method is invoked on each injector.",
                     () => (injector.GetRoot(), injector2.GetRoot()));
 
-            Then("Different instances are returned.", () => Verify.That(ReferenceEquals(root, root2).IsFalse()));
+            Then(
+                    "Different instances are returned.",
+                    () => Verify.That(
+                            ReferenceEquals(root, root2)
+                                    .IsFalse()));
         }
     }
 }

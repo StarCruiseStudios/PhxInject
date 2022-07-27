@@ -10,10 +10,10 @@ namespace Phx.Inject.Generator.Construct.Definitions {
     using System.Collections.Generic;
 
     internal record InjectorDefinition(
-        TypeDefinition InjectorType,
-        TypeDefinition InjectorInterfaceType,
-        IEnumerable<TypeDefinition> SpecContainerTypes,
-        IEnumerable<InjectorMethodDefinition> InjectorMethods,
-        IEnumerable<InjectorBuilderMethodDefinition> InjectorBuilderMethods
+            TypeDefinition InjectorType,
+            TypeDefinition InjectorInterfaceType,
+            IEnumerable<TypeDefinition> SpecContainerTypes,
+            IEnumerable<InjectorMethodDefinition> InjectorMethods,
+            IEnumerable<InjectorBuilderMethodDefinition> InjectorBuilderMethods
     );
 }

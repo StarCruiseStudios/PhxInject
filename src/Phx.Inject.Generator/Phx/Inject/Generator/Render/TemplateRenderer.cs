@@ -8,7 +8,6 @@
 
 namespace Phx.Inject.Generator.Render {
     using System;
-    using System.IO;
     using System.Text;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Text;
@@ -20,10 +19,11 @@ namespace Phx.Inject.Generator.Render {
         public TemplateRenderer(Func<IRenderWriter> renderWriterFactory) {
             newRenderWriter = renderWriterFactory;
         }
+
         public void RenderTemplate(
-            string fileName,
-            IRenderTemplate template,
-            GeneratorExecutionContext context
+                string fileName,
+                IRenderTemplate template,
+                GeneratorExecutionContext context
         ) {
             var renderWriter = newRenderWriter();
             template.Render(renderWriter);

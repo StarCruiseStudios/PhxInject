@@ -10,12 +10,12 @@ namespace Phx.Inject.Generator.Construct.Definitions {
     using System.Collections.Generic;
 
     internal record FactoryMethodContainerDefinition(
-        TypeDefinition ReturnType,
-        TypeDefinition SpecType,
-        TypeDefinition SpecContainerCollectionType,
-        string FactoryMethodName,
-        InstanceHolderDefinition? InstanceHolder,
-        IEnumerable<FactoryMethodContainerInvocationDefinition> Arguments,
-        bool IsConstructedSpecification = false
+            TypeDefinition ReturnType,
+            TypeDefinition SpecType,
+            TypeDefinition SpecContainerCollectionType,
+            string FactoryMethodName,
+            InstanceHolderDefinition? InstanceHolder,
+            IEnumerable<FactoryMethodContainerInvocationDefinition> Arguments,
+            bool IsConstructedSpecification = false
     );
 }

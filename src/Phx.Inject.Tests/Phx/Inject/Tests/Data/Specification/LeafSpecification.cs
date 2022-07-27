@@ -8,7 +8,7 @@
 
 namespace Phx.Inject.Tests.Data.Specification {
     using Phx.Inject.Tests.Data.Model;
-    
+
     [Specification]
     internal static class LeafSpecification {
         [Factory(FabricationMode.Scoped)]
@@ -16,7 +16,7 @@ namespace Phx.Inject.Tests.Data.Specification {
             return new IntLeaf(10);
         }
 
-        [Factory(FabricationMode.Recurrent)]
+        [Factory()]
         internal static StringLeaf GetStringLeaf() {
             return new StringLeaf("Hello");
         }

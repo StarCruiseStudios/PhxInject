@@ -6,10 +6,10 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-using Phx.Inject.Generator.Construct.Definitions;
-using Phx.Inject.Generator.Map;
-
 namespace Phx.Inject.Generator.Extract.Model {
+    using Phx.Inject.Generator.Construct.Definitions;
+    using Phx.Inject.Generator.Map;
+
     internal record QualifiedTypeModel(TypeModel TypeModel, string Qualifier) {
         public RegistrationIdentifier ToRegistrationIdentifier() {
             return new RegistrationIdentifier(TypeModel.ToTypeDefinition(), Qualifier);

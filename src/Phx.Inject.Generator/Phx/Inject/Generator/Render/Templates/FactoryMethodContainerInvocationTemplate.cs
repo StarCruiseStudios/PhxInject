@@ -7,14 +7,15 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Render.Templates {
-    using static Phx.Inject.Generator.Render.RenderConstants;
+    using static RenderConstants;
 
     internal record FactoryMethodContainerInvocationTemplate(
-        string ContainerReference,
-        string FactoryMethodContainerName
+            string ContainerReference,
+            string FactoryMethodContainerName
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
-            writer.Append($"{SpecContainersArgumentName}.{ContainerReference}.{FactoryMethodContainerName}({SpecContainersArgumentName})");
+            writer.Append(
+                    $"{SpecContainersArgumentName}.{ContainerReference}.{FactoryMethodContainerName}({SpecContainersArgumentName})");
         }
     }
 }

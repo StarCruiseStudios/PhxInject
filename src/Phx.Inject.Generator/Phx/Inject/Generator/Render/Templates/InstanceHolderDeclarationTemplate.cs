@@ -8,8 +8,9 @@
 
 namespace Phx.Inject.Generator.Render.Templates {
     internal record InstanceHolderDeclarationTemplate(
-        string InstanceQualifiedType,
-        string ReferenceName) : IRenderTemplate {
+            string InstanceQualifiedType,
+            string ReferenceName
+    ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
             writer.AppendLine($"private {InstanceQualifiedType}? {ReferenceName};");
         }

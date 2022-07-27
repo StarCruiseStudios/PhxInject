@@ -10,9 +10,9 @@ namespace Phx.Inject.Generator.Extract.Model {
     using System.Collections.Generic;
 
     internal record FactoryModel(
-        QualifiedTypeModel ReturnType,
-        string Name,
-        List<QualifiedTypeModel> Arguments,
-        FabricationMode FabricationMode
+            QualifiedTypeModel ReturnType,
+            string Name,
+            List<QualifiedTypeModel> Arguments,
+            FabricationMode FabricationMode
     );
 }

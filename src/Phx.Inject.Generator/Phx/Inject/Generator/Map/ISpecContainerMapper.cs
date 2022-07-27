@@ -13,9 +13,9 @@ namespace Phx.Inject.Generator.Map {
 
     internal interface ISpecContainerMapper {
         SpecContainerDefinition MapToDefinition(
-            SpecificationModel specModel,
-            InjectorModel injectorModel,
-            IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
+                SpecificationModel specModel,
+                InjectorModel injectorModel,
+                IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
         );
     }
 }

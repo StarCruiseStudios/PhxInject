@@ -10,9 +10,9 @@ namespace Phx.Inject.Generator.Render {
     using System.Text;
 
     internal class RenderWriter : IRenderWriter {
+        private readonly StringBuilder sourceBuilder = new();
         private readonly int tabSize;
-        private readonly StringBuilder sourceBuilder = new StringBuilder();
-        private int currentIndent = 0;
+        private int currentIndent;
         private string indentString = "";
         private bool isBeginningOfLine = true;
 
@@ -25,6 +25,7 @@ namespace Phx.Inject.Generator.Render {
             indentString = "".PadRight(currentIndent);
             return this;
         }
+
         public IRenderWriter DecreaseIndent(int tabs) {
             currentIndent -= tabs * tabSize;
             if (currentIndent < 0) {
@@ -34,28 +35,33 @@ namespace Phx.Inject.Generator.Render {
             indentString = "".PadRight(currentIndent);
             return this;
         }
+
         public IRenderWriter Append(string str, bool autoIndent) {
             if (isBeginningOfLine && autoIndent) {
                 sourceBuilder.Append(indentString);
             }
+
             var stringToAppend = autoIndent
-                ? str.Replace("\n", $"\n{indentString}")
-                : str;
+                    ? str.Replace("\n", $"\n{indentString}")
+                    : str;
             sourceBuilder.Append(stringToAppend);
             isBeginningOfLine = false;
             return this;
         }
+
         public IRenderWriter AppendLine(string str, bool autoIndent) {
             if (isBeginningOfLine && autoIndent) {
                 sourceBuilder.Append(indentString);
             }
+
             var stringToAppend = autoIndent
-                ? str.Replace("\n", $"\n{indentString}")
-                : str;
+                    ? str.Replace("\n", $"\n{indentString}")
+                    : str;
             sourceBuilder.AppendLine(stringToAppend);
             isBeginningOfLine = true;
             return this;
         }
+
         public IRenderWriter AppendBlankLine() {
             if (!isBeginningOfLine) {
                 sourceBuilder.AppendLine();
@@ -65,6 +71,7 @@ namespace Phx.Inject.Generator.Render {
             sourceBuilder.AppendLine();
             return this;
         }
+
         public string GetRenderedString() {
             return sourceBuilder.ToString();
         }

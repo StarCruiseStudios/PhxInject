@@ -9,34 +9,40 @@
 namespace Phx.Inject.Generator.Render.Templates {
     using System.Collections.Generic;
     using System.Linq;
-    using static Phx.Inject.Generator.Render.RenderConstants;
+    using static RenderConstants;
 
     internal record BuilderMethodContainerTemplate(
-        string BuiltTypeQualifiedName,
-        string BuilderMethodName,
-        string SpecContainerCollectionQualifiedName,
-        string SpecificationQualifiedName,
-        IEnumerable<FactoryMethodContainerInvocationTemplate> Arguments
+            string BuiltTypeQualifiedName,
+            string BuilderMethodName,
+            string SpecContainerCollectionQualifiedName,
+            string SpecificationQualifiedName,
+            IEnumerable<FactoryMethodContainerInvocationTemplate> Arguments
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
             writer.Append($"internal void {BuilderMethodName}({BuiltTypeQualifiedName} {BuilderMethodTargetName}, ")
-                    .AppendLine($"{SpecContainerCollectionQualifiedName} {SpecContainersArgumentName}) {{").IncreaseIndent(1);
+                    .AppendLine($"{SpecContainerCollectionQualifiedName} {SpecContainersArgumentName}) {{")
+                    .IncreaseIndent(1);
             writer.Append($"{SpecificationQualifiedName}.{BuilderMethodName}");
             var numArguments = Arguments.Count();
-            writer.AppendLine("(").IncreaseIndent(1);
+            writer.AppendLine("(")
+                    .IncreaseIndent(1);
             writer.Append(BuilderMethodTargetName);
             if (numArguments == 0) {
-                writer.AppendLine(");").DecreaseIndent(1);
+                writer.AppendLine(");")
+                        .DecreaseIndent(1);
             } else {
                 foreach (var (argument, index) in Arguments.Select((a, i) => (a, i))) {
                     writer.AppendLine(",");
                     argument.Render(writer);
                     if (index >= numArguments - 1) {
-                        writer.AppendLine(");").DecreaseIndent(1);
+                        writer.AppendLine(");")
+                                .DecreaseIndent(1);
                     }
                 }
             }
-            writer.DecreaseIndent(1).AppendLine("}");
+
+            writer.DecreaseIndent(1)
+                    .AppendLine("}");
         }
     }
 }

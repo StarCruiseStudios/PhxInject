@@ -10,20 +10,24 @@ namespace Phx.Inject.Generator.Construct {
     using Phx.Inject.Generator.Construct.Definitions;
     using Phx.Inject.Generator.Render.Templates;
 
-    internal class InjectorBuilderMethodTemplateBuilder : ITemplateBuilder<InjectorBuilderMethodDefinition, InjectorBuilderMethodTemplate> {
-        private readonly ITemplateBuilder<BuilderMethodContainerInvocationDefinition, BuilderMethodContainerInvocationTemplate> builderMethodContainerInvocationBuilder;
+    internal class InjectorBuilderMethodTemplateBuilder
+            : ITemplateBuilder<InjectorBuilderMethodDefinition, InjectorBuilderMethodTemplate> {
+        private readonly
+                ITemplateBuilder<BuilderMethodContainerInvocationDefinition, BuilderMethodContainerInvocationTemplate>
+                builderMethodContainerInvocationBuilder;
 
         public InjectorBuilderMethodTemplateBuilder(
-            ITemplateBuilder<BuilderMethodContainerInvocationDefinition, BuilderMethodContainerInvocationTemplate> builderMethodContainerInvocationBuilder
+                ITemplateBuilder<BuilderMethodContainerInvocationDefinition, BuilderMethodContainerInvocationTemplate>
+                        builderMethodContainerInvocationBuilder
         ) {
             this.builderMethodContainerInvocationBuilder = builderMethodContainerInvocationBuilder;
         }
 
         public InjectorBuilderMethodTemplate Build(InjectorBuilderMethodDefinition definition) {
             return new InjectorBuilderMethodTemplate(
-                definition.BuiltType.QualifiedName,
-                definition.InjectorBuilderMethodName,
-                builderMethodContainerInvocationBuilder.Build(definition.BuilderMethodContainerInvocation));
+                    definition.BuiltType.QualifiedName,
+                    definition.InjectorBuilderMethodName,
+                    builderMethodContainerInvocationBuilder.Build(definition.BuilderMethodContainerInvocation));
         }
     }
 }

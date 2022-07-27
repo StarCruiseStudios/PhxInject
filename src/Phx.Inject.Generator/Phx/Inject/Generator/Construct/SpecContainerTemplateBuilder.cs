@@ -13,14 +13,22 @@ namespace Phx.Inject.Generator.Construct {
     using Phx.Inject.Generator.Render.Templates;
 
     internal class SpecContainerTemplateBuilder : IFileTemplateBuilder<SpecContainerDefinition> {
-        private readonly ITemplateBuilder<InstanceHolderDefinition, InstanceHolderDeclarationTemplate> instanceHolderDeclarationBuilder;
-        private readonly ITemplateBuilder<FactoryMethodContainerDefinition, FactoryMethodContainerTemplate> factoryMethodContainerBuilder;
-        private readonly ITemplateBuilder<BuilderMethodContainerDefinition, BuilderMethodContainerTemplate> builderMethodContainerBuilder;
+        private readonly ITemplateBuilder<BuilderMethodContainerDefinition, BuilderMethodContainerTemplate>
+                builderMethodContainerBuilder;
+
+        private readonly ITemplateBuilder<FactoryMethodContainerDefinition, FactoryMethodContainerTemplate>
+                factoryMethodContainerBuilder;
+
+        private readonly ITemplateBuilder<InstanceHolderDefinition, InstanceHolderDeclarationTemplate>
+                instanceHolderDeclarationBuilder;
 
         public SpecContainerTemplateBuilder(
-            ITemplateBuilder<InstanceHolderDefinition, InstanceHolderDeclarationTemplate> instanceHolderDeclarationBuilder,
-            ITemplateBuilder<FactoryMethodContainerDefinition, FactoryMethodContainerTemplate> factoryMethodContainerBuilder,
-            ITemplateBuilder<BuilderMethodContainerDefinition, BuilderMethodContainerTemplate> builderMethodContainerBuilder
+                ITemplateBuilder<InstanceHolderDefinition, InstanceHolderDeclarationTemplate>
+                        instanceHolderDeclarationBuilder,
+                ITemplateBuilder<FactoryMethodContainerDefinition, FactoryMethodContainerTemplate>
+                        factoryMethodContainerBuilder,
+                ITemplateBuilder<BuilderMethodContainerDefinition, BuilderMethodContainerTemplate>
+                        builderMethodContainerBuilder
         ) {
             this.instanceHolderDeclarationBuilder = instanceHolderDeclarationBuilder;
             this.factoryMethodContainerBuilder = factoryMethodContainerBuilder;
@@ -29,24 +37,25 @@ namespace Phx.Inject.Generator.Construct {
 
         public GeneratedFileTemplate Build(SpecContainerDefinition definition) {
             var instanceHolders = definition.InstanceHolderDeclarations
-                .Select(instanceHolderDeclarationBuilder.Build)
-                .ToImmutableList();
+                    .Select(instanceHolderDeclarationBuilder.Build)
+                    .ToImmutableList();
 
             var factoryMethodContainers = definition.FactoryMethodContainers
-                .Select(factoryMethodContainerBuilder.Build)
-                .ToImmutableList();
+                    .Select(factoryMethodContainerBuilder.Build)
+                    .ToImmutableList();
 
             var builderMethodContainers = definition.BuilderMethodContainers
-                .Select(builderMethodContainerBuilder.Build)
-                .ToImmutableList();
-                
-            return new GeneratedFileTemplate(definition.ContainerType.NamespaceName,
-                new SpecContainerTemplate(
-                    SpecContainerClassName: definition.ContainerType.Name,
-                    ConstructedSpecClassQualifiedName: null,
-                    InstanceHolderDeclarations: instanceHolders,
-                    FactoryMethodContainers: factoryMethodContainers,
-                    BuilderMethodContainers: builderMethodContainers));
+                    .Select(builderMethodContainerBuilder.Build)
+                    .ToImmutableList();
+
+            return new GeneratedFileTemplate(
+                    definition.ContainerType.NamespaceName,
+                    new SpecContainerTemplate(
+                            definition.ContainerType.Name,
+                            ConstructedSpecClassQualifiedName: null,
+                            instanceHolders,
+                            factoryMethodContainers,
+                            builderMethodContainers));
         }
     }
 }

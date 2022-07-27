@@ -20,10 +20,13 @@ namespace Phx.Inject.Generator.Extract {
             ModelBuilder = modelBuilder;
         }
 
-        public IReadOnlyList<TModel> Extract(IEnumerable<TypeDeclarationSyntax> syntaxNodes, GeneratorExecutionContext context) {
+        public IReadOnlyList<TModel> Extract(
+                IEnumerable<TypeDeclarationSyntax> syntaxNodes,
+                GeneratorExecutionContext context
+        ) {
             var models = new List<TModel>();
             foreach (var syntaxNode in syntaxNodes) {
-                SyntaxTree syntaxTree = syntaxNode.SyntaxTree;
+                var syntaxTree = syntaxNode.SyntaxTree;
                 var semanticModel = context.Compilation.GetSemanticModel(syntaxTree);
                 if (semanticModel.GetDeclaredSymbol(syntaxNode) is not ITypeSymbol symbol) {
                     continue;

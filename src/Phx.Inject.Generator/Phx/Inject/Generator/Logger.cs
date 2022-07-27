@@ -6,9 +6,9 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-using System;
-
 namespace Phx.Inject.Generator {
+    using System;
+
     internal static class Logger {
         public static void Info(string message) {
             Console.Out.WriteLine(message);

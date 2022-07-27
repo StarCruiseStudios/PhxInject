@@ -10,7 +10,7 @@ namespace Phx.Inject.Generator.Map {
     using Phx.Inject.Generator.Extract.Model;
 
     internal record BuilderRegistration(
-        TypeModel SpecificationType,
-        BuilderModel BuilderModel
+            TypeModel SpecificationType,
+            BuilderModel BuilderModel
     );
 }

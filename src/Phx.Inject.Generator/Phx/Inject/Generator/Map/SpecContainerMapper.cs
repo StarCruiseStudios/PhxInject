@@ -14,24 +14,28 @@ namespace Phx.Inject.Generator.Map {
     using System.Linq;
     using Phx.Inject.Generator.Construct.Definitions;
     using Phx.Inject.Generator.Extract.Model;
-    using static Phx.Inject.Generator.Construct.GenerationConstants;
+    using static Construct.GenerationConstants;
 
     internal class SpecContainerMapper : ISpecContainerMapper {
         private const string InstanceHolderSuffix = "Instance";
+
         public SpecContainerDefinition MapToDefinition(
-            SpecificationModel specModel,
-            InjectorModel injectorModel,
-            IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
+                SpecificationModel specModel,
+                InjectorModel injectorModel,
+                IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
         ) {
-            var specContainerName = GetSpecificationContainerName(specModel.SpecificationType.Name, injectorModel.InjectorType.Name);
+            var specContainerName = GetSpecificationContainerName(
+                    specModel.SpecificationType.Name,
+                    injectorModel.InjectorType.Name);
             var specContainerType = specModel.SpecificationType with { Name = specContainerName };
 
             var instanceHolders = new List<InstanceHolderDefinition>();
             var factoryMethodContainers = new List<FactoryMethodContainerDefinition>();
             var builderMethodContainers = new List<BuilderMethodContainerDefinition>();
 
-            var specContainerCollectionName = $"{injectorModel.InjectorType.Name}.{SpecContainerCollectionInterfaceName}";
-            TypeModel specContainerCollectionType = injectorModel.InjectorType with { Name = specContainerCollectionName };
+            var specContainerCollectionName
+                    = $"{injectorModel.InjectorType.Name}.{SpecContainerCollectionInterfaceName}";
+            var specContainerCollectionType = injectorModel.InjectorType with { Name = specContainerCollectionName };
 
             foreach (var factory in specModel.Factories) {
                 InstanceHolderDefinition? instanceHolderDefinition = null;
@@ -40,61 +44,74 @@ namespace Phx.Inject.Generator.Map {
                     if (instanceHolderName.StartsWith("Get", ignoreCase: true, CultureInfo.InvariantCulture)) {
                         instanceHolderName = instanceHolderName[3..];
                     }
+
                     instanceHolderName = char.ToLower(instanceHolderName[0]) + instanceHolderName[1..];
 
                     instanceHolderDefinition = new InstanceHolderDefinition(
-                        factory.ReturnType.TypeModel.ToTypeDefinition(),
-                        instanceHolderName);
+                            factory.ReturnType.TypeModel.ToTypeDefinition(),
+                            instanceHolderName);
                     instanceHolders.Add(instanceHolderDefinition);
                 }
 
-                var arguments = factory.Arguments.Select(argumentType => {
-                    if (!factoryRegistrations.TryGetValue(argumentType.ToRegistrationIdentifier(), out var factoryMethodRegistration)) {
-                        throw new InvalidOperationException($"No Factory found for type {argumentType}.");
-                    }
+                var arguments = factory.Arguments.Select(
+                                argumentType => {
+                                    if (!factoryRegistrations.TryGetValue(
+                                                argumentType.ToRegistrationIdentifier(),
+                                                out var factoryMethodRegistration)) {
+                                        throw new InvalidOperationException(
+                                                $"No Factory found for type {argumentType}.");
+                                    }
 
-                    return new FactoryMethodContainerInvocationDefinition(
-                        GetSpecificationContainerName(factoryMethodRegistration.SpecificationType.Name, injectorModel.InjectorType.Name),
-                        factoryMethodRegistration.FactoryModel.Name
-                    );
-                }).ToImmutableList();
+                                    return new FactoryMethodContainerInvocationDefinition(
+                                            GetSpecificationContainerName(
+                                                    factoryMethodRegistration.SpecificationType.Name,
+                                                    injectorModel.InjectorType.Name),
+                                            factoryMethodRegistration.FactoryModel.Name);
+                                })
+                        .ToImmutableList();
 
                 var factoryMethodContainerDefinition = new FactoryMethodContainerDefinition(
-                    factory.ReturnType.TypeModel.ToTypeDefinition(),
-                    specModel.SpecificationType.ToTypeDefinition(),
-                    specContainerCollectionType.ToTypeDefinition(),
-                    factory.Name,
-                    instanceHolderDefinition,
-                    arguments);
+                        factory.ReturnType.TypeModel.ToTypeDefinition(),
+                        specModel.SpecificationType.ToTypeDefinition(),
+                        specContainerCollectionType.ToTypeDefinition(),
+                        factory.Name,
+                        instanceHolderDefinition,
+                        arguments);
                 factoryMethodContainers.Add(factoryMethodContainerDefinition);
             }
 
             foreach (var builder in specModel.Builders) {
-                var arguments = builder.Arguments.Select(argumentType => {
-                    if (!factoryRegistrations.TryGetValue(argumentType.ToRegistrationIdentifier(), out var factoryMethodRegistration)) {
-                        throw new InvalidOperationException($"No Factory found for type {argumentType}.");
-                    }
+                var arguments = builder.Arguments.Select(
+                                argumentType => {
+                                    if (!factoryRegistrations.TryGetValue(
+                                                argumentType.ToRegistrationIdentifier(),
+                                                out var factoryMethodRegistration)) {
+                                        throw new InvalidOperationException(
+                                                $"No Factory found for type {argumentType}.");
+                                    }
 
-                    return new FactoryMethodContainerInvocationDefinition(
-                        GetSpecificationContainerName(factoryMethodRegistration.SpecificationType.Name, injectorModel.InjectorType.Name),
-                        factoryMethodRegistration.FactoryModel.Name
-                    );
-                }).ToImmutableList();
+                                    return new FactoryMethodContainerInvocationDefinition(
+                                            GetSpecificationContainerName(
+                                                    factoryMethodRegistration.SpecificationType.Name,
+                                                    injectorModel.InjectorType.Name),
+                                            factoryMethodRegistration.FactoryModel.Name);
+                                })
+                        .ToImmutableList();
 
                 var builderMethodContainerDefinition = new BuilderMethodContainerDefinition(
-                    builder.BuiltType.TypeModel.ToTypeDefinition(),
-                    specModel.SpecificationType.ToTypeDefinition(),
-                    specContainerCollectionType.ToTypeDefinition(),
-                    builder.Name,
-                    arguments);
+                        builder.BuiltType.TypeModel.ToTypeDefinition(),
+                        specModel.SpecificationType.ToTypeDefinition(),
+                        specContainerCollectionType.ToTypeDefinition(),
+                        builder.Name,
+                        arguments);
                 builderMethodContainers.Add(builderMethodContainerDefinition);
             }
 
             return new SpecContainerDefinition(
-                specContainerType.ToTypeDefinition(),
-                instanceHolders,
-                factoryMethodContainers,
-                builderMethodContainers);
+                    specContainerType.ToTypeDefinition(),
+                    instanceHolders,
+                    factoryMethodContainers,
+                    builderMethodContainers);
         }
     }
 }

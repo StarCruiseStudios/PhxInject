@@ -10,10 +10,10 @@ namespace Phx.Inject.Generator.Construct.Definitions {
     using System.Collections.Generic;
 
     internal record BuilderMethodContainerDefinition(
-        TypeDefinition BuiltType,
-        TypeDefinition SpecType,
-        TypeDefinition SpecContainerCollectionType,
-        string BuilderMethodName,
-        IEnumerable<FactoryMethodContainerInvocationDefinition> Arguments
+            TypeDefinition BuiltType,
+            TypeDefinition SpecType,
+            TypeDefinition SpecContainerCollectionType,
+            string BuilderMethodName,
+            IEnumerable<FactoryMethodContainerInvocationDefinition> Arguments
     );
 }

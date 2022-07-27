@@ -13,7 +13,8 @@ namespace Phx.Inject.Generator.Extract {
 
     internal interface IModelExtractor<TModel> where TModel : class {
         IReadOnlyList<TModel> Extract(
-            IEnumerable<TypeDeclarationSyntax> syntaxNodes,
-            GeneratorExecutionContext context);
+                IEnumerable<TypeDeclarationSyntax> syntaxNodes,
+                GeneratorExecutionContext context
+        );
     }
 }

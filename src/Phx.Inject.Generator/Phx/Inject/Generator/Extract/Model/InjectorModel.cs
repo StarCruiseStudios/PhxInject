@@ -10,11 +10,11 @@ namespace Phx.Inject.Generator.Extract.Model {
     using System.Collections.Generic;
 
     internal record InjectorModel(
-        TypeModel InjectorType,
-        TypeModel InjectorInterface,
-        IReadOnlyList<InjectionMethodModel> InjectionMethods,
-        IReadOnlyList<InjectionBuilderMethodModel> InjectionBuilderMethods,
-        IReadOnlyList<TypeModel> Specifications,
-        IReadOnlyList<TypeModel> ConstructedSpecifications
+            TypeModel InjectorType,
+            TypeModel InjectorInterface,
+            IReadOnlyList<InjectionMethodModel> InjectionMethods,
+            IReadOnlyList<InjectionBuilderMethodModel> InjectionBuilderMethods,
+            IReadOnlyList<TypeModel> Specifications,
+            IReadOnlyList<TypeModel> ConstructedSpecifications
     );
 }

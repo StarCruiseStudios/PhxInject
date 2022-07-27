@@ -10,12 +10,12 @@ namespace Phx.Inject.Generator.Construct {
     using Phx.Inject.Generator.Construct.Definitions;
     using Phx.Inject.Generator.Render.Templates;
 
-    internal class InstanceHolderDeclarationTemplateBuilder : ITemplateBuilder<InstanceHolderDefinition, InstanceHolderDeclarationTemplate> {
+    internal class InstanceHolderDeclarationTemplateBuilder
+            : ITemplateBuilder<InstanceHolderDefinition, InstanceHolderDeclarationTemplate> {
         public InstanceHolderDeclarationTemplate Build(InstanceHolderDefinition definition) {
             return new InstanceHolderDeclarationTemplate(
-                InstanceQualifiedType: definition.HeldInstanceType.QualifiedName,
-                ReferenceName: definition.ReferenceName
-            );
+                    definition.HeldInstanceType.QualifiedName,
+                    definition.ReferenceName);
         }
     }
 }

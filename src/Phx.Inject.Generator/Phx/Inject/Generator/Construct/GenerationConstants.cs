@@ -17,11 +17,12 @@ namespace Phx.Inject.Generator.Construct {
         public const string SpecificationAttributeClassName = "Phx.Inject.SpecificationAttribute";
 
         public const string SpecificationContainerSuffix = "Container";
-        public static string GetSpecificationContainerName(string specificationName, string injectorName) {
-            return $"{injectorName}_{specificationName}{SpecificationContainerSuffix}";
-        }
 
         public const string SpecContainerCollectionClassName = "SpecContainerCollection";
         public const string SpecContainerCollectionInterfaceName = "ISpecContainerCollection";
+
+        public static string GetSpecificationContainerName(string specificationName, string injectorName) {
+            return $"{injectorName}_{specificationName}{SpecificationContainerSuffix}";
+        }
     }
 }

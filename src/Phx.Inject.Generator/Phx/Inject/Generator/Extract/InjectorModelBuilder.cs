@@ -14,7 +14,7 @@ namespace Phx.Inject.Generator.Extract {
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Extract.Model;
     using Phx.Inject.Generator.Map;
-    using static Phx.Inject.Generator.Construct.GenerationConstants;
+    using static Construct.GenerationConstants;
 
     internal class InjectorModelBuilder : IModelBuilder<InjectorModel> {
         private const string GeneratedInjectorClassPrefix = "Generated";
@@ -27,7 +27,13 @@ namespace Phx.Inject.Generator.Extract {
             var injectionBuilderMethods = GetInjectionBuilderMethods(symbol);
             var specifications = GetSpecificationTypes(symbol);
             var constructedSpecifications = GetConstructedSpecificationTypes(symbol);
-            return new InjectorModel(injectorType, injectorInterfaceType, injectionMethods, injectionBuilderMethods, specifications, constructedSpecifications);
+            return new InjectorModel(
+                    injectorType,
+                    injectorInterfaceType,
+                    injectionMethods,
+                    injectionBuilderMethods,
+                    specifications,
+                    constructedSpecifications);
         }
 
         private List<InjectionMethodModel> GetInjectionMethods(ITypeSymbol injectorInterfaceSymbol) {
@@ -42,10 +48,10 @@ namespace Phx.Inject.Generator.Extract {
                     var returnType = returnTypeSymbol.ToTypeModel();
                     var qualifier = GetMethodQualifier(methodSymbol);
                     var methodName = methodSymbol.Name;
-                    injectorMethods.Add(new InjectionMethodModel(
-                        new QualifiedTypeModel(returnType, qualifier),
-                        methodName
-                    ));
+                    injectorMethods.Add(
+                            new InjectionMethodModel(
+                                    new QualifiedTypeModel(returnType, qualifier),
+                                    methodName));
                 }
             }
 
@@ -59,18 +65,20 @@ namespace Phx.Inject.Generator.Extract {
                     if (!methodSymbol.ReturnsVoid) {
                         continue;
                     }
+
                     if (methodSymbol.Parameters.Length != 1) {
                         continue;
                     }
 
-                    var builtTypeSymbol = methodSymbol.Parameters[0].Type;
+                    var builtTypeSymbol = methodSymbol.Parameters[0]
+                            .Type;
                     var builtType = builtTypeSymbol.ToTypeModel();
                     var qualifier = GetMethodQualifier(methodSymbol);
                     var methodName = methodSymbol.Name;
-                    injectorBuilderMethods.Add(new InjectionBuilderMethodModel(
-                        new QualifiedTypeModel(builtType, qualifier),
-                        methodName
-                    ));
+                    injectorBuilderMethods.Add(
+                            new InjectionBuilderMethodModel(
+                                    new QualifiedTypeModel(builtType, qualifier),
+                                    methodName));
                 }
             }
 
@@ -79,17 +87,18 @@ namespace Phx.Inject.Generator.Extract {
 
         private IReadOnlyList<TypeModel> GetSpecificationTypes(ITypeSymbol injectorInterfaceSymbol) {
             return GetSpecifications(injectorInterfaceSymbol)
-                .Select(specification => specification.Value as ITypeSymbol)
-                .Where(specificationType => specificationType!.IsStatic)
-                .Select(specificationType => specificationType!.ToTypeModel())
-                .ToImmutableList();
+                    .Select(specification => specification.Value as ITypeSymbol)
+                    .Where(specificationType => specificationType!.IsStatic)
+                    .Select(specificationType => specificationType!.ToTypeModel())
+                    .ToImmutableList();
         }
+
         private IReadOnlyList<TypeModel> GetConstructedSpecificationTypes(ITypeSymbol injectorInterfaceSymbol) {
             return GetSpecifications(injectorInterfaceSymbol)
-                .Select(specification => specification.Value as ITypeSymbol)
-                .Where(specificationType => specificationType!.IsAbstract)
-                .Select(specificationType => specificationType!.ToTypeModel())
-                .ToImmutableList();
+                    .Select(specification => specification.Value as ITypeSymbol)
+                    .Where(specificationType => specificationType!.IsAbstract)
+                    .Select(specificationType => specificationType!.ToTypeModel())
+                    .ToImmutableList();
         }
 
         private IReadOnlyList<TypedConstant> GetSpecifications(ITypeSymbol interfaceModel) {
@@ -106,49 +115,63 @@ namespace Phx.Inject.Generator.Extract {
 
         private AttributeData GetInjectorAttribute(ITypeSymbol interfaceModel) {
             return interfaceModel.GetAttributes()
-                .First((attributeData) => attributeData.AttributeClass!.ToString() == InjectorAttributeClassName);
+                    .First(attributeData => attributeData.AttributeClass!.ToString() == InjectorAttributeClassName);
         }
 
         private string GetMethodQualifier(IMethodSymbol methodSymbol) {
             var labelAttributes = methodSymbol.GetAttributes()
-                .Where((attributeData) => attributeData.AttributeClass!.ToString() == LabelAttributeClassName);
+                    .Where(attributeData => attributeData.AttributeClass!.ToString() == LabelAttributeClassName);
 
             var qualifierAttributes = methodSymbol.GetAttributes()
-                .Where((attributeData) => {
-                    return attributeData.AttributeClass!.GetAttributes()
-                            .Any((parentAttributeData) => parentAttributeData.AttributeClass!.ToString() == QualifierAttributeClassName);
-                });
+                    .Where(
+                            attributeData => {
+                                return attributeData.AttributeClass!.GetAttributes()
+                                        .Any(
+                                                parentAttributeData =>
+                                                        parentAttributeData.AttributeClass!.ToString() ==
+                                                        QualifierAttributeClassName);
+                            });
 
             var numLabels = labelAttributes.Count();
             var numQualifiers = qualifierAttributes.Count();
 
             if (numLabels + numQualifiers > 1) {
-                throw new InvalidOperationException($"Method {methodSymbol.Name} can only have one Label or Qualifier attribute.");
-            } else if (numLabels > 0) {
-                foreach (var argument in labelAttributes.Single().ConstructorArguments) {
+                throw new InvalidOperationException(
+                        $"Method {methodSymbol.Name} can only have one Label or Qualifier attribute.");
+            }
+
+            if (numLabels > 0) {
+                foreach (var argument in labelAttributes.Single()
+                                 .ConstructorArguments) {
                     if (argument.Type!.Name == "String") {
-                        return (string) argument.Value!;
+                        return (string)argument.Value!;
                     }
                 }
-                throw new InvalidOperationException($"Method {methodSymbol.Name} label must provide a value."); // This should never happen.
-            } else if (numQualifiers > 0) {
-                return qualifierAttributes.Single().AttributeClass!.ToString();
-            } else {
-                return RegistrationIdentifier.DefaultQualifier;
+
+                throw new InvalidOperationException(
+                        $"Method {methodSymbol.Name} label must provide a value."); // This should never happen.
             }
+
+            if (numQualifiers > 0) {
+                return qualifierAttributes.Single()
+                        .AttributeClass!.ToString();
+            }
+
+            return RegistrationIdentifier.DefaultQualifier;
         }
 
         private string GetGeneratedClassName(ITypeSymbol interfaceModel) {
             var injectorAttribute = GetInjectorAttribute(interfaceModel);
 
             if (injectorAttribute.ConstructorArguments
-                .FirstOrDefault(argument => argument.Kind != TypedConstantKind.Array)
-                .Value is not string injectorClassName
-            ) {
+                        .FirstOrDefault(argument => argument.Kind != TypedConstantKind.Array)
+                        .Value is not string injectorClassName
+               ) {
                 injectorClassName = interfaceModel.Name;
                 if (injectorClassName.StartsWith("I")) {
                     injectorClassName = injectorClassName[1..];
                 }
+
                 injectorClassName = $"{GeneratedInjectorClassPrefix}{injectorClassName}";
             }
 

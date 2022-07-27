@@ -10,12 +10,14 @@ namespace Phx.Inject.Generator.Extract {
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Extract.Model;
-    using static Phx.Inject.Generator.Construct.GenerationConstants;
+    using static Construct.GenerationConstants;
 
     internal class SpecificationSymbolRecognizer : ISymbolRecognizer<SpecificationModel> {
         public bool IsExpectedSymbol(ITypeSymbol symbol) {
             var specificationAttributes = symbol.GetAttributes()
-                .Where((attributeData) => attributeData.AttributeClass!.ToString() == SpecificationAttributeClassName);
+                    .Where(
+                            attributeData =>
+                                    attributeData.AttributeClass!.ToString() == SpecificationAttributeClassName);
             if (!specificationAttributes.Any()) {
                 return false;
             }

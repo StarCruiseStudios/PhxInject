@@ -8,35 +8,40 @@
 
 namespace Phx.Inject.Generator.Render.Templates {
     using System.Collections.Generic;
-    using static Phx.Inject.Generator.Construct.GenerationConstants;
-    using static Phx.Inject.Generator.Render.RenderConstants;
+    using static Construct.GenerationConstants;
+    using static RenderConstants;
 
     internal record InjectorTemplate(
-        string InjectorClassName,
-        string InjectorInterfaceQualifiedName,
-        SpecContainerCollectionInterfaceTemplate SpecContainerCollectionInterfaceTemplate,
-        SpecContainerCollectionImplementationTemplate SpecContainerCollectionImplementationTemplate,
-        IEnumerable<InjectorMethodTemplate> InjectorMethods,
-        IEnumerable<InjectorBuilderMethodTemplate> InjectorBuilderMethods
+            string InjectorClassName,
+            string InjectorInterfaceQualifiedName,
+            SpecContainerCollectionInterfaceTemplate SpecContainerCollectionInterfaceTemplate,
+            SpecContainerCollectionImplementationTemplate SpecContainerCollectionImplementationTemplate,
+            IEnumerable<InjectorMethodTemplate> InjectorMethods,
+            IEnumerable<InjectorBuilderMethodTemplate> InjectorBuilderMethods
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
-            writer.AppendLine($"internal partial class {InjectorClassName} : {InjectorInterfaceQualifiedName} {{").IncreaseIndent(1);
+            writer.AppendLine($"internal partial class {InjectorClassName} : {InjectorInterfaceQualifiedName} {{")
+                    .IncreaseIndent(1);
             SpecContainerCollectionInterfaceTemplate.Render(writer);
             writer.AppendBlankLine();
             SpecContainerCollectionImplementationTemplate.Render(writer);
 
             writer
-                .AppendBlankLine()
-                .AppendLine($"private readonly {SpecContainerCollectionInterfaceName} {SpecContainersMemberName} = new {SpecContainerCollectionClassName}();");
+                    .AppendBlankLine()
+                    .AppendLine(
+                            $"private readonly {SpecContainerCollectionInterfaceName} {SpecContainersMemberName} = new {SpecContainerCollectionClassName}();");
             foreach (var injectorMethod in InjectorMethods) {
                 writer.AppendBlankLine();
                 injectorMethod.Render(writer);
             }
+
             foreach (var injectorBuilderMethod in InjectorBuilderMethods) {
                 writer.AppendBlankLine();
                 injectorBuilderMethod.Render(writer);
             }
-            writer.DecreaseIndent(1).AppendLine("}");
+
+            writer.DecreaseIndent(1)
+                    .AppendLine("}");
         }
     }
 }

@@ -12,8 +12,8 @@ namespace Phx.Inject.Tests.Helpers {
     using Microsoft.CodeAnalysis;
 
     public class TestSourceGenerator : ISourceGenerator {
-        private readonly Predicate<SyntaxNode> shouldCapture;
         private readonly Action<IReadOnlyList<SyntaxNode>> callback;
+        private readonly Predicate<SyntaxNode> shouldCapture;
 
         public TestSourceGenerator(Predicate<SyntaxNode> shouldCapture, Action<IReadOnlyList<SyntaxNode>> callback) {
             this.shouldCapture = shouldCapture;
@@ -26,16 +26,37 @@ namespace Phx.Inject.Tests.Helpers {
 
         public void Execute(GeneratorExecutionContext context) {
             var syntaxReceiver = context.SyntaxReceiver as TestSyntaxReceiver
-                ?? throw new InvalidOperationException("Incorrect Syntax Receiver."); // This should never happen.
+                    ?? throw new InvalidOperationException("Incorrect Syntax Receiver."); // This should never happen.
 
             callback(syntaxReceiver.CapturedNodes);
         }
 
-        public class TestSyntaxReceiver : ISyntaxReceiver {
-            private readonly Predicate<SyntaxNode> shouldCapture;
-            private readonly List<SyntaxNode> capturedNodes = new();
+        public static IEnumerable<TSymbol> ExtractSymbols<TSyntax, TSymbol>(
+                string code,
+                Predicate<SyntaxNode> shouldCapture,
+                string[]? additionalFiles = null
+        )
+                where TSyntax : SyntaxNode
+                where TSymbol : ISymbol {
+            var syntaxNodes = new List<TSyntax>();
+            var sourceGenerator = new TestSourceGenerator(
+                    shouldCapture,
+                    capturedNodes => {
+                        foreach (var node in capturedNodes) {
+                            if (node is TSyntax syntaxNode) {
+                                syntaxNodes.Add(syntaxNode);
+                            }
+                        }
+                    });
+            var compilation = TestCompiler.CompileText(code, additionalFiles, sourceGenerator);
+            return TypeSymbolExtractor.Extract<TSyntax, TSymbol>(syntaxNodes, compilation);
+        }
 
-            public IReadOnlyList<SyntaxNode> CapturedNodes { get { return capturedNodes; } }
+        public class TestSyntaxReceiver : ISyntaxReceiver {
+            private readonly List<SyntaxNode> capturedNodes = new();
+            private readonly Predicate<SyntaxNode> shouldCapture;
+
+            public IReadOnlyList<SyntaxNode> CapturedNodes => capturedNodes;
 
             public TestSyntaxReceiver(Predicate<SyntaxNode> shouldCapture) {
                 this.shouldCapture = shouldCapture;
@@ -46,26 +67,6 @@ namespace Phx.Inject.Tests.Helpers {
                     capturedNodes.Add(syntaxNode);
                 }
             }
-        }
-
-        public static IEnumerable<TSymbol> ExtractSymbols<TSyntax, TSymbol>(
-            string code,
-            Predicate<SyntaxNode> shouldCapture,
-            string[]? additionalFiles = null)
-        where TSyntax : SyntaxNode
-        where TSymbol : ISymbol {
-            var syntaxNodes = new List<TSyntax>();
-            var sourceGenerator = new TestSourceGenerator(
-                shouldCapture: shouldCapture,
-                callback: (capturedNodes) => {
-                    foreach (var node in capturedNodes) {
-                        if (node is TSyntax syntaxNode) {
-                            syntaxNodes.Add(syntaxNode);
-                        }
-                    }
-                });
-            var compilation = TestCompiler.CompileText(code, additionalFiles, sourceGenerator);
-            return TypeSymbolExtractor.Extract<TSyntax, TSymbol>(syntaxNodes, compilation);
         }
     }
 }

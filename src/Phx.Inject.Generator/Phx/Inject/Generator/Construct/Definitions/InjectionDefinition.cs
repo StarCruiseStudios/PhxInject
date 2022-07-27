@@ -10,7 +10,7 @@ namespace Phx.Inject.Generator.Construct.Definitions {
     using System.Collections.Generic;
 
     internal record InjectionDefinition(
-        InjectorDefinition Injector,
-        IEnumerable<SpecContainerDefinition> SpecContainers
+            InjectorDefinition Injector,
+            IEnumerable<SpecContainerDefinition> SpecContainers
     );
 }

@@ -16,8 +16,8 @@ namespace Phx.Inject.Generator.Extract.Model {
     internal static class ITypeSymbolExtensions {
         public static TypeModel ToTypeModel(this ITypeSymbol typeSymbol) {
             return new TypeModel(
-                typeSymbol.ContainingNamespace.ToString(),
-                typeSymbol.Name);
+                    typeSymbol.ContainingNamespace.ToString(),
+                    typeSymbol.Name);
         }
     }
 }

@@ -23,46 +23,72 @@ namespace Phx.Inject.Generator.Map {
             this.specContainerMapper = specContainerMapper;
         }
 
-        public InjectionDefinition MapToDefinition(InjectorModel injectorModel, IEnumerable<SpecificationModel> specModels) {
-            IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations = new Dictionary<RegistrationIdentifier, FactoryRegistration>();
-            IDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations = new Dictionary<RegistrationIdentifier, BuilderRegistration>();
+        public InjectionDefinition MapToDefinition(
+                InjectorModel injectorModel,
+                IEnumerable<SpecificationModel> specModels
+        ) {
+            IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
+                    = new Dictionary<RegistrationIdentifier, FactoryRegistration>();
+            IDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations
+                    = new Dictionary<RegistrationIdentifier, BuilderRegistration>();
 
-            var injectorSpecModels = injectorModel.Specifications.Select((specType) => {
-                var specModel = specModels.Where((model) => model.SpecificationType == specType).DefaultIfEmpty().Single();
-                if (specModel == null) {
-                    throw new InvalidOperationException($"Cannot find specification of type {specType} required by injector {injectorModel.InjectorInterface}.");
-                }
-                return specModel;
-            });
+            var injectorSpecModels = injectorModel.Specifications.Select(
+                    specType => {
+                        var specModel = specModels.Where(model => model.SpecificationType == specType)
+                                .DefaultIfEmpty()
+                                .Single();
+                        if (specModel == null) {
+                            throw new InvalidOperationException(
+                                    $"Cannot find specification of type {specType} required by injector {injectorModel.InjectorInterface}.");
+                        }
+
+                        return specModel;
+                    });
 
             foreach (var specModel in injectorSpecModels) {
                 foreach (var factory in specModel.Factories) {
-                    factoryRegistrations.Add(factory.ReturnType.ToRegistrationIdentifier(), new FactoryRegistration(specModel.SpecificationType, factory));
+                    factoryRegistrations.Add(
+                            factory.ReturnType.ToRegistrationIdentifier(),
+                            new FactoryRegistration(specModel.SpecificationType, factory));
                 }
 
                 foreach (var builder in specModel.Builders) {
-                    builderRegistrations.Add(builder.BuiltType.ToRegistrationIdentifier(), new BuilderRegistration(specModel.SpecificationType, builder));
+                    builderRegistrations.Add(
+                            builder.BuiltType.ToRegistrationIdentifier(),
+                            new BuilderRegistration(specModel.SpecificationType, builder));
                 }
             }
 
             foreach (var specModel in injectorSpecModels) {
                 foreach (var link in specModel.Links) {
-                    if (factoryRegistrations.TryGetValue(new RegistrationIdentifier(link.InputType.ToTypeDefinition(), link.InputQualifier), out var targetRegistration)) {
-                        factoryRegistrations.Add(new RegistrationIdentifier(link.ReturnType.ToTypeDefinition(), link.ReturnQualifier), targetRegistration);
+                    if (factoryRegistrations.TryGetValue(
+                                new RegistrationIdentifier(link.InputType.ToTypeDefinition(), link.InputQualifier),
+                                out var targetRegistration)) {
+                        factoryRegistrations.Add(
+                                new RegistrationIdentifier(link.ReturnType.ToTypeDefinition(), link.ReturnQualifier),
+                                targetRegistration);
                     } else {
-                        throw new InvalidOperationException($"Cannot link {link.ReturnType}[{link.ReturnQualifier}] to unknown type {link.InputType}[{link.InputQualifier}].");
+                        throw new InvalidOperationException(
+                                $"Cannot link {link.ReturnType}[{link.ReturnQualifier}] to unknown type {link.InputType}[{link.InputQualifier}].");
                     }
                 }
             }
 
-            var injectorDefinition = injectorMapper.MapToDefinition(injectorModel, factoryRegistrations, builderRegistrations);
+            var injectorDefinition = injectorMapper.MapToDefinition(
+                    injectorModel,
+                    factoryRegistrations,
+                    builderRegistrations);
             var specContainerDefintions = injectorSpecModels
-                .Select(specModel => specContainerMapper.MapToDefinition(specModel, injectorModel, factoryRegistrations))
-                .ToImmutableList();
+                    .Select(
+                            specModel => specContainerMapper.MapToDefinition(
+                                    specModel,
+                                    injectorModel,
+                                    factoryRegistrations))
+                    .ToImmutableList();
 
             return new InjectionDefinition(
-                injectorDefinition,
-                specContainerDefintions);
+                    injectorDefinition,
+                    specContainerDefintions);
         }
     }
 }

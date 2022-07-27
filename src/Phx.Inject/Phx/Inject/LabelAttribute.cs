@@ -15,16 +15,14 @@ namespace Phx.Inject {
     /// </summary>
     [AttributeUsage(QualifierAttribute.Usage)]
     public class LabelAttribute : Attribute {
-        /// <summary>
-        ///     The unique name for this label.
-        /// </summary>
+        /// <summary> The unique name for this label. </summary>
         public string Label { get; }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="LabelAttribute"/>
+        ///     Initializes a new instance of the <see cref="LabelAttribute" />
         ///     class.
         /// </summary>
-        /// <param name="label">The unique name for this label.</param>
+        /// <param name="label"> The unique name for this label. </param>
         public LabelAttribute(string label) {
             Label = label;
         }

@@ -7,18 +7,20 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Render.Templates {
-    using static Phx.Inject.Generator.Render.RenderConstants;
+    using static RenderConstants;
 
     internal record InjectorBuilderMethodTemplate(
-        string BuilderTypeQualifiedName,
-        string MethodName,
-        IRenderTemplate BuilderMethodContainerInvocation
+            string BuilderTypeQualifiedName,
+            string MethodName,
+            IRenderTemplate BuilderMethodContainerInvocation
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
-            writer.AppendLine($"public void {MethodName}({BuilderTypeQualifiedName} {BuilderMethodTargetName}) {{").IncreaseIndent(1);
+            writer.AppendLine($"public void {MethodName}({BuilderTypeQualifiedName} {BuilderMethodTargetName}) {{")
+                    .IncreaseIndent(1);
             BuilderMethodContainerInvocation.Render(writer);
             writer.AppendLine(";")
-                .DecreaseIndent(1).AppendLine("}");
+                    .DecreaseIndent(1)
+                    .AppendLine("}");
         }
     }
 }

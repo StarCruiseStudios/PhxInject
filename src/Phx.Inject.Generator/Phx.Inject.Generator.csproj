@@ -7,36 +7,36 @@
 -->
 
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../../resources/build/PhxLib.common.props" 
-          Condition="Exists('../../resources/build/PhxLib.common.props')" />
+    <Import Project="../../resources/build/PhxLib.common.props"
+            Condition="Exists('../../resources/build/PhxLib.common.props')"/>
 
-  <PropertyGroup>
-    <Version>$(PhxLibMajorVersion).0.1</Version>
-    <Description>Roslyn based Dependency Injection Generator.</Description>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>Phx.Inject.Tests</_Parameter1>
-    </AssemblyAttribute>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>Phx.Inject.Generator.Tests</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.Csharp" Version="3.8.0" />
-  </ItemGroup>
-
-  <Target Name="EnsureBuildFileImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-      <ErrorText>This package relies on imported build files that are not found. Missing: {0}</ErrorText>
+        <Version>$(PhxLibMajorVersion).0.1</Version>
+        <Description>Roslyn based Dependency Injection Generator.</Description>
     </PropertyGroup>
-    <Error Condition="!Exists('../../resources/build/PhxLib.common.props')" 
-           Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/PhxLib.common.props'))" />
-  </Target>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>Phx.Inject.Tests</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>Phx.Inject.Generator.Tests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.CodeAnalysis.Csharp" Version="3.8.0"/>
+    </ItemGroup>
+
+    <Target Name="EnsureBuildFileImports" BeforeTargets="PrepareForBuild">
+        <PropertyGroup>
+            <ErrorText>This package relies on imported build files that are not found. Missing: {0}</ErrorText>
+        </PropertyGroup>
+        <Error Condition="!Exists('../../resources/build/PhxLib.common.props')"
+               Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/PhxLib.common.props'))"/>
+    </Target>
 </Project>

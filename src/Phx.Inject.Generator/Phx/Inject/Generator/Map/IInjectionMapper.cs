@@ -12,6 +12,9 @@ namespace Phx.Inject.Generator.Map {
     using Phx.Inject.Generator.Extract.Model;
 
     internal interface IInjectionMapper {
-        public InjectionDefinition MapToDefinition(InjectorModel injectorModel, IEnumerable<SpecificationModel> specModels);
+        public InjectionDefinition MapToDefinition(
+                InjectorModel injectorModel,
+                IEnumerable<SpecificationModel> specModels
+        );
     }
 }

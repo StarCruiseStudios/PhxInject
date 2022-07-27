@@ -8,17 +8,20 @@
 
 namespace Phx.Inject.Generator.Render.Templates {
     using System.Collections.Generic;
-    using static Phx.Inject.Generator.Construct.GenerationConstants;
+    using static Construct.GenerationConstants;
 
     internal record SpecContainerCollectionInterfaceTemplate(
-        IEnumerable<SpecContainerPropertyDeclarationTemplate> SpecContainers
+            IEnumerable<SpecContainerPropertyDeclarationTemplate> SpecContainers
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
-            writer.AppendLine($"internal interface {SpecContainerCollectionInterfaceName} {{").IncreaseIndent(1);
+            writer.AppendLine($"internal interface {SpecContainerCollectionInterfaceName} {{")
+                    .IncreaseIndent(1);
             foreach (var specContainer in SpecContainers) {
                 specContainer.Render(writer);
             }
-            writer.DecreaseIndent(1).AppendLine("}");
+
+            writer.DecreaseIndent(1)
+                    .AppendLine("}");
         }
     }
 }

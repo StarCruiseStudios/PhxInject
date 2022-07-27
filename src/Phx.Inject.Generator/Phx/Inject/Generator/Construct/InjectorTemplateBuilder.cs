@@ -13,43 +13,56 @@ namespace Phx.Inject.Generator.Construct {
     using Phx.Inject.Generator.Render.Templates;
 
     internal class InjectorTemplateBuilder : IFileTemplateBuilder<InjectorDefinition> {
+        private readonly ITemplateBuilder<InjectorBuilderMethodDefinition, InjectorBuilderMethodTemplate>
+                injectorBuilderMethodBuilder;
+
         private readonly ITemplateBuilder<InjectorMethodDefinition, InjectorMethodTemplate> injectorMethodBuilder;
-        private readonly ITemplateBuilder<InjectorBuilderMethodDefinition, InjectorBuilderMethodTemplate> injectorBuilderMethodBuilder;
 
         public InjectorTemplateBuilder(
                 ITemplateBuilder<InjectorMethodDefinition, InjectorMethodTemplate> injectorMethodBuilder,
-                ITemplateBuilder<InjectorBuilderMethodDefinition, InjectorBuilderMethodTemplate> injectorBuilderMethodBuilder) {
+                ITemplateBuilder<InjectorBuilderMethodDefinition, InjectorBuilderMethodTemplate>
+                        injectorBuilderMethodBuilder
+        ) {
             this.injectorMethodBuilder = injectorMethodBuilder;
             this.injectorBuilderMethodBuilder = injectorBuilderMethodBuilder;
         }
 
         public GeneratedFileTemplate Build(InjectorDefinition definition) {
             var injectorMethods = definition.InjectorMethods
-                .Select(injectorMethodBuilder.Build)
-                .ToImmutableList();
+                    .Select(injectorMethodBuilder.Build)
+                    .ToImmutableList();
 
             var injectorBuilderMethods = definition.InjectorBuilderMethods
-                .Select(injectorBuilderMethodBuilder.Build)
-                .ToImmutableList();
+                    .Select(injectorBuilderMethodBuilder.Build)
+                    .ToImmutableList();
 
             var specContainerDeclarations = definition.SpecContainerTypes
-                    .Select(specContainer => new SpecContainerPropertyDeclarationTemplate(specContainer.NamespaceName, specContainer.Name))
+                    .Select(
+                            specContainer => new SpecContainerPropertyDeclarationTemplate(
+                                    specContainer.NamespaceName,
+                                    specContainer.Name))
                     .ToImmutableArray();
-            var specContainerCollectionInterfaceTemplate = new SpecContainerCollectionInterfaceTemplate(specContainerDeclarations);
+            var specContainerCollectionInterfaceTemplate
+                    = new SpecContainerCollectionInterfaceTemplate(specContainerDeclarations);
 
             var specContainerDefinitions = definition.SpecContainerTypes
-                    .Select(specContainer => new SpecContainerPropertyDefinitionTemplate(specContainer.NamespaceName, specContainer.Name))
+                    .Select(
+                            specContainer => new SpecContainerPropertyDefinitionTemplate(
+                                    specContainer.NamespaceName,
+                                    specContainer.Name))
                     .ToImmutableArray();
-            var specContainerCollectionImplementationTemplate = new SpecContainerCollectionImplementationTemplate(specContainerDefinitions);
+            var specContainerCollectionImplementationTemplate
+                    = new SpecContainerCollectionImplementationTemplate(specContainerDefinitions);
 
-            return new GeneratedFileTemplate(definition.InjectorType.NamespaceName,
-                new InjectorTemplate(
-                    InjectorClassName: definition.InjectorType.Name,
-                    InjectorInterfaceQualifiedName: definition.InjectorInterfaceType.QualifiedName,
-                    SpecContainerCollectionInterfaceTemplate: specContainerCollectionInterfaceTemplate,
-                    SpecContainerCollectionImplementationTemplate: specContainerCollectionImplementationTemplate,
-                    InjectorMethods: injectorMethods,
-                    InjectorBuilderMethods: injectorBuilderMethods));
+            return new GeneratedFileTemplate(
+                    definition.InjectorType.NamespaceName,
+                    new InjectorTemplate(
+                            definition.InjectorType.Name,
+                            definition.InjectorInterfaceType.QualifiedName,
+                            specContainerCollectionInterfaceTemplate,
+                            specContainerCollectionImplementationTemplate,
+                            injectorMethods,
+                            injectorBuilderMethods));
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Phx.Inject.Generator.Map {
     using Phx.Inject.Generator.Extract.Model;
 
     internal record FactoryRegistration(
-        TypeModel SpecificationType,
-        FactoryModel FactoryModel
+            TypeModel SpecificationType,
+            FactoryModel FactoryModel
     );
 }

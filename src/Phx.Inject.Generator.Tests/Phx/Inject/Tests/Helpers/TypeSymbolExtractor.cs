@@ -12,12 +12,13 @@ namespace Phx.Inject.Tests.Helpers {
 
     internal static class TypeSymbolExtractor {
         public static IEnumerable<TSymbol> Extract<TSyntax, TSymbol>(
-            IEnumerable<TSyntax> syntaxNodes,
-            Compilation compilation)
-        where TSyntax : SyntaxNode
-        where TSymbol : ISymbol {
+                IEnumerable<TSyntax> syntaxNodes,
+                Compilation compilation
+        )
+                where TSyntax : SyntaxNode
+                where TSymbol : ISymbol {
             foreach (var syntaxNode in syntaxNodes) {
-                SyntaxTree syntaxTree = syntaxNode.SyntaxTree;
+                var syntaxTree = syntaxNode.SyntaxTree;
                 var semanticModel = compilation.GetSemanticModel(syntaxTree);
                 if (semanticModel.GetDeclaredSymbol(syntaxNode) is not TSymbol symbol) {
                     continue;

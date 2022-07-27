@@ -8,8 +8,8 @@
 
 namespace Phx.Inject.Generator.Construct.Definitions {
     internal record InjectorBuilderMethodDefinition(
-        TypeDefinition BuiltType,
-        string InjectorBuilderMethodName,
-        BuilderMethodContainerInvocationDefinition BuilderMethodContainerInvocation
+            TypeDefinition BuiltType,
+            string InjectorBuilderMethodName,
+            BuilderMethodContainerInvocationDefinition BuilderMethodContainerInvocation
     );
 }

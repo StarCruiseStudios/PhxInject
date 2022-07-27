@@ -10,9 +10,9 @@ namespace Phx.Inject.Generator.Extract.Model {
     using System.Collections.Generic;
 
     internal record SpecificationModel(
-        TypeModel SpecificationType,
-        IReadOnlyList<FactoryModel> Factories,
-        IReadOnlyList<BuilderModel> Builders,
-        IReadOnlyList<LinkModel> Links
+            TypeModel SpecificationType,
+            IReadOnlyList<FactoryModel> Factories,
+            IReadOnlyList<BuilderModel> Builders,
+            IReadOnlyList<LinkModel> Links
     );
 }

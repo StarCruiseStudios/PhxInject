@@ -8,7 +8,7 @@
 
 namespace Phx.Inject.Generator.Extract.Model {
     internal record InjectionMethodModel(
-        QualifiedTypeModel ReturnType,
-        string Name
+            QualifiedTypeModel ReturnType,
+            string Name
     );
 }

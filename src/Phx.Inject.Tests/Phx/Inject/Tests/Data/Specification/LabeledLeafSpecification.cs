@@ -20,8 +20,7 @@ namespace Phx.Inject.Tests.Data.Specification {
         public const string NamedStringLeafData = "NamedStringLeaf";
 
         [Factory]
-        internal static ILeaf GetDefaultLeaf()
-        {
+        internal static ILeaf GetDefaultLeaf() {
             return new StringLeaf(DefaultLeafData);
         }
 
@@ -63,8 +62,8 @@ namespace Phx.Inject.Tests.Data.Specification {
 
         [Factory]
         internal static Node GetNode(
-            [Label("NonDefaultLeafA")] ILeaf left,
-            [NamedLeafA] ILeaf right
+                [Label("NonDefaultLeafA")] ILeaf left,
+                [NamedLeafA] ILeaf right
         ) {
             return new Node(left, right);
         }

@@ -14,9 +14,8 @@ namespace Phx.Inject.Generator.Construct {
             : ITemplateBuilder<BuilderMethodContainerInvocationDefinition, BuilderMethodContainerInvocationTemplate> {
         public BuilderMethodContainerInvocationTemplate Build(BuilderMethodContainerInvocationDefinition definition) {
             return new BuilderMethodContainerInvocationTemplate(
-                ContainerReference: definition.ContainerReference,
-                BuilderMethodContainerName: definition.BuilderMethodContainerName
-            );
+                    definition.ContainerReference,
+                    definition.BuilderMethodContainerName);
         }
     }
 }
