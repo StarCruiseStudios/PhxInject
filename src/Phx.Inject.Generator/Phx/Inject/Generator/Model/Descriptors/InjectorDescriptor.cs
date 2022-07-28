@@ -15,6 +15,6 @@ namespace Phx.Inject.Generator.Model.Descriptors {
             TypeModel InjectorInterface,
             IEnumerable<InjectorProviderMethodDescriptor> Providers,
             IEnumerable<InjectorBuilderMethodDescriptor> Builders,
-            IEnumerable<TypeModel> Specifications,
+            IEnumerable<SpecDescriptor> Specifications,
             Location Location) : IDescriptor;
 }

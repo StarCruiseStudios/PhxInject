@@ -121,16 +121,28 @@ namespace Phx.Inject.Generator {
                         TemplateRenderer.RenderTemplate(fileName, template, context);
                     }
                 }
+            } catch (InjectionException ex) {
+                context.ReportDiagnostic(
+                        Diagnostic.Create(
+                                new DiagnosticDescriptor(
+                                        id: ex.DiagnosticData.Id,
+                                        title: ex.DiagnosticData.Title,
+                                        messageFormat: ex.Message,
+                                        category: ex.DiagnosticData.Category,
+                                        defaultSeverity: DiagnosticSeverity.Error,
+                                        isEnabledByDefault: true),
+                                ex.Location));
             } catch (Exception ex) {
-                context.ReportDiagnostic(Diagnostic.Create(
-                        new DiagnosticDescriptor(
-                                id: "PHXINJECT001",
-                                title: "Unexpected error",
-                                messageFormat: ex.ToString(),
-                                category: "Injection Generation",
-                                defaultSeverity: DiagnosticSeverity.Error,
-                                isEnabledByDefault: true),
-                        Location.None));
+                context.ReportDiagnostic(
+                        Diagnostic.Create(
+                                new DiagnosticDescriptor(
+                                        id: Diagnostics.UnexpectedError.Id,
+                                        title: Diagnostics.UnexpectedError.Title,
+                                        messageFormat: ex.ToString(),
+                                        category: Diagnostics.UnexpectedError.Category,
+                                        defaultSeverity: DiagnosticSeverity.Error,
+                                        isEnabledByDefault: true),
+                                Location.None));
                 Logger.Error("An unexpected error occurred while generating source.", ex);
                 throw;
             }

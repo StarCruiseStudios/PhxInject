@@ -12,5 +12,12 @@ namespace Phx.Inject.Generator.Model.Descriptors {
     internal record QualifiedTypeDescriptor(
             TypeModel TypeModel,
             string Qualifier,
-            Location Location) : IDescriptor;
+            Location Location
+    ) : IDescriptor {
+        public override string ToString() {
+            return string.IsNullOrEmpty(Qualifier)
+                    ? TypeModel.ToString()
+                    : $"[{Qualifier}] {TypeModel}";
+        }
+    }
 }

@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------------
-//  <copyright file="InjectorDefinition.cs" company="Star Cruise Studios LLC">
+//  <copyright file="SpecContainerCollectionDefinition.cs" company="Star Cruise Studios LLC">
 //      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
 //      Licensed under the Apache License 2.0 License.
 //      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -10,11 +10,8 @@ namespace Phx.Inject.Generator.Model.Definitions {
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
 
-    internal record InjectorDefinition(
-            TypeModel InjectorType,
-            TypeModel InjectorInterfaceType,
-            SpecContainerCollectionDefinition SpecContainerCollection,
-            IEnumerable<InjectorProviderMethodDefinition> ProviderMethods,
-            IEnumerable<InjectorBuilderMethodDefinition> BuilderMethods,
-            Location Location) : IDefinition;
+    internal record SpecContainerCollectionDefinition(
+            IEnumerable<SpecContainerReferenceDefinition> SpecContainerReferences,
+            Location Location
+    ) : IDefinition;
 }
