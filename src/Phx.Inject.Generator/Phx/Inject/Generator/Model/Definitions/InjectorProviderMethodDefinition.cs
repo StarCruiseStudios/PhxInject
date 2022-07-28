@@ -8,10 +8,19 @@
 
 namespace Phx.Inject.Generator.Model.Definitions {
     using Microsoft.CodeAnalysis;
+    using System.Collections.Generic;
+    using Phx.Inject.Generator.Controller;
+    using Phx.Inject.Generator.Model.Descriptors;
+
+    internal delegate InjectorProviderMethodDefinition CreateInjectorProviderMethodDefinition(
+            InjectorProviderMethodDescriptor injectorProviderMethodDescriptor,
+            InjectorDescriptor injectorDescriptor,
+            IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
+    );
 
     internal record InjectorProviderMethodDefinition(
             TypeModel ProvidedType,
             string InjectorMethodName,
-            SpecContainerFactoryMethodDefinition SpecContainerFactoryMethod,
+            SpecContainerFactoryInvocationDefinition SpecContainerFactoryInvocation,
             Location Location) : IDefinition;
 }

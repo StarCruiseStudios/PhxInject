@@ -7,7 +7,16 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model.Definitions {
+    using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Controller;
+    using Phx.Inject.Generator.Model.Descriptors;
+
+    internal delegate InjectorBuilderMethodDefinition CreateInjectorBuilderMethodDefinition(
+            InjectorBuilderMethodDescriptor injectorBuilderMethodDescriptor,
+            InjectorDescriptor injectorDescriptor,
+            IDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations
+    );
 
     internal record InjectorBuilderMethodDefinition(
             TypeModel BuiltType,

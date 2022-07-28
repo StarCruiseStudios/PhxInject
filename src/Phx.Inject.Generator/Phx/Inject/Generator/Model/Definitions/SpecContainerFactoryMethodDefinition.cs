@@ -9,6 +9,13 @@
 namespace Phx.Inject.Generator.Model.Definitions {
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Model.Descriptors;
+
+    internal delegate SpecContainerFactoryMethodDefinition CreateSpecContainerFactoryMethodDefinition(
+            InjectorDescriptor injectorDescriptor,
+            TypeModel specType,
+            SpecFactoryMethodDescriptor specFactoryMethodDescriptor
+    );
 
     internal record SpecContainerFactoryMethodDefinition(
             TypeModel ProvidedType,
