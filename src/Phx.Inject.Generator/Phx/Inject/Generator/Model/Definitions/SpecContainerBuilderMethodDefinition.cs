@@ -8,9 +8,18 @@
 
 namespace Phx.Inject.Generator.Model.Definitions {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Linq;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Controller;
+    using Phx.Inject.Generator.Model.Descriptors;
 
-    internal delegate SpecContainerBuilderMethodDefinition CreateSpecContainerBuilderMethodDefinition();
+    internal delegate SpecContainerBuilderMethodDefinition CreateSpecContainerBuilderMethodDefinition(
+            InjectorDescriptor injectorDescriptor,
+            SpecDescriptor specDescriptor,
+            SpecBuilderMethodDescriptor specBuilderMethodDescriptor,
+            IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
+    );
 
     internal record SpecContainerBuilderMethodDefinition(
             TypeModel BuiltType,
@@ -18,6 +27,67 @@ namespace Phx.Inject.Generator.Model.Definitions {
             string MethodName,
             TypeModel SpecContainerType,
             TypeModel SpecContainerCollectionType,
-            IEnumerable<SpecContainerFactoryMethodDefinition> Arguments,
-            Location Location) : IDefinition;
+            IEnumerable<SpecContainerFactoryInvocationDefinition> Arguments,
+            Location Location) : IDefinition {
+        public class Builder {
+            private readonly CreateSpecReferenceDefinition createSpecReference;
+            private readonly CreateSpecContainerType createSpecContainerType;
+            private readonly CreateSpecContainerCollectionType createSpecContainerCollectionType;
+            private readonly CreateSpecContainerFactoryInvocationDefinition createSpecContainerFactoryInvocation;
+
+            public Builder(
+                    CreateSpecReferenceDefinition createSpecReference,
+                    CreateSpecContainerType createSpecContainerType,
+                    CreateSpecContainerCollectionType createSpecContainerCollectionType,
+                    CreateSpecContainerFactoryInvocationDefinition createSpecContainerFactoryInvocation
+            ) {
+                this.createSpecReference = createSpecReference;
+                this.createSpecContainerType = createSpecContainerType;
+                this.createSpecContainerCollectionType = createSpecContainerCollectionType;
+                this.createSpecContainerFactoryInvocation = createSpecContainerFactoryInvocation;
+            }
+
+            public SpecContainerBuilderMethodDefinition Build(
+                    InjectorDescriptor injectorDescriptor,
+                    SpecDescriptor specDescriptor,
+                    SpecBuilderMethodDescriptor specBuilderMethodDescriptor,
+                    IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
+            ) {
+                var specReference = createSpecReference(specDescriptor);
+                var specContainerType = createSpecContainerType(
+                        injectorDescriptor.InjectorType,
+                        specDescriptor.SpecType);
+                var specContainerCollectionType = createSpecContainerCollectionType(injectorDescriptor.InjectorType);
+
+                var arguments = specBuilderMethodDescriptor.Arguments.Select(
+                        argumentType => {
+                            if (!factoryRegistrations.TryGetValue(
+                                        RegistrationIdentifier.FromQualifiedTypeDescriptor(argumentType),
+                                        out var factoryRegistration)) {
+                                throw new InjectionException(
+                                        Diagnostics.IncompleteSpecification,
+                                        $"Cannot find factory for type {argumentType} required by builder method "
+                                        + $"{specBuilderMethodDescriptor.MethodName} in specification {specDescriptor.SpecType} "
+                                        + $"in injector type {injectorDescriptor.InjectorType}.",
+                                        argumentType.Location);
+                            }
+
+                            return createSpecContainerFactoryInvocation(
+                                    injectorDescriptor,
+                                    factoryRegistration,
+                                    argumentType.Location);
+                        }).ToImmutableList();
+
+                return new SpecContainerBuilderMethodDefinition(
+                        specBuilderMethodDescriptor.BuiltType.TypeModel,
+                        specReference,
+                        specBuilderMethodDescriptor.MethodName,
+                        specContainerType,
+                        specContainerCollectionType,
+                        arguments,
+                        specBuilderMethodDescriptor.Location
+                );
+            }
+        }
+    }
 }

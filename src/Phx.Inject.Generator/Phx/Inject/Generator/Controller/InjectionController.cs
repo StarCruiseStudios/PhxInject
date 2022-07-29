@@ -14,55 +14,49 @@ namespace Phx.Inject.Generator.Controller {
 
     internal class InjectionController {
         public InjectionController() {
-
+            var specReferenceDefinitionBuilder = new SpecReferenceDefinition.Builder();
             var specContainerReferenceBuilder = new SpecContainerReferenceDefinition.Builder(
                     SpecContainerTypeGenerator.CreateSpecContainerType);
 
             var specContainerFactoryInvocationDefinitionBuilder = new SpecContainerFactoryInvocationDefinition.Builder(
                     specContainerReferenceBuilder.Build);
-
-            var specContainerBuilderInvocationDefinitionBuilder = new SpecContainerBuilderInvocationDefinition.Builder(
-                    specContainerReferenceBuilder.Build);
-
-
-            var injectorProviderMethodDefinitionBuilder = new InjectorProviderMethodDefinition.Builder(
-                    specContainerFactoryInvocationDefinitionBuilder.Build);
-
-            var injectorBuilderMethodDefinitionBuilder = new InjectorBuilderMethodDefinition.Builder(
-                    specContainerBuilderInvocationDefinitionBuilder.Build);
-
-            var specContainerCollectionDefinitionBuilder = new SpecContainerCollectionDefinition.Builder(
-                    SpecContainerCollectionTypeGenerator.CreateSpecContainerCollectionType,
-                    specContainerReferenceBuilder.Build);
-
-            var injectorDefinitionBuilder = new InjectorDefinition.Builder(
-                    injectorProviderMethodDefinitionBuilder.Build,
-                    injectorBuilderMethodDefinitionBuilder.Build,
-                    specContainerCollectionDefinitionBuilder.Build);
-
-            var specReferenceDefinitionBuilder = new SpecReferenceDefinition.Builder();
-
             var specContainerFactoryInstanceHolderDefinitionBuilder
                     = new SpecContainerFactoryInstanceHolderDefinition.Builder(
                             InstanceHolderNameGenerator.CreateInstanceHolderName);
 
-            var specContainerFactoryMethodDefinitionBuilder = new SpecContainerFactoryMethodDefinition.Builder(
-                    specReferenceDefinitionBuilder.Build,
-                    SpecContainerTypeGenerator.CreateSpecContainerType,
-                    SpecContainerCollectionTypeGenerator.CreateSpecContainerCollectionType,
-                    specContainerFactoryInstanceHolderDefinitionBuilder.Build,
-                    specContainerFactoryInvocationDefinitionBuilder.Build);
-
-            var specContainerDefinitionBuilder = new SpecContainerDefinition.Builder(
-                    SpecContainerTypeGenerator.CreateSpecContainerType,
-                    specReferenceDefinitionBuilder.Build,
-                    specContainerFactoryInstanceHolderDefinitionBuilder.Build,
-                    specContainerFactoryMethodDefinitionBuilder.Build,
-                    null!);
-
             var injectionContextDefinitionBuilder = new InjectionContextDefinition.Builder(
-                    injectorDefinitionBuilder.Build,
-                    specContainerDefinitionBuilder.Build);
+                    new InjectorDefinition.Builder(
+                            new InjectorProviderMethodDefinition.Builder(
+                                    specContainerFactoryInvocationDefinitionBuilder.Build
+                            ).Build,
+                            new InjectorBuilderMethodDefinition.Builder(
+                                    new SpecContainerBuilderInvocationDefinition.Builder(
+                                            specContainerReferenceBuilder.Build
+                                    ).Build
+                            ).Build,
+                            new SpecContainerCollectionDefinition.Builder(
+                                    SpecContainerCollectionTypeGenerator.CreateSpecContainerCollectionType,
+                                    specContainerReferenceBuilder.Build
+                            ).Build
+                    ).Build,
+                    new SpecContainerDefinition.Builder(
+                            SpecContainerTypeGenerator.CreateSpecContainerType,
+                            specReferenceDefinitionBuilder.Build,
+                            specContainerFactoryInstanceHolderDefinitionBuilder.Build,
+                            new SpecContainerFactoryMethodDefinition.Builder(
+                                    specReferenceDefinitionBuilder.Build,
+                                    SpecContainerTypeGenerator.CreateSpecContainerType,
+                                    SpecContainerCollectionTypeGenerator.CreateSpecContainerCollectionType,
+                                    specContainerFactoryInstanceHolderDefinitionBuilder.Build,
+                                    specContainerFactoryInvocationDefinitionBuilder.Build
+                            ).Build,
+                            new SpecContainerBuilderMethodDefinition.Builder(
+                                    specReferenceDefinitionBuilder.Build,
+                                    SpecContainerTypeGenerator.CreateSpecContainerType,
+                                    SpecContainerCollectionTypeGenerator.CreateSpecContainerCollectionType,
+                                    specContainerFactoryInvocationDefinitionBuilder.Build
+                            ).Build
+                    ).Build);
         }
     }
 }
