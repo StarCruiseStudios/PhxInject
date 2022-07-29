@@ -8,6 +8,11 @@
 
 namespace Phx.Inject.Generator.Model.Templates {
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Model.Definitions;
+
+    internal delegate InjectorBuilderMethodTemplate CreateInjectorBuilderMethodTemplate(
+            InjectorBuilderMethodDefinition injectorBuilderMethodDefinition
+    );
 
     internal record InjectorBuilderMethodTemplate(
             string BuiltTypeQualifiedName,

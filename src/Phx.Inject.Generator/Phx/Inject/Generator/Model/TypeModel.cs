@@ -8,8 +8,10 @@
 
 namespace Phx.Inject.Generator.Model {
     internal record TypeModel(string NamespaceName, string TypeName) {
+        public string QualifiedName => $"{NamespaceName}.{TypeName}";
+
         public override string ToString() {
-            return $"{NamespaceName}.{TypeName}";
+            return QualifiedName;
         }
-    };
+    }
 }

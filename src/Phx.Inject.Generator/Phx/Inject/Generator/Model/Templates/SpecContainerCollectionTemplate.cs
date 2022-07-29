@@ -9,6 +9,11 @@
 namespace Phx.Inject.Generator.Model.Templates {
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Model.Definitions;
+
+    internal delegate SpecContainerCollectionTemplate CreateSpecContainerCollectionTemplate(
+            SpecContainerCollectionDefinition specContainerCollectionDefinition
+    );
 
     internal record SpecContainerCollectionTemplate(
             string SpecContainerCollectionClassName,
