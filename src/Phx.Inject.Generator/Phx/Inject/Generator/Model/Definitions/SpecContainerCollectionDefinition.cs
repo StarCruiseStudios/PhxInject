@@ -17,21 +17,29 @@ namespace Phx.Inject.Generator.Model.Definitions {
             InjectorDescriptor injectorDescriptor);
 
     internal record SpecContainerCollectionDefinition(
+            TypeModel SpecContainerCollectionType,
             IEnumerable<SpecContainerReferenceDefinition> SpecContainerReferences,
             Location Location
     ) : IDefinition {
         public class Builder {
+            private readonly CreateSpecContainerCollectionType createSpecContainerCollectionType;
             private readonly CreateSpecContainerReferenceDefinition createSpecContainerReference;
 
-            public Builder(CreateSpecContainerReferenceDefinition createSpecContainerReference) {
+            public Builder(
+                    CreateSpecContainerCollectionType createSpecContainerCollectionType,
+                    CreateSpecContainerReferenceDefinition createSpecContainerReference
+            ) {
+                this.createSpecContainerCollectionType = createSpecContainerCollectionType;
                 this.createSpecContainerReference = createSpecContainerReference;
             }
 
             public SpecContainerCollectionDefinition Build(InjectorDescriptor injectorDescriptor) {
+                var specContainerCollectionType = createSpecContainerCollectionType(injectorDescriptor.InjectorType);
                 var specContainerReferences = injectorDescriptor.Specifications.Select(
                                 specDescriptor => createSpecContainerReference(injectorDescriptor, specDescriptor))
                         .ToImmutableList();
                 return new SpecContainerCollectionDefinition(
+                        specContainerCollectionType,
                         specContainerReferences,
                         injectorDescriptor.Location);
             }

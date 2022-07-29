@@ -8,9 +8,31 @@
 
 namespace Phx.Inject.Generator.Model.Definitions {
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Model.Descriptors;
+
+    internal delegate SpecContainerFactoryInstanceHolderDefinition CreateSpecContainerFactoryInstanceHolderDefinition(
+            SpecFactoryMethodDescriptor factoryDescriptor
+    );
 
     internal record SpecContainerFactoryInstanceHolderDefinition(
             TypeModel HeldInstanceType,
             string ReferenceName,
-            Location Location) : IDefinition;
+            Location Location
+    ) : IDefinition {
+        public class Builder {
+            private readonly CreateInstanceHolderName createInstanceHolderName;
+
+            public Builder(CreateInstanceHolderName createInstanceHolderName) {
+                this.createInstanceHolderName = createInstanceHolderName;
+            }
+
+            public SpecContainerFactoryInstanceHolderDefinition Build(SpecFactoryMethodDescriptor factoryDescriptor) {
+
+                return new SpecContainerFactoryInstanceHolderDefinition(
+                        factoryDescriptor.ReturnType.TypeModel,
+                        createInstanceHolderName(factoryDescriptor.ReturnType),
+                        factoryDescriptor.Location);
+            }
+        }
+    }
 }

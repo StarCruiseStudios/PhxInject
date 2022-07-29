@@ -10,6 +10,8 @@ namespace Phx.Inject.Generator.Model.Definitions {
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
 
+    internal delegate SpecContainerBuilderMethodDefinition CreateSpecContainerBuilderMethodDefinition();
+
     internal record SpecContainerBuilderMethodDefinition(
             TypeModel BuiltType,
             SpecReferenceDefinition SpecReference,
