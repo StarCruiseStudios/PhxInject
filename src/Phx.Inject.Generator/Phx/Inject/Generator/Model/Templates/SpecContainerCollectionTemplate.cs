@@ -8,6 +8,8 @@
 
 namespace Phx.Inject.Generator.Model.Templates {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Model.Definitions;
 
@@ -17,20 +19,20 @@ namespace Phx.Inject.Generator.Model.Templates {
 
     internal record SpecContainerCollectionTemplate(
             string SpecContainerCollectionClassName,
-            IEnumerable<SpecContainerCollectionPropertyDefinitionTemplate> SpecContainersProperties,
+            IEnumerable<SpecContainerCollectionPropertyDefinitionTemplate> SpecContainerProperties,
             Location Location
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
-            writer.AppendLine(
-                            $"internal record {SpecContainerCollectionClassName} (")
+            writer.AppendLine($"internal record {SpecContainerCollectionClassName} (")
                     .IncreaseIndent(1);
             var isFirst = true;
-            foreach (var SpecContainersProperty in SpecContainersProperties) {
+            foreach (var specContainerProperty in SpecContainerProperties) {
                 if (!isFirst) {
                     writer.AppendLine(",");
                     isFirst = false;
                 }
-                SpecContainersProperty.Render(writer);
+
+                specContainerProperty.Render(writer);
             }
 
             writer.AppendLine(");")
@@ -38,6 +40,28 @@ namespace Phx.Inject.Generator.Model.Templates {
 
             writer.DecreaseIndent(1)
                     .AppendLine("}");
+        }
+
+        public class Builder {
+            private readonly CreateSpecContainerCollectionPropertyDefinitionTemplate
+                    createSpecContainerCollectionPropertyDefinition;
+
+            public Builder(CreateSpecContainerCollectionPropertyDefinitionTemplate createSpecContainerCollectionPropertyDefinition) {
+                this.createSpecContainerCollectionPropertyDefinition = createSpecContainerCollectionPropertyDefinition;
+            }
+
+            public SpecContainerCollectionTemplate Build(
+                    SpecContainerCollectionDefinition specContainerCollectionDefinition
+            ) {
+                var specContainerProperties = specContainerCollectionDefinition.SpecContainerReferences.Select(
+                                specContainerReference => createSpecContainerCollectionPropertyDefinition(specContainerReference))
+                        .ToImmutableList();
+
+                return new SpecContainerCollectionTemplate(
+                        specContainerCollectionDefinition.SpecContainerCollectionType.TypeName,
+                        specContainerProperties,
+                        specContainerCollectionDefinition.Location);
+            }
         }
     }
 }

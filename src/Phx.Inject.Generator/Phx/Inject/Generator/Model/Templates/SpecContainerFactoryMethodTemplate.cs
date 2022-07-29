@@ -10,6 +10,11 @@ namespace Phx.Inject.Generator.Model.Templates {
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Model.Definitions;
+
+    internal delegate SpecContainerFactoryMethodTemplate CreateSpecContainerFactoryMethodTemplate(
+            SpecContainerFactoryMethodDefinition specContainerFactoryMethodDefinition
+    );
 
     internal record SpecContainerFactoryMethodTemplate(
             string ReturnTypeQualifiedName,

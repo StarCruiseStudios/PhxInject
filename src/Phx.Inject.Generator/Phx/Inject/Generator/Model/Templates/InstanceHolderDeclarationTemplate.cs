@@ -8,6 +8,11 @@
 
 namespace Phx.Inject.Generator.Model.Templates {
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Model.Definitions;
+
+    internal delegate InstanceHolderDeclarationTemplate CreateInstanceHolderDeclarationTemplate(
+            SpecContainerFactoryInstanceHolderDefinition instanceHolderDefinition
+    );
 
     internal record InstanceHolderDeclarationTemplate(
             string InstanceQualifiedType,

@@ -8,6 +8,12 @@
 
 namespace Phx.Inject.Generator.Model.Templates {
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Model.Definitions;
+
+    internal delegate SpecContainerCollectionPropertyDefinitionTemplate
+            CreateSpecContainerCollectionPropertyDefinitionTemplate(
+                    SpecContainerReferenceDefinition specContainerReference
+            );
 
     internal record SpecContainerCollectionPropertyDefinitionTemplate(
             string QualifiedSpecContainerTypeName,
@@ -16,6 +22,16 @@ namespace Phx.Inject.Generator.Model.Templates {
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
             writer.Append($"{QualifiedSpecContainerTypeName} {PropertyName} = new {QualifiedSpecContainerTypeName}()");
+        }
+
+        public class Builder {
+            public SpecContainerCollectionPropertyDefinitionTemplate
+                    Build(SpecContainerReferenceDefinition specContainerReference) {
+                return new SpecContainerCollectionPropertyDefinitionTemplate(
+                        specContainerReference.SpecContainerType.QualifiedName,
+                        specContainerReference.ReferenceName,
+                        specContainerReference.Location);
+            }
         }
     }
 }

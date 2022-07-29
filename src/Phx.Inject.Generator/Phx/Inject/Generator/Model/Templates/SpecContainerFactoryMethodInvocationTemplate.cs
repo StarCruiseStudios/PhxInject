@@ -8,16 +8,36 @@
 
 namespace Phx.Inject.Generator.Model.Templates {
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Model.Definitions;
+
+    internal delegate SpecContainerFactoryMethodInvocationTemplate CreateSpecContainerFactoryMethodInvocationTemplate(
+        SpecContainerFactoryInvocationDefinition factoryInvocationDefinition,
+        string specContainerCollectionReferenceName
+    );
 
     internal record SpecContainerFactoryMethodInvocationTemplate(
-            string SpecContainersReferenceName,
+            string SpecContainerCollectionReferenceName,
             string ContainerReferenceName,
             string SpecContainerFactoryMethodName,
             Location Location
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
             writer.Append(
-                    $"{SpecContainersReferenceName}.{ContainerReferenceName}.{SpecContainerFactoryMethodName}({SpecContainersReferenceName})");
+                    $"{SpecContainerCollectionReferenceName}.{ContainerReferenceName}.{SpecContainerFactoryMethodName}({SpecContainerCollectionReferenceName})");
+        }
+
+        public class Builder {
+            public SpecContainerFactoryMethodInvocationTemplate Build(
+                    SpecContainerFactoryInvocationDefinition factoryInvocationDefinition,
+                    string specContainerCollectionReferenceName
+            ) {
+                return new SpecContainerFactoryMethodInvocationTemplate(
+                        specContainerCollectionReferenceName,
+                        factoryInvocationDefinition.ContainerReference.ReferenceName,
+                        factoryInvocationDefinition.FactoryMethodName,
+                        factoryInvocationDefinition.Location
+                );
+            }
         }
     }
 }

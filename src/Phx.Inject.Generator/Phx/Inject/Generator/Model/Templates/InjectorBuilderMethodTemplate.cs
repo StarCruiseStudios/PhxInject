@@ -11,7 +11,8 @@ namespace Phx.Inject.Generator.Model.Templates {
     using Phx.Inject.Generator.Model.Definitions;
 
     internal delegate InjectorBuilderMethodTemplate CreateInjectorBuilderMethodTemplate(
-            InjectorBuilderMethodDefinition injectorBuilderMethodDefinition
+            InjectorBuilderMethodDefinition injectorBuilderMethodDefinition,
+            string specContainerCollectionReferenceName
     );
 
     internal record InjectorBuilderMethodTemplate(
@@ -28,6 +29,34 @@ namespace Phx.Inject.Generator.Model.Templates {
             writer.AppendLine(";")
                     .DecreaseIndent(1)
                     .AppendLine("}");
+        }
+
+        public class Builder {
+            private readonly CreateSpecContainerBuilderMethodInvocationTemplate
+                    createSpecContainerBuilderMethodInvocationTemplate;
+
+            public Builder(CreateSpecContainerBuilderMethodInvocationTemplate createSpecContainerBuilderMethodInvocationTemplate) {
+                this.createSpecContainerBuilderMethodInvocationTemplate = createSpecContainerBuilderMethodInvocationTemplate;
+            }
+
+            public InjectorBuilderMethodTemplate Build(
+                    InjectorBuilderMethodDefinition injectorBuilderMethodDefinition,
+                    string specContainerCollectionReferenceName
+            ) {
+                var builderTargetName = "value";
+                var builderMethodInvocation
+                        = createSpecContainerBuilderMethodInvocationTemplate(
+                                injectorBuilderMethodDefinition.SpecContainerBuilderInvocation,
+                                specContainerCollectionReferenceName,
+                                builderTargetName);
+
+                return new InjectorBuilderMethodTemplate(
+                        injectorBuilderMethodDefinition.BuiltType.QualifiedName,
+                        injectorBuilderMethodDefinition.InjectorMethodName,
+                        builderMethodInvocation,
+                        builderTargetName,
+                        injectorBuilderMethodDefinition.Location);
+            }
         }
     }
 }

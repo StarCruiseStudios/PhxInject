@@ -11,14 +11,27 @@ namespace Phx.Inject.Generator.Presenter {
     using Phx.Inject.Generator.Model.Templates;
 
     internal class InjectorPresenter {
-        public InjectorPresenter(InjectorDefinition injectorDefinition) {
+        public InjectorPresenter(
+                InjectorDefinition injectorDefinition,
+                CreateSpecContainerFactoryMethodInvocationTemplate createSpecContainerFactoryMethodInvocationTemplate
+        ) {
+            // var specContainerFactoryInvocationTemplateBuilder
+            //         = new SpecContainerFactoryMethodInvocationTemplate.Builder();
 
             var injectorTemplateBuilder = new InjectorTemplate.Builder(
-                    null!,
-                    null!,
-                    null!);
+                    new SpecContainerCollectionTemplate.Builder(
+                            new SpecContainerCollectionPropertyDefinitionTemplate.Builder().Build
+                    ).Build,
+                    new InjectorProviderMethodTemplate.Builder(
+                            createSpecContainerFactoryMethodInvocationTemplate
+                    ).Build,
+                    new InjectorBuilderMethodTemplate.Builder(
+                            new SpecContainerBuilderMethodInvocationTemplate.Builder().Build
+                    ).Build
+            );
 
-            new GeneratedFileTemplate(injectorDefinition.InjectorType.NamespaceName,
+            new GeneratedFileTemplate(
+                    injectorDefinition.InjectorType.NamespaceName,
                     injectorTemplateBuilder.Build(injectorDefinition),
                     injectorDefinition.Location
             );

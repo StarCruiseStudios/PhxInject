@@ -8,7 +8,10 @@
 
 namespace Phx.Inject.Generator.Model.Templates {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Linq;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Model.Definitions;
 
     internal record SpecContainerTemplate(
             string SpecContainerClassName,
@@ -26,7 +29,7 @@ namespace Phx.Inject.Generator.Model.Templates {
                 instanceHolderDeclarationTemplate.Render(writer);
             }
 
-            if (ConstructedSpecClassQualifiedName != null) {
+            if (!string.IsNullOrEmpty(ConstructedSpecClassQualifiedName)) {
                 writer.AppendLine(
                                 $"private {ConstructedSpecClassQualifiedName} {ConstructedSpecificationReferenceName};")
                         .AppendBlankLine()
@@ -46,6 +49,53 @@ namespace Phx.Inject.Generator.Model.Templates {
 
             writer.DecreaseIndent(1)
                     .AppendLine("}");
+        }
+
+        public class Builder {
+            private readonly CreateInstanceHolderDeclarationTemplate createInstanceHolderDeclarationTemplate;
+            private readonly CreateSpecContainerFactoryMethodTemplate createSpecContainerFactoryMethodTemplate;
+            private readonly CreateSpecContainerBuilderMethodTemplate createSpecContainerBuilderMethodTemplate;
+
+            public Builder(
+                    CreateInstanceHolderDeclarationTemplate createInstanceHolderDeclarationTemplate,
+                    CreateSpecContainerFactoryMethodTemplate createSpecContainerFactoryMethodTemplate,
+                    CreateSpecContainerBuilderMethodTemplate createSpecContainerBuilderMethodTemplate
+            ) {
+                this.createSpecContainerBuilderMethodTemplate = createSpecContainerBuilderMethodTemplate;
+                this.createSpecContainerFactoryMethodTemplate = createSpecContainerFactoryMethodTemplate;
+                this.createInstanceHolderDeclarationTemplate = createInstanceHolderDeclarationTemplate;
+            }
+
+            public SpecContainerTemplate Build(SpecContainerDefinition specContainerDefinition) {
+                var constructedSpecClassQualifiedName = specContainerDefinition.SpecReference.InstantiationMode switch {
+                    SpecInstantiationMode.Instantiated => specContainerDefinition.SpecReference.SpecType.QualifiedName,
+                    SpecInstantiationMode.Static => "",
+                    _ => throw new InjectionException(
+                            Diagnostics.UnexpectedError,
+                            $"Unhandled SpecInstantiationMode {specContainerDefinition.SpecReference.InstantiationMode}",
+                            specContainerDefinition.Location)
+                };
+
+                var instanceHolderDeclarations = specContainerDefinition.InstanceHolderDeclarations.Select(
+                                instanceHolderDeclaration =>
+                                        createInstanceHolderDeclarationTemplate(instanceHolderDeclaration))
+                        .ToImmutableList();
+
+                var memberTemplates = specContainerDefinition.FactoryMethodDefinitions
+                        .Select(factoryMethod => createSpecContainerFactoryMethodTemplate(factoryMethod))
+                        .Concat<ISpecContainerMemberTemplate>(
+                                specContainerDefinition.BuilderMethodDefinitions
+                                        .Select(builderMethod => createSpecContainerBuilderMethodTemplate(builderMethod)))
+                        .ToImmutableList();
+
+                return new SpecContainerTemplate(
+                        specContainerDefinition.ContainerType.TypeName,
+                        constructedSpecClassQualifiedName,
+                        constructedSpecClassQualifiedName,
+                        instanceHolderDeclarations,
+                        memberTemplates,
+                        specContainerDefinition.Location);
+            }
         }
     }
 }

@@ -11,8 +11,6 @@ namespace Phx.Inject.Generator.Model.Templates {
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Model.Definitions;
 
-    internal delegate InjectorTemplate CreateInjectorTemplate();
-
     internal record InjectorTemplate(
             string InjectorClassName,
             string InjectorInterfaceQualifiedName,
@@ -55,13 +53,14 @@ namespace Phx.Inject.Generator.Model.Templates {
             }
 
             public InjectorTemplate Build(InjectorDefinition injectorDefinition) {
+                var specContainerCollectionReferenceName = "specContainers";
                 var injectorMemberTemplates = new List<IInjectorMemberTemplate>();
                 foreach (var provider in injectorDefinition.ProviderMethods) {
-                    injectorMemberTemplates.Add(createInjectorProviderMethodTemplate(provider));
+                    injectorMemberTemplates.Add(createInjectorProviderMethodTemplate(provider, specContainerCollectionReferenceName));
                 }
 
                 foreach (var builder in injectorDefinition.BuilderMethods) {
-                    injectorMemberTemplates.Add(createInjectorBuilderMethodTemplate(builder));
+                    injectorMemberTemplates.Add(createInjectorBuilderMethodTemplate(builder, specContainerCollectionReferenceName));
                 }
 
                 return new InjectorTemplate(
@@ -69,7 +68,7 @@ namespace Phx.Inject.Generator.Model.Templates {
                         injectorDefinition.InjectorInterfaceType.QualifiedName,
                         createSpecContainerCollectionTemplate(injectorDefinition.SpecContainerCollection),
                         injectorDefinition.SpecContainerCollection.SpecContainerCollectionType.TypeName,
-                        "specContainers",
+                        specContainerCollectionReferenceName,
                         injectorMemberTemplates,
                         injectorDefinition.Location);
             }

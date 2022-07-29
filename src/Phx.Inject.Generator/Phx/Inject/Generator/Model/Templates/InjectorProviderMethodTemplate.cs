@@ -11,7 +11,8 @@ namespace Phx.Inject.Generator.Model.Templates {
     using Phx.Inject.Generator.Model.Definitions;
 
     delegate InjectorProviderMethodTemplate CreateInjectorProviderMethodTemplate(
-            InjectorProviderMethodDefinition injectorProviderMethodDefinition
+            InjectorProviderMethodDefinition injectorProviderMethodDefinition,
+            string specContainerCollectionReferenceName
     );
 
     internal record InjectorProviderMethodTemplate(
@@ -28,6 +29,31 @@ namespace Phx.Inject.Generator.Model.Templates {
             writer.AppendLine(";")
                     .DecreaseIndent(1)
                     .AppendLine("}");
+        }
+
+        public class Builder {
+            private readonly CreateSpecContainerFactoryMethodInvocationTemplate
+                    createSpecContainerFactoryMethodInvocationTemplate;
+
+            public Builder(CreateSpecContainerFactoryMethodInvocationTemplate createSpecContainerFactoryMethodInvocationTemplate) {
+                this.createSpecContainerFactoryMethodInvocationTemplate = createSpecContainerFactoryMethodInvocationTemplate;
+            }
+
+            public InjectorProviderMethodTemplate Build(
+                    InjectorProviderMethodDefinition injectorProviderMethodDefinition,
+                    string specContainerCollectionReferenceName
+            ) {
+                var factoryMethodInvocation
+                        = createSpecContainerFactoryMethodInvocationTemplate(
+                                injectorProviderMethodDefinition.SpecContainerFactoryInvocation,
+                                specContainerCollectionReferenceName);
+
+                return new InjectorProviderMethodTemplate(
+                        injectorProviderMethodDefinition.ProvidedType.QualifiedName,
+                        injectorProviderMethodDefinition.InjectorMethodName,
+                        factoryMethodInvocation,
+                        injectorProviderMethodDefinition.Location);
+            }
         }
     }
 }
