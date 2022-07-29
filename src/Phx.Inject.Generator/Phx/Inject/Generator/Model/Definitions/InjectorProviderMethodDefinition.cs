@@ -22,5 +22,42 @@ namespace Phx.Inject.Generator.Model.Definitions {
             TypeModel ProvidedType,
             string InjectorMethodName,
             SpecContainerFactoryInvocationDefinition SpecContainerFactoryInvocation,
-            Location Location) : IDefinition;
+            Location Location
+    ) : IDefinition {
+        public class Builder {
+            private readonly CreateSpecContainerFactoryInvocationDefinition createSpecContainerFactoryInvocation;
+
+            public Builder(
+                    CreateSpecContainerFactoryInvocationDefinition createSpecContainerFactoryInvocation
+            ) {
+                this.createSpecContainerFactoryInvocation = createSpecContainerFactoryInvocation;
+            }
+
+            public InjectorProviderMethodDefinition Build(
+                    InjectorProviderMethodDescriptor providerDescriptor,
+                    InjectorDescriptor injectorDescriptor,
+                    IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
+            ) {
+                if (!factoryRegistrations.TryGetValue(
+                            RegistrationIdentifier.FromQualifiedTypeDescriptor(providerDescriptor.ProvidedType),
+                            out var factoryRegistration)) {
+                    throw new InjectionException(
+                            Diagnostics.IncompleteSpecification,
+                            $"Cannot find factory for type {providerDescriptor.ProvidedType} required by provider method in injector {injectorDescriptor.InjectorInterface}.",
+                            providerDescriptor.Location);
+                }
+
+                var specContainerFactoryInvocation = createSpecContainerFactoryInvocation(
+                        injectorDescriptor,
+                        factoryRegistration,
+                        providerDescriptor.Location);
+
+                return new InjectorProviderMethodDefinition(
+                        providerDescriptor.ProvidedType.TypeModel,
+                        providerDescriptor.ProviderMethodName,
+                        specContainerFactoryInvocation,
+                        providerDescriptor.Location);
+            }
+        }
+    }
 }

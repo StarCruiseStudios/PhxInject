@@ -11,13 +11,33 @@ namespace Phx.Inject.Generator.Controller {
 
     internal class InjectionController {
         public InjectionController() {
-            var injectorManager = new InjectorDefinition.Builder(
-                    createInjectorProviderMethod: null!,
-                    createInjectorBuilderMethod: null!,
-                    createSpecContainerCollection: null!);
 
-            var injectionContextManager = new InjectionContextDefinition.Builder(
-                    injectorManager.CreateInjectorDefinition,
+            var specContainerReferenceBuilder = new SpecContainerReferenceDefinition.Builder(
+                    SpecContainerTypeGenerator.CreateSpecContainerType);
+
+            var specContainerFactoryInvocationDefinitionBuilder = new SpecContainerFactoryInvocationDefinition.Builder(
+                    specContainerReferenceBuilder.Build);
+
+            var specContainerBuilderInvocationDefinitionBuilder = new SpecContainerBuilderInvocationDefinition.Builder(
+                    specContainerReferenceBuilder.Build);
+
+
+            var injectorProviderMethodDefinitionBuilder = new InjectorProviderMethodDefinition.Builder(
+                    specContainerFactoryInvocationDefinitionBuilder.Build);
+
+            var injectorBuilderMethodDefinitionBuilder = new InjectorBuilderMethodDefinition.Builder(
+                    specContainerBuilderInvocationDefinitionBuilder.Build);
+
+            var specContainerCollectionDefinitionBuilder = new SpecContainerCollectionDefinition.Builder(
+                    specContainerReferenceBuilder.Build);
+
+            var injectorDefinitionBuilder = new InjectorDefinition.Builder(
+                    injectorProviderMethodDefinitionBuilder.Build,
+                    injectorBuilderMethodDefinitionBuilder.Build,
+                    specContainerCollectionDefinitionBuilder.Build);
+
+            var injectionContextDefinitionBuilder = new InjectionContextDefinition.Builder(
+                    injectorDefinitionBuilder.Build,
                     createSpecContainer: null!);
         }
     }

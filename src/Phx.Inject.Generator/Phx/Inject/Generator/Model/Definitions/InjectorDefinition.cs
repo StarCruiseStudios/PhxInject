@@ -43,7 +43,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
                 this.createSpecContainerCollection = createSpecContainerCollection;
             }
 
-            public InjectorDefinition CreateInjectorDefinition(
+            public InjectorDefinition Build(
                     InjectorDescriptor injectorDescriptor,
                     IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations,
                     IDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations
@@ -61,9 +61,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
                                         builderRegistrations))
                         .ToImmutableList();
 
-                var specContainerCollection = createSpecContainerCollection(
-                        injectorDescriptor,
-                        factoryRegistrations);
+                var specContainerCollection = createSpecContainerCollection(injectorDescriptor);
 
                 return new InjectorDefinition(
                         InjectorType: injectorDescriptor.InjectorType,

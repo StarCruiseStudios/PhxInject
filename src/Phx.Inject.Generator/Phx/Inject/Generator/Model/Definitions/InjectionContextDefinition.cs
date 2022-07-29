@@ -31,7 +31,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
                 this.createSpecContainer = createSpecContainer;
             }
 
-            public InjectionContextDefinition CreateInjectionContext(InjectorDescriptor injectorDescriptor) {
+            public InjectionContextDefinition Build(InjectorDescriptor injectorDescriptor) {
                 IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
                         = new Dictionary<RegistrationIdentifier, FactoryRegistration>();
                 IDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations
