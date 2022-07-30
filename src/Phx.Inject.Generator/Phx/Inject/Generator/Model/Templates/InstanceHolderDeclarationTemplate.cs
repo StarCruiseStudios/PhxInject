@@ -22,5 +22,16 @@ namespace Phx.Inject.Generator.Model.Templates {
         public void Render(IRenderWriter writer) {
             writer.AppendLine($"private {InstanceQualifiedType}? {ReferenceName};");
         }
+
+        public class Builder {
+            public InstanceHolderDeclarationTemplate Build(
+                    SpecContainerFactoryInstanceHolderDefinition instanceHolderDefinition
+            ) {
+                return new InstanceHolderDeclarationTemplate(
+                        instanceHolderDefinition.HeldInstanceType.QualifiedName,
+                        instanceHolderDefinition.ReferenceName,
+                        instanceHolderDefinition.Location);
+            }
+        }
     }
 }

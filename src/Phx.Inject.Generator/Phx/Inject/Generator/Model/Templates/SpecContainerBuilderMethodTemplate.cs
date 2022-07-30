@@ -8,6 +8,7 @@
 
 namespace Phx.Inject.Generator.Model.Templates {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Model.Definitions;
@@ -31,29 +32,52 @@ namespace Phx.Inject.Generator.Model.Templates {
                     .AppendLine($"{BuiltTypeQualifiedName} {BuiltInstanceReferenceName}, {SpecContainerCollectionQualifiedType} {SpecContainerCollectionReferenceName}) {{")
                     .IncreaseIndent(1);
 
-            writer.Append($"{SpecificationQualifiedType}.{BuilderMethodName}(");
-            var numArguments = Arguments.Count();
-            if (numArguments == 0) {
-                writer.AppendLine("();");
-            } else {
-                writer.AppendLine("(")
-                        .IncreaseIndent(1);
-                var isFirst = true;
-                foreach (var argument in Arguments) {
-                    if (!isFirst) {
-                        writer.AppendLine(",");
-                    }
+            writer.AppendLine($"{SpecificationQualifiedType}.{BuilderMethodName}(")
+                    .IncreaseIndent(1)
+                    .Append($"{BuiltInstanceReferenceName}");
 
-                    isFirst = false;
+            var numArguments = Arguments.Count();
+            if (numArguments > 0) {
+                foreach (var argument in Arguments) {
+                    writer.AppendLine(",");
                     argument.Render(writer);
                 }
-
-                writer.AppendLine(");")
-                        .DecreaseIndent(1);
             }
 
-            writer.DecreaseIndent(1)
+            writer.AppendLine(");")
+                    .DecreaseIndent(2)
                     .AppendLine("}");
+        }
+
+        public class Builder {
+            private readonly CreateSpecContainerFactoryMethodInvocationTemplate
+                    createSpecContainerFactoryMethodInvocationTemplate;
+
+            public Builder(CreateSpecContainerFactoryMethodInvocationTemplate createSpecContainerFactoryMethodInvocationTemplate) {
+                this.createSpecContainerFactoryMethodInvocationTemplate = createSpecContainerFactoryMethodInvocationTemplate;
+            }
+
+            public SpecContainerBuilderMethodTemplate Build(
+                    SpecContainerBuilderMethodDefinition specContainerBuilderMethodDefinition
+            ) {
+                var specContainerCollectionReferenceName = "specContainers";
+                var builtInstanceReferenceName = "value";
+                var arguments = specContainerBuilderMethodDefinition.Arguments.Select(
+                                argument => createSpecContainerFactoryMethodInvocationTemplate(
+                                        argument,
+                                        specContainerCollectionReferenceName))
+                        .ToImmutableList();
+
+                return new SpecContainerBuilderMethodTemplate(
+                        specContainerBuilderMethodDefinition.BuiltType.QualifiedName,
+                        specContainerBuilderMethodDefinition.MethodName,
+                        builtInstanceReferenceName,
+                        specContainerBuilderMethodDefinition.SpecReference.SpecType.QualifiedName,
+                        specContainerBuilderMethodDefinition.SpecContainerCollectionType.QualifiedName,
+                        specContainerCollectionReferenceName,
+                        arguments,
+                        specContainerBuilderMethodDefinition.Location);
+            }
         }
     }
 }

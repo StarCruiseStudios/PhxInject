@@ -16,9 +16,13 @@ namespace Phx.Inject.Generator.Presenter {
                 CreateSpecContainerFactoryMethodInvocationTemplate createSpecContainerFactoryMethodInvocationTemplate
         ) {
             var specContainerTemplateBuilder = new SpecContainerTemplate.Builder(
-                    null!,
-                    null!,
-                    null!
+                    new InstanceHolderDeclarationTemplate.Builder().Build,
+                    new SpecContainerFactoryMethodTemplate.Builder(
+                            createSpecContainerFactoryMethodInvocationTemplate
+                    ).Build,
+                    new SpecContainerBuilderMethodTemplate.Builder(
+                            createSpecContainerFactoryMethodInvocationTemplate
+                    ).Build
             );
 
             new GeneratedFileTemplate(

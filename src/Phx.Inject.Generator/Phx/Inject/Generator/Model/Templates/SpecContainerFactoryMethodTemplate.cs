@@ -8,6 +8,7 @@
 
 namespace Phx.Inject.Generator.Model.Templates {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Model.Definitions;
@@ -31,7 +32,7 @@ namespace Phx.Inject.Generator.Model.Templates {
                     .AppendLine($"{SpecContainerCollectionQualifiedType} {SpecContainerCollectionReferenceName}) {{")
                     .IncreaseIndent(1)
                     .Append("return ");
-            if (InstanceHolderReference is not null) {
+            if (!string.IsNullOrEmpty(InstanceHolderReference)) {
                 writer.Append($"{InstanceHolderReference} ??= ");
             }
 
@@ -58,6 +59,38 @@ namespace Phx.Inject.Generator.Model.Templates {
 
             writer.DecreaseIndent(1)
                     .AppendLine("}");
+        }
+
+        public class Builder {
+            private readonly CreateSpecContainerFactoryMethodInvocationTemplate
+                    createSpecContainerFactoryMethodInvocationTemplate;
+
+            public Builder(CreateSpecContainerFactoryMethodInvocationTemplate createSpecContainerFactoryMethodInvocationTemplate) {
+                this.createSpecContainerFactoryMethodInvocationTemplate = createSpecContainerFactoryMethodInvocationTemplate;
+            }
+
+            public SpecContainerFactoryMethodTemplate Build(
+                    SpecContainerFactoryMethodDefinition specContainerFactoryMethodDefinition
+            ) {
+                var specContainerCollectionReferenceName = "specContainers";
+                var instanceHolderReference = specContainerFactoryMethodDefinition.InstanceHolder?.ReferenceName ?? "";
+
+                var arguments = specContainerFactoryMethodDefinition.Arguments.Select(
+                        argument => createSpecContainerFactoryMethodInvocationTemplate(
+                                argument,
+                                specContainerCollectionReferenceName))
+                        .ToImmutableList();
+
+                return new SpecContainerFactoryMethodTemplate(
+                        specContainerFactoryMethodDefinition.ProvidedType.QualifiedName,
+                        specContainerFactoryMethodDefinition.MethodName,
+                        specContainerFactoryMethodDefinition.SpecReference.SpecType.QualifiedName,
+                        specContainerFactoryMethodDefinition.SpecContainerCollectionType.QualifiedName,
+                        specContainerCollectionReferenceName,
+                        instanceHolderReference,
+                        arguments,
+                        specContainerFactoryMethodDefinition.Location);
+            }
         }
     }
 }
