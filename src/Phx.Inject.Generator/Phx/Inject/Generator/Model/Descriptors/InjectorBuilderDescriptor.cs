@@ -7,7 +7,9 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model.Descriptors {
+    using System.Linq;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Input;
 
     internal delegate InjectorBuilderDescriptor? CreateInjectorBuilderDescriptor(
             IMethodSymbol builderMethod
@@ -20,7 +22,25 @@ namespace Phx.Inject.Generator.Model.Descriptors {
     ) : IDescriptor {
         public class Builder {
             public InjectorBuilderDescriptor? Build(IMethodSymbol builderMethod) {
-                return null;
+                if (!builderMethod.ReturnsVoid) {
+                    // This is a provider not a builder.
+                    return null;
+                }
+
+                if (builderMethod.Parameters.Length != 1) {
+                    // I don't know what this is, but it's not a builder.
+                    return null;
+                }
+
+                var builtType = TypeModel.FromTypeSymbol(builderMethod.Parameters[0].Type);
+                var qualifier = SymbolProcessors.GetQualifier(builderMethod);
+                return new InjectorBuilderDescriptor(
+                        new QualifiedTypeDescriptor(
+                                builtType,
+                                qualifier,
+                                builderMethod.Parameters[0].Locations.Single()),
+                        builderMethod.Name,
+                        builderMethod.Locations.Single());
             }
         }
     }
