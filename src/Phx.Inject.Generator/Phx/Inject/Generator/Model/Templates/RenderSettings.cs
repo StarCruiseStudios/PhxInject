@@ -8,5 +8,8 @@
 
 namespace Phx.Inject.Generator.Model.Templates {
     internal record RenderSettings(
-            bool NullableEnabled = true);
+            int TabSize = 4,
+            bool NullableEnabled = true,
+            bool ShouldWriteFiles = false,
+            string OutputPath = "");
 }

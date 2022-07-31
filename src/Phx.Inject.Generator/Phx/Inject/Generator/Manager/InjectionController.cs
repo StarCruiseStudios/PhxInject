@@ -6,13 +6,20 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Controller {
+namespace Phx.Inject.Generator.Manager {
     using Phx.Inject.Generator.Model.Definitions;
+    using Phx.Inject.Generator.Model.Descriptors;
     using InjectorBuilderMethodDefinition = Phx.Inject.Generator.Model.Definitions.InjectorBuilderMethodDefinition;
     using InjectorDefinition = Phx.Inject.Generator.Model.Definitions.InjectorDefinition;
     using SpecContainerDefinition = Phx.Inject.Generator.Model.Definitions.SpecContainerDefinition;
 
     internal class InjectionController {
+        private readonly CreateInjectionContextDefinition createInjectionContextDefinition;
+
+        public InjectionController(CreateInjectionContextDefinition createInjectionContextDefinition) {
+            this.createInjectionContextDefinition = createInjectionContextDefinition;
+        }
+
         public InjectionController() {
             var specReferenceDefinitionBuilder = new SpecReferenceDefinition.Builder();
             var specContainerReferenceBuilder = new SpecContainerReferenceDefinition.Builder(
@@ -24,7 +31,7 @@ namespace Phx.Inject.Generator.Controller {
                     = new SpecContainerFactoryInstanceHolderDefinition.Builder(
                             InstanceHolderNameGenerator.CreateInstanceHolderName);
 
-            var injectionContextDefinitionBuilder = new InjectionContextDefinition.Builder(
+            createInjectionContextDefinition = new InjectionContextDefinition.Builder(
                     new InjectorDefinition.Builder(
                             new InjectorProviderMethodDefinition.Builder(
                                     specContainerFactoryInvocationDefinitionBuilder.Build
@@ -56,7 +63,11 @@ namespace Phx.Inject.Generator.Controller {
                                     SpecContainerCollectionTypeGenerator.CreateSpecContainerCollectionType,
                                     specContainerFactoryInvocationDefinitionBuilder.Build
                             ).Build
-                    ).Build);
+                    ).Build).Build;
+        }
+
+        public InjectionContextDefinition Map(InjectorDescriptor injectorDescriptor) {
+            return createInjectionContextDefinition(injectorDescriptor);
         }
     }
 }

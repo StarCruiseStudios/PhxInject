@@ -13,6 +13,8 @@ namespace Phx.Inject.Generator.Model.Descriptors {
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Input;
 
+    internal delegate SpecDescriptor CreateSpecDescriptor(ITypeSymbol specSymbol);
+
     internal record SpecDescriptor(
             TypeModel SpecType,
             SpecInstantiationMode InstantiationMode,

@@ -14,6 +14,9 @@ namespace Phx.Inject.Generator.Model.Definitions {
     using Phx.Inject.Generator.Controller;
     using Phx.Inject.Generator.Model.Descriptors;
 
+    internal delegate InjectionContextDefinition
+            CreateInjectionContextDefinition(InjectorDescriptor injectorDescriptor);
+
     internal record InjectionContextDefinition(
             InjectorDefinition Injector,
             IEnumerable<SpecContainerDefinition> SpecContainers,

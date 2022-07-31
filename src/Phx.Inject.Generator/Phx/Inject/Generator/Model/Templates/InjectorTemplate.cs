@@ -11,6 +11,8 @@ namespace Phx.Inject.Generator.Model.Templates {
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Model.Definitions;
 
+    internal delegate InjectorTemplate CreateInjectorTemplate(InjectorDefinition injectorDefinition);
+
     internal record InjectorTemplate(
             string InjectorClassName,
             string InjectorInterfaceQualifiedName,

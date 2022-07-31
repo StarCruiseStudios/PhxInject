@@ -15,63 +15,17 @@ namespace Phx.Inject.Generator {
     using System;
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Construct;
-    using Phx.Inject.Generator.Construct.Definitions;
-    using Phx.Inject.Generator.Extract;
-    using Phx.Inject.Generator.Extract.Model;
-    using Phx.Inject.Generator.Map;
+    using Phx.Inject.Generator.Input;
+    using Phx.Inject.Generator.Manager;
+    using Phx.Inject.Generator.Model;
+    using Phx.Inject.Generator.Model.Descriptors;
+    using Phx.Inject.Generator.Model.Templates;
+    using Phx.Inject.Generator.Presenter;
     using Phx.Inject.Generator.Render;
-    using Phx.Inject.Generator.Render.Templates;
 
     [Generator]
     internal class SourceGenerator : ISourceGenerator {
         private const string GeneratedFileExtension = "generated.cs";
-
-        private IModelExtractor<SpecificationModel> SpecificationExtractor { get; }
-        private IModelExtractor<InjectorModel> InjectorExtractor { get; }
-        private IInjectionMapper InjectionMapper { get; }
-        private IFileTemplateBuilder<SpecContainerDefinition> SpecContainerTemplateBuilder { get; }
-        private IFileTemplateBuilder<InjectorDefinition> InjectorTemplateBuilder { get; }
-
-        private ITemplateRenderer TemplateRenderer { get; }
-
-        public SourceGenerator(
-                IModelExtractor<SpecificationModel> specificationExtractor,
-                IModelExtractor<InjectorModel> injectorExtractor,
-                IInjectionMapper injectionMapper,
-                IFileTemplateBuilder<SpecContainerDefinition> specContainerTemplateBuilder,
-                IFileTemplateBuilder<InjectorDefinition> injectorTemplateBuilder,
-                ITemplateRenderer templateRenderer
-        ) {
-            SpecificationExtractor = specificationExtractor;
-            InjectorExtractor = injectorExtractor;
-            InjectionMapper = injectionMapper;
-            SpecContainerTemplateBuilder = specContainerTemplateBuilder;
-            InjectorTemplateBuilder = injectorTemplateBuilder;
-            TemplateRenderer = templateRenderer;
-        }
-
-        public SourceGenerator() : this(
-                new ModelExtractor<SpecificationModel>(
-                        new SpecificationSymbolRecognizer(),
-                        new SpecificationModelBuilder()),
-                new ModelExtractor<InjectorModel>(
-                        new InjectorSymbolRecognizer(),
-                        new InjectorModelBuilder()),
-                new InjectionMapper(
-                        new InjectorMapper(),
-                        new SpecContainerMapper()),
-                new SpecContainerTemplateBuilder(
-                        new InstanceHolderDeclarationTemplateBuilder(),
-                        new FactoryMethodContainerTemplateBuilder(
-                                new FactoryMethodContainerInvocationTemplateBuilder()),
-                        new BuilderMethodContainerTemplateBuilder(
-                                new FactoryMethodContainerInvocationTemplateBuilder())),
-                new InjectorTemplateBuilder(
-                        new InjectorMethodTemplateBuilder(new FactoryMethodContainerInvocationTemplateBuilder()),
-                        new InjectorBuilderMethodTemplateBuilder(
-                                new BuilderMethodContainerInvocationTemplateBuilder())),
-                new TemplateRenderer(() => new RenderWriter())) { }
 
         public void Initialize(GeneratorInitializationContext context) {
 #if ATTACH_DEBUGGER
@@ -84,41 +38,73 @@ namespace Phx.Inject.Generator {
         }
 
         public void Execute(GeneratorExecutionContext context) {
+            var injectorExtractor = new InjectorExtractor();
+            var specExtractor = new SpecExtractor();
+
+            var injectionController = new InjectionController();
+
+            var injectorPresenter = new InjectorPresenter();
+            var specContainerPresenter = new SpecContainerPresenter();
+
+            var renderSettings = new RenderSettings();
+            var templateRenderer = new TemplateRenderer(() => new RenderWriter(renderSettings));
+
             try {
                 var syntaxReceiver = context.SyntaxReceiver as InjectorSyntaxReceiver
-                        ?? throw new InvalidOperationException(
-                                "Incorrect Syntax Receiver."); // This should never happen.
+                        ?? throw new InjectionException(
+                                Diagnostics.InvalidSpecification,
+                                $"Incorrect Syntax Receiver {context.SyntaxReceiver}.",
+                                Location.None);
 
-                // Extract
-                var injectorModels = InjectorExtractor.Extract(syntaxReceiver.InjectorCandidates, context);
-                Logger.Info($"Discovered {injectorModels.Count} injectors.");
+                // Extract: SyntaxDeclarations to Descriptors
+                var specDescriptors = specExtractor.Extract(
+                        syntaxReceiver.SpecificationCandidates,
+                        context);
+                Logger.Info($"Discovered {specDescriptors.Count} specifications.");
 
-                var specModels = SpecificationExtractor.Extract(syntaxReceiver.SpecificationCandidates, context);
-                Logger.Info($"Discovered {specModels.Count} specifications.");
+                var specDescriptorMap = new Dictionary<TypeModel, SpecDescriptor>();
+                foreach (var specDescriptor in specDescriptors) {
+                    if (specDescriptorMap.ContainsKey(specDescriptor.SpecType)) {
+                        throw new InjectionException(
+                                Diagnostics.InvalidSpecification,
+                                $"Specification for type {specDescriptor.SpecType} is already defined.",
+                                specDescriptor.Location);
+                    }
 
-                foreach (var injectorModel in injectorModels) {
-                    // Map
-                    var injectionDefinition = InjectionMapper.MapToDefinition(injectorModel, specModels);
+                    specDescriptorMap.Add(specDescriptor.SpecType, specDescriptor);
+                }
 
-                    // Construct
-                    var templates = new List<(TypeDefinition, IRenderTemplate)>();
-                    foreach (var specDefinition in injectionDefinition.SpecContainers) {
+                var injectorDescriptors = injectorExtractor.Extract(
+                        syntaxReceiver.InjectorCandidates,
+                        context,
+                        specDescriptorMap);
+                Logger.Info($"Discovered {injectorDescriptors.Count} injectors.");
+
+                foreach (var injectorDescriptor in injectorDescriptors) {
+                    // Map: Descriptors to Definitions
+                    var injectionContextDefinition = injectionController.Map(injectorDescriptor);
+
+                    // Construct: Definitions to Templates
+                    var injectorDefinition = injectionContextDefinition.Injector;
+                    var templates = new List<(TypeModel, IRenderTemplate)>();
+                    foreach (var specContainerDefinition in injectionContextDefinition.SpecContainers) {
                         templates.Add(
-                                (specDefinition.ContainerType, SpecContainerTemplateBuilder.Build(specDefinition)));
+                                (specContainerDefinition.ContainerType,
+                                        specContainerPresenter.Generate(specContainerDefinition)));
                         Logger.Info(
-                                $"Generated spec container {specDefinition.ContainerType.Name} for injector {injectorModel.InjectorType.Name}.");
+                                $"Generated spec container {specContainerDefinition.ContainerType} for injector {injectorDefinition.InjectorType}.");
                     }
 
                     templates.Add(
-                            (injectorModel.InjectorType.ToTypeDefinition(),
-                                    InjectorTemplateBuilder.Build(injectionDefinition.Injector)));
-                    Logger.Info($"Generated injector {injectorModel.InjectorType.Name}.");
+                            (injectorDefinition.InjectorType,
+                                    injectorPresenter.Generate(injectorDefinition)));
+                    Logger.Info($"Generated injector {injectorDefinition.InjectorType}.");
 
-                    // Render
+                    // Render: Templates to Source.
                     foreach (var (classType, template) in templates) {
                         var fileName = $"{classType.QualifiedName}.{GeneratedFileExtension}";
                         Logger.Info($"Rendering source for {fileName}");
-                        TemplateRenderer.RenderTemplate(fileName, template, context);
+                        templateRenderer.RenderTemplate(fileName, template, context);
                     }
                 }
             } catch (InjectionException ex) {

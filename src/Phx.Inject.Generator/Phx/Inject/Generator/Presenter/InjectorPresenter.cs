@@ -11,28 +11,25 @@ namespace Phx.Inject.Generator.Presenter {
     using Phx.Inject.Generator.Model.Templates;
 
     internal class InjectorPresenter {
-        public InjectorPresenter(
-                InjectorDefinition injectorDefinition,
-                CreateSpecContainerFactoryMethodInvocationTemplate createSpecContainerFactoryMethodInvocationTemplate
-        ) {
-            // var specContainerFactoryInvocationTemplateBuilder
-            //         = new SpecContainerFactoryMethodInvocationTemplate.Builder();
+        private readonly CreateInjectorTemplate createInjectorTemplate;
 
-            var injectorTemplateBuilder = new InjectorTemplate.Builder(
-                    new SpecContainerCollectionTemplate.Builder(
-                            new SpecContainerCollectionPropertyDefinitionTemplate.Builder().Build
-                    ).Build,
-                    new InjectorProviderMethodTemplate.Builder(
-                            createSpecContainerFactoryMethodInvocationTemplate
-                    ).Build,
-                    new InjectorBuilderMethodTemplate.Builder(
-                            new SpecContainerBuilderMethodInvocationTemplate.Builder().Build
-                    ).Build
-            );
+        public InjectorPresenter(CreateInjectorTemplate createInjectorTemplate) {
+            this.createInjectorTemplate = createInjectorTemplate;
+        }
 
-            new GeneratedFileTemplate(
+        public InjectorPresenter() : this(
+                new InjectorTemplate.Builder(
+                        new SpecContainerCollectionTemplate.Builder(
+                                new SpecContainerCollectionPropertyDefinitionTemplate.Builder().Build).Build,
+                        new InjectorProviderMethodTemplate.Builder(
+                                new SpecContainerFactoryMethodInvocationTemplate.Builder().Build).Build,
+                        new InjectorBuilderMethodTemplate.Builder(
+                                new SpecContainerBuilderMethodInvocationTemplate.Builder().Build).Build).Build) { }
+
+        public IRenderTemplate Generate(InjectorDefinition injectorDefinition) {
+            return new GeneratedFileTemplate(
                     injectorDefinition.InjectorType.NamespaceName,
-                    injectorTemplateBuilder.Build(injectorDefinition),
+                    createInjectorTemplate(injectorDefinition),
                     injectorDefinition.Location
             );
         }

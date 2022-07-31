@@ -7,6 +7,9 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model.Templates {
+
+    internal delegate IRenderWriter CreateRenderWriter();
+
     internal interface IRenderWriter {
         RenderSettings Settings { get; }
         IRenderWriter IncreaseIndent(int tabs);

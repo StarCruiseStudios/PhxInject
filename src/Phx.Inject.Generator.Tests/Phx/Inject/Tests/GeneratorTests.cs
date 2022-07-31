@@ -30,53 +30,38 @@ namespace Phx.Inject.Tests {
                     "Phx.Inject.Tests.Data.Inject",
                     _ => {
                         var phxNamespace = compilation.GlobalNamespace.GetMembers("Phx")
-                                .Single() as INamespaceSymbol;
+                                .FirstOrDefault() as INamespaceSymbol;
                         Verify.That(phxNamespace.IsNotNull());
                         var injectNamespace = phxNamespace!.GetMembers("Inject")
-                                .Single() as INamespaceSymbol;
+                                .FirstOrDefault() as INamespaceSymbol;
                         Verify.That(injectNamespace.IsNotNull());
                         var testsNamespace = injectNamespace!.GetMembers("Tests")
-                                .Single() as INamespaceSymbol;
+                                .FirstOrDefault() as INamespaceSymbol;
                         Verify.That(testsNamespace.IsNotNull());
                         var dataNamespace = testsNamespace!.GetMembers("Data")
-                                .Single() as INamespaceSymbol;
+                                .FirstOrDefault() as INamespaceSymbol;
                         Verify.That(dataNamespace.IsNotNull());
                         var innerInjectNamespace = dataNamespace!.GetMembers("Inject")
-                                .Single() as INamespaceSymbol;
+                                .FirstOrDefault() as INamespaceSymbol;
                         Verify.That(innerInjectNamespace.IsNotNull());
                         return innerInjectNamespace;
                     });
 
-            Then(
-                    "The namespace contains the expected generated injector.",
-                    "CustomInjector",
-                    expected => {
-                        var customInjector = injectorNamespace!.GetTypeMembers(expected)
-                                .Single();
-                        Verify.That(
-                                customInjector.Locations.Single()
-                                        .IsInSource.IsTrue());
-                    });
+            ThenTheNamespaceContainsTheExpectedGeneratedInjector(injectorNamespace!, "CustomInjector");
+            ThenTheNamespaceContainsTheExpectedGeneratedInjector(injectorNamespace!, "GeneratedLabelInjector");
+            ThenTheNamespaceContainsTheExpectedGeneratedInjector(injectorNamespace!, "GeneratedRawInjector");
+        }
 
+        private void ThenTheNamespaceContainsTheExpectedGeneratedInjector(INamespaceSymbol injectorNamespace, string expectedGeneratorName) {
             Then(
                     "The namespace contains the expected generated injector.",
-                    "GeneratedLabelInjector",
+                    expectedGeneratorName,
                     expected => {
                         var customInjector = injectorNamespace!.GetTypeMembers(expected)
-                                .Single();
+                                .FirstOrDefault();
+                        Verify.That(customInjector.IsNotNull());
                         Verify.That(
-                                customInjector.Locations.Single()
-                                        .IsInSource.IsTrue());
-                    });
-
-            Then(
-                    "The namespace contains the expected generated injector.",
-                    "GeneratedRawInjector",
-                    expected => {
-                        var customInjector = injectorNamespace!.GetTypeMembers(expected)
-                                .Single();
-                        Verify.That(
-                                customInjector.Locations.Single()
+                                customInjector!.Locations.Single()
                                         .IsInSource.IsTrue());
                     });
         }

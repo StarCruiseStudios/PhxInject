@@ -13,6 +13,8 @@ namespace Phx.Inject.Generator.Model.Templates {
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Model.Definitions;
 
+    internal delegate SpecContainerTemplate CreateSpecContainerTemplate(SpecContainerDefinition specContainerDefinition);
+
     internal record SpecContainerTemplate(
             string SpecContainerClassName,
             string? ConstructedSpecClassQualifiedName,

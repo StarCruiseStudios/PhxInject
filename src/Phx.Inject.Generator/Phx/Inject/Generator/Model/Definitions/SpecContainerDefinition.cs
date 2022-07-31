@@ -8,6 +8,7 @@
 
 namespace Phx.Inject.Generator.Model.Definitions {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Controller;
@@ -59,13 +60,31 @@ namespace Phx.Inject.Generator.Model.Definitions {
                         specDescriptor.SpecType);
                 var specReference = createSpecReference(specDescriptor);
 
-                var instanceHolders = new List<SpecContainerFactoryInstanceHolderDefinition>();
-                var factoryMethods = new List<SpecContainerFactoryMethodDefinition>();
-                var builderMethods = new List<SpecContainerBuilderMethodDefinition>();
+                var instanceHolders = specDescriptor.Factories.Where(
+                                factory => factory.FabricationMode == SpecFactoryMethodFabricationMode.Scoped)
+                        .Select(factory => createSpecContainerFactoryInstanceHolder(factory))
+                        .ToImmutableList();
 
+                var factoryMethods = specDescriptor.Factories
+                        .Select(factory => createSpecContainerFactoryMethod(injectorDescriptor, specDescriptor, factory, factoryRegistrations))
+                        .ToImmutableList();
 
+                var builderMethods = specDescriptor.Builders
+                        .Select(
+                                builder => createSpecContainerBuilderMethod(
+                                        injectorDescriptor,
+                                        specDescriptor,
+                                        builder,
+                                        factoryRegistrations))
+                        .ToImmutableList();
 
-                return null!;
+                return new SpecContainerDefinition(
+                        specContainerType,
+                        specReference,
+                        instanceHolders,
+                        factoryMethods,
+                        builderMethods,
+                        specDescriptor.Location);
             }
         }
     }

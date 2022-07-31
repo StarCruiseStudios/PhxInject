@@ -13,6 +13,11 @@ namespace Phx.Inject.Generator.Model.Descriptors {
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Input;
 
+    internal delegate InjectorDescriptor CreateInjectorDescriptor(
+            ITypeSymbol injectorInterfaceSymbol,
+            IReadOnlyDictionary<TypeModel, SpecDescriptor> specDescriptors
+    );
+
     internal record InjectorDescriptor(
             TypeModel InjectorType,
             TypeModel InjectorInterfaceType,

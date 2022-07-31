@@ -11,23 +11,27 @@ namespace Phx.Inject.Generator.Presenter {
     using Phx.Inject.Generator.Model.Templates;
 
     internal class SpecContainerPresenter {
-        public SpecContainerPresenter(
-                SpecContainerDefinition specContainerDefinition,
-                CreateSpecContainerFactoryMethodInvocationTemplate createSpecContainerFactoryMethodInvocationTemplate
-        ) {
-            var specContainerTemplateBuilder = new SpecContainerTemplate.Builder(
-                    new InstanceHolderDeclarationTemplate.Builder().Build,
-                    new SpecContainerFactoryMethodTemplate.Builder(
-                            createSpecContainerFactoryMethodInvocationTemplate
-                    ).Build,
-                    new SpecContainerBuilderMethodTemplate.Builder(
-                            createSpecContainerFactoryMethodInvocationTemplate
-                    ).Build
-            );
+        private readonly CreateSpecContainerTemplate createSpecContainerTemplate;
 
-            new GeneratedFileTemplate(
+        public SpecContainerPresenter(CreateSpecContainerTemplate createSpecContainerTemplate) {
+            this.createSpecContainerTemplate = createSpecContainerTemplate;
+        }
+
+        public SpecContainerPresenter() {
+            CreateSpecContainerFactoryMethodInvocationTemplate createSpecContainerFactoryInvocation
+                    = new SpecContainerFactoryMethodInvocationTemplate.Builder().Build;
+
+            createSpecContainerTemplate = new SpecContainerTemplate.Builder(
+                    new InstanceHolderDeclarationTemplate.Builder().Build,
+                    new SpecContainerFactoryMethodTemplate.Builder(createSpecContainerFactoryInvocation).Build,
+                    new SpecContainerBuilderMethodTemplate.Builder(createSpecContainerFactoryInvocation).Build
+            ).Build;
+        }
+
+        public IRenderTemplate Generate(SpecContainerDefinition specContainerDefinition) {
+            return new GeneratedFileTemplate(
                     specContainerDefinition.ContainerType.NamespaceName,
-                    specContainerTemplateBuilder.Build(specContainerDefinition),
+                    createSpecContainerTemplate(specContainerDefinition),
                     specContainerDefinition.Location
             );
         }

@@ -9,10 +9,9 @@
 namespace Phx.Inject.Generator.Input {
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Collections.ObjectModel;
-    using System.Collections.Specialized;
     using System.Linq;
     using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Phx.Inject.Generator.Model;
     using Phx.Inject.Generator.Model.Descriptors;
 
@@ -27,7 +26,21 @@ namespace Phx.Inject.Generator.Input {
 
         private const string GeneratedInjectorClassPrefix = "Generated";
 
-        public static IList<AttributeData> GetAttribute(ISymbol symbol, string attributeClassName) {
+        public static IEnumerable<ITypeSymbol> GetTypeSymbolsFromDeclarations(
+                IEnumerable<TypeDeclarationSyntax> syntaxNodes,
+                GeneratorExecutionContext context
+        ) {
+            return syntaxNodes.Select(
+                            syntaxNode => {
+                                var semanticModel = context.Compilation.GetSemanticModel(syntaxNode.SyntaxTree);
+                                return semanticModel.GetDeclaredSymbol(syntaxNode) as ITypeSymbol;
+                            })
+                    .Where(symbol => symbol != null)
+                    .Select(symbol => symbol!)
+                    .ToImmutableList();
+        }
+
+        public static IList<AttributeData> GetAttributes(ISymbol symbol, string attributeClassName) {
             return symbol.GetAttributes()
                     .Where(attributeData => attributeData.AttributeClass!.ToString() == attributeClassName)
                     .ToImmutableList();
@@ -35,13 +48,17 @@ namespace Phx.Inject.Generator.Input {
 
         public static IList<AttributeData> GetAttributedAttributes(ISymbol symbol, string attributeAttributeClassName) {
             return symbol.GetAttributes()
-                    .SelectMany(
-                            attributeData => GetAttribute(attributeData.AttributeClass!, attributeAttributeClassName))
+                    .Where(attributeData => {
+                        var attributeAttributes = GetAttributes(
+                                attributeData.AttributeClass!,
+                                attributeAttributeClassName);
+                        return attributeAttributes.Count > 0;
+                    })
                     .ToImmutableList();
         }
 
         public static AttributeData? GetInjectorAttribute(ISymbol injectorInterfaceSymbol) {
-            var injectorAttributes = GetAttribute(injectorInterfaceSymbol, InjectorAttributeClassName);
+            var injectorAttributes = GetAttributes(injectorInterfaceSymbol, InjectorAttributeClassName);
             return injectorAttributes.Count switch {
                 0 => null,
                 1 => injectorAttributes.Single(),
@@ -52,16 +69,28 @@ namespace Phx.Inject.Generator.Input {
             };
         }
 
+        public static AttributeData? GetSpecificationAttribute(ISymbol specificationSymbol) {
+            var specificationAttributes = GetAttributes(specificationSymbol, SpecificationAttributeClassName);
+            return specificationAttributes.Count switch {
+                0 => null,
+                1 => specificationAttributes.Single(),
+                _ => throw new InjectionException(
+                        Diagnostics.InvalidSpecification,
+                        $"Specification type {specificationSymbol.Name} can only have one Specification attribute. Found {specificationAttributes.Count}.",
+                        specificationSymbol.Locations.First())
+            };
+        }
+
         public static IList<AttributeData> GetLinkAttributes(ISymbol specificationSymbol) {
-            return GetAttribute(specificationSymbol, LinkAttributeClassName);
+            return GetAttributes(specificationSymbol, LinkAttributeClassName);
         }
 
         public static IList<AttributeData> GetFactoryAttributes(ISymbol factoryMethodSymbol) {
-            return GetAttribute(factoryMethodSymbol, FactoryAttributeClassName);
+            return GetAttributes(factoryMethodSymbol, FactoryAttributeClassName);
         }
 
         public static IList<AttributeData> GetBuilderAttributes(ISymbol builderMethodSymbol) {
-            return GetAttribute(builderMethodSymbol, BuilderAttributeClassName);
+            return GetAttributes(builderMethodSymbol, BuilderAttributeClassName);
         }
 
         public static ImmutableList<QualifiedTypeDescriptor> GetMethodParametersQualifiedTypes(IMethodSymbol methodSymbol) {
@@ -138,7 +167,7 @@ namespace Phx.Inject.Generator.Input {
         }
 
         public static string GetQualifier(ISymbol symbol) {
-            var labelAttributes = GetAttribute(symbol, LabelAttributeClassName);
+            var labelAttributes = GetAttributes(symbol, LabelAttributeClassName);
             var qualifierAttributes = GetAttributedAttributes(symbol, QualifierAttributeClassName);
             var numLabels = labelAttributes.Count;
             var numQualifiers = qualifierAttributes.Count;
