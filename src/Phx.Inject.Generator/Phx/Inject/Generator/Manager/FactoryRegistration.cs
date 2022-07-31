@@ -11,6 +11,6 @@ namespace Phx.Inject.Generator.Controller {
 
     internal record FactoryRegistration(
             SpecDescriptor Specification,
-            SpecFactoryMethodDescriptor FactoryDescriptor
+            SpecFactoryDescriptor FactoryDescriptor
     );
 }

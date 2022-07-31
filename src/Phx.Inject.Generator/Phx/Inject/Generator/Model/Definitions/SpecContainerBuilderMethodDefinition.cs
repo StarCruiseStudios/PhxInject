@@ -17,7 +17,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
     internal delegate SpecContainerBuilderMethodDefinition CreateSpecContainerBuilderMethodDefinition(
             InjectorDescriptor injectorDescriptor,
             SpecDescriptor specDescriptor,
-            SpecBuilderMethodDescriptor specBuilderMethodDescriptor,
+            SpecBuilderDescriptor specBuilderDescriptor,
             IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
     );
 
@@ -50,7 +50,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
             public SpecContainerBuilderMethodDefinition Build(
                     InjectorDescriptor injectorDescriptor,
                     SpecDescriptor specDescriptor,
-                    SpecBuilderMethodDescriptor specBuilderMethodDescriptor,
+                    SpecBuilderDescriptor specBuilderDescriptor,
                     IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
             ) {
                 var specReference = createSpecReference(specDescriptor);
@@ -59,7 +59,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
                         specDescriptor.SpecType);
                 var specContainerCollectionType = createSpecContainerCollectionType(injectorDescriptor.InjectorType);
 
-                var arguments = specBuilderMethodDescriptor.Arguments.Select(
+                var arguments = specBuilderDescriptor.Arguments.Select(
                         argumentType => {
                             if (!factoryRegistrations.TryGetValue(
                                         RegistrationIdentifier.FromQualifiedTypeDescriptor(argumentType),
@@ -67,7 +67,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
                                 throw new InjectionException(
                                         Diagnostics.IncompleteSpecification,
                                         $"Cannot find factory for type {argumentType} required by builder method "
-                                        + $"{specBuilderMethodDescriptor.MethodName} in specification {specDescriptor.SpecType} "
+                                        + $"{specBuilderDescriptor.BuilderMethodName} in specification {specDescriptor.SpecType} "
                                         + $"in injector type {injectorDescriptor.InjectorType}.",
                                         argumentType.Location);
                             }
@@ -79,13 +79,13 @@ namespace Phx.Inject.Generator.Model.Definitions {
                         }).ToImmutableList();
 
                 return new SpecContainerBuilderMethodDefinition(
-                        specBuilderMethodDescriptor.BuiltType.TypeModel,
+                        specBuilderDescriptor.BuiltType.TypeModel,
                         specReference,
-                        specBuilderMethodDescriptor.MethodName,
+                        specBuilderDescriptor.BuilderMethodName,
                         specContainerType,
                         specContainerCollectionType,
                         arguments,
-                        specBuilderMethodDescriptor.Location
+                        specBuilderDescriptor.Location
                 );
             }
         }

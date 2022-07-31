@@ -65,7 +65,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
 
                 return new InjectorDefinition(
                         InjectorType: injectorDescriptor.InjectorType,
-                        InjectorInterfaceType: injectorDescriptor.InjectorInterface,
+                        InjectorInterfaceType: injectorDescriptor.InjectorInterfaceType,
                         specContainerCollection,
                         providerMethods,
                         builderMethods,

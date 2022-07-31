@@ -17,7 +17,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
     internal delegate SpecContainerFactoryMethodDefinition CreateSpecContainerFactoryMethodDefinition(
             InjectorDescriptor injectorDescriptor,
             SpecDescriptor specDescriptor,
-            SpecFactoryMethodDescriptor specFactoryMethodDescriptor,
+            SpecFactoryDescriptor specFactoryDescriptor,
             IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
     );
 
@@ -55,7 +55,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
             public SpecContainerFactoryMethodDefinition Build(
                     InjectorDescriptor injectorDescriptor,
                     SpecDescriptor specDescriptor,
-                    SpecFactoryMethodDescriptor specFactoryMethodDescriptor,
+                    SpecFactoryDescriptor specFactoryDescriptor,
                     IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
             ) {
                 var specReference = createSpecReference(specDescriptor);
@@ -63,9 +63,9 @@ namespace Phx.Inject.Generator.Model.Definitions {
                         injectorDescriptor.InjectorType,
                         specDescriptor.SpecType);
                 var specContainerCollectionType = createSpecContainerCollectionType(injectorDescriptor.InjectorType);
-                var instanceHolder = createInstanceHolder(specFactoryMethodDescriptor);
+                var instanceHolder = createInstanceHolder(specFactoryDescriptor);
 
-                var arguments = specFactoryMethodDescriptor.Arguments.Select(
+                var arguments = specFactoryDescriptor.Arguments.Select(
                         argumentType => {
                             if (!factoryRegistrations.TryGetValue(
                                         RegistrationIdentifier.FromQualifiedTypeDescriptor(argumentType),
@@ -73,7 +73,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
                                 throw new InjectionException(
                                         Diagnostics.IncompleteSpecification,
                                         $"Cannot find factory for type {argumentType} required by factory method "
-                                        + $"{specFactoryMethodDescriptor.MethodName} in specification {specDescriptor.SpecType} "
+                                        + $"{specFactoryDescriptor.FactoryMethodName} in specification {specDescriptor.SpecType} "
                                         + $"in injector type {injectorDescriptor.InjectorType}.",
                                         argumentType.Location);
                             }
@@ -85,14 +85,14 @@ namespace Phx.Inject.Generator.Model.Definitions {
                         }).ToImmutableList();
 
                 return new SpecContainerFactoryMethodDefinition(
-                        specFactoryMethodDescriptor.ReturnType.TypeModel,
+                        specFactoryDescriptor.ReturnType.TypeModel,
                         specReference,
-                        specFactoryMethodDescriptor.MethodName,
+                        specFactoryDescriptor.FactoryMethodName,
                         specContainerType,
                         specContainerCollectionType,
                         instanceHolder,
                         arguments,
-                        specFactoryMethodDescriptor.Location
+                        specFactoryDescriptor.Location
                 );
             }
         }

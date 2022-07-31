@@ -11,6 +11,6 @@ namespace Phx.Inject.Generator.Controller {
 
     internal record BuilderRegistration(
             SpecDescriptor Specification,
-            SpecBuilderMethodDescriptor BuilderDescriptor
+            SpecBuilderDescriptor BuilderDescriptor
     );
 }

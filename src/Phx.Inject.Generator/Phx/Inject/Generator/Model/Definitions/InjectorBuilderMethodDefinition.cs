@@ -13,7 +13,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
     using Phx.Inject.Generator.Model.Descriptors;
 
     internal delegate InjectorBuilderMethodDefinition CreateInjectorBuilderMethodDefinition(
-            InjectorBuilderMethodDescriptor injectorBuilderMethodDescriptor,
+            InjectorBuilderDescriptor injectorBuilderDescriptor,
             InjectorDescriptor injectorDescriptor,
             IDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations
     );
@@ -32,7 +32,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
             }
 
             public InjectorBuilderMethodDefinition Build(
-                    InjectorBuilderMethodDescriptor builderDescriptor,
+                    InjectorBuilderDescriptor builderDescriptor,
                     InjectorDescriptor injectorDescriptor,
                     IDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations
             ) {
@@ -41,7 +41,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
                             out var builderRegistration)) {
                     throw new InjectionException(
                             Diagnostics.IncompleteSpecification,
-                            $"Cannot find builder for type {builderDescriptor.BuiltType} required by builder method in injector {injectorDescriptor.InjectorInterface}.",
+                            $"Cannot find builder for type {builderDescriptor.BuiltType} required by builder method in injector {injectorDescriptor.InjectorInterfaceType}.",
                             builderDescriptor.Location);
                 }
 

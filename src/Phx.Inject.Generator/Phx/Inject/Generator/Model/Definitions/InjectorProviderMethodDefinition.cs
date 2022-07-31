@@ -13,7 +13,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
     using Phx.Inject.Generator.Model.Descriptors;
 
     internal delegate InjectorProviderMethodDefinition CreateInjectorProviderMethodDefinition(
-            InjectorProviderMethodDescriptor injectorProviderMethodDescriptor,
+            InjectorProviderDescriptor injectorProviderDescriptor,
             InjectorDescriptor injectorDescriptor,
             IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
     );
@@ -34,7 +34,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
             }
 
             public InjectorProviderMethodDefinition Build(
-                    InjectorProviderMethodDescriptor providerDescriptor,
+                    InjectorProviderDescriptor providerDescriptor,
                     InjectorDescriptor injectorDescriptor,
                     IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
             ) {
@@ -43,7 +43,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
                             out var factoryRegistration)) {
                     throw new InjectionException(
                             Diagnostics.IncompleteSpecification,
-                            $"Cannot find factory for type {providerDescriptor.ProvidedType} required by provider method in injector {injectorDescriptor.InjectorInterface}.",
+                            $"Cannot find factory for type {providerDescriptor.ProvidedType} required by provider method in injector {injectorDescriptor.InjectorInterfaceType}.",
                             providerDescriptor.Location);
                 }
 

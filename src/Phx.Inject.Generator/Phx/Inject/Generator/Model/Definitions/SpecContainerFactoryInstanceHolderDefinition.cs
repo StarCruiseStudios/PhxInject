@@ -11,7 +11,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
     using Phx.Inject.Generator.Model.Descriptors;
 
     internal delegate SpecContainerFactoryInstanceHolderDefinition CreateSpecContainerFactoryInstanceHolderDefinition(
-            SpecFactoryMethodDescriptor factoryDescriptor
+            SpecFactoryDescriptor factoryDescriptor
     );
 
     internal record SpecContainerFactoryInstanceHolderDefinition(
@@ -26,7 +26,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
                 this.createInstanceHolderName = createInstanceHolderName;
             }
 
-            public SpecContainerFactoryInstanceHolderDefinition Build(SpecFactoryMethodDescriptor factoryDescriptor) {
+            public SpecContainerFactoryInstanceHolderDefinition Build(SpecFactoryDescriptor factoryDescriptor) {
 
                 return new SpecContainerFactoryInstanceHolderDefinition(
                         factoryDescriptor.ReturnType.TypeModel,

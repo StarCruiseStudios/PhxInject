@@ -13,8 +13,8 @@ namespace Phx.Inject.Generator.Model.Descriptors {
     internal record SpecDescriptor(
             TypeModel SpecType,
             SpecInstantiationMode InstantiationMode,
-            IEnumerable<SpecFactoryMethodDescriptor> Factories,
-            IEnumerable<SpecBuilderMethodDescriptor> Builders,
+            IEnumerable<SpecFactoryDescriptor> Factories,
+            IEnumerable<SpecBuilderDescriptor> Builders,
             IEnumerable<LinkDescriptor> Links,
             Location Location) : IDescriptor;
 }

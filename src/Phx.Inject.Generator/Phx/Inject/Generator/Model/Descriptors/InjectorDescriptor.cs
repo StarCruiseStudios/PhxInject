@@ -15,22 +15,22 @@ namespace Phx.Inject.Generator.Model.Descriptors {
 
     internal record InjectorDescriptor(
             TypeModel InjectorType,
-            TypeModel InjectorInterface,
-            IEnumerable<InjectorProviderMethodDescriptor> Providers,
-            IEnumerable<InjectorBuilderMethodDescriptor> Builders,
+            TypeModel InjectorInterfaceType,
+            IEnumerable<InjectorProviderDescriptor> Providers,
+            IEnumerable<InjectorBuilderDescriptor> Builders,
             IEnumerable<SpecDescriptor> Specifications,
             Location Location
     ) : IDescriptor {
         public class Builder {
-            private readonly CreateInjectorProviderMethodDescriptor createInjectorProviderMethod;
-            private readonly CreateInjectorBuilderMethodDescriptor createInjectorBuilderMethod;
+            private readonly CreateInjectorProviderDescriptor createInjectorProvider;
+            private readonly CreateInjectorBuilderDescriptor createInjectorBuilder;
 
             public Builder(
-                    CreateInjectorProviderMethodDescriptor createInjectorProviderMethod,
-                    CreateInjectorBuilderMethodDescriptor createInjectorBuilderMethod
+                    CreateInjectorProviderDescriptor createInjectorProvider,
+                    CreateInjectorBuilderDescriptor createInjectorBuilder
             ) {
-                this.createInjectorProviderMethod = createInjectorProviderMethod;
-                this.createInjectorBuilderMethod = createInjectorBuilderMethod;
+                this.createInjectorProvider = createInjectorProvider;
+                this.createInjectorBuilder = createInjectorBuilder;
             }
 
             public InjectorDescriptor Build(
@@ -46,13 +46,13 @@ namespace Phx.Inject.Generator.Model.Descriptors {
                         .OfType<IMethodSymbol>();
 
                 var providerMethods = injectorMethods
-                        .Select(method => createInjectorProviderMethod(method))
+                        .Select(method => createInjectorProvider(method))
                         .Where(provider => provider != null)
                         .Select(provider => provider!)
                         .ToImmutableList();
 
                 var builderMethods = injectorMethods
-                        .Select(method => createInjectorBuilderMethod(method))
+                        .Select(method => createInjectorBuilder(method))
                         .Where(builder => builder != null)
                         .Select(builder => builder!)
                         .ToImmutableList();

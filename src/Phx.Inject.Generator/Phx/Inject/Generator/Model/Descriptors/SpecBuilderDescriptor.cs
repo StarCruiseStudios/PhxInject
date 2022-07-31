@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------------
-//  <copyright file="SpecFactoryMethodDescriptor.cs" company="Star Cruise Studios LLC">
+//  <copyright file="SpecBuilderDescriptor.cs" company="Star Cruise Studios LLC">
 //      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
 //      Licensed under the Apache License 2.0 License.
 //      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -10,10 +10,9 @@ namespace Phx.Inject.Generator.Model.Descriptors {
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
 
-    internal record SpecFactoryMethodDescriptor(
-            QualifiedTypeDescriptor ReturnType,
-            string MethodName,
+    internal record SpecBuilderDescriptor(
+            QualifiedTypeDescriptor BuiltType,
+            string BuilderMethodName,
             List<QualifiedTypeDescriptor> Arguments,
-            SpecFactoryMethodFabricationMode FabricationMode,
             Location Location) : IDescriptor;
 }

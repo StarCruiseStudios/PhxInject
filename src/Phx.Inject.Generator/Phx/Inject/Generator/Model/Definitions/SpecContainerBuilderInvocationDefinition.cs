@@ -35,7 +35,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
             ) {
                 return new SpecContainerBuilderInvocationDefinition(
                         createSpecContainerReference(injectorDescriptor, builderRegistration.Specification),
-                        builderRegistration.BuilderDescriptor.MethodName,
+                        builderRegistration.BuilderDescriptor.BuilderMethodName,
                         location);
             }
         }
