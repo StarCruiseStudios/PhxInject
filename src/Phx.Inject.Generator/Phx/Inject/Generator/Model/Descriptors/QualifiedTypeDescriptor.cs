@@ -19,5 +19,7 @@ namespace Phx.Inject.Generator.Model.Descriptors {
                     ? TypeModel.ToString()
                     : $"[{Qualifier}] {TypeModel}";
         }
+
+        public const string NoQualifier = "";
     }
 }

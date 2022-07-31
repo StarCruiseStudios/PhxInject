@@ -14,6 +14,7 @@ namespace Phx.Inject.Generator.Input {
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Model;
+    using Phx.Inject.Generator.Model.Descriptors;
 
     internal static class SymbolProcessors {
         public const string BuilderAttributeClassName = "Phx.Inject.BuilderAttribute";
@@ -25,7 +26,6 @@ namespace Phx.Inject.Generator.Input {
         public const string SpecificationAttributeClassName = "Phx.Inject.SpecificationAttribute";
 
         private const string GeneratedInjectorClassPrefix = "Generated";
-        private const string NoQualifier = "";
 
         public static IList<AttributeData> GetAttribute(ISymbol symbol, string attributeClassName) {
             return symbol.GetAttributes()
@@ -51,6 +51,31 @@ namespace Phx.Inject.Generator.Input {
                         injectorInterfaceSymbol.Locations.First())
             };
         }
+
+        public static IList<AttributeData> GetLinkAttributes(ISymbol specificationSymbol) {
+            return GetAttribute(specificationSymbol, LinkAttributeClassName);
+        }
+
+        public static IList<AttributeData> GetFactoryAttributes(ISymbol factoryMethodSymbol) {
+            return GetAttribute(factoryMethodSymbol, FactoryAttributeClassName);
+        }
+
+        public static IList<AttributeData> GetBuilderAttributes(ISymbol builderMethodSymbol) {
+            return GetAttribute(builderMethodSymbol, BuilderAttributeClassName);
+        }
+
+        public static ImmutableList<QualifiedTypeDescriptor> GetMethodParametersQualifiedTypes(IMethodSymbol methodSymbol) {
+            return methodSymbol.Parameters.Select(
+                            parameter => {
+                                var qualifier = GetQualifier(parameter);
+                                return new QualifiedTypeDescriptor(
+                                        TypeModel.FromTypeSymbol(parameter.Type),
+                                        qualifier,
+                                        parameter.Locations.First());
+                            })
+                    .ToImmutableList();
+        }
+
 
         public static string GetGeneratedInjectorClassName(ISymbol injectorInterfaceSymbol) {
             var injectorAttribute = GetInjectorAttribute(injectorInterfaceSymbol);
@@ -97,6 +122,21 @@ namespace Phx.Inject.Generator.Input {
                     .ToImmutableList();
         }
 
+        public static SpecFactoryMethodFabricationMode GetFactoryFabricationMode(AttributeData factoryAttribute, Location location) {
+            var fabricationModes = factoryAttribute.ConstructorArguments.Where(argument => argument.Type!.Name == "FabricationMode")
+                    .Select(argument => (SpecFactoryMethodFabricationMode)argument.Value!)
+                    .ToImmutableList();
+
+            return fabricationModes.Count switch {
+                0 => SpecFactoryMethodFabricationMode.Recurrent, // The default
+                1 => fabricationModes.Single(),
+                _ => throw new InjectionException(
+                        Diagnostics.InternalError,
+                        $"Factories can only have a single fabrication mode.",
+                        location)
+            };
+        }
+
         public static string GetQualifier(ISymbol symbol) {
             var labelAttributes = GetAttribute(symbol, LabelAttributeClassName);
             var qualifierAttributes = GetAttributedAttributes(symbol, QualifierAttributeClassName);
@@ -128,7 +168,7 @@ namespace Phx.Inject.Generator.Input {
                         .AttributeClass!.ToString();
             }
 
-            return NoQualifier;
+            return QualifiedTypeDescriptor.NoQualifier;
         }
     }
 }
