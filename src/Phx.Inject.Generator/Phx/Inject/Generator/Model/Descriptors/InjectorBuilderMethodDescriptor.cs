@@ -9,8 +9,19 @@
 namespace Phx.Inject.Generator.Model.Descriptors {
     using Microsoft.CodeAnalysis;
 
+    internal delegate InjectorBuilderMethodDescriptor? CreateInjectorBuilderMethodDescriptor(
+            IMethodSymbol builderMethod
+    );
+
     internal record InjectorBuilderMethodDescriptor(
             QualifiedTypeDescriptor BuiltType,
             string BuilderMethodName,
-            Location Location) : IDescriptor;
+            Location Location
+    ) : IDescriptor {
+        public class Builder {
+            public InjectorBuilderMethodDescriptor? Build(IMethodSymbol builderMethod) {
+                return null;
+            }
+        }
+    }
 }

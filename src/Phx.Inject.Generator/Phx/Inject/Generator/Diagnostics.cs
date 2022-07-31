@@ -17,9 +17,19 @@ namespace Phx.Inject.Generator {
                 "An unexpected error occurred.",
                 InjectionCategory);
 
-        public static readonly DiagnosticData IncompleteSpecification = new DiagnosticData(
+        public static readonly DiagnosticData InternalError = new DiagnosticData(
                 PhxInjectIdPrefix + "0002",
+                "An internal error occurred while generating injection.",
+                InjectionCategory);
+
+        public static readonly DiagnosticData IncompleteSpecification = new DiagnosticData(
+                PhxInjectIdPrefix + "0003",
                 "The provided injection specification is incomplete.",
+                InjectionCategory);
+
+        public static readonly DiagnosticData InvalidSpecification = new DiagnosticData(
+                PhxInjectIdPrefix + "0004",
+                "The provided injection specification is invalid.",
                 InjectionCategory);
     }
 }

@@ -7,11 +7,19 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model {
+    using Microsoft.CodeAnalysis;
+
     internal record TypeModel(string NamespaceName, string TypeName) {
         public string QualifiedName => $"{NamespaceName}.{TypeName}";
 
         public override string ToString() {
             return QualifiedName;
+        }
+
+        public static TypeModel FromTypeSymbol(ITypeSymbol typeSymbol) {
+            return new TypeModel(
+                    typeSymbol.ContainingNamespace.ToString(),
+                    typeSymbol.Name);
         }
     }
 }
