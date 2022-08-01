@@ -9,7 +9,7 @@
 
 #nullable enable
 namespace Phx.Inject.Tests.Data.Specification {
-    internal class GeneratedRawInjector_LeafLinksContainer {
+    internal class GeneratedRawInjector_LeafLinks {
     }
 }
 #nullable restore

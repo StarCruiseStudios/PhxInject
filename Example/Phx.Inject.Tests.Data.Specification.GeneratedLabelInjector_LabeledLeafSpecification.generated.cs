@@ -9,7 +9,7 @@
 
 #nullable enable
 namespace Phx.Inject.Tests.Data.Specification {
-    internal class GeneratedLabelInjector_LabeledLeafSpecificationContainer {
+    internal class GeneratedLabelInjector_LabeledLeafSpecification {
 
         internal Phx.Inject.Tests.Data.Model.ILeaf GetDefaultLeaf(
         Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers) {
@@ -49,22 +49,22 @@ namespace Phx.Inject.Tests.Data.Specification {
         internal Phx.Inject.Tests.Data.Model.Node GetNode(
         Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers) {
             return Phx.Inject.Tests.Data.Specification.LabeledLeafSpecification.GetNode(
-                specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.GetNonDefaultLeafA(specContainers),
-                specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.GetAttributeNamedLeafA(specContainers));
+                specContainers.GeneratedLabelInjector_LabeledLeafSpecification.GetNonDefaultLeafA(specContainers),
+                specContainers.GeneratedLabelInjector_LabeledLeafSpecification.GetAttributeNamedLeafA(specContainers));
         }
 
         internal void BuildLazyTypeLeafA(
         Phx.Inject.Tests.Data.Model.LazyType value, Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers) {
             Phx.Inject.Tests.Data.Specification.LabeledLeafSpecification.BuildLazyTypeLeafA(
                 value,
-                specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.GetNonDefaultLeafA(specContainers));
+                specContainers.GeneratedLabelInjector_LabeledLeafSpecification.GetNonDefaultLeafA(specContainers));
         }
 
         internal void BuildLazyTypeDefault(
         Phx.Inject.Tests.Data.Model.LazyType value, Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers) {
             Phx.Inject.Tests.Data.Specification.LabeledLeafSpecification.BuildLazyTypeDefault(
                 value,
-                specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.GetDefaultLeaf(specContainers));
+                specContainers.GeneratedLabelInjector_LabeledLeafSpecification.GetDefaultLeaf(specContainers));
         }
     }
 }

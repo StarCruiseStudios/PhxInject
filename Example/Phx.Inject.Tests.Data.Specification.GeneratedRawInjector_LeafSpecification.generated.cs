@@ -9,16 +9,16 @@
 
 #nullable enable
 namespace Phx.Inject.Tests.Data.Specification {
-    internal class CustomInjector_LeafSpecificationContainer {
-        private Phx.Inject.Tests.Data.Model.IntLeaf? intLeafInstance;
+    internal class GeneratedRawInjector_LeafSpecification {
+        private Phx.Inject.Tests.Data.Model.IntLeaf? intLeaf;
 
         internal Phx.Inject.Tests.Data.Model.IntLeaf GetIntLeaf(
-        Phx.Inject.Tests.Data.Inject.CustomInjector.SpecContainerCollection specContainers) {
-            return intLeafInstance ??= Phx.Inject.Tests.Data.Specification.LeafSpecification.GetIntLeaf();
+        Phx.Inject.Tests.Data.Inject.GeneratedRawInjector.SpecContainerCollection specContainers) {
+            return intLeaf ??= Phx.Inject.Tests.Data.Specification.LeafSpecification.GetIntLeaf();
         }
 
         internal Phx.Inject.Tests.Data.Model.StringLeaf GetStringLeaf(
-        Phx.Inject.Tests.Data.Inject.CustomInjector.SpecContainerCollection specContainers) {
+        Phx.Inject.Tests.Data.Inject.GeneratedRawInjector.SpecContainerCollection specContainers) {
             return Phx.Inject.Tests.Data.Specification.LeafSpecification.GetStringLeaf();
         }
     }

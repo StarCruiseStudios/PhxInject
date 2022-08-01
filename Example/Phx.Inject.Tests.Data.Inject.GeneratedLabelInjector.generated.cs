@@ -11,48 +11,48 @@
 namespace Phx.Inject.Tests.Data.Inject {
     internal partial class GeneratedLabelInjector : Phx.Inject.Tests.Data.Inject.ILabelInjector {
         internal record SpecContainerCollection (
-            Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecificationContainer GeneratedLabelInjector_LabeledLeafSpecificationContainer = new Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecificationContainer());
+            Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecification GeneratedLabelInjector_LabeledLeafSpecification = new Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecification());
 
         private readonly SpecContainerCollection specContainers = new SpecContainerCollection();
 
         public Phx.Inject.Tests.Data.Model.ILeaf GetDefaultLeaf() {
-            return specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.GetDefaultLeaf(specContainers);
+            return specContainers.GeneratedLabelInjector_LabeledLeafSpecification.GetDefaultLeaf(specContainers);
         }
 
         public Phx.Inject.Tests.Data.Model.ILeaf GetNonDefaultLeafA() {
-            return specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.GetNonDefaultLeafA(specContainers);
+            return specContainers.GeneratedLabelInjector_LabeledLeafSpecification.GetNonDefaultLeafA(specContainers);
         }
 
         public Phx.Inject.Tests.Data.Model.ILeaf GetNonDefaultLeafB() {
-            return specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.GetNonDefaultLeafB(specContainers);
+            return specContainers.GeneratedLabelInjector_LabeledLeafSpecification.GetNonDefaultLeafB(specContainers);
         }
 
         public Phx.Inject.Tests.Data.Model.ILeaf GetAttributeNamedLeafA() {
-            return specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.GetAttributeNamedLeafA(specContainers);
+            return specContainers.GeneratedLabelInjector_LabeledLeafSpecification.GetAttributeNamedLeafA(specContainers);
         }
 
         public Phx.Inject.Tests.Data.Model.ILeaf GetAttributeNamedLeafB() {
-            return specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.GetAttributeNamedLeafB(specContainers);
+            return specContainers.GeneratedLabelInjector_LabeledLeafSpecification.GetAttributeNamedLeafB(specContainers);
         }
 
         public Phx.Inject.Tests.Data.Model.ILeaf GetStringNamedLeafA() {
-            return specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.GetStringNamedLeafA(specContainers);
+            return specContainers.GeneratedLabelInjector_LabeledLeafSpecification.GetStringNamedLeafA(specContainers);
         }
 
         public Phx.Inject.Tests.Data.Model.StringLeaf GetNamedStringLeaf() {
-            return specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.GetNamedStringLeaf(specContainers);
+            return specContainers.GeneratedLabelInjector_LabeledLeafSpecification.GetNamedStringLeaf(specContainers);
         }
 
         public Phx.Inject.Tests.Data.Model.Node GetNode() {
-            return specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.GetNode(specContainers);
+            return specContainers.GeneratedLabelInjector_LabeledLeafSpecification.GetNode(specContainers);
         }
 
         public void BuildLabeledLazyType(Phx.Inject.Tests.Data.Model.LazyType value) {
-            specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.BuildLazyTypeLeafA(value, specContainers);
+            specContainers.GeneratedLabelInjector_LabeledLeafSpecification.BuildLazyTypeLeafA(value, specContainers);
         }
 
         public void BuildUnlabeledLazyType(Phx.Inject.Tests.Data.Model.LazyType value) {
-            specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.BuildLazyTypeDefault(value, specContainers);
+            specContainers.GeneratedLabelInjector_LabeledLeafSpecification.BuildLazyTypeDefault(value, specContainers);
         }
     }
 }

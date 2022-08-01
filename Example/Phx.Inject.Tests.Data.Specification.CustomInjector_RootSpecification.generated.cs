@@ -9,21 +9,21 @@
 
 #nullable enable
 namespace Phx.Inject.Tests.Data.Specification {
-    internal class CustomInjector_RootSpecificationContainer {
-        private Phx.Inject.Tests.Data.Model.Root? rootInstance;
+    internal class CustomInjector_RootSpecification {
+        private Phx.Inject.Tests.Data.Model.Root? root;
 
         internal Phx.Inject.Tests.Data.Model.Root GetRoot(
         Phx.Inject.Tests.Data.Inject.CustomInjector.SpecContainerCollection specContainers) {
-            return rootInstance ??= Phx.Inject.Tests.Data.Specification.RootSpecification.GetRoot(
-                specContainers.CustomInjector_RootSpecificationContainer.GetNode(specContainers),
-                specContainers.CustomInjector_RootSpecificationContainer.GetNode(specContainers));
+            return root ??= Phx.Inject.Tests.Data.Specification.RootSpecification.GetRoot(
+                specContainers.CustomInjector_RootSpecification.GetNode(specContainers),
+                specContainers.CustomInjector_RootSpecification.GetNode(specContainers));
         }
 
         internal Phx.Inject.Tests.Data.Model.Node GetNode(
         Phx.Inject.Tests.Data.Inject.CustomInjector.SpecContainerCollection specContainers) {
             return Phx.Inject.Tests.Data.Specification.RootSpecification.GetNode(
-                specContainers.CustomInjector_LeafSpecificationContainer.GetIntLeaf(specContainers),
-                specContainers.CustomInjector_LeafSpecificationContainer.GetStringLeaf(specContainers));
+                specContainers.CustomInjector_LeafSpecification.GetIntLeaf(specContainers),
+                specContainers.CustomInjector_LeafSpecification.GetStringLeaf(specContainers));
         }
     }
 }

@@ -9,14 +9,7 @@
 
 #nullable enable
 namespace Phx.Inject.Tests.Data.Specification {
-    internal class CustomInjector_LazySpecificationContainer {
-
-        internal void BuildLazyType(
-        Phx.Inject.Tests.Data.Model.LazyType value, Phx.Inject.Tests.Data.Inject.CustomInjector.SpecContainerCollection specContainers) {
-            Phx.Inject.Tests.Data.Specification.LazySpecification.BuildLazyType(
-                value,
-                specContainers.CustomInjector_LeafSpecificationContainer.GetStringLeaf(specContainers));
-        }
+    internal class CustomInjector_LeafLinks {
     }
 }
 #nullable restore

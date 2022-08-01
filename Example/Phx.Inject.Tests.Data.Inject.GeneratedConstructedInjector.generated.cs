@@ -11,12 +11,12 @@
 namespace Phx.Inject.Tests.Data.Inject {
     internal partial class GeneratedConstructedInjector : Phx.Inject.Tests.Data.Inject.IConstructedInjector {
         internal record SpecContainerCollection (
-            Phx.Inject.Tests.Data.Specification.GeneratedConstructedInjector_IConstructedSpecificationContainer GeneratedConstructedInjector_IConstructedSpecificationContainer = new Phx.Inject.Tests.Data.Specification.GeneratedConstructedInjector_IConstructedSpecificationContainer());
+            Phx.Inject.Tests.Data.Specification.GeneratedConstructedInjector_IConstructedSpecification GeneratedConstructedInjector_IConstructedSpecification = new Phx.Inject.Tests.Data.Specification.GeneratedConstructedInjector_IConstructedSpecification());
 
         private readonly SpecContainerCollection specContainers = new SpecContainerCollection();
 
         public Phx.Inject.Tests.Data.Model.IntLeaf GetIntLeaf() {
-            return specContainers.GeneratedConstructedInjector_IConstructedSpecificationContainer.GetIntLeaf(specContainers);
+            return specContainers.GeneratedConstructedInjector_IConstructedSpecification.GetIntLeaf(specContainers);
         }
     }
 }

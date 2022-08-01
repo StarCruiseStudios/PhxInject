@@ -11,19 +11,19 @@
 namespace Phx.Inject.Tests.Data.Inject {
     internal partial class CustomInjector : Phx.Inject.Tests.Data.Inject.ITestInjector {
         internal record SpecContainerCollection (
-            Phx.Inject.Tests.Data.Specification.CustomInjector_RootSpecificationContainer CustomInjector_RootSpecificationContainer = new Phx.Inject.Tests.Data.Specification.CustomInjector_RootSpecificationContainer(),
-            Phx.Inject.Tests.Data.Specification.CustomInjector_LazySpecificationContainer CustomInjector_LazySpecificationContainer = new Phx.Inject.Tests.Data.Specification.CustomInjector_LazySpecificationContainer(),
-            Phx.Inject.Tests.Data.Specification.CustomInjector_LeafSpecificationContainer CustomInjector_LeafSpecificationContainer = new Phx.Inject.Tests.Data.Specification.CustomInjector_LeafSpecificationContainer(),
-            Phx.Inject.Tests.Data.Specification.CustomInjector_LeafLinksContainer CustomInjector_LeafLinksContainer = new Phx.Inject.Tests.Data.Specification.CustomInjector_LeafLinksContainer());
+            Phx.Inject.Tests.Data.Specification.CustomInjector_RootSpecification CustomInjector_RootSpecification = new Phx.Inject.Tests.Data.Specification.CustomInjector_RootSpecification(),
+            Phx.Inject.Tests.Data.Specification.CustomInjector_LazySpecification CustomInjector_LazySpecification = new Phx.Inject.Tests.Data.Specification.CustomInjector_LazySpecification(),
+            Phx.Inject.Tests.Data.Specification.CustomInjector_LeafSpecification CustomInjector_LeafSpecification = new Phx.Inject.Tests.Data.Specification.CustomInjector_LeafSpecification(),
+            Phx.Inject.Tests.Data.Specification.CustomInjector_LeafLinks CustomInjector_LeafLinks = new Phx.Inject.Tests.Data.Specification.CustomInjector_LeafLinks());
 
         private readonly SpecContainerCollection specContainers = new SpecContainerCollection();
 
         public Phx.Inject.Tests.Data.Model.Root GetRoot() {
-            return specContainers.CustomInjector_RootSpecificationContainer.GetRoot(specContainers);
+            return specContainers.CustomInjector_RootSpecification.GetRoot(specContainers);
         }
 
         public void Build(Phx.Inject.Tests.Data.Model.LazyType value) {
-            specContainers.CustomInjector_LazySpecificationContainer.BuildLazyType(value, specContainers);
+            specContainers.CustomInjector_LazySpecification.BuildLazyType(value, specContainers);
         }
     }
 }
