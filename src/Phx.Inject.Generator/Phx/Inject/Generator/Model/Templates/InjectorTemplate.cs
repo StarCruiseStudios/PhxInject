@@ -17,8 +17,6 @@ namespace Phx.Inject.Generator.Model.Templates {
             string InjectorClassName,
             string InjectorInterfaceQualifiedName,
             SpecContainerCollectionTemplate SpecContainerCollectionTemplate,
-            string SpecContainerCollectionClassName,
-            string SpecContainerCollectionReferenceName,
             IEnumerable<IInjectorMemberTemplate> InjectorMemberTemplates,
             Location Location
     ) : IRenderTemplate {
@@ -26,9 +24,6 @@ namespace Phx.Inject.Generator.Model.Templates {
             writer.AppendLine($"internal partial class {InjectorClassName} : {InjectorInterfaceQualifiedName} {{")
                     .IncreaseIndent(1);
             SpecContainerCollectionTemplate.Render(writer);
-
-            writer.AppendBlankLine()
-                    .AppendLine($"private readonly {SpecContainerCollectionClassName} {SpecContainerCollectionReferenceName} = new {SpecContainerCollectionClassName}();");
 
             foreach (var memberTemplate in InjectorMemberTemplates) {
                 writer.AppendBlankLine();
@@ -68,9 +63,7 @@ namespace Phx.Inject.Generator.Model.Templates {
                 return new InjectorTemplate(
                         injectorDefinition.InjectorType.TypeName,
                         injectorDefinition.InjectorInterfaceType.QualifiedName,
-                        createSpecContainerCollectionTemplate(injectorDefinition.SpecContainerCollection),
-                        injectorDefinition.SpecContainerCollection.SpecContainerCollectionType.TypeName,
-                        specContainerCollectionReferenceName,
+                        createSpecContainerCollectionTemplate(injectorDefinition.SpecContainerCollection, specContainerCollectionReferenceName),
                         injectorMemberTemplates,
                         injectorDefinition.Location);
             }

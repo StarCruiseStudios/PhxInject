@@ -14,11 +14,13 @@ namespace Phx.Inject.Generator.Model.Templates {
     using Phx.Inject.Generator.Model.Definitions;
 
     internal delegate SpecContainerCollectionTemplate CreateSpecContainerCollectionTemplate(
-            SpecContainerCollectionDefinition specContainerCollectionDefinition
+            SpecContainerCollectionDefinition specContainerCollectionDefinition,
+            string specContainerCollectionReferenceName
     );
 
     internal record SpecContainerCollectionTemplate(
             string SpecContainerCollectionClassName,
+            string SpecContainerCollectionReferenceName,
             IEnumerable<SpecContainerCollectionPropertyDefinitionTemplate> SpecContainerProperties,
             Location Location
     ) : IRenderTemplate {
@@ -37,7 +39,9 @@ namespace Phx.Inject.Generator.Model.Templates {
             }
 
             writer.AppendLine(");")
-                    .DecreaseIndent(1);
+                    .DecreaseIndent(1)
+                    .AppendBlankLine()
+                    .AppendLine($"private readonly {SpecContainerCollectionClassName} {SpecContainerCollectionReferenceName} = new {SpecContainerCollectionClassName}();");
         }
 
         public class Builder {
@@ -49,7 +53,8 @@ namespace Phx.Inject.Generator.Model.Templates {
             }
 
             public SpecContainerCollectionTemplate Build(
-                    SpecContainerCollectionDefinition specContainerCollectionDefinition
+                    SpecContainerCollectionDefinition specContainerCollectionDefinition,
+                    string specContainerCollectionReferenceName
             ) {
                 var specContainerProperties = specContainerCollectionDefinition.SpecContainerReferences.Select(
                                 specContainerReference => createSpecContainerCollectionPropertyDefinition(specContainerReference))
@@ -57,6 +62,7 @@ namespace Phx.Inject.Generator.Model.Templates {
 
                 return new SpecContainerCollectionTemplate(
                         specContainerCollectionDefinition.SpecContainerCollectionType.TypeName,
+                        specContainerCollectionReferenceName,
                         specContainerProperties,
                         specContainerCollectionDefinition.Location);
             }
