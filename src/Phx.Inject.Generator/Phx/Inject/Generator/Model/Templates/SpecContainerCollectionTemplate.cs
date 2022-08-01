@@ -11,6 +11,7 @@ namespace Phx.Inject.Generator.Model.Templates {
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Input;
     using Phx.Inject.Generator.Model.Definitions;
 
     internal delegate SpecContainerCollectionTemplate CreateSpecContainerCollectionTemplate(
@@ -19,12 +20,16 @@ namespace Phx.Inject.Generator.Model.Templates {
     );
 
     internal record SpecContainerCollectionTemplate(
+            string InjectorClassName,
             string SpecContainerCollectionClassName,
             string SpecContainerCollectionReferenceName,
             IEnumerable<SpecContainerCollectionPropertyDefinitionTemplate> SpecContainerProperties,
             Location Location
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
+            //
+            // SpecContainerCollection record definition
+            //
             writer.AppendLine($"internal record {SpecContainerCollectionClassName} (")
                     .IncreaseIndent(1);
             var isFirst = true;
@@ -40,8 +45,73 @@ namespace Phx.Inject.Generator.Model.Templates {
 
             writer.AppendLine(");")
                     .DecreaseIndent(1)
-                    .AppendBlankLine()
-                    .AppendLine($"private readonly {SpecContainerCollectionClassName} {SpecContainerCollectionReferenceName} = new {SpecContainerCollectionClassName}();");
+                    .AppendBlankLine();
+
+            //
+            // SpecContainerCollection property declaration.
+            //
+
+            var uninitializedSpecContainers = SpecContainerProperties
+                    .Where(specContainerProperty => specContainerProperty.IsInitialized == false)
+                    .ToImmutableList();
+            var needsConstructor = uninitializedSpecContainers.Any();
+
+            writer.Append($"private readonly {SpecContainerCollectionClassName} {SpecContainerCollectionReferenceName}");
+            if (!needsConstructor) {
+                writer.Append($" = new {SpecContainerCollectionClassName}()");
+            }
+
+            writer.AppendLine(";");
+
+
+            //
+            // Injector constructor definition.
+            //
+
+            if (needsConstructor) {
+
+                // Injector constructor signature
+
+                writer.AppendBlankLine()
+                        .AppendLine($"public {InjectorClassName}(")
+                        .IncreaseIndent(1);
+
+                var isFirstParameter = true;
+                foreach (var specContainer in uninitializedSpecContainers) {
+                    if (isFirstParameter) {
+                        isFirstParameter = false;
+                    } else {
+                        writer.AppendLine(",");
+                    }
+
+                    var specParameterName = SymbolProcessors.StartLowercase(specContainer.PropertyName);
+                    writer.AppendLine($"{specContainer.QualifiedSpecificationTypeName} {specParameterName}");
+                }
+
+                writer.DecreaseIndent(1)
+                        .AppendLine(") {")
+                        .IncreaseIndent(1)
+                        .AppendLine($"{SpecContainerCollectionReferenceName} = new {SpecContainerCollectionClassName}(")
+                        .IncreaseIndent(1);
+
+                // Injector constructor body.
+
+                var isFirstArgument = true;
+                foreach (var specContainer in uninitializedSpecContainers) {
+                    if (isFirstArgument) {
+                        isFirstArgument = false;
+                    } else {
+                        writer.AppendLine(",");
+                    }
+
+                    var specParameterName = SymbolProcessors.StartLowercase(specContainer.PropertyName);
+                    writer.Append($"{specContainer.PropertyName}: new {specContainer.QualifiedSpecContainerTypeName}({specParameterName})");
+                }
+
+                writer.AppendLine(");")
+                        .DecreaseIndent(2)
+                        .AppendLine("}");
+            }
         }
 
         public class Builder {
@@ -61,6 +131,7 @@ namespace Phx.Inject.Generator.Model.Templates {
                         .ToImmutableList();
 
                 return new SpecContainerCollectionTemplate(
+                        specContainerCollectionDefinition.InjectorType.TypeName,
                         specContainerCollectionDefinition.SpecContainerCollectionType.TypeName,
                         specContainerCollectionReferenceName,
                         specContainerProperties,

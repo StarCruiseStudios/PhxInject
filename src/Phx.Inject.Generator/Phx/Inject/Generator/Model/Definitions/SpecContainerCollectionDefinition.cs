@@ -17,6 +17,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
             InjectorDescriptor injectorDescriptor);
 
     internal record SpecContainerCollectionDefinition(
+            TypeModel InjectorType,
             TypeModel SpecContainerCollectionType,
             IEnumerable<SpecContainerReferenceDefinition> SpecContainerReferences,
             Location Location
@@ -39,6 +40,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
                                 specDescriptor => createSpecContainerReference(injectorDescriptor, specDescriptor))
                         .ToImmutableList();
                 return new SpecContainerCollectionDefinition(
+                        injectorDescriptor.InjectorType,
                         specContainerCollectionType,
                         specContainerReferences,
                         injectorDescriptor.Location);

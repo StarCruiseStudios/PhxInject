@@ -10,6 +10,7 @@ namespace Phx.Inject.Generator.Input {
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Phx.Inject.Generator.Model;
@@ -25,6 +26,8 @@ namespace Phx.Inject.Generator.Input {
         public const string SpecificationAttributeClassName = "Phx.Inject.SpecificationAttribute";
 
         private const string GeneratedInjectorClassPrefix = "Generated";
+
+        private static Regex validCharsRegex = new Regex(@"[^a-zA-Z0-9_]");
 
         public static IEnumerable<ITypeSymbol> GetTypeSymbolsFromDeclarations(
                 IEnumerable<TypeDeclarationSyntax> syntaxNodes,
@@ -105,6 +108,22 @@ namespace Phx.Inject.Generator.Input {
                     .ToImmutableList();
         }
 
+        public static string GetValidReferenceName(string baseName, bool startLowercase) {
+            var referenceName = baseName;
+
+            referenceName = validCharsRegex.Replace(referenceName, "");
+
+            // Start with a lowercase letter.
+            if (startLowercase) {
+                referenceName = StartLowercase(referenceName);
+            }
+
+            return referenceName;
+        }
+
+        public static string StartLowercase(string input) {
+            return char.ToLower(input[0]) + input[1..];
+        }
 
         public static string GetGeneratedInjectorClassName(ISymbol injectorInterfaceSymbol) {
             var injectorAttribute = GetInjectorAttribute(injectorInterfaceSymbol);

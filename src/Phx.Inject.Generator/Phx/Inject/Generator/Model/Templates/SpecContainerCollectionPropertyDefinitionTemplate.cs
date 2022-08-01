@@ -17,19 +17,31 @@ namespace Phx.Inject.Generator.Model.Templates {
 
     internal record SpecContainerCollectionPropertyDefinitionTemplate(
             string QualifiedSpecContainerTypeName,
+            string QualifiedSpecificationTypeName,
             string PropertyName,
+            bool IsInitialized,
             Location Location
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
-            writer.Append($"{QualifiedSpecContainerTypeName} {PropertyName} = new {QualifiedSpecContainerTypeName}()");
+            writer.Append($"{QualifiedSpecContainerTypeName} {PropertyName}");
+            if (IsInitialized) {
+                writer.Append($" = new {QualifiedSpecContainerTypeName}()");
+            }
         }
 
         public class Builder {
-            public SpecContainerCollectionPropertyDefinitionTemplate
-                    Build(SpecContainerReferenceDefinition specContainerReference) {
+            public SpecContainerCollectionPropertyDefinitionTemplate Build(
+                    SpecContainerReferenceDefinition specContainerReference
+            ) {
+                // If the contained spec is static, the container will have no constructor args and can be initialized
+                // inline in the property definition.
+                var isInitialized = specContainerReference.InstantiationMode == SpecInstantiationMode.Static;
+
                 return new SpecContainerCollectionPropertyDefinitionTemplate(
                         specContainerReference.SpecContainerType.QualifiedName,
+                        specContainerReference.SpecType.QualifiedName,
                         specContainerReference.ReferenceName,
+                        isInitialized,
                         specContainerReference.Location);
             }
         }

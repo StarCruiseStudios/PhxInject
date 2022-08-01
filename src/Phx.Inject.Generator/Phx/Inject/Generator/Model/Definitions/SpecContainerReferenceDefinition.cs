@@ -8,6 +8,7 @@
 
 namespace Phx.Inject.Generator.Model.Definitions {
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Input;
     using Phx.Inject.Generator.Model.Descriptors;
 
     internal delegate SpecContainerReferenceDefinition CreateSpecContainerReferenceDefinition(
@@ -17,7 +18,9 @@ namespace Phx.Inject.Generator.Model.Definitions {
 
     internal record SpecContainerReferenceDefinition(
             TypeModel SpecContainerType,
+            TypeModel SpecType,
             string ReferenceName,
+            SpecInstantiationMode InstantiationMode,
             Location Location
     ) : IDefinition {
         public class Builder {
@@ -32,9 +35,12 @@ namespace Phx.Inject.Generator.Model.Definitions {
                     SpecDescriptor specDescriptor
             ) {
                 var specContainerType = createSpecContainerType(injectorDescriptor.InjectorType, specDescriptor.SpecType);
+                var referenceName = SymbolProcessors.GetValidReferenceName(specContainerType.TypeName, startLowercase: false);
                 return new SpecContainerReferenceDefinition(
                         specContainerType,
-                        specContainerType.TypeName,
+                        specDescriptor.SpecType,
+                        referenceName,
+                        specDescriptor.InstantiationMode,
                         injectorDescriptor.Location);
             }
         }
