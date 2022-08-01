@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Tests {
+    using System.IO;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using NUnit.Framework;
@@ -18,7 +19,10 @@ namespace Phx.Inject.Tests {
     public class GeneratorTests : LoggingTestClass {
         [Test]
         public void InjectorTypesAreGenerated() {
-            var generator = Given("A source generator.", () => new SourceGenerator());
+            var renderSettings = new RenderSettings(
+                    ShouldWriteFiles: true,
+                    OutputPath: Path.Join(TestContext.CurrentContext.TestDirectory, "Generated"));
+            var generator = Given("A source generator.", () => new SourceGenerator(renderSettings));
             var rootDirectory = Given("A directory with source files.", () => TestFiles.RootDirectory);
 
             var compilation = When(

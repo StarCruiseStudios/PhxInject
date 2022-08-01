@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Render {
+    using System;
     using System.IO;
     using System.Text;
     using Microsoft.CodeAnalysis;
@@ -26,8 +27,16 @@ namespace Phx.Inject.Generator.Render {
 
             var classSource = renderWriter.GetRenderedString();
             if (renderWriter.Settings.ShouldWriteFiles) {
-                var outputPath = Path.Join(renderWriter.Settings.OutputPath, fileName);
-                File.WriteAllText(outputPath, classSource);
+                try {
+                    if (!Directory.Exists(renderWriter.Settings.OutputPath)) {
+                        Directory.CreateDirectory(renderWriter.Settings.OutputPath);
+                    }
+
+                    var outputPath = Path.Join(renderWriter.Settings.OutputPath, fileName);
+                    File.WriteAllText(outputPath, classSource);
+                } catch (Exception ex) {
+                    Logger.Error(ex.ToString());
+                }
             }
             var classSourceText = SourceText.From(classSource, Encoding.UTF8);
 

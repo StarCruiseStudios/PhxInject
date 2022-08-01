@@ -27,6 +27,14 @@ namespace Phx.Inject.Generator {
     internal class SourceGenerator : ISourceGenerator {
         private const string GeneratedFileExtension = "generated.cs";
 
+        private readonly RenderSettings renderSettings;
+
+        public SourceGenerator() : this(new RenderSettings()) { }
+
+        public SourceGenerator(RenderSettings renderSettings) {
+            this.renderSettings = renderSettings;
+        }
+
         public void Initialize(GeneratorInitializationContext context) {
 #if ATTACH_DEBUGGER
             System.Diagnostics.Debugger.Launch();
@@ -46,8 +54,6 @@ namespace Phx.Inject.Generator {
             var injectorPresenter = new InjectorPresenter();
             var specContainerPresenter = new SpecContainerPresenter();
 
-            // var renderSettings = new RenderSettings(ShouldWriteFiles: true);
-            var renderSettings = new RenderSettings();
             var templateRenderer = new TemplateRenderer(() => new RenderWriter(renderSettings));
 
             try {

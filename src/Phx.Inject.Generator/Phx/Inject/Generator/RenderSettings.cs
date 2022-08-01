@@ -6,8 +6,8 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Templates {
-    internal record RenderSettings(
+namespace Phx.Inject.Generator {
+    public record RenderSettings(
             int TabSize = 4,
             bool NullableEnabled = true,
             bool ShouldWriteFiles = false,
