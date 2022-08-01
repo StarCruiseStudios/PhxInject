@@ -46,6 +46,7 @@ namespace Phx.Inject.Generator {
             var injectorPresenter = new InjectorPresenter();
             var specContainerPresenter = new SpecContainerPresenter();
 
+            // var renderSettings = new RenderSettings(ShouldWriteFiles: true);
             var renderSettings = new RenderSettings();
             var templateRenderer = new TemplateRenderer(() => new RenderWriter(renderSettings));
 

@@ -11,53 +11,61 @@
 namespace Phx.Inject.Tests.Data.Specification {
     internal class GeneratedLabelInjector_LabeledLeafSpecificationContainer {
 
-        internal Phx.Inject.Tests.Data.Model.ILeaf GetDefaultLeaf(Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.ISpecContainerCollection specContainers) {
+        internal Phx.Inject.Tests.Data.Model.ILeaf GetDefaultLeaf(
+        Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers) {
             return Phx.Inject.Tests.Data.Specification.LabeledLeafSpecification.GetDefaultLeaf();
         }
 
-        internal Phx.Inject.Tests.Data.Model.ILeaf GetNonDefaultLeafA(Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.ISpecContainerCollection specContainers) {
+        internal Phx.Inject.Tests.Data.Model.ILeaf GetNonDefaultLeafA(
+        Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers) {
             return Phx.Inject.Tests.Data.Specification.LabeledLeafSpecification.GetNonDefaultLeafA();
         }
 
-        internal Phx.Inject.Tests.Data.Model.ILeaf GetNonDefaultLeafB(Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.ISpecContainerCollection specContainers) {
+        internal Phx.Inject.Tests.Data.Model.ILeaf GetNonDefaultLeafB(
+        Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers) {
             return Phx.Inject.Tests.Data.Specification.LabeledLeafSpecification.GetNonDefaultLeafB();
         }
 
-        internal Phx.Inject.Tests.Data.Model.ILeaf GetAttributeNamedLeafA(Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.ISpecContainerCollection specContainers) {
+        internal Phx.Inject.Tests.Data.Model.ILeaf GetAttributeNamedLeafA(
+        Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers) {
             return Phx.Inject.Tests.Data.Specification.LabeledLeafSpecification.GetAttributeNamedLeafA();
         }
 
-        internal Phx.Inject.Tests.Data.Model.ILeaf GetAttributeNamedLeafB(Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.ISpecContainerCollection specContainers) {
+        internal Phx.Inject.Tests.Data.Model.ILeaf GetAttributeNamedLeafB(
+        Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers) {
             return Phx.Inject.Tests.Data.Specification.LabeledLeafSpecification.GetAttributeNamedLeafB();
         }
 
-        internal Phx.Inject.Tests.Data.Model.ILeaf GetStringNamedLeafA(Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.ISpecContainerCollection specContainers) {
+        internal Phx.Inject.Tests.Data.Model.ILeaf GetStringNamedLeafA(
+        Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers) {
             return Phx.Inject.Tests.Data.Specification.LabeledLeafSpecification.GetStringNamedLeafA();
         }
 
-        internal Phx.Inject.Tests.Data.Model.StringLeaf GetNamedStringLeaf(Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.ISpecContainerCollection specContainers) {
+        internal Phx.Inject.Tests.Data.Model.StringLeaf GetNamedStringLeaf(
+        Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers) {
             return Phx.Inject.Tests.Data.Specification.LabeledLeafSpecification.GetNamedStringLeaf();
         }
 
-        internal Phx.Inject.Tests.Data.Model.Node GetNode(Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.ISpecContainerCollection specContainers) {
+        internal Phx.Inject.Tests.Data.Model.Node GetNode(
+        Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers) {
             return Phx.Inject.Tests.Data.Specification.LabeledLeafSpecification.GetNode(
                 specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.GetNonDefaultLeafA(specContainers),
                 specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.GetAttributeNamedLeafA(specContainers));
         }
 
-
-        internal void BuildLazyTypeLeafA(Phx.Inject.Tests.Data.Model.LazyType value, Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.ISpecContainerCollection specContainers) {
+        internal void BuildLazyTypeLeafA(
+        Phx.Inject.Tests.Data.Model.LazyType value, Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers) {
             Phx.Inject.Tests.Data.Specification.LabeledLeafSpecification.BuildLazyTypeLeafA(
                 value,
                 specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.GetNonDefaultLeafA(specContainers));
         }
 
-        internal void BuildLazyTypeDefault(Phx.Inject.Tests.Data.Model.LazyType value, Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.ISpecContainerCollection specContainers) {
+        internal void BuildLazyTypeDefault(
+        Phx.Inject.Tests.Data.Model.LazyType value, Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers) {
             Phx.Inject.Tests.Data.Specification.LabeledLeafSpecification.BuildLazyTypeDefault(
                 value,
                 specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.GetDefaultLeaf(specContainers));
         }
-
     }
 }
 #nullable restore

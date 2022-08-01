@@ -13,14 +13,17 @@ namespace Phx.Inject.Generator {
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     internal class InjectorSyntaxReceiver : ISyntaxReceiver {
-        public List<InterfaceDeclarationSyntax> InjectorCandidates { get; } = new();
-        public List<ClassDeclarationSyntax> SpecificationCandidates { get; } = new();
+        public List<TypeDeclarationSyntax> InjectorCandidates { get; } = new();
+        public List<TypeDeclarationSyntax> SpecificationCandidates { get; } = new();
 
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode) {
             switch (syntaxNode) {
                 case InterfaceDeclarationSyntax interfaceDeclaration:
                     if (HasInjectorAttribute(interfaceDeclaration)) {
                         InjectorCandidates.Add(interfaceDeclaration);
+                    }
+                    if (HasSpecificationAttribute(interfaceDeclaration)) {
+                        SpecificationCandidates.Add(interfaceDeclaration);
                     }
 
                     break;

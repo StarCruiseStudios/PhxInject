@@ -10,15 +10,10 @@
 #nullable enable
 namespace Phx.Inject.Tests.Data.Inject {
     internal partial class GeneratedLabelInjector : Phx.Inject.Tests.Data.Inject.ILabelInjector {
-        internal interface ISpecContainerCollection {
-            Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecificationContainer GeneratedLabelInjector_LabeledLeafSpecificationContainer { get; }
-        }
+        internal record SpecContainerCollection (
+            Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecificationContainer GeneratedLabelInjector_LabeledLeafSpecificationContainer = new Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecificationContainer());
 
-        internal class SpecContainerCollection: ISpecContainerCollection  {
-            public Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecificationContainer GeneratedLabelInjector_LabeledLeafSpecificationContainer { get; } = new Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecificationContainer();
-        }
-
-        private readonly ISpecContainerCollection specContainers = new SpecContainerCollection();
+        private readonly SpecContainerCollection specContainers = new SpecContainerCollection();
 
         public Phx.Inject.Tests.Data.Model.ILeaf GetDefaultLeaf() {
             return specContainers.GeneratedLabelInjector_LabeledLeafSpecificationContainer.GetDefaultLeaf(specContainers);

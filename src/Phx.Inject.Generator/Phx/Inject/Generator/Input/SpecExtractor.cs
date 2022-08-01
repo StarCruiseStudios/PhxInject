@@ -46,7 +46,7 @@ namespace Phx.Inject.Generator.Input {
             var isStaticSpecification = symbol.TypeKind == TypeKind.Class && symbol.IsStatic;
             var isInterfaceSpecification = symbol.TypeKind == TypeKind.Interface;
 
-            if (!isStaticSpecification || isInterfaceSpecification) {
+            if (!isStaticSpecification && !isInterfaceSpecification) {
                 throw new InjectionException(
                         Diagnostics.InvalidSpecification,
                         $"Specification type {symbol.Name} must be a static class or interface.",

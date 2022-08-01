@@ -10,21 +10,13 @@
 #nullable enable
 namespace Phx.Inject.Tests.Data.Inject {
     internal partial class GeneratedRawInjector : Phx.Inject.Tests.Data.Inject.IRawInjector {
-        internal interface ISpecContainerCollection {
-            Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_RootSpecificationContainer GeneratedRawInjector_RootSpecificationContainer { get; }
-            Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LazySpecificationContainer GeneratedRawInjector_LazySpecificationContainer { get; }
-            Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LeafSpecificationContainer GeneratedRawInjector_LeafSpecificationContainer { get; }
-            Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LeafLinksContainer GeneratedRawInjector_LeafLinksContainer { get; }
-        }
+        internal record SpecContainerCollection (
+            Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_RootSpecificationContainer GeneratedRawInjector_RootSpecificationContainer = new Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_RootSpecificationContainer(),
+            Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LazySpecificationContainer GeneratedRawInjector_LazySpecificationContainer = new Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LazySpecificationContainer(),
+            Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LeafSpecificationContainer GeneratedRawInjector_LeafSpecificationContainer = new Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LeafSpecificationContainer(),
+            Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LeafLinksContainer GeneratedRawInjector_LeafLinksContainer = new Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LeafLinksContainer());
 
-        internal class SpecContainerCollection: ISpecContainerCollection  {
-            public Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_RootSpecificationContainer GeneratedRawInjector_RootSpecificationContainer { get; } = new Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_RootSpecificationContainer();
-            public Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LazySpecificationContainer GeneratedRawInjector_LazySpecificationContainer { get; } = new Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LazySpecificationContainer();
-            public Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LeafSpecificationContainer GeneratedRawInjector_LeafSpecificationContainer { get; } = new Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LeafSpecificationContainer();
-            public Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LeafLinksContainer GeneratedRawInjector_LeafLinksContainer { get; } = new Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LeafLinksContainer();
-        }
-
-        private readonly ISpecContainerCollection specContainers = new SpecContainerCollection();
+        private readonly SpecContainerCollection specContainers = new SpecContainerCollection();
 
         public Phx.Inject.Tests.Data.Model.Root GetRoot() {
             return specContainers.GeneratedRawInjector_RootSpecificationContainer.GetRoot(specContainers);

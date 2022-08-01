@@ -27,9 +27,10 @@ namespace Phx.Inject.Generator.Model.Templates {
                     .IncreaseIndent(1);
             var isFirst = true;
             foreach (var specContainerProperty in SpecContainerProperties) {
-                if (!isFirst) {
-                    writer.AppendLine(",");
+                if (isFirst) {
                     isFirst = false;
+                } else {
+                    writer.AppendLine(",");
                 }
 
                 specContainerProperty.Render(writer);
@@ -37,9 +38,6 @@ namespace Phx.Inject.Generator.Model.Templates {
 
             writer.AppendLine(");")
                     .DecreaseIndent(1);
-
-            writer.DecreaseIndent(1)
-                    .AppendLine("}");
         }
 
         public class Builder {

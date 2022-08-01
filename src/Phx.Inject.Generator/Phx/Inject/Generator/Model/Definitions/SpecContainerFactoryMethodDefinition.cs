@@ -63,7 +63,9 @@ namespace Phx.Inject.Generator.Model.Definitions {
                         injectorDescriptor.InjectorType,
                         specDescriptor.SpecType);
                 var specContainerCollectionType = createSpecContainerCollectionType(injectorDescriptor.InjectorType);
-                var instanceHolder = createInstanceHolder(specFactoryDescriptor);
+                var instanceHolder = specFactoryDescriptor.FabricationMode == SpecFactoryMethodFabricationMode.Scoped
+                        ? createInstanceHolder(specFactoryDescriptor)
+                        : null;
 
                 var arguments = specFactoryDescriptor.Arguments.Select(
                         argumentType => {

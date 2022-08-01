@@ -12,14 +12,15 @@ namespace Phx.Inject.Tests.Data.Specification {
     internal class CustomInjector_LeafSpecificationContainer {
         private Phx.Inject.Tests.Data.Model.IntLeaf? intLeafInstance;
 
-        internal Phx.Inject.Tests.Data.Model.IntLeaf GetIntLeaf(Phx.Inject.Tests.Data.Inject.CustomInjector.ISpecContainerCollection specContainers) {
+        internal Phx.Inject.Tests.Data.Model.IntLeaf GetIntLeaf(
+        Phx.Inject.Tests.Data.Inject.CustomInjector.SpecContainerCollection specContainers) {
             return intLeafInstance ??= Phx.Inject.Tests.Data.Specification.LeafSpecification.GetIntLeaf();
         }
 
-        internal Phx.Inject.Tests.Data.Model.StringLeaf GetStringLeaf(Phx.Inject.Tests.Data.Inject.CustomInjector.ISpecContainerCollection specContainers) {
+        internal Phx.Inject.Tests.Data.Model.StringLeaf GetStringLeaf(
+        Phx.Inject.Tests.Data.Inject.CustomInjector.SpecContainerCollection specContainers) {
             return Phx.Inject.Tests.Data.Specification.LeafSpecification.GetStringLeaf();
         }
-
     }
 }
 #nullable restore

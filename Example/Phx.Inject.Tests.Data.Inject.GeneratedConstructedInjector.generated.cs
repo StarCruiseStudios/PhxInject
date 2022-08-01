@@ -10,13 +10,14 @@
 #nullable enable
 namespace Phx.Inject.Tests.Data.Inject {
     internal partial class GeneratedConstructedInjector : Phx.Inject.Tests.Data.Inject.IConstructedInjector {
-        internal interface ISpecContainerCollection {
-        }
+        internal record SpecContainerCollection (
+            Phx.Inject.Tests.Data.Specification.GeneratedConstructedInjector_IConstructedSpecificationContainer GeneratedConstructedInjector_IConstructedSpecificationContainer = new Phx.Inject.Tests.Data.Specification.GeneratedConstructedInjector_IConstructedSpecificationContainer());
 
-        internal class SpecContainerCollection: ISpecContainerCollection  {
-        }
+        private readonly SpecContainerCollection specContainers = new SpecContainerCollection();
 
-        private readonly ISpecContainerCollection specContainers = new SpecContainerCollection();
+        public Phx.Inject.Tests.Data.Model.IntLeaf GetIntLeaf() {
+            return specContainers.GeneratedConstructedInjector_IConstructedSpecificationContainer.GetIntLeaf(specContainers);
+        }
     }
 }
 #nullable restore

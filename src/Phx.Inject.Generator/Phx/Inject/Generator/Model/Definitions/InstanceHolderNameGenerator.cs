@@ -21,6 +21,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
                     : $"{heldInstanceType.Qualifier}_{heldInstanceType.TypeModel.TypeName}";
             referenceName = validCharsRegex.Replace(referenceName, "");
             referenceName = char.ToLower(referenceName[0]) + referenceName[1..];
+            referenceName += "Instance";
             return referenceName;
         }
     }

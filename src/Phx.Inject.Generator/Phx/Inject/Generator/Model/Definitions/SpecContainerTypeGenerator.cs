@@ -16,7 +16,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
     internal static class SpecContainerTypeGenerator {
         public static TypeModel CreateSpecContainerType(TypeModel injectorType, TypeModel specType) {
             return specType with {
-                TypeName = $"{injectorType.TypeName}_{specType.TypeName}"
+                TypeName = $"{injectorType.TypeName}_{specType.TypeName}Container"
             };
         }
     }

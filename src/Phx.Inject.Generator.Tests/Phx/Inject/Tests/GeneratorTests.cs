@@ -50,6 +50,7 @@ namespace Phx.Inject.Tests {
             ThenTheNamespaceContainsTheExpectedGeneratedInjector(injectorNamespace!, "CustomInjector");
             ThenTheNamespaceContainsTheExpectedGeneratedInjector(injectorNamespace!, "GeneratedLabelInjector");
             ThenTheNamespaceContainsTheExpectedGeneratedInjector(injectorNamespace!, "GeneratedRawInjector");
+            ThenTheNamespaceContainsTheExpectedGeneratedInjector(injectorNamespace!, "GeneratedConstructedInjector");
         }
 
         private void ThenTheNamespaceContainsTheExpectedGeneratedInjector(INamespaceSymbol injectorNamespace, string expectedGeneratorName) {
