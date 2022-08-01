@@ -21,6 +21,7 @@ namespace Phx.Inject.Generator.Model.Templates {
             string ReturnTypeQualifiedName,
             string FactoryMethodName,
             string SpecificationQualifiedType,
+            string? ConstructedSpecificationReference,
             string SpecContainerCollectionQualifiedType,
             string SpecContainerCollectionReferenceName,
             string? InstanceHolderReference,
@@ -36,7 +37,8 @@ namespace Phx.Inject.Generator.Model.Templates {
                 writer.Append($"{InstanceHolderReference} ??= ");
             }
 
-            writer.Append($"{SpecificationQualifiedType}.{FactoryMethodName}");
+            var referenceName = ConstructedSpecificationReference ?? SpecificationQualifiedType;
+            writer.Append($"{referenceName}.{FactoryMethodName}");
             var numArguments = Arguments.Count();
             if (numArguments == 0) {
                 writer.AppendLine("();");
@@ -85,6 +87,7 @@ namespace Phx.Inject.Generator.Model.Templates {
                         specContainerFactoryMethodDefinition.ProvidedType.QualifiedName,
                         specContainerFactoryMethodDefinition.MethodName,
                         specContainerFactoryMethodDefinition.SpecReference.SpecType.QualifiedName,
+                        specContainerFactoryMethodDefinition.SpecReference.SpecReferenceName,
                         specContainerFactoryMethodDefinition.SpecContainerCollectionType.QualifiedName,
                         specContainerCollectionReferenceName,
                         instanceHolderReference,

@@ -10,20 +10,20 @@
 #nullable enable
 namespace Phx.Inject.Tests.Data.Specification {
     internal class GeneratedConstructedInjector_IConstructedSpecification {
-        private Phx.Inject.Tests.Data.Specification.IConstructedSpecification Phx.Inject.Tests.Data.Specification.IConstructedSpecification;
+        private Phx.Inject.Tests.Data.Specification.IConstructedSpecification instance;
 
-        public GeneratedConstructedInjector_IConstructedSpecification(Phx.Inject.Tests.Data.Specification.IConstructedSpecification Phx.Inject.Tests.Data.Specification.IConstructedSpecification) {
-            this.Phx.Inject.Tests.Data.Specification.IConstructedSpecification = Phx.Inject.Tests.Data.Specification.IConstructedSpecification;
+        public GeneratedConstructedInjector_IConstructedSpecification(Phx.Inject.Tests.Data.Specification.IConstructedSpecification instance) {
+            this.instance = instance;
         }
 
         internal System.Int32 GetIntValue(
         Phx.Inject.Tests.Data.Inject.GeneratedConstructedInjector.SpecContainerCollection specContainers) {
-            return Phx.Inject.Tests.Data.Specification.IConstructedSpecification.GetIntValue();
+            return instance.GetIntValue();
         }
 
         internal Phx.Inject.Tests.Data.Model.IntLeaf GetIntLeaf(
         Phx.Inject.Tests.Data.Inject.GeneratedConstructedInjector.SpecContainerCollection specContainers) {
-            return Phx.Inject.Tests.Data.Specification.IConstructedSpecification.GetIntLeaf(
+            return instance.GetIntLeaf(
                 specContainers.GeneratedConstructedInjector_IConstructedSpecification.GetIntValue(specContainers));
         }
     }

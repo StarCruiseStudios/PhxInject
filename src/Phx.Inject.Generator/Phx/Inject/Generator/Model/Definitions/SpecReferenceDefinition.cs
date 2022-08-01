@@ -20,13 +20,18 @@ namespace Phx.Inject.Generator.Model.Definitions {
     /// <param name="Location"> The location in the original code this reference is based on.</param>
     internal record SpecReferenceDefinition(
             TypeModel SpecType,
+            string? SpecReferenceName,
             SpecInstantiationMode InstantiationMode,
             Location Location
     ) : IDefinition {
         public class Builder {
             public SpecReferenceDefinition Build(SpecDescriptor specDescriptor) {
+                var specReferenceName = specDescriptor.InstantiationMode == SpecInstantiationMode.Instantiated
+                        ? "instance"
+                        : null;
                 return new SpecReferenceDefinition(
                         specDescriptor.SpecType,
+                        specReferenceName,
                         specDescriptor.InstantiationMode,
                         specDescriptor.Location);
             }

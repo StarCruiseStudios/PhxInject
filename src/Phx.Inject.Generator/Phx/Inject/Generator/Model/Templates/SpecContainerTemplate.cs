@@ -18,7 +18,7 @@ namespace Phx.Inject.Generator.Model.Templates {
     internal record SpecContainerTemplate(
             string SpecContainerClassName,
             string? ConstructedSpecClassQualifiedName,
-            string ConstructedSpecificationReferenceName,
+            string? ConstructedSpecificationReferenceName,
             IEnumerable<InstanceHolderDeclarationTemplate> InstanceHolderDeclarationTemplates,
             IEnumerable<ISpecContainerMemberTemplate> MemberTemplates,
             Location Location
@@ -32,6 +32,13 @@ namespace Phx.Inject.Generator.Model.Templates {
             }
 
             if (!string.IsNullOrEmpty(ConstructedSpecClassQualifiedName)) {
+                if (string.IsNullOrEmpty(ConstructedSpecificationReferenceName)) {
+                    throw new InjectionException(
+                            Diagnostics.InternalError,
+                            "Constructed Specification Reference Name should not be null if ConstructedSpecClassQualifiedName is set.",
+                            Location);
+                }
+
                 writer.AppendLine(
                                 $"private {ConstructedSpecClassQualifiedName} {ConstructedSpecificationReferenceName};")
                         .AppendBlankLine()
@@ -93,7 +100,7 @@ namespace Phx.Inject.Generator.Model.Templates {
                 return new SpecContainerTemplate(
                         specContainerDefinition.ContainerType.TypeName,
                         constructedSpecClassQualifiedName,
-                        constructedSpecClassQualifiedName,
+                        specContainerDefinition.SpecReference.SpecReferenceName,
                         instanceHolderDeclarations,
                         memberTemplates,
                         specContainerDefinition.Location);
