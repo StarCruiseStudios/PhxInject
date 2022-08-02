@@ -30,7 +30,10 @@ namespace Phx.Inject.Generator.Model.Templates {
     ) : ISpecContainerMemberTemplate {
         public void Render(IRenderWriter writer) {
             writer.AppendLine($"internal {ReturnTypeQualifiedName} {FactoryMethodName}(")
-                    .AppendLine($"{SpecContainerCollectionQualifiedType} {SpecContainerCollectionReferenceName}) {{")
+                    .IncreaseIndent(2)
+                    .AppendLine($"{SpecContainerCollectionQualifiedType} {SpecContainerCollectionReferenceName}")
+                    .DecreaseIndent(2)
+                    .AppendLine(") {")
                     .IncreaseIndent(1)
                     .Append("return ");
             if (!string.IsNullOrEmpty(InstanceHolderReference)) {

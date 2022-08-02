@@ -22,17 +22,26 @@ namespace Phx.Inject.Generator.Model.Descriptors {
     ) : IDescriptor {
         public class Builder {
             public InjectorProviderDescriptor? Build(IMethodSymbol providerMethod) {
+                var providerLocation = providerMethod.Locations.First();
+
                 if (providerMethod.ReturnsVoid) {
                     // This is a builder not a provider.
                     return null;
                 }
 
+                if (providerMethod.Parameters.Length > 0) {
+                    throw new InjectionException(
+                            Diagnostics.InvalidSpecification,
+                            $"External dependency provider {providerMethod.Name} must not have any parameters.",
+                            providerLocation);
+                }
+
                 var returnType = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
                 var qualifier = SymbolProcessors.GetQualifier(providerMethod);
                 return new InjectorProviderDescriptor(
-                        new QualifiedTypeDescriptor(returnType, qualifier, providerMethod.ReturnType.Locations.First()),
+                        new QualifiedTypeDescriptor(returnType, qualifier, providerLocation),
                         providerMethod.Name,
-                        providerMethod.Locations.First());
+                        providerLocation);
             }
         }
     }

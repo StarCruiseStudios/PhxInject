@@ -111,6 +111,7 @@ namespace Phx.Inject.Generator.Input {
         public static string GetValidReferenceName(string baseName, bool startLowercase) {
             var referenceName = baseName;
 
+            referenceName = referenceName.Replace(".", "_");
             referenceName = validCharsRegex.Replace(referenceName, "");
 
             // Start with a lowercase letter.
@@ -147,7 +148,7 @@ namespace Phx.Inject.Generator.Input {
                 }
 
                 // Add the generated prefix
-                generatedClassName = $"{GeneratedInjectorClassPrefix}{generatedClassName}";
+                generatedClassName = GetValidReferenceName($"{GeneratedInjectorClassPrefix}{generatedClassName}", startLowercase: false);
             }
 
             return generatedClassName;

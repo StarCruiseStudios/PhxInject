@@ -25,7 +25,7 @@ namespace Phx.Inject.Generator.Model.Templates {
             writer.AppendLine($"public {ReturnTypeQualifiedName} {MethodName}() {{")
                     .IncreaseIndent(1)
                     .Append("return ");
-            FactoryInvocationTemplate.Render((writer));
+            FactoryInvocationTemplate.Render(writer);
             writer.AppendLine(";")
                     .DecreaseIndent(1)
                     .AppendLine("}");

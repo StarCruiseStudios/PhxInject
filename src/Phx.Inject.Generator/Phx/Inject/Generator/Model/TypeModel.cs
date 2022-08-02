@@ -17,9 +17,14 @@ namespace Phx.Inject.Generator.Model {
         }
 
         public static TypeModel FromTypeSymbol(ITypeSymbol typeSymbol) {
+            var name = typeSymbol.Name;
+            if (typeSymbol.ContainingType != null) {
+                var containingType = TypeModel.FromTypeSymbol(typeSymbol.ContainingType);
+                name = $"{containingType.TypeName}.{name}";
+            }
             return new TypeModel(
                     typeSymbol.ContainingNamespace.ToString(),
-                    typeSymbol.Name);
+                    name);
         }
     }
 }
