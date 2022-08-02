@@ -15,7 +15,7 @@ namespace Phx.Inject.Generator.Model.Templates {
         IRenderWriter IncreaseIndent(int tabs);
         IRenderWriter DecreaseIndent(int tabs);
         IRenderWriter Append(string str, bool autoIndent = true);
-        IRenderWriter AppendLine(string str, bool autoIndent = true);
+        IRenderWriter AppendLine(string str = "", bool autoIndent = true);
         IRenderWriter AppendBlankLine();
         string GetRenderedString();
     }

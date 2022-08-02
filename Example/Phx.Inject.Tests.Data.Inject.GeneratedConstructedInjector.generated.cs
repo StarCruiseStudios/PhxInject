@@ -17,7 +17,6 @@ namespace Phx.Inject.Tests.Data.Inject {
         private readonly SpecContainerCollection specContainers;
 
         public GeneratedConstructedInjector(
-
             Phx.Inject.Tests.Data.Specification.IConstructedSpecification generatedConstructedInjector_IConstructedSpecification
         ) {
             specContainers = new SpecContainerCollection(

@@ -51,7 +51,7 @@ namespace Phx.Inject.Generator.Render {
             return this;
         }
 
-        public IRenderWriter AppendLine(string str, bool autoIndent = true) {
+        public IRenderWriter AppendLine(string str = "", bool autoIndent = true) {
             if (isBeginningOfLine && autoIndent) {
                 sourceBuilder.Append(indentString);
             }

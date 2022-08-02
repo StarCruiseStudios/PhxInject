@@ -65,7 +65,7 @@ namespace Phx.Inject.Generator.Model.Templates {
                     .ToImmutableList();
 
             if (specContainersWithNonDefaultConstructors.Any()) {
-                writer.AppendBlankLine()
+                writer.AppendLine()
                         .IncreaseIndent(1);
 
                 var isFirstParameter = true;
