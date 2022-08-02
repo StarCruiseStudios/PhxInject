@@ -24,16 +24,20 @@ namespace Phx.Inject.Generator.Model.Descriptors {
             IEnumerable<InjectorProviderDescriptor> Providers,
             IEnumerable<InjectorBuilderDescriptor> Builders,
             IEnumerable<SpecDescriptor> Specifications,
+            IEnumerable<ExternalDependencyDescriptor> ExternalDependencies,
             Location Location
     ) : IDescriptor {
         public class Builder {
+            private readonly CreateExternalDependencyDescriptor createExternalDependencyDescriptor;
             private readonly CreateInjectorProviderDescriptor createInjectorProvider;
             private readonly CreateInjectorBuilderDescriptor createInjectorBuilder;
 
             public Builder(
+                    CreateExternalDependencyDescriptor createExternalDependencyDescriptor,
                     CreateInjectorProviderDescriptor createInjectorProvider,
                     CreateInjectorBuilderDescriptor createInjectorBuilder
             ) {
+                this.createExternalDependencyDescriptor = createExternalDependencyDescriptor;
                 this.createInjectorProvider = createInjectorProvider;
                 this.createInjectorBuilder = createInjectorBuilder;
             }
@@ -45,6 +49,11 @@ namespace Phx.Inject.Generator.Model.Descriptors {
                 var injectorInterfaceType = TypeModel.FromTypeSymbol(injectorInterfaceSymbol);
                 var injectorClassName = SymbolProcessors.GetGeneratedInjectorClassName(injectorInterfaceSymbol);
                 var injectorType = injectorInterfaceType with { TypeName = injectorClassName };
+
+                var externalDependencyTypes = SymbolProcessors.GetExternalDependencyTypes(injectorInterfaceSymbol);
+                var externalDependencyDescriptors = externalDependencyTypes
+                        .Select(type => createExternalDependencyDescriptor(type))
+                        .ToImmutableList();
 
                 var injectorMethods = injectorInterfaceSymbol
                         .GetMembers()
@@ -82,6 +91,7 @@ namespace Phx.Inject.Generator.Model.Descriptors {
                         providerMethods,
                         builderMethods,
                         specifications,
+                        externalDependencyDescriptors,
                         injectorInterfaceSymbol.Locations.First());
             }
         }

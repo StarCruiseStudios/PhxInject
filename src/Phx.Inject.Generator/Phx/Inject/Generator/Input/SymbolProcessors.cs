@@ -18,6 +18,8 @@ namespace Phx.Inject.Generator.Input {
 
     internal static class SymbolProcessors {
         public const string BuilderAttributeClassName = "Phx.Inject.BuilderAttribute";
+        public const string ChildInjectorAttributeClassName = "Phx.Inject.ChildInjectorAttribute";
+        public const string ExternalDependencyAttributeClassName = "Phx.Inject.ExternalDependencyAttribute";
         public const string FactoryAttributeClassName = "Phx.Inject.FactoryAttribute";
         public const string InjectorAttributeClassName = "Phx.Inject.InjectorAttribute";
         public const string LabelAttributeClassName = "Phx.Inject.LabelAttribute";
@@ -94,6 +96,18 @@ namespace Phx.Inject.Generator.Input {
 
         public static IList<AttributeData> GetBuilderAttributes(ISymbol builderMethodSymbol) {
             return GetAttributes(builderMethodSymbol, BuilderAttributeClassName);
+        }
+
+        public static IEnumerable<ITypeSymbol> GetExternalDependencyTypes(ISymbol injectorSymbol) {
+            var externalDependencyAttributes = GetAttributes(injectorSymbol, ExternalDependencyAttributeClassName);
+            return externalDependencyAttributes.SelectMany(
+                    attributeData => {
+                        return attributeData.ConstructorArguments
+                                .Where(argument => argument.Kind == TypedConstantKind.Type)
+                                .Select(argument => argument.Value)
+                                .OfType<ITypeSymbol>()
+                                .ToImmutableList();
+                    }).ToImmutableList();
         }
 
         public static ImmutableList<QualifiedTypeDescriptor> GetMethodParametersQualifiedTypes(IMethodSymbol methodSymbol) {

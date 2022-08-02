@@ -30,7 +30,6 @@ namespace Phx.Inject.Tests {
             ThenTheNamespaceContainsTheExpectedType(injectorNamespace!, "GeneratedRawInjector");
         }
 
-
         [Test]
         public void SpecTypesAreGenerated() {
             var compilation = CompileCode();
