@@ -33,6 +33,10 @@ namespace Phx.Inject.Generator.Manager {
 
             createInjectionContextDefinition = new InjectionContextDefinition.Builder(
                     new InjectorDefinition.Builder(
+                            new ExternalDependencyContainerDefinition.Builder(
+                                    new ExternalDependencyProviderMethodDefinition.Builder(
+                                            new ExternalDependencySpecFactoryInvocationDefinition.Builder().Build
+                                    ).Build).Build,
                             new InjectorProviderMethodDefinition.Builder(
                                     specContainerFactoryInvocationDefinitionBuilder.Build
                             ).Build,

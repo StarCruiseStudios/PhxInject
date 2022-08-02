@@ -24,20 +24,24 @@ namespace Phx.Inject.Generator.Model.Definitions {
             TypeModel InjectorType,
             TypeModel InjectorInterfaceType,
             SpecContainerCollectionDefinition SpecContainerCollection,
+            IEnumerable<ExternalDependencyContainerDefinition> externalDependencies,
             IEnumerable<InjectorProviderMethodDefinition> ProviderMethods,
             IEnumerable<InjectorBuilderMethodDefinition> BuilderMethods,
             Location Location
     ) : IDefinition {
         public class Builder {
+            private readonly CreateExternalDependencyContainerDefinition createExternalDependency;
             private readonly CreateInjectorProviderMethodDefinition createInjectorProviderMethod;
             private readonly CreateInjectorBuilderMethodDefinition createInjectorBuilderMethod;
             private readonly CreateSpecContainerCollectionDefinition createSpecContainerCollection;
 
             public Builder(
+                    CreateExternalDependencyContainerDefinition createExternalDependency,
                     CreateInjectorProviderMethodDefinition createInjectorProviderMethod,
                     CreateInjectorBuilderMethodDefinition createInjectorBuilderMethod,
                     CreateSpecContainerCollectionDefinition createSpecContainerCollection
             ) {
+                this.createExternalDependency = createExternalDependency;
                 this.createInjectorProviderMethod = createInjectorProviderMethod;
                 this.createInjectorBuilderMethod = createInjectorBuilderMethod;
                 this.createSpecContainerCollection = createSpecContainerCollection;
@@ -48,6 +52,11 @@ namespace Phx.Inject.Generator.Model.Definitions {
                     IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations,
                     IDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations
             ) {
+                var externalDependencies = injectorDescriptor.ExternalDependencies.Select(
+                                externalDependency => createExternalDependency(
+                                        externalDependency,
+                                        factoryRegistrations))
+                        .ToImmutableList();
                 var providerMethods = injectorDescriptor.Providers.Select(
                                 provider => createInjectorProviderMethod(
                                         provider,
@@ -67,6 +76,7 @@ namespace Phx.Inject.Generator.Model.Definitions {
                         InjectorType: injectorDescriptor.InjectorType,
                         InjectorInterfaceType: injectorDescriptor.InjectorInterfaceType,
                         specContainerCollection,
+                        externalDependencies,
                         providerMethods,
                         builderMethods,
                         injectorDescriptor.Location);
