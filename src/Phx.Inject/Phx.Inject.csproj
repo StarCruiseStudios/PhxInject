@@ -7,8 +7,7 @@
 -->
 
 <Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="../../resources/build/PhxLib.common.props"
-            Condition="Exists('../../resources/build/PhxLib.common.props')"/>
+    <Import Project="../../resources/build/PhxLib.common.props" Condition="Exists('../../resources/build/PhxLib.common.props')" />
 
     <PropertyGroup>
         <Version>$(PhxLibMajorVersion).0.1</Version>
@@ -19,7 +18,6 @@
         <PropertyGroup>
             <ErrorText>This package relies on imported build files that are not found. Missing: {0}</ErrorText>
         </PropertyGroup>
-        <Error Condition="!Exists('../../resources/build/PhxLib.common.props')"
-               Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/PhxLib.common.props'))"/>
+        <Error Condition="!Exists('../../resources/build/PhxLib.common.props')" Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/PhxLib.common.props'))" />
     </Target>
 </Project>
