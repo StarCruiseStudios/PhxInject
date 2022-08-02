@@ -11,19 +11,22 @@
 namespace Phx.Inject.Tests.Data.Inject {
     internal partial class GeneratedConstructedInjector : Phx.Inject.Tests.Data.Inject.IConstructedInjector {
         internal record SpecContainerCollection (
-            Phx.Inject.Tests.Data.Specification.GeneratedConstructedInjector_IConstructedSpecification GeneratedConstructedInjector_IConstructedSpecification);
+            Phx.Inject.Tests.Data.Specification.GeneratedConstructedInjector_IConstructedSpecification GeneratedConstructedInjector_IConstructedSpecification,
+            Phx.Inject.Tests.Data.Specification.GeneratedConstructedInjector_NonConstructedSpecification GeneratedConstructedInjector_NonConstructedSpecification);
 
         private readonly SpecContainerCollection specContainers;
 
         public GeneratedConstructedInjector(
+
             Phx.Inject.Tests.Data.Specification.IConstructedSpecification generatedConstructedInjector_IConstructedSpecification
         ) {
             specContainers = new SpecContainerCollection(
-                GeneratedConstructedInjector_IConstructedSpecification: new Phx.Inject.Tests.Data.Specification.GeneratedConstructedInjector_IConstructedSpecification(generatedConstructedInjector_IConstructedSpecification));
+                GeneratedConstructedInjector_IConstructedSpecification: new Phx.Inject.Tests.Data.Specification.GeneratedConstructedInjector_IConstructedSpecification(generatedConstructedInjector_IConstructedSpecification),
+                GeneratedConstructedInjector_NonConstructedSpecification: new Phx.Inject.Tests.Data.Specification.GeneratedConstructedInjector_NonConstructedSpecification());
         }
 
         public Phx.Inject.Tests.Data.Model.IntLeaf GetIntLeaf() {
-            return specContainers.GeneratedConstructedInjector_IConstructedSpecification.GetIntLeaf(specContainers);
+            return specContainers.GeneratedConstructedInjector_NonConstructedSpecification.GetIntLeaf(specContainers);
         }
     }
 }

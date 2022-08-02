@@ -10,7 +10,9 @@ namespace Phx.Inject.Tests.Data.Inject {
     using Phx.Inject.Tests.Data.Model;
     using Phx.Inject.Tests.Data.Specification;
 
-    [Injector(typeof(IConstructedSpecification))]
+    [Injector(
+            typeof(IConstructedSpecification),
+            typeof(NonConstructedSpecification))]
     internal interface IConstructedInjector {
         public IntLeaf GetIntLeaf();
     }

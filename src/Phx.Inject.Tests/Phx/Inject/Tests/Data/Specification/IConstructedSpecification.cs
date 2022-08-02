@@ -12,9 +12,21 @@ namespace Phx.Inject.Tests.Data.Specification {
     [Specification]
     internal interface IConstructedSpecification {
         [Factory]
-        internal int GetIntValue();
+        public int GetIntValue();
+    }
 
+    [Specification]
+    internal static class NonConstructedSpecification {
         [Factory]
-        internal IntLeaf GetIntLeaf(int intValue);
+        public static IntLeaf GetIntLeaf(int intValue) {
+            return new IntLeaf(intValue);
+        }
+    }
+
+    internal class ConstructedSpecificationImplementation : IConstructedSpecification {
+        public const int IntValue = 101;
+        public int GetIntValue() {
+            return IntValue;
+        }
     }
 }

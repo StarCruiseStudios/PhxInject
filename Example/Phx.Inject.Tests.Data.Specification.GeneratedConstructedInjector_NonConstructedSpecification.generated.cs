@@ -9,16 +9,12 @@
 
 #nullable enable
 namespace Phx.Inject.Tests.Data.Specification {
-    internal class GeneratedConstructedInjector_IConstructedSpecification {
-        private Phx.Inject.Tests.Data.Specification.IConstructedSpecification instance;
+    internal class GeneratedConstructedInjector_NonConstructedSpecification {
 
-        public GeneratedConstructedInjector_IConstructedSpecification(Phx.Inject.Tests.Data.Specification.IConstructedSpecification instance) {
-            this.instance = instance;
-        }
-
-        internal System.Int32 GetIntValue(
+        internal Phx.Inject.Tests.Data.Model.IntLeaf GetIntLeaf(
         Phx.Inject.Tests.Data.Inject.GeneratedConstructedInjector.SpecContainerCollection specContainers) {
-            return instance.GetIntValue();
+            return Phx.Inject.Tests.Data.Specification.NonConstructedSpecification.GetIntLeaf(
+                specContainers.GeneratedConstructedInjector_IConstructedSpecification.GetIntValue(specContainers));
         }
     }
 }
