@@ -27,6 +27,7 @@ namespace Phx.Inject.Generator.Input {
                 new InjectorDescriptor.Builder(
                         new ExternalDependencyDescriptor.Builder(
                                 new ExternalDependencyProviderDescriptor.Builder().Build).Build,
+                        new ChildInjectorDescriptor.Builder().Build,
                         new InjectorProviderDescriptor.Builder().Build,
                         new InjectorBuilderDescriptor.Builder().Build).Build) { }
 

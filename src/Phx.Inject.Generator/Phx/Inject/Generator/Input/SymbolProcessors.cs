@@ -168,6 +168,13 @@ namespace Phx.Inject.Generator.Input {
             return generatedClassName;
         }
 
+        public static IEnumerable<IMethodSymbol> GetChildInjectors(ITypeSymbol injectorInterfaceSymbol) {
+            return injectorInterfaceSymbol.GetMembers()
+                    .OfType<IMethodSymbol>()
+                    .Where(methodSymbol => GetAttributes(methodSymbol, ChildInjectorAttributeClassName).Any())
+                    .ToImmutableList();
+        }
+
         public static IEnumerable<ITypeSymbol> GetInjectorSpecificationTypes(ISymbol injectorInterfaceSymbol) {
             var injectorAttribute = GetInjectorAttribute(injectorInterfaceSymbol);
             if (injectorAttribute == null) {

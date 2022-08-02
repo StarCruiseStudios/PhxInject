@@ -25,19 +25,23 @@ namespace Phx.Inject.Generator.Model.Descriptors {
             IEnumerable<InjectorBuilderDescriptor> Builders,
             IEnumerable<SpecDescriptor> Specifications,
             IEnumerable<ExternalDependencyDescriptor> ExternalDependencies,
+            IEnumerable<ChildInjectorDescriptor> ChildInjectors,
             Location Location
     ) : IDescriptor {
         public class Builder {
-            private readonly CreateExternalDependencyDescriptor createExternalDependencyDescriptor;
+            private readonly CreateExternalDependencyDescriptor createExternalDependency;
+            private readonly CreateChildInjectorDescriptor createChildInjector;
             private readonly CreateInjectorProviderDescriptor createInjectorProvider;
             private readonly CreateInjectorBuilderDescriptor createInjectorBuilder;
 
             public Builder(
-                    CreateExternalDependencyDescriptor createExternalDependencyDescriptor,
+                    CreateExternalDependencyDescriptor createExternalDependency,
+                    CreateChildInjectorDescriptor createChildInjector,
                     CreateInjectorProviderDescriptor createInjectorProvider,
                     CreateInjectorBuilderDescriptor createInjectorBuilder
             ) {
-                this.createExternalDependencyDescriptor = createExternalDependencyDescriptor;
+                this.createExternalDependency = createExternalDependency;
+                this.createChildInjector = createChildInjector;
                 this.createInjectorProvider = createInjectorProvider;
                 this.createInjectorBuilder = createInjectorBuilder;
             }
@@ -52,7 +56,12 @@ namespace Phx.Inject.Generator.Model.Descriptors {
 
                 var externalDependencyTypes = SymbolProcessors.GetExternalDependencyTypes(injectorInterfaceSymbol);
                 var externalDependencyDescriptors = externalDependencyTypes
-                        .Select(type => createExternalDependencyDescriptor(type))
+                        .Select(type => createExternalDependency(type))
+                        .ToImmutableList();
+
+                var childInjectors = SymbolProcessors.GetChildInjectors(injectorInterfaceSymbol);
+                var childInjectorDescriptors= childInjectors
+                        .Select(childInjector => createChildInjector(childInjector))
                         .ToImmutableList();
 
                 var injectorMethods = injectorInterfaceSymbol
@@ -92,6 +101,7 @@ namespace Phx.Inject.Generator.Model.Descriptors {
                         builderMethods,
                         specifications,
                         externalDependencyDescriptors,
+                        childInjectorDescriptors,
                         injectorInterfaceSymbol.Locations.First());
             }
         }
