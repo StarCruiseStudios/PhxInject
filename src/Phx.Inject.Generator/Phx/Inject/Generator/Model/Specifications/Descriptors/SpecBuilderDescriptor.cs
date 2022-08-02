@@ -6,22 +6,24 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Descriptors {
+namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Input;
 
-    internal delegate SpecBuilderDescriptor? CreateSpecBuilderDescriptor(IMethodSymbol builderMethod);
+    internal delegate SpecBuilderDescriptor? CreateSpecBuilderDescriptor(
+            IMethodSymbol builderMethod,
+            DescriptorGenerationContext context);
 
     internal record SpecBuilderDescriptor(
-            QualifiedTypeDescriptor BuiltType,
+            QualifiedTypeModel BuiltType,
             string BuilderMethodName,
-            IEnumerable<QualifiedTypeDescriptor> Arguments,
+            IEnumerable<QualifiedTypeModel> Parameters,
             Location Location) : IDescriptor {
         public class Builder {
-            public SpecBuilderDescriptor? Build(IMethodSymbol builderMethod) {
+            public SpecBuilderDescriptor? Build(IMethodSymbol builderMethod, DescriptorGenerationContext context) {
                 var builderAttributes = SymbolProcessors.GetBuilderAttributes(builderMethod);
 
                 var numBuilderAttributes = builderAttributes.Count;
@@ -30,11 +32,13 @@ namespace Phx.Inject.Generator.Model.Descriptors {
                     return null;
                 }
 
+                var builderLocation = builderMethod.Locations.First();
+
                 if (numBuilderAttributes > 1) {
                     throw new InjectionException(
                             Diagnostics.InvalidSpecification,
                             "Method can only have a single builder attribute.",
-                            builderMethod.Locations.First());
+                            builderLocation);
                 }
 
                 var methodParameterTypes = SymbolProcessors.GetMethodParametersQualifiedTypes(builderMethod);
@@ -42,7 +46,7 @@ namespace Phx.Inject.Generator.Model.Descriptors {
                     throw new InjectionException(
                             Diagnostics.InvalidSpecification,
                             "Builder method must have at least one parameter.",
-                            builderMethod.Locations.First());
+                            builderLocation);
                 }
 
                 var qualifier = SymbolProcessors.GetQualifier(builderMethod);
@@ -50,13 +54,13 @@ namespace Phx.Inject.Generator.Model.Descriptors {
                 var builtType = methodParameterTypes[0] with { Qualifier = qualifier };
                 var builderArguments = methodParameterTypes.Count > 1
                         ? methodParameterTypes.GetRange(1, methodParameterTypes.Count - 1)
-                        : ImmutableList.Create<QualifiedTypeDescriptor>();
+                        : ImmutableList.Create<QualifiedTypeModel>();
 
                 return new SpecBuilderDescriptor(
                         builtType,
                         builderMethod.Name,
                         builderArguments,
-                        builderMethod.Locations.First());
+                        builderLocation);
             }
         }
     }

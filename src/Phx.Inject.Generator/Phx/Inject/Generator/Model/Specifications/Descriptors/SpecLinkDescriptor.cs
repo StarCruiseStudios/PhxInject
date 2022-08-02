@@ -1,24 +1,31 @@
 ﻿// -----------------------------------------------------------------------------
-//  <copyright file="LinkDescriptor.cs" company="Star Cruise Studios LLC">
+//  <copyright file="SpecLinkDescriptor.cs" company="Star Cruise Studios LLC">
 //      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
 //      Licensed under the Apache License 2.0 License.
 //      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Descriptors {
-    using System;
+namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
     using Microsoft.CodeAnalysis;
 
-    internal delegate LinkDescriptor CreateLinkDescriptor(AttributeData linkAttribute, Location linkLocation);
+    internal delegate SpecLinkDescriptor CreateSpecLinkDescriptor(
+            AttributeData linkAttribute,
+            Location linkLocation,
+            DescriptorGenerationContext context
+    );
 
-    internal record LinkDescriptor(
-            QualifiedTypeDescriptor InputType,
-            QualifiedTypeDescriptor ReturnType,
+    internal record SpecLinkDescriptor(
+            QualifiedTypeModel InputType,
+            QualifiedTypeModel ReturnType,
             Location Location
     ) : IDescriptor {
         public class Builder {
-            public LinkDescriptor Build(AttributeData linkAttribute, Location linkLocation) {
+            public SpecLinkDescriptor Build(
+                    AttributeData linkAttribute,
+                    Location linkLocation,
+                    DescriptorGenerationContext context
+            ) {
                 if (linkAttribute.ConstructorArguments.Length != 2) {
                     throw new InjectionException(
                             Diagnostics.InternalError,
@@ -39,9 +46,9 @@ namespace Phx.Inject.Generator.Model.Descriptors {
                 var inputType = TypeModel.FromTypeSymbol(inputTypeArgument);
                 var returnType = TypeModel.FromTypeSymbol(returnTypeArgument);
 
-                return new LinkDescriptor(
-                        new QualifiedTypeDescriptor(inputType, QualifiedTypeDescriptor.NoQualifier, linkLocation),
-                        new QualifiedTypeDescriptor(returnType, QualifiedTypeDescriptor.NoQualifier, linkLocation),
+                return new SpecLinkDescriptor(
+                        new QualifiedTypeModel(inputType, QualifiedTypeModel.NoQualifier),
+                        new QualifiedTypeModel(returnType, QualifiedTypeModel.NoQualifier),
                         linkLocation);
             }
         }

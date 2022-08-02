@@ -6,24 +6,26 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Descriptors {
+namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Input;
     using System.Linq;
 
-    internal delegate SpecFactoryDescriptor? CreateSpecFactoryDescriptor(IMethodSymbol factoryMethod);
+    internal delegate SpecFactoryDescriptor? CreateSpecFactoryDescriptor(
+            IMethodSymbol factoryMethod,
+            DescriptorGenerationContext context
+    );
 
     internal record SpecFactoryDescriptor(
-            QualifiedTypeDescriptor ReturnType,
+            QualifiedTypeModel ReturnType,
             string FactoryMethodName,
-            IEnumerable<QualifiedTypeDescriptor> Arguments,
+            IEnumerable<QualifiedTypeModel> Parameters,
             SpecFactoryMethodFabricationMode FabricationMode,
             Location Location
     ) : IDescriptor {
         public class Builder {
-            public SpecFactoryDescriptor? Build(IMethodSymbol factoryMethod) {
-                var factoryLocation = factoryMethod.Locations.First();
+            public SpecFactoryDescriptor? Build(IMethodSymbol factoryMethod, DescriptorGenerationContext context) {
                 var factoryAttributes = SymbolProcessors.GetFactoryAttributes(factoryMethod);
 
                 var numFactoryAttributes = factoryAttributes.Count;
@@ -31,6 +33,8 @@ namespace Phx.Inject.Generator.Model.Descriptors {
                     // This is not a factory method.
                     return null;
                 }
+
+                var factoryLocation = factoryMethod.Locations.First();
 
                 if (numFactoryAttributes > 1) {
                     throw new InjectionException(
@@ -48,10 +52,9 @@ namespace Phx.Inject.Generator.Model.Descriptors {
 
                 var qualifier = SymbolProcessors.GetQualifier(factoryMethod);
                 var returnTypeModel = TypeModel.FromTypeSymbol(factoryMethod.ReturnType);
-                var returnType = new QualifiedTypeDescriptor(
+                var returnType = new QualifiedTypeModel(
                         returnTypeModel,
-                        qualifier,
-                        factoryLocation);
+                        qualifier);
 
                 return new SpecFactoryDescriptor(
                         returnType,
