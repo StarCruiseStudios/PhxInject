@@ -11,9 +11,14 @@
 namespace Phx.Inject.Tests.Data.Inject {
     internal partial class GeneratedLabelInjector : Phx.Inject.Tests.Data.Inject.ILabelInjector {
         internal record SpecContainerCollection (
-            Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecification GeneratedLabelInjector_LabeledLeafSpecification = new Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecification());
+            Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecification GeneratedLabelInjector_LabeledLeafSpecification);
 
-        private readonly SpecContainerCollection specContainers = new SpecContainerCollection();
+        private readonly SpecContainerCollection specContainers;
+
+        public GeneratedLabelInjector() {
+            specContainers = new SpecContainerCollection(
+                GeneratedLabelInjector_LabeledLeafSpecification: new Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecification());
+        }
 
         public Phx.Inject.Tests.Data.Model.ILeaf GetDefaultLeaf() {
             return specContainers.GeneratedLabelInjector_LabeledLeafSpecification.GetDefaultLeaf(specContainers);

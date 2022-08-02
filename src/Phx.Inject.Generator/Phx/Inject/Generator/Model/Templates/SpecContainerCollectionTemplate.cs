@@ -50,34 +50,26 @@ namespace Phx.Inject.Generator.Model.Templates {
             //
             // SpecContainerCollection property declaration.
             //
+            writer.Append(
+                    $"private readonly {SpecContainerCollectionClassName} {SpecContainerCollectionReferenceName};");
 
-            var uninitializedSpecContainers = SpecContainerProperties
-                    .Where(specContainerProperty => specContainerProperty.IsInitialized == false)
+            //
+            // Injector constructor signature
+            //
+
+            writer.AppendBlankLine()
+                    .Append($"public {InjectorClassName}(");
+
+            var specContainersWithNonDefaultConstructors = SpecContainerProperties
+                    .Where(specContainerProperty => specContainerProperty.HasDefaultConstructor == false)
                     .ToImmutableList();
-            var needsConstructor = uninitializedSpecContainers.Any();
 
-            writer.Append($"private readonly {SpecContainerCollectionClassName} {SpecContainerCollectionReferenceName}");
-            if (!needsConstructor) {
-                writer.Append($" = new {SpecContainerCollectionClassName}()");
-            }
-
-            writer.AppendLine(";");
-
-
-            //
-            // Injector constructor definition.
-            //
-
-            if (needsConstructor) {
-
-                // Injector constructor signature
-
+            if (specContainersWithNonDefaultConstructors.Any()) {
                 writer.AppendBlankLine()
-                        .AppendLine($"public {InjectorClassName}(")
                         .IncreaseIndent(1);
 
                 var isFirstParameter = true;
-                foreach (var specContainer in uninitializedSpecContainers) {
+                foreach (var specContainer in specContainersWithNonDefaultConstructors) {
                     if (isFirstParameter) {
                         isFirstParameter = false;
                     } else {
@@ -88,30 +80,39 @@ namespace Phx.Inject.Generator.Model.Templates {
                     writer.AppendLine($"{specContainer.QualifiedSpecificationTypeName} {specParameterName}");
                 }
 
-                writer.DecreaseIndent(1)
-                        .AppendLine(") {")
-                        .IncreaseIndent(1)
-                        .AppendLine($"{SpecContainerCollectionReferenceName} = new {SpecContainerCollectionClassName}(")
-                        .IncreaseIndent(1);
+                writer.DecreaseIndent(1);
+            }
 
-                // Injector constructor body.
+            //
+            // Injector constructor body.
+            //
 
-                var isFirstArgument = true;
-                foreach (var specContainer in uninitializedSpecContainers) {
-                    if (isFirstArgument) {
-                        isFirstArgument = false;
-                    } else {
-                        writer.AppendLine(",");
-                    }
+            writer.AppendLine(") {")
+                    .IncreaseIndent(1)
+                    .AppendLine($"{SpecContainerCollectionReferenceName} = new {SpecContainerCollectionClassName}(")
+                    .IncreaseIndent(1);
 
-                    var specParameterName = SymbolProcessors.StartLowercase(specContainer.PropertyName);
-                    writer.Append($"{specContainer.PropertyName}: new {specContainer.QualifiedSpecContainerTypeName}({specParameterName})");
+            var isFirstArgument = true;
+            foreach (var specContainer in SpecContainerProperties) {
+                if (isFirstArgument) {
+                    isFirstArgument = false;
+                } else {
+                    writer.AppendLine(",");
                 }
 
-                writer.AppendLine(");")
-                        .DecreaseIndent(2)
-                        .AppendLine("}");
+                if (specContainer.HasDefaultConstructor) {
+                    writer.Append(
+                            $"{specContainer.PropertyName}: new {specContainer.QualifiedSpecContainerTypeName}()");
+                } else {
+                    var specParameterName = SymbolProcessors.StartLowercase(specContainer.PropertyName);
+                    writer.Append(
+                            $"{specContainer.PropertyName}: new {specContainer.QualifiedSpecContainerTypeName}({specParameterName})");
+                }
             }
+
+            writer.AppendLine(");")
+                    .DecreaseIndent(2)
+                    .AppendLine("}");
         }
 
         public class Builder {
