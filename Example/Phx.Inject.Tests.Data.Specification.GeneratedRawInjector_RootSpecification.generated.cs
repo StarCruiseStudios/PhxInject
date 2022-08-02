@@ -13,14 +13,16 @@ namespace Phx.Inject.Tests.Data.Specification {
         private Phx.Inject.Tests.Data.Model.Root? root;
 
         internal Phx.Inject.Tests.Data.Model.Root GetRoot(
-        Phx.Inject.Tests.Data.Inject.GeneratedRawInjector.SpecContainerCollection specContainers) {
+                Phx.Inject.Tests.Data.Inject.GeneratedRawInjector.SpecContainerCollection specContainers
+        ) {
             return root ??= Phx.Inject.Tests.Data.Specification.RootSpecification.GetRoot(
                 specContainers.GeneratedRawInjector_RootSpecification.GetNode(specContainers),
                 specContainers.GeneratedRawInjector_RootSpecification.GetNode(specContainers));
         }
 
         internal Phx.Inject.Tests.Data.Model.Node GetNode(
-        Phx.Inject.Tests.Data.Inject.GeneratedRawInjector.SpecContainerCollection specContainers) {
+                Phx.Inject.Tests.Data.Inject.GeneratedRawInjector.SpecContainerCollection specContainers
+        ) {
             return Phx.Inject.Tests.Data.Specification.RootSpecification.GetNode(
                 specContainers.GeneratedRawInjector_LeafSpecification.GetIntLeaf(specContainers),
                 specContainers.GeneratedRawInjector_LeafSpecification.GetStringLeaf(specContainers));

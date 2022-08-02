@@ -17,7 +17,8 @@ namespace Phx.Inject.Tests.Data.Specification {
         }
 
         internal System.Int32 GetIntValue(
-        Phx.Inject.Tests.Data.Inject.GeneratedConstructedInjector.SpecContainerCollection specContainers) {
+                Phx.Inject.Tests.Data.Inject.GeneratedConstructedInjector.SpecContainerCollection specContainers
+        ) {
             return instance.GetIntValue();
         }
     }
