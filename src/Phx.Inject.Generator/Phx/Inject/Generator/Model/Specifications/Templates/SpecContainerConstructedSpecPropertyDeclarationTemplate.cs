@@ -10,13 +10,13 @@ namespace Phx.Inject.Generator.Model.Specifications.Templates {
     using Microsoft.CodeAnalysis;
 
     internal record SpecContainerConstructedSpecPropertyDeclarationTemplate(
-            string ConstructedSpecificationTypeQualifiedName,
-            string ConstructedSpecificationReferenceName,
+            string ConstructedSpecTypeQualifiedName,
+            string ConstructedSpecReferenceName,
             Location Location
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
             writer.AppendLine(
-                    $"private {ConstructedSpecificationTypeQualifiedName} {ConstructedSpecificationReferenceName}");
+                    $"private {ConstructedSpecTypeQualifiedName} {ConstructedSpecReferenceName}");
         }
     }
 }

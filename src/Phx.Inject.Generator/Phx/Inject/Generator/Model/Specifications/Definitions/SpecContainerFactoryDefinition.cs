@@ -22,7 +22,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Definitions {
             string FactoryMethodName,
             TypeModel SpecContainerType,
             TypeModel SpecContainerCollectionType,
-            SpecContainerInstanceHolderDefinition InstanceHolder,
+            SpecFactoryMethodFabricationMode FabricationMode,
             IEnumerable<SpecContainerFactoryInvocationDefinition> Arguments,
             Location Location
     ) : IDefinition {

@@ -11,10 +11,6 @@ namespace Phx.Inject.Generator.Model.Specifications.Templates {
     using System.Linq;
     using Microsoft.CodeAnalysis;
 
-    // internal delegate SpecContainerBuilderTemplate CreateSpecContainerBuilderMethodTemplate(
-    //         SpecContainerBuilderMethodDefinition specContainerBuilderMethodDefinition
-    // );
-
     internal record SpecContainerBuilderTemplate(
             string BuiltTypeQualifiedName,
             string MethodName,
@@ -48,36 +44,5 @@ namespace Phx.Inject.Generator.Model.Specifications.Templates {
                     .DecreaseIndent(2)
                     .AppendLine("}");
         }
-
-        // public class Builder {
-        //     private readonly CreateSpecContainerFactoryMethodInvocationTemplate
-        //             createSpecContainerFactoryMethodInvocationTemplate;
-        //
-        //     public Builder(CreateSpecContainerFactoryMethodInvocationTemplate createSpecContainerFactoryMethodInvocationTemplate) {
-        //         this.createSpecContainerFactoryMethodInvocationTemplate = createSpecContainerFactoryMethodInvocationTemplate;
-        //     }
-        //
-        //     public SpecContainerBuilderTemplate Build(
-        //             SpecContainerBuilderMethodDefinition specContainerBuilderMethodDefinition
-        //     ) {
-        //         var specContainerCollectionReferenceName = "specContainers";
-        //         var builtInstanceReferenceName = "value";
-        //         var arguments = specContainerBuilderMethodDefinition.Arguments.Select(
-        //                         argument => createSpecContainerFactoryMethodInvocationTemplate(
-        //                                 argument,
-        //                                 specContainerCollectionReferenceName))
-        //                 .ToImmutableList();
-        //
-        //         return new SpecContainerBuilderTemplate(
-        //                 specContainerBuilderMethodDefinition.BuiltType.QualifiedName,
-        //                 specContainerBuilderMethodDefinition.MethodName,
-        //                 builtInstanceReferenceName,
-        //                 specContainerBuilderMethodDefinition.SpecReference.SpecType.QualifiedName,
-        //                 specContainerBuilderMethodDefinition.SpecContainerCollectionType.QualifiedName,
-        //                 specContainerCollectionReferenceName,
-        //                 arguments,
-        //                 specContainerBuilderMethodDefinition.Location);
-        //     }
-        // }
     }
 }

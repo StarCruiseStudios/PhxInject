@@ -17,7 +17,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Definitions {
     // );
 
     internal record SpecContainerDefinition(
-            TypeModel ContainerType,
+            TypeModel SpecContainerType,
             TypeModel SpecificationType,
             SpecInstantiationMode SpecInstantiationMode,
             IEnumerable<SpecContainerInstanceHolderDefinition> InstanceHolderDeclarations,
