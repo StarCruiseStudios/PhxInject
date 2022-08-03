@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Templates {
+namespace Phx.Inject.Generator.Model {
 
     internal delegate IRenderWriter CreateRenderWriter();
 
