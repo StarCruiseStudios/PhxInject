@@ -1,32 +1,38 @@
 ﻿// -----------------------------------------------------------------------------
-//  <copyright file="InjectorProviderDescriptor.cs" company="Star Cruise Studios LLC">
+//  <copyright file="ExternalDependencyProviderDescriptor.cs" company="Star Cruise Studios LLC">
 //      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
 //      Licensed under the Apache License 2.0 License.
 //      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Descriptors {
+namespace Phx.Inject.Generator.Model.External.Descriptors {
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Input;
 
-    internal delegate InjectorProviderDescriptor? CreateInjectorProviderDescriptor(
-            IMethodSymbol providerMethod
+    internal delegate ExternalDependencyProviderDescriptor CreateExternalDependencyProviderDescriptor(
+            IMethodSymbol providerMethod,
+            IDescriptorGenerationContext context
     );
 
-    internal record InjectorProviderDescriptor(
-            QualifiedTypeDescriptor ProvidedType,
+    internal record ExternalDependencyProviderDescriptor(
+            QualifiedTypeModel ProvidedType,
             string ProviderMethodName,
             Location Location
     ) : IDescriptor {
         public class Builder {
-            public InjectorProviderDescriptor? Build(IMethodSymbol providerMethod) {
+            public ExternalDependencyProviderDescriptor Build(
+                    IMethodSymbol providerMethod,
+                    IDescriptorGenerationContext context
+            ) {
                 var providerLocation = providerMethod.Locations.First();
 
                 if (providerMethod.ReturnsVoid) {
-                    // This is a builder not a provider.
-                    return null;
+                    throw new InjectionException(
+                            Diagnostics.InvalidSpecification,
+                            $"External dependency provider {providerMethod.Name} must have a return type.",
+                            providerLocation);
                 }
 
                 if (providerMethod.Parameters.Length > 0) {
@@ -38,8 +44,8 @@ namespace Phx.Inject.Generator.Model.Descriptors {
 
                 var returnType = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
                 var qualifier = SymbolProcessors.GetQualifier(providerMethod);
-                return new InjectorProviderDescriptor(
-                        new QualifiedTypeDescriptor(returnType, qualifier, providerLocation),
+                return new ExternalDependencyProviderDescriptor(
+                        new QualifiedTypeModel(returnType, qualifier),
                         providerMethod.Name,
                         providerLocation);
             }

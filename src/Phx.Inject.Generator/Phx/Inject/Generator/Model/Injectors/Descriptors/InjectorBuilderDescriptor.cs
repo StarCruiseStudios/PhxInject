@@ -6,41 +6,46 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Descriptors {
+namespace Phx.Inject.Generator.Model.Injectors.Descriptors {
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Input;
 
     internal delegate InjectorBuilderDescriptor? CreateInjectorBuilderDescriptor(
-            IMethodSymbol builderMethod
+            IMethodSymbol builderMethod,
+            IDescriptorGenerationContext context
     );
 
     internal record InjectorBuilderDescriptor(
-            QualifiedTypeDescriptor BuiltType,
+            QualifiedTypeModel BuiltType,
             string BuilderMethodName,
             Location Location
     ) : IDescriptor {
         public class Builder {
-            public InjectorBuilderDescriptor? Build(IMethodSymbol builderMethod) {
+            public InjectorBuilderDescriptor? Build(
+                    IMethodSymbol builderMethod,
+                    IDescriptorGenerationContext context
+            ) {
+                var builderLocation = builderMethod.Locations.First();
+
                 if (!builderMethod.ReturnsVoid) {
-                    // This is a provider not a builder.
+                    // This is a provider, not a builder.
                     return null;
                 }
 
                 if (builderMethod.Parameters.Length != 1) {
-                    // I don't know what this is, but it's not a builder.
-                    return null;
+                    throw new InjectionException(
+                            Diagnostics.InvalidSpecification,
+                            $"Injector builder {builderMethod.Name} must have exactly 1 parameter.",
+                            builderLocation);
                 }
 
                 var builtType = TypeModel.FromTypeSymbol(builderMethod.Parameters[0].Type);
                 var qualifier = SymbolProcessors.GetQualifier(builderMethod);
                 return new InjectorBuilderDescriptor(
-                        new QualifiedTypeDescriptor(
-                                builtType,
-                                qualifier,
-                                builderMethod.Parameters[0].Locations.Single()),
+                        new QualifiedTypeModel(builtType, qualifier),
                         builderMethod.Name,
-                        builderMethod.Locations.Single());
+                        builderLocation);
             }
         }
     }

@@ -12,7 +12,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
     internal delegate SpecLinkDescriptor CreateSpecLinkDescriptor(
             AttributeData linkAttribute,
             Location linkLocation,
-            DescriptorGenerationContext context
+            IDescriptorGenerationContext context
     );
 
     internal record SpecLinkDescriptor(
@@ -24,7 +24,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
             public SpecLinkDescriptor Build(
                     AttributeData linkAttribute,
                     Location linkLocation,
-                    DescriptorGenerationContext context
+                    IDescriptorGenerationContext context
             ) {
                 if (linkAttribute.ConstructorArguments.Length != 2) {
                     throw new InjectionException(

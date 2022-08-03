@@ -15,7 +15,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
 
     internal delegate SpecBuilderDescriptor? CreateSpecBuilderDescriptor(
             IMethodSymbol builderMethod,
-            DescriptorGenerationContext context);
+            IDescriptorGenerationContext context);
 
     internal record SpecBuilderDescriptor(
             QualifiedTypeModel BuiltType,
@@ -23,7 +23,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
             IEnumerable<QualifiedTypeModel> Parameters,
             Location Location) : IDescriptor {
         public class Builder {
-            public SpecBuilderDescriptor? Build(IMethodSymbol builderMethod, DescriptorGenerationContext context) {
+            public SpecBuilderDescriptor? Build(IMethodSymbol builderMethod, IDescriptorGenerationContext context) {
                 var builderAttributes = SymbolProcessors.GetBuilderAttributes(builderMethod);
 
                 var numBuilderAttributes = builderAttributes.Count;

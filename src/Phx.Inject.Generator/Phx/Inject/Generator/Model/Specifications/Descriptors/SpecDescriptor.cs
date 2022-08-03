@@ -13,7 +13,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Input;
 
-    internal delegate SpecDescriptor CreateSpecDescriptor(ITypeSymbol specSymbol, DescriptorGenerationContext context);
+    internal delegate SpecDescriptor CreateSpecDescriptor(ITypeSymbol specSymbol, IDescriptorGenerationContext context);
 
     internal record SpecDescriptor(
             TypeModel SpecType,
@@ -38,15 +38,14 @@ namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
                 this.createSpecLinkDescriptor = createSpecLinkDescriptor;
             }
 
-            public SpecDescriptor Build(ITypeSymbol specSymbol, DescriptorGenerationContext context) {
-                var specType = TypeModel.FromTypeSymbol(specSymbol);
+            public SpecDescriptor Build(ITypeSymbol specSymbol, IDescriptorGenerationContext context) {
                 var specLocation = specSymbol.Locations.First();
+                var specType = TypeModel.FromTypeSymbol(specSymbol);
                 var specInstantiationMode = specSymbol.IsStatic
                         ? SpecInstantiationMode.Static
                         : SpecInstantiationMode.Instantiated;
 
                 var specMethods = specSymbol.GetMembers().OfType<IMethodSymbol>();
-
                 var factories = specMethods.Select(method => createSpecFactoryDescriptor(method, context))
                         .Where(factory => factory != null)
                         .Select(factory => factory!)

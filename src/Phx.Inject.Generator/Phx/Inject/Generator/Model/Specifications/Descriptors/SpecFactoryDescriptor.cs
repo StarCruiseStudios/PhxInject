@@ -14,7 +14,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
 
     internal delegate SpecFactoryDescriptor? CreateSpecFactoryDescriptor(
             IMethodSymbol factoryMethod,
-            DescriptorGenerationContext context
+            IDescriptorGenerationContext context
     );
 
     internal record SpecFactoryDescriptor(
@@ -25,7 +25,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
             Location Location
     ) : IDescriptor {
         public class Builder {
-            public SpecFactoryDescriptor? Build(IMethodSymbol factoryMethod, DescriptorGenerationContext context) {
+            public SpecFactoryDescriptor? Build(IMethodSymbol factoryMethod, IDescriptorGenerationContext context) {
                 var factoryAttributes = SymbolProcessors.GetFactoryAttributes(factoryMethod);
 
                 var numFactoryAttributes = factoryAttributes.Count;

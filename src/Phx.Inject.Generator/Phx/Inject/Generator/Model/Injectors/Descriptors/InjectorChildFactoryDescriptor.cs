@@ -6,37 +6,49 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Descriptors {
+namespace Phx.Inject.Generator.Model.Injectors.Descriptors {
     using System.Linq;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Input;
 
-    internal delegate ChildInjectorDescriptor CreateChildInjectorDescriptor(IMethodSymbol childInjectorMethod);
+    internal delegate InjectorChildFactoryDescriptor? CreateInjectorChildFactoryDescriptor(
+            IMethodSymbol childInjectorMethod,
+            IDescriptorGenerationContext context
+    );
 
-    internal record ChildInjectorDescriptor(
+    internal record InjectorChildFactoryDescriptor(
         TypeModel ChildInjectorType,
-        string ChildInjectorMethodName,
+        string InjectorChildFactoryMethodName,
         Location Location
     ) : IDescriptor {
         public class Builder {
-            public ChildInjectorDescriptor Build(IMethodSymbol childInjectorMethod) {
+            public InjectorChildFactoryDescriptor? Build(
+                    IMethodSymbol childInjectorMethod,
+                    IDescriptorGenerationContext context
+            ) {
                 var childInjectorLocation = childInjectorMethod.Locations.First();
+
+                if (!SymbolProcessors.GetChildInjectorAttributes(childInjectorMethod).Any()) {
+                    // This is not an injector child factory.
+                    return null;
+                }
 
                 if (childInjectorMethod.ReturnsVoid) {
                     throw new InjectionException(
                             Diagnostics.InvalidSpecification,
-                            $"Child Injector factory {childInjectorMethod.Name} must return a type.",
+                            $"Injector child factory {childInjectorMethod.Name} must return a type.",
                             childInjectorLocation);
                 }
 
                 if (childInjectorMethod.Parameters.Length > 0) {
                     throw new InjectionException(
                             Diagnostics.InvalidSpecification,
-                            $"Child injector factory {childInjectorMethod.Name} must not have any parameters.",
+                            $"Injector child factory {childInjectorMethod.Name} must not have any parameters.",
                             childInjectorLocation);
                 }
 
                 var returnType = TypeModel.FromTypeSymbol(childInjectorMethod.ReturnType);
-                return new ChildInjectorDescriptor(
+                return new InjectorChildFactoryDescriptor(
                         returnType,
                         childInjectorMethod.Name,
                         childInjectorLocation);
