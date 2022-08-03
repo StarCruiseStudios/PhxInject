@@ -8,13 +8,12 @@
 
 namespace Phx.Inject.Generator.Model.Definitions {
     using Phx.Inject.Generator.Input;
-    using Phx.Inject.Generator.Model.Descriptors;
 
-    internal delegate string CreateInstanceHolderName(QualifiedTypeDescriptor heldInstanceType);
+    internal delegate string CreateInstanceHolderName(QualifiedTypeModel heldInstanceType);
 
     internal static class InstanceHolderNameGenerator {
 
-        public static string CreateInstanceHolderName(QualifiedTypeDescriptor heldInstanceType) {
+        public static string CreateInstanceHolderName(QualifiedTypeModel heldInstanceType) {
             string referenceName = string.IsNullOrEmpty(heldInstanceType.Qualifier)
                     ? heldInstanceType.TypeModel.TypeName
                     : $"{heldInstanceType.Qualifier}_{heldInstanceType.TypeModel.TypeName}";

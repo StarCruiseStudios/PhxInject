@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Definitions {
+namespace Phx.Inject.Generator.Model {
     using Microsoft.CodeAnalysis;
 
     public interface IDefinition {
