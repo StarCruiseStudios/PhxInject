@@ -9,33 +9,9 @@
 namespace Phx.Inject.Generator.Model.Specifications.Definitions {
     using Microsoft.CodeAnalysis;
 
-    // internal delegate SpecContainerFactoryInvocationDefinition CreateSpecContainerFactoryInvocationDefinition(
-    //         InjectorDescriptor injectorDescriptor,
-    //         FactoryRegistration factoryRegistration,
-    //         Location location);
-
     internal record SpecContainerFactoryInvocationDefinition(
             TypeModel SpecContainerType,
             string FactoryMethodName,
             Location Location
-    ) : IDefinition {
-        // public class Builder {
-        //     private readonly CreateSpecContainerReferenceDefinition createSpecContainerReference;
-        //
-        //     public Builder(CreateSpecContainerReferenceDefinition createSpecContainerReference) {
-        //         this.createSpecContainerReference = createSpecContainerReference;
-        //     }
-        //
-        //     public SpecContainerFactoryInvocationDefinition Build(
-        //             InjectorDescriptor injectorDescriptor,
-        //             FactoryRegistration factoryRegistration,
-        //             Location location
-        //     ) {
-        //         return new SpecContainerFactoryInvocationDefinition(
-        //                 createSpecContainerReference(injectorDescriptor, factoryRegistration.Specification),
-        //                 factoryRegistration.FactoryDescriptor.FactoryMethodName,
-        //                 location);
-        //     }
-        // }
-    }
+    ) : IDefinition;
 }
