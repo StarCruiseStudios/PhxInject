@@ -7,7 +7,13 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model {
+    using Microsoft.CodeAnalysis;
+
     internal interface IDescriptorGenerationContext {
-        
+        public GeneratorExecutionContext GenerationContext { get; }
     }
+
+    internal record DescriptorGenerationContext(
+            GeneratorExecutionContext GenerationContext
+    ) : IDescriptorGenerationContext;
 }

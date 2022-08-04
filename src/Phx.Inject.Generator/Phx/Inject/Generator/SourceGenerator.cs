@@ -18,8 +18,7 @@ namespace Phx.Inject.Generator {
     using Phx.Inject.Generator.Input;
     using Phx.Inject.Generator.Manager;
     using Phx.Inject.Generator.Model;
-    using Phx.Inject.Generator.Model.Descriptors;
-    using Phx.Inject.Generator.Model.Templates;
+    using Phx.Inject.Generator.Model.Specifications.Descriptors;
     using Phx.Inject.Generator.Presenter;
     using Phx.Inject.Generator.Render;
 

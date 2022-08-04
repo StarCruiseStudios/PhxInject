@@ -12,7 +12,8 @@ namespace Phx.Inject.Generator.Input {
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Phx.Inject.Generator.Model.Descriptors;
+    using Phx.Inject.Generator.Model;
+    using Phx.Inject.Generator.Model.Specifications.Descriptors;
 
     internal class SpecExtractor {
         private readonly CreateSpecDescriptor createSpecDescriptor;
@@ -25,15 +26,16 @@ namespace Phx.Inject.Generator.Input {
             new SpecDescriptor.Builder(
                     new SpecFactoryDescriptor.Builder().Build,
                     new SpecBuilderDescriptor.Builder().Build,
-                    new LinkDescriptor.Builder().Build).Build) { }
+                    new SpecLinkDescriptor.Builder().Build).Build) { }
 
         public IReadOnlyList<SpecDescriptor> Extract(
                 IEnumerable<TypeDeclarationSyntax> syntaxNodes,
                 GeneratorExecutionContext context
         ) {
+            var descriptorGenerationContext = new DescriptorGenerationContext(context);
             return SymbolProcessors.GetTypeSymbolsFromDeclarations(syntaxNodes, context)
                     .Where(IsSpecSymbol)
-                    .Select(symbol => createSpecDescriptor(symbol))
+                    .Select(symbol => createSpecDescriptor(symbol, descriptorGenerationContext))
                     .ToImmutableList();
         }
 
