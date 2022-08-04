@@ -7,15 +7,8 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model.Specifications.Templates {
-    using Microsoft.CodeAnalysis;
-
-    internal record SpecContainerInstanceHolderDeclarationTemplate(
+    internal record SpecContainerInstanceHolder(
             string InstanceQualifiedType,
-            string ReferenceName,
-            Location Location
-    ) : IRenderTemplate {
-        public void Render(IRenderWriter writer) {
-            writer.AppendLine($"private {InstanceQualifiedType}? {ReferenceName};");
-        }
-    }
+            string ReferenceName
+    );
 }

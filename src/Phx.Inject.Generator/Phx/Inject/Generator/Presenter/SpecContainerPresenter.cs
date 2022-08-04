@@ -7,8 +7,9 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Presenter {
-    using Phx.Inject.Generator.Model.Definitions;
-    using Phx.Inject.Generator.Model.Templates;
+    using Phx.Inject.Generator.Model;
+    using Phx.Inject.Generator.Model.Specifications.Definitions;
+    using Phx.Inject.Generator.Model.Specifications.Templates;
 
     internal class SpecContainerPresenter {
         private readonly CreateSpecContainerTemplate createSpecContainerTemplate;
@@ -17,21 +18,13 @@ namespace Phx.Inject.Generator.Presenter {
             this.createSpecContainerTemplate = createSpecContainerTemplate;
         }
 
-        public SpecContainerPresenter() {
-            CreateSpecContainerFactoryMethodInvocationTemplate createSpecContainerFactoryInvocation
-                    = new SpecContainerFactoryMethodInvocationTemplate.Builder().Build;
+        public SpecContainerPresenter() : this(
+                new SpecContainerTemplate.Builder().Build) { }
 
-            createSpecContainerTemplate = new SpecContainerTemplate.Builder(
-                    new InstanceHolderDeclarationTemplate.Builder().Build,
-                    new SpecContainerFactoryMethodTemplate.Builder(createSpecContainerFactoryInvocation).Build,
-                    new SpecContainerBuilderMethodTemplate.Builder(createSpecContainerFactoryInvocation).Build
-            ).Build;
-        }
-
-        public IRenderTemplate Generate(SpecContainerDefinition specContainerDefinition) {
+        public IRenderTemplate Generate(SpecContainerDefinition specContainerDefinition, TemplateGenerationContext context) {
             return new GeneratedFileTemplate(
-                    specContainerDefinition.ContainerType.NamespaceName,
-                    createSpecContainerTemplate(specContainerDefinition),
+                    specContainerDefinition.SpecContainerType.NamespaceName,
+                    createSpecContainerTemplate(specContainerDefinition, context),
                     specContainerDefinition.Location
             );
         }

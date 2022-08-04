@@ -115,7 +115,6 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
 
         public class Builder {
             private const string SpecContainerCollectionReferenceName = "specContainers";
-            private const string SpecContainerCollectionTypeName = "SpecContainerCollection";
 
             public InjectorTemplate Build(
                     InjectorDefinition injectorDefinition,
@@ -208,7 +207,7 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
                 return new InjectorTemplate(
                         injectorDefinition.InjectorType.TypeName,
                         injectorDefinition.InjectorInterfaceType.QualifiedName,
-                        SpecContainerCollectionTypeName,
+                        injectorDefinition.SpecContainerCollectionType.TypeName,
                         SpecContainerCollectionReferenceName,
                         specContainerProperties,
                         constructorParameters,

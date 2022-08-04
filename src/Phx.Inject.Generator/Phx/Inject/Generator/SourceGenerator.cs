@@ -118,7 +118,9 @@ namespace Phx.Inject.Generator {
                             var externalDependencyDefinitionMap = CreateTypeMap(
                                     injectionContextDefinition.ExternalDependencyImplementations,
                                     dep => dep.ExternalDependencyInterfaceType);
+
                             var templateGenerationContext = new TemplateGenerationContext(
+                                    injectionContextDefinition.Injector,
                                     injectorDefinitionMap,
                                     specDefinitionMap,
                                     externalDependencyDefinitionMap,

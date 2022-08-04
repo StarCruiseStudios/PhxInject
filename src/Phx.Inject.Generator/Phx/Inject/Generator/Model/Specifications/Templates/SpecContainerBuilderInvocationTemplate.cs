@@ -9,13 +9,6 @@
 namespace Phx.Inject.Generator.Model.Specifications.Templates {
     using Microsoft.CodeAnalysis;
 
-    // internal delegate SpecContainerBuilderInvocationTemplate
-    //         CreateSpecContainerBuilderMethodInvocationTemplate(
-    //                 SpecContainerBuilderInvocationDefinition specContainerBuilderInvocationDefinition,
-    //                 string specContainerCollectionReferenceName,
-    //                 string builderTargetName
-    //         );
-
     internal record SpecContainerBuilderInvocationTemplate(
             string SpecContainerCollectionReferenceName,
             string SpecContainerReferenceName,
@@ -27,21 +20,5 @@ namespace Phx.Inject.Generator.Model.Specifications.Templates {
             writer.Append(
                     $"{SpecContainerCollectionReferenceName}.{SpecContainerReferenceName}.{SpecContainerBuilderMethodName}({BuilderTargetReferenceName}, {SpecContainerCollectionReferenceName})");
         }
-
-        // public class Builder {
-        //     public SpecContainerBuilderInvocationTemplate Build(
-        //             SpecContainerBuilderInvocationDefinition specContainerBuilderInvocationDefinition,
-        //             string specContainerCollectionReferenceName,
-        //             string builderTargetName
-        //     ) {
-        //         return new SpecContainerBuilderInvocationTemplate(
-        //                 specContainerCollectionReferenceName,
-        //                 specContainerBuilderInvocationDefinition.ContainerReference.ReferenceName,
-        //                 specContainerBuilderInvocationDefinition.BuilderMethodName,
-        //                 builderTargetName,
-        //                 specContainerBuilderInvocationDefinition.Location
-        //         );
-        //     }
-        // }
     }
 }

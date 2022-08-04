@@ -26,6 +26,8 @@ namespace Phx.Inject.Generator.Input {
         public const string QualifierAttributeClassName = "Phx.Inject.QualifierAttribute";
         public const string SpecificationAttributeClassName = "Phx.Inject.SpecificationAttribute";
 
+        private const string SpecContainerCollectionTypeName = "SpecContainerCollection";
+
         public static IEnumerable<ITypeSymbol> GetTypeSymbolsFromDeclarations(
                 IEnumerable<TypeDeclarationSyntax> syntaxNodes,
                 GeneratorExecutionContext context
@@ -115,8 +117,7 @@ namespace Phx.Inject.Generator.Input {
                                 var qualifier = GetQualifier(parameter);
                                 return new QualifiedTypeModel(
                                         TypeModel.FromTypeSymbol(parameter.Type),
-                                        qualifier,
-                                        parameter.Locations.First());
+                                        qualifier);
                             })
                     .ToImmutableList();
         }
@@ -221,6 +222,11 @@ namespace Phx.Inject.Generator.Input {
             return specType with {
                 TypeName = specContainerTypeName
             };
+        }
+
+        public static TypeModel GetSpecContainerCollectionType(TypeModel injectorType) {
+            var specContainerCollectionTypeName = $"{injectorType.TypeName}.{SpecContainerCollectionTypeName}";
+            return injectorType with { TypeName = specContainerCollectionTypeName };
         }
 
         public static TypeModel CreateExternalDependencyImplementationType(

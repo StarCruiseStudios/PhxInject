@@ -14,6 +14,7 @@ namespace Phx.Inject.Generator.Model {
     using Phx.Inject.Generator.Model.Specifications.Definitions;
 
     internal record TemplateGenerationContext(
+            InjectorDefinition Injector,
             IReadOnlyDictionary<TypeModel, InjectorDefinition> Injectors,
             IReadOnlyDictionary<TypeModel, SpecContainerDefinition> SpecContainers,
             IReadOnlyDictionary<TypeModel, ExternalDependencyImplementationDefinition>

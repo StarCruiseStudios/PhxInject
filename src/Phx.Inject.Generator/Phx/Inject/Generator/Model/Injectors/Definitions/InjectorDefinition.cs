@@ -11,6 +11,7 @@ namespace Phx.Inject.Generator.Model.Injectors.Definitions {
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Input;
 
     internal delegate InjectorDefinition CreateInjectorDefinition(DefinitionGenerationContext context);
 
@@ -24,6 +25,9 @@ namespace Phx.Inject.Generator.Model.Injectors.Definitions {
             IEnumerable<InjectorChildFactoryDefinition> ChildFactories,
             Location Location
     ) : IDefinition {
+        public TypeModel SpecContainerCollectionType { get; }
+            = SymbolProcessors.GetSpecContainerCollectionType(InjectorType);
+
         public class Builder {
             public InjectorDefinition Build(DefinitionGenerationContext context) {
 
