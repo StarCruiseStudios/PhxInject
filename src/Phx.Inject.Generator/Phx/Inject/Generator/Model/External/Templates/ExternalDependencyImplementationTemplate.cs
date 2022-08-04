@@ -8,8 +8,10 @@
 
 namespace Phx.Inject.Generator.Model.External.Templates {
     using System.Collections.Generic;
+    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Model.External.Definitions;
+    using Phx.Inject.Generator.Model.Specifications.Templates;
 
     internal delegate ExternalDependencyImplementationTemplate CreateExternalDependencyImplementationTemplate(
             ExternalDependencyImplementationDefinition externalDependencyImplementationDefinition,
@@ -18,22 +20,40 @@ namespace Phx.Inject.Generator.Model.External.Templates {
     internal record ExternalDependencyImplementationTemplate(
             string ExternalDependencyImplementationClassName,
             string ExternalDependencyInterfaceQualifiedName,
-            // InjectorSpecContainerCollectionReferenceDeclarationTemplate SpecContainerCollectionReferenceDeclaration,
-            ExternalDependencyImplementationConstructorTemplate Constructor,
+            string InjectorSpecContainerCollectionQualifiedType,
+            string SpecContainerCollectionReferenceName,
             IEnumerable<ExternalDependencyProviderMethodTemplate> ExternalDependencyProviderMethods,
             Location Location) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
+            //  internal class ExternalDependencyImplementationClassName : ExternalDependencyInterfaceQualifiedType {
             writer.AppendLine($"internal class {ExternalDependencyImplementationClassName} : {ExternalDependencyInterfaceQualifiedName} {{")
                     .IncreaseIndent(1);
-            // SpecContainerCollectionReferenceDeclaration.Render(writer);
-            writer.AppendBlankLine();
-            Constructor.Render(writer);
 
+            //      private readonly InjectorSpecContainerCollectionQualifiedType specContainers;
+            writer.AppendLine(
+                    $"private readonly {InjectorSpecContainerCollectionQualifiedType} {SpecContainerCollectionReferenceName};");
+
+            //      public ExternalDependencyImplementationClassName(InjectorSpecContainerCollectionQualifiedType specContainers) {
+            //          this.specContainers = specContainers;
+            //      }
+            writer.AppendBlankLine()
+                    .AppendLine(
+                            $"public {ExternalDependencyImplementationClassName}({InjectorSpecContainerCollectionQualifiedType} {SpecContainerCollectionReferenceName}) {{")
+                    .IncreaseIndent(1)
+                    .AppendLine(
+                            $"this.{SpecContainerCollectionReferenceName} = {SpecContainerCollectionReferenceName};")
+                    .DecreaseIndent(1)
+                    .AppendLine("}");
+
+            //      public DependencyType GetDependency() {
+            //          return specContainers.SpecContainerReference.GetDependency(specContainers);
+            //      }
             foreach (var method in ExternalDependencyProviderMethods) {
                 writer.AppendBlankLine();
                 method.Render(writer);
             }
 
+            //  }
             writer.DecreaseIndent(1)
                     .AppendLine("}");
         }
@@ -43,12 +63,29 @@ namespace Phx.Inject.Generator.Model.External.Templates {
                     ExternalDependencyImplementationDefinition externalDependencyImplementationDefinition,
                     TemplateGenerationContext context
             ) {
+                var specContainerCollectionReferenceName = "specContainers";
+                var providerMethods = externalDependencyImplementationDefinition.ProviderMethodDefinitions.Select(
+                        provider => {
+                            var factoryInvocation = new SpecContainerFactoryInvocationTemplate(
+                                    specContainerCollectionReferenceName,
+                                    provider.SpecContainerFactoryInvocation.SpecContainerType.GetPropertyName(),
+                                    provider.SpecContainerFactoryInvocation.FactoryMethodName,
+                                    provider.Location);
+
+                            return new ExternalDependencyProviderMethodTemplate(
+                                    provider.ProvidedType.QualifiedName,
+                                    provider.ProviderMethodName,
+                                    factoryInvocation,
+                                    provider.Location);
+                        });
+
                 return new ExternalDependencyImplementationTemplate(
-                        null!,
-                        null!,
-                        null!,
-                        null!,
-                        null!);
+                        externalDependencyImplementationDefinition.ExternalDependencyImplementationType.TypeName,
+                        externalDependencyImplementationDefinition.ExternalDependencyInterfaceType.QualifiedName,
+                        context.Injector.SpecContainerCollectionType.QualifiedName,
+                        specContainerCollectionReferenceName,
+                        providerMethods,
+                        externalDependencyImplementationDefinition.Location);
             }
         }
     }
