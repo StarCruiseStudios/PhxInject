@@ -9,6 +9,7 @@
 namespace Phx.Inject.Generator {
     public record RenderSettings(
             int TabSize = 4,
+            string GeneratedFileExtension = "generated.cs",
             bool NullableEnabled = true,
             bool ShouldWriteFiles = false,
             string OutputPath = "");

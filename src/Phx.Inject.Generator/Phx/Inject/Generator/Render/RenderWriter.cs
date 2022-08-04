@@ -8,7 +8,7 @@
 
 namespace Phx.Inject.Generator.Render {
     using System.Text;
-    using Phx.Inject.Generator.Model.Templates;
+    using Phx.Inject.Generator.Model;
 
     internal class RenderWriter : IRenderWriter {
         private readonly StringBuilder sourceBuilder = new();

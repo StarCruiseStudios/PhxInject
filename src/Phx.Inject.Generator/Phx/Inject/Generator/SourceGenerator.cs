@@ -15,6 +15,7 @@ namespace Phx.Inject.Generator {
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Controller;
     using Phx.Inject.Generator.Input;
@@ -25,8 +26,6 @@ namespace Phx.Inject.Generator {
 
     [Generator]
     internal class SourceGenerator : ISourceGenerator {
-        private const string GeneratedFileExtension = "generated.cs";
-
         private readonly RenderSettings renderSettings;
 
         public SourceGenerator() : this(new RenderSettings()) { }
@@ -86,51 +85,84 @@ namespace Phx.Inject.Generator {
                         externalDependencyDescriptors,
                         dep => dep.ExternalDependencyInterfaceType);
 
-                foreach (var injectorDescriptor in injectorDescriptors) {
-                    var definitionGenerationContext = new DefinitionGenerationContext(
-                            injectorDescriptor,
-                            injectorDescriptorMap,
-                            specDescriptorMap,
-                            externalDependencyDescriptorMap,
-                            ImmutableDictionary<RegistrationIdentifier, FactoryRegistration>.Empty,
-                            ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
-                            context);
+                var injectionContextDefinitions = injectorDescriptors.Select(
+                                injectorDescriptor => {
+                                    var definitionGenerationContext = new DefinitionGenerationContext(
+                                            injectorDescriptor,
+                                            injectorDescriptorMap,
+                                            specDescriptorMap,
+                                            externalDependencyDescriptorMap,
+                                            ImmutableDictionary<RegistrationIdentifier, FactoryRegistration>.Empty,
+                                            ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
+                                            context);
 
-                    var injectionContextDefinition = new InjectionController().Map(definitionGenerationContext);
+                                    return new InjectionController().Map(definitionGenerationContext);
+                                })
+                        .ToImmutableList();
 
-                    //
-                    // Construct: Definitions to Templates
-                    //
-                    var injectorPresenter = new InjectorPresenter();
-                    var specContainerPresenter = new SpecContainerPresenter();
+                //
+                // Construct: Definitions to Templates
+                //
+                var injectorDefinitions = injectionContextDefinitions.Select(
+                        injectionContextDefinition => injectionContextDefinition.Injector)
+                        .ToImmutableList();
+                var injectorDefinitionMap = CreateTypeMap(
+                        injectorDefinitions,
+                        injector => injector.InjectorType);
 
-                    var injectorDefinition = injectionContextDefinition.Injector;
-                    var templates = new List<(TypeModel, IRenderTemplate)>();
-                    foreach (var specContainerDefinition in injectionContextDefinition.SpecContainers) {
-                        templates.Add(
-                                (specContainerDefinition.ContainerType,
-                                        specContainerPresenter.Generate(specContainerDefinition)));
-                        Logger.Info(
-                                $"Generated spec container {specContainerDefinition.ContainerType} for injector {injectorDefinition.InjectorType}.");
-                    }
+                var templates = injectionContextDefinitions.SelectMany(
+                        injectionContextDefinition => {
+                            var specDefinitionMap = CreateTypeMap(
+                                    injectionContextDefinition.SpecContainers,
+                                    spec => spec.SpecContainerType);
+                            var externalDependencyDefinitionMap = CreateTypeMap(
+                                    injectionContextDefinition.ExternalDependencyImplementations,
+                                    dep => dep.ExternalDependencyImplementationType);
+                            var templateGenerationContext = new TemplateGenerationContext(
+                                    injectorDefinitionMap,
+                                    specDefinitionMap,
+                                    externalDependencyDefinitionMap,
+                                    context);
 
-                    templates.Add(
-                            (injectorDefinition.InjectorType,
-                                    injectorPresenter.Generate(injectorDefinition)));
-                    Logger.Info($"Generated injector {injectorDefinition.InjectorType}.");
+                            var templates = new List<(TypeModel, IRenderTemplate)>();
+                            var injectorDefinition = injectionContextDefinition.Injector;
+                            templates.Add((
+                                    injectorDefinition.InjectorType,
+                                    new InjectorPresenter().Generate(injectorDefinition, templateGenerationContext)
+                            ));
+                            Logger.Info($"Generated injector {injectorDefinition.InjectorType}.");
 
+                            var specContainerPresenter = new SpecContainerPresenter();
+                            foreach (var specContainerDefinition in injectionContextDefinition.SpecContainers) {
+                                templates.Add((
+                                        specContainerDefinition.SpecContainerType,
+                                        specContainerPresenter.Generate(specContainerDefinition, templateGenerationContext)
+                                ));
+                                Logger.Info(
+                                        $"Generated spec container {specContainerDefinition.SpecContainerType} for injector {injectorDefinition.InjectorType}.");
+                            }
 
+                            var externalDependencyImplementationPresenter = new ExternalDependencyImplementationPresenter();
+                            foreach (var dependency in injectionContextDefinition.ExternalDependencyImplementations) {
+                                templates.Add((
+                                        dependency.ExternalDependencyImplementationType,
+                                        externalDependencyImplementationPresenter.Generate(dependency, templateGenerationContext)
+                                ));
+                                Logger.Info(
+                                        $"Generated external dependency implementation {dependency.ExternalDependencyImplementationType} for injector {injectorDefinition.InjectorType}.");
+                            }
 
-                    var templateRenderer = new TemplateRenderer(() => new RenderWriter(renderSettings));
+                            return templates;
+                        }).ToImmutableList();
 
-                    //
-                    // Render: Templates to Source.
-                    //
-                    foreach (var (classType, template) in templates) {
-                        var fileName = $"{classType.QualifiedName}.{GeneratedFileExtension}";
-                        Logger.Info($"Rendering source for {fileName}");
-                        templateRenderer.RenderTemplate(fileName, template, context);
-                    }
+                //
+                // Render: Templates to Source.
+                //
+                var templateRenderer = new TemplateRenderer(() => new RenderWriter(renderSettings));
+                foreach (var (classType, template) in templates) {
+                    var fileName = $"{classType.QualifiedName}.{renderSettings.GeneratedFileExtension}";
+                    Logger.Info($"Rendering source for {fileName}");
+                    templateRenderer.RenderTemplate(fileName, template, context);
                 }
             } catch (InjectionException ex) {
                 context.ReportDiagnostic(

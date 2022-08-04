@@ -7,8 +7,9 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Presenter {
-    using Phx.Inject.Generator.Model.Definitions;
-    using Phx.Inject.Generator.Model.Templates;
+    using Phx.Inject.Generator.Model;
+    using Phx.Inject.Generator.Model.Injectors.Definitions;
+    using Phx.Inject.Generator.Model.Injectors.Templates;
 
     internal class InjectorPresenter {
         private readonly CreateInjectorTemplate createInjectorTemplate;
@@ -18,18 +19,12 @@ namespace Phx.Inject.Generator.Presenter {
         }
 
         public InjectorPresenter() : this(
-                new InjectorTemplate.Builder(
-                        new SpecContainerCollectionTemplate.Builder(
-                                new SpecContainerCollectionPropertyDefinitionTemplate.Builder().Build).Build,
-                        new InjectorProviderMethodTemplate.Builder(
-                                new SpecContainerFactoryMethodInvocationTemplate.Builder().Build).Build,
-                        new InjectorBuilderMethodTemplate.Builder(
-                                new SpecContainerBuilderMethodInvocationTemplate.Builder().Build).Build).Build) { }
+                new InjectorTemplate.Builder().Build) { }
 
-        public IRenderTemplate Generate(InjectorDefinition injectorDefinition) {
+        public IRenderTemplate Generate(InjectorDefinition injectorDefinition, TemplateGenerationContext context) {
             return new GeneratedFileTemplate(
                     injectorDefinition.InjectorType.NamespaceName,
-                    createInjectorTemplate(injectorDefinition),
+                    createInjectorTemplate(injectorDefinition, context),
                     injectorDefinition.Location
             );
         }

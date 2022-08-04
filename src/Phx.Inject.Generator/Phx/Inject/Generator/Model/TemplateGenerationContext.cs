@@ -8,11 +8,15 @@
 
 namespace Phx.Inject.Generator.Model {
     using System.Collections.Generic;
+    using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Model.External.Definitions;
     using Phx.Inject.Generator.Model.Injectors.Definitions;
     using Phx.Inject.Generator.Model.Specifications.Definitions;
 
     internal record TemplateGenerationContext(
+            IReadOnlyDictionary<TypeModel, InjectorDefinition> Injectors,
             IReadOnlyDictionary<TypeModel, SpecContainerDefinition> SpecContainers,
-            IReadOnlyDictionary<TypeModel, InjectorDefinition> InjectorDefinitions
+            IReadOnlyDictionary<TypeModel, ExternalDependencyImplementationDefinition> ExternalDependencyImplementations,
+            GeneratorExecutionContext GenerationContext
     );
 }
