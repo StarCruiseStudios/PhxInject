@@ -14,7 +14,6 @@ namespace Phx.Inject.Generator.Input {
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Phx.Inject.Generator.Model;
-    using Phx.Inject.Generator.Model.Descriptors;
 
     internal static class SymbolProcessors {
         public const string BuilderAttributeClassName = "Phx.Inject.BuilderAttribute";

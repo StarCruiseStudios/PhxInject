@@ -58,7 +58,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Definitions {
                                     .ToImmutableList();
 
                             return new SpecContainerFactoryDefinition(
-                                    factory.ReturnType.TypeModel,
+                                    factory.ReturnType,
                                     factory.FactoryMethodName,
                                     context.SpecContainerCollectionType,
                                     factory.FabricationMode,

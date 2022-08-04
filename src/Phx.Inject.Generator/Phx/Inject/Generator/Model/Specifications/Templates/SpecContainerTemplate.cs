@@ -92,10 +92,10 @@ namespace Phx.Inject.Generator.Model.Specifications.Templates {
                 foreach (var factoryMethod in specContainerDefinition.FactoryMethodDefinitions) {
                     string? instanceHolderReferenceName = null;
                     if (factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.Scoped) {
-                        instanceHolderReferenceName = "referenceName";
+                        instanceHolderReferenceName = SymbolProcessors.GetInstanceHolderName(factoryMethod.ReturnType);
                         instanceHolderDeclarations.Add(
                                 new SpecContainerInstanceHolderDeclarationTemplate(
-                                        factoryMethod.ReturnType.QualifiedName,
+                                        factoryMethod.ReturnType.TypeModel.QualifiedName,
                                         instanceHolderReferenceName,
                                         factoryMethod.Location));
                     }
@@ -111,7 +111,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Templates {
 
                     memberTemplates.Add(
                             new SpecContainerFactoryTemplate(
-                                    factoryMethod.ReturnType.QualifiedName,
+                                    factoryMethod.ReturnType.TypeModel.QualifiedName,
                                     factoryMethod.FactoryMethodName,
                                     factoryMethod.SpecContainerCollectionType.QualifiedName,
                                     SpecContainerCollectionReferenceName,

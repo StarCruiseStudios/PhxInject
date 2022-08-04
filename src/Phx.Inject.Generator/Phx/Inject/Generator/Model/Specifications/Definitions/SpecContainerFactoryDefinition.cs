@@ -11,7 +11,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Definitions {
     using Microsoft.CodeAnalysis;
 
     internal record SpecContainerFactoryDefinition(
-            TypeModel ReturnType,
+            QualifiedTypeModel ReturnType,
             string FactoryMethodName,
             TypeModel SpecContainerCollectionType,
             SpecFactoryMethodFabricationMode FabricationMode,

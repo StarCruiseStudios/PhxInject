@@ -23,13 +23,13 @@ namespace Phx.Inject.Generator.Manager {
         public InjectionController() {
             var specReferenceDefinitionBuilder = new SpecReferenceDefinition.Builder();
             var specContainerReferenceBuilder = new SpecContainerReferenceDefinition.Builder(
-                    SpecContainerTypeGenerator.CreateSpecContainerType);
+                    SymbolProcessors.CreateSpecContainerType);
 
             var specContainerFactoryInvocationDefinitionBuilder = new SpecContainerFactoryInvocationDefinition.Builder(
                     specContainerReferenceBuilder.Build);
             var specContainerFactoryInstanceHolderDefinitionBuilder
                     = new SpecContainerFactoryInstanceHolderDefinition.Builder(
-                            InstanceHolderNameGenerator.CreateInstanceHolderName);
+                            SymbolProcessors.GetInstanceHolderName);
 
             createInjectionContextDefinition = new InjectionContextDefinition.Builder(
                     new InjectorDefinition.Builder(
@@ -51,19 +51,19 @@ namespace Phx.Inject.Generator.Manager {
                             ).Build
                     ).Build,
                     new SpecContainerDefinition.Builder(
-                            SpecContainerTypeGenerator.CreateSpecContainerType,
+                            SymbolProcessors.CreateSpecContainerType,
                             specReferenceDefinitionBuilder.Build,
                             specContainerFactoryInstanceHolderDefinitionBuilder.Build,
                             new SpecContainerFactoryMethodDefinition.Builder(
                                     specReferenceDefinitionBuilder.Build,
-                                    SpecContainerTypeGenerator.CreateSpecContainerType,
+                                    SymbolProcessors.CreateSpecContainerType,
                                     SpecContainerCollectionTypeGenerator.CreateSpecContainerCollectionType,
                                     specContainerFactoryInstanceHolderDefinitionBuilder.Build,
                                     specContainerFactoryInvocationDefinitionBuilder.Build
                             ).Build,
                             new SpecContainerBuilderMethodDefinition.Builder(
                                     specReferenceDefinitionBuilder.Build,
-                                    SpecContainerTypeGenerator.CreateSpecContainerType,
+                                    SymbolProcessors.CreateSpecContainerType,
                                     SpecContainerCollectionTypeGenerator.CreateSpecContainerCollectionType,
                                     specContainerFactoryInvocationDefinitionBuilder.Build
                             ).Build
