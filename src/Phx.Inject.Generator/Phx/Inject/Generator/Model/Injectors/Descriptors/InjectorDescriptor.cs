@@ -15,7 +15,7 @@ namespace Phx.Inject.Generator.Model.Injectors.Descriptors {
 
     internal delegate InjectorDescriptor CreateInjectorDescriptor(
             ITypeSymbol injectorInterfaceSymbol,
-            IDescriptorGenerationContext context
+            DescriptorGenerationContext context
     );
 
     internal record InjectorDescriptor(
@@ -28,6 +28,8 @@ namespace Phx.Inject.Generator.Model.Injectors.Descriptors {
             IEnumerable<InjectorChildFactoryDescriptor> ChildFactories,
             Location Location
     ) : IDescriptor {
+        public TypeModel InjectorType { get; } = InjectorInterfaceType with { TypeName = GeneratedInjectorTypeName };
+
         public class Builder {
             private readonly CreateInjectorProviderDescriptor createInjectorProvider;
             private readonly CreateInjectorBuilderDescriptor createInjectorBuilder;
@@ -45,17 +47,17 @@ namespace Phx.Inject.Generator.Model.Injectors.Descriptors {
 
             public InjectorDescriptor Build(
                     ITypeSymbol injectorInterfaceSymbol,
-                    IDescriptorGenerationContext context
+                    DescriptorGenerationContext context
             ) {
                 var injectorInterfaceType = TypeModel.FromTypeSymbol(injectorInterfaceSymbol);
                 var generatedInjectorTypeName = SymbolProcessors.GetGeneratedInjectorClassName(injectorInterfaceSymbol);
                 var specificationTypes = SymbolProcessors.GetInjectorSpecificationTypes(injectorInterfaceSymbol)
-                        .Select(specType => TypeModel.FromTypeSymbol(specType))
+                        .Select(TypeModel.FromTypeSymbol)
                         .ToImmutableList();
 
                 var externalDependencyInterfaceTypes = SymbolProcessors
                         .GetExternalDependencyTypes(injectorInterfaceSymbol)
-                        .Select(ediType => TypeModel.FromTypeSymbol(ediType))
+                        .Select(TypeModel.FromTypeSymbol)
                         .ToImmutableList();
 
                 var injectorMethods = injectorInterfaceSymbol

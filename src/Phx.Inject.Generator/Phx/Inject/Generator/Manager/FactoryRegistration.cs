@@ -7,7 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Controller {
-    using Phx.Inject.Generator.Model.Descriptors;
+    using Phx.Inject.Generator.Model.Specifications.Descriptors;
 
     internal record FactoryRegistration(
             SpecDescriptor Specification,

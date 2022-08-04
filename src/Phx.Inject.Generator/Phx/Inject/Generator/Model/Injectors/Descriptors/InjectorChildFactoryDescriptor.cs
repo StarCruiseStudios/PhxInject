@@ -13,7 +13,7 @@ namespace Phx.Inject.Generator.Model.Injectors.Descriptors {
 
     internal delegate InjectorChildFactoryDescriptor? CreateInjectorChildFactoryDescriptor(
             IMethodSymbol childInjectorMethod,
-            IDescriptorGenerationContext context
+            DescriptorGenerationContext context
     );
 
     internal record InjectorChildFactoryDescriptor(
@@ -24,7 +24,7 @@ namespace Phx.Inject.Generator.Model.Injectors.Descriptors {
         public class Builder {
             public InjectorChildFactoryDescriptor? Build(
                     IMethodSymbol childInjectorMethod,
-                    IDescriptorGenerationContext context
+                    DescriptorGenerationContext context
             ) {
                 var childInjectorLocation = childInjectorMethod.Locations.First();
 

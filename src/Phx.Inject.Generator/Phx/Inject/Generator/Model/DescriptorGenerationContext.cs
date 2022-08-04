@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------------
-//  <copyright file="ITemplateGenerationContext.cs" company="Star Cruise Studios LLC">
+//  <copyright file="DescriptorGenerationContext.cs" company="Star Cruise Studios LLC">
 //      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
 //      Licensed under the Apache License 2.0 License.
 //      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -7,7 +7,9 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model {
-    internal interface ITemplateGenerationContext {
-        
-    }
+    using Microsoft.CodeAnalysis;
+
+    internal record DescriptorGenerationContext(
+            GeneratorExecutionContext GenerationContext
+    );
 }

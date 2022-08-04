@@ -12,6 +12,7 @@ namespace Phx.Inject.Generator.Render {
     using System.Text;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Text;
+    using Phx.Inject.Generator.Model;
     using Phx.Inject.Generator.Model.Templates;
 
     internal class TemplateRenderer {

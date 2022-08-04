@@ -8,75 +8,72 @@
 
 namespace Phx.Inject.Generator.Model.Injectors.Definitions {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Linq;
     using Microsoft.CodeAnalysis;
 
-    // internal delegate InjectorDefinition CreateInjectorDefinition(
-    //         InjectorDescriptor injectorDescriptor,
-    //         IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations,
-    //         IDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations
-    // );
+    internal delegate InjectorDefinition CreateInjectorDefinition(DefinitionGenerationContext context);
 
     internal record InjectorDefinition(
             TypeModel InjectorType,
             TypeModel InjectorInterfaceType,
-            InjectorSpecContainerCollectionDefinition SpecContainerCollection,
-            IEnumerable<InjectorChildFactoryDefinition> ChildFactories,
+            IEnumerable<TypeModel> Specifications,
             IEnumerable<InjectorProviderDefinition> Providers,
             IEnumerable<InjectorBuilderDefinition> Builders,
+            IEnumerable<InjectorChildFactoryDefinition> ChildFactories,
             Location Location
     ) : IDefinition {
-        // public class Builder {
-        //     private readonly CreateExternalDependencyProviderMethodDefinition createExternalDependency;
-        //     private readonly CreateInjectorProviderMethodDefinition createInjectorProviderMethod;
-        //     private readonly CreateInjectorBuilderMethodDefinition createInjectorBuilderMethod;
-        //     private readonly CreateSpecContainerCollectionDefinition createSpecContainerCollection;
-        //
-        //     public Builder(
-        //             CreateExternalDependencyProviderMethodDefinition createExternalDependency,
-        //             CreateInjectorProviderMethodDefinition createInjectorProviderMethod,
-        //             CreateInjectorBuilderMethodDefinition createInjectorBuilderMethod,
-        //             CreateSpecContainerCollectionDefinition createSpecContainerCollection
-        //     ) {
-        //         this.createExternalDependency = createExternalDependency;
-        //         this.createInjectorProviderMethod = createInjectorProviderMethod;
-        //         this.createInjectorBuilderMethod = createInjectorBuilderMethod;
-        //         this.createSpecContainerCollection = createSpecContainerCollection;
-        //     }
-        //
-        //     public InjectorDefinition Build(
-        //             InjectorDescriptor injectorDescriptor,
-        //             IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations,
-        //             IDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations
-        //     ) {
-        //         var externalDependencies = injectorDescriptor.ExternalDependencies.Select(
-        //                         externalDependency => createExternalDependency(
-        //                                 externalDependency,
-        //                                 factoryRegistrations))
-        //                 .ToImmutableList();
-        //         var providerMethods = injectorDescriptor.Providers.Select(
-        //                         provider => createInjectorProviderMethod(
-        //                                 provider,
-        //                                 injectorDescriptor,
-        //                                 factoryRegistrations))
-        //                 .ToImmutableList();
-        //         var builderMethods = injectorDescriptor.Builders.Select(
-        //                         builder => createInjectorBuilderMethod(
-        //                                 builder,
-        //                                 injectorDescriptor,
-        //                                 builderRegistrations))
-        //                 .ToImmutableList();
-        //
-        //         var specContainerCollection = createSpecContainerCollection(injectorDescriptor);
-        //
-        //         return new InjectorDefinition(
-        //                 InjectorType: injectorDescriptor.InjectorType,
-        //                 InjectorInterfaceType: injectorDescriptor.InjectorInterfaceType,
-        //                 specContainerCollection,
-        //                 externalDependencies,
-        //                 providerMethods,
-        //                 builderMethods,
-        //                 injectorDescriptor.Location);
-        //     }
-        // }
+        public class Builder {
+            public InjectorDefinition Build(DefinitionGenerationContext context) {
+
+                var providers = context.Injector.Providers
+                        .Select(
+                                provider => {
+                                    var factoryInvocation = context.GetSpecContainerFactoryInvocation(
+                                            provider.ProvidedType,
+                                            provider.Location);
+
+                                    return new InjectorProviderDefinition(
+                                            provider.ProvidedType,
+                                            provider.ProviderMethodName,
+                                            factoryInvocation,
+                                            provider.Location);
+                                })
+                        .ToImmutableList();
+
+                var builders = context.Injector.Builders
+                        .Select(
+                                builder => {
+                                    var builderInvocation = context.GetSpecContainerBuilderInvocation(
+                                            context.Injector.InjectorType,
+                                            builder.BuiltType,
+                                            builder.Location);
+
+                                    return new InjectorBuilderDefinition(
+                                            builder.BuiltType,
+                                            builder.BuilderMethodName,
+                                            builderInvocation,
+                                            builder.Location);
+                                })
+                        .ToImmutableList();
+
+                var childFactories = context.Injector.ChildFactories
+                        .Select(
+                                factory => new InjectorChildFactoryDefinition(
+                                        factory.ChildInjectorType,
+                                        factory.InjectorChildFactoryMethodName,
+                                        factory.Location))
+                        .ToImmutableList();
+
+                return new InjectorDefinition(
+                        context.Injector.InjectorType,
+                        context.Injector.InjectorInterfaceType,
+                        context.Injector.SpecificationsTypes,
+                        providers,
+                        builders,
+                        childFactories,
+                        context.Injector.Location);
+            }
+        }
     }
 }

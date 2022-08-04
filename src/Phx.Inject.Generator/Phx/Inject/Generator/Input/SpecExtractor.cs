@@ -30,12 +30,11 @@ namespace Phx.Inject.Generator.Input {
 
         public IReadOnlyList<SpecDescriptor> Extract(
                 IEnumerable<TypeDeclarationSyntax> syntaxNodes,
-                GeneratorExecutionContext context
+                DescriptorGenerationContext context
         ) {
-            var descriptorGenerationContext = new DescriptorGenerationContext(context);
-            return SymbolProcessors.GetTypeSymbolsFromDeclarations(syntaxNodes, context)
+            return SymbolProcessors.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
                     .Where(IsSpecSymbol)
-                    .Select(symbol => createSpecDescriptor(symbol, descriptorGenerationContext))
+                    .Select(symbol => createSpecDescriptor(symbol, context))
                     .ToImmutableList();
         }
 

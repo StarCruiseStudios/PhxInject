@@ -10,50 +10,10 @@ namespace Phx.Inject.Generator.Model.External.Definitions {
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Model.Specifications.Definitions;
 
-    // internal delegate ExternalDependencyProviderMethodDefinition CreateExternalDependencyProviderMethodDefinition(
-    //         ExternalDependencyDescriptor externalDependencyDescriptor,
-    //         ExternalDependencyProviderDescriptor providerDescriptor,
-    //         IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations);
-
     internal record ExternalDependencyProviderMethodDefinition(
             TypeModel ProvidedType,
             string ProviderMethodName,
             SpecContainerFactoryInvocationDefinition SpecContainerFactoryInvocation,
             Location Location
-    ) : IDefinition {
-        // public class Builder {
-        //     private readonly CreateExternalDependencySpecFactoryInvocationDefinition createExternalDependencySpecFactoryInvocation;
-        //
-        //     public Builder(
-        //             CreateExternalDependencySpecFactoryInvocationDefinition createExternalDependencySpecFactoryInvocation
-        //     ) {
-        //         this.createExternalDependencySpecFactoryInvocation = createExternalDependencySpecFactoryInvocation;
-        //     }
-        //
-        //     public ExternalDependencyProviderMethodDefinition Build(
-        //             ExternalDependencyDescriptor externalDependencyDescriptor,
-        //             ExternalDependencyProviderDescriptor providerDescriptor,
-        //             IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
-        //     ) {
-        //         if (!factoryRegistrations.TryGetValue(
-        //                     RegistrationIdentifier.FromQualifiedTypeDescriptor(providerDescriptor.ProvidedType),
-        //                     out var factoryRegistration)) {
-        //             throw new InjectionException(
-        //                     Diagnostics.IncompleteSpecification,
-        //                     $"Cannot find factory for type {providerDescriptor.ProvidedType} required by external dependency {externalDependencyDescriptor.ExternalDependencyInterfaceType}",
-        //                     providerDescriptor.Location);
-        //         }
-        //
-        //         var specContainerFactoryInvocation = createExternalDependencySpecFactoryInvocation(
-        //                 factoryRegistration,
-        //                 providerDescriptor.Location);
-        //
-        //         return new ExternalDependencyProviderMethodDefinition(
-        //                 providerDescriptor.ProvidedType.TypeModel,
-        //                 providerDescriptor.ProviderMethodName,
-        //                 specContainerFactoryInvocation,
-        //                 providerDescriptor.Location);
-        //     }
-        // }
-    }
+    ) : IDefinition;
 }

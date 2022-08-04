@@ -10,52 +10,10 @@ namespace Phx.Inject.Generator.Model.Injectors.Definitions {
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Model.Specifications.Definitions;
 
-    // internal delegate InjectorProviderMethodDefinition CreateInjectorProviderMethodDefinition(
-    //         InjectorProviderDescriptor injectorProviderDescriptor,
-    //         InjectorDescriptor injectorDescriptor,
-    //         IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
-    // );
-
     internal record InjectorProviderDefinition(
-            TypeModel ProvidedType,
+            QualifiedTypeModel ProvidedType,
             string InjectorProviderMethodName,
             SpecContainerFactoryInvocationDefinition SpecContainerFactoryInvocation,
             Location Location
-    ) : IDefinition {
-        // public class Builder {
-        //     private readonly CreateSpecContainerFactoryInvocationDefinition createSpecContainerFactoryInvocation;
-        //
-        //     public Builder(
-        //             CreateSpecContainerFactoryInvocationDefinition createSpecContainerFactoryInvocation
-        //     ) {
-        //         this.createSpecContainerFactoryInvocation = createSpecContainerFactoryInvocation;
-        //     }
-        //
-        //     public InjectorProviderMethodDefinition Build(
-        //             InjectorProviderDescriptor providerDescriptor,
-        //             InjectorDescriptor injectorDescriptor,
-        //             IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
-        //     ) {
-        //         if (!factoryRegistrations.TryGetValue(
-        //                     RegistrationIdentifier.FromQualifiedTypeDescriptor(providerDescriptor.ProvidedType),
-        //                     out var factoryRegistration)) {
-        //             throw new InjectionException(
-        //                     Diagnostics.IncompleteSpecification,
-        //                     $"Cannot find factory for type {providerDescriptor.ProvidedType} required by provider method in injector {injectorDescriptor.InjectorInterfaceType}.",
-        //                     providerDescriptor.Location);
-        //         }
-        //
-        //         var specContainerFactoryInvocation = createSpecContainerFactoryInvocation(
-        //                 injectorDescriptor,
-        //                 factoryRegistration,
-        //                 providerDescriptor.Location);
-        //
-        //         return new InjectorProviderMethodDefinition(
-        //                 providerDescriptor.ProvidedType.TypeModel,
-        //                 providerDescriptor.ProviderMethodName,
-        //                 specContainerFactoryInvocation,
-        //                 providerDescriptor.Location);
-        //     }
-        // }
-    }
+    ) : IDefinition;
 }

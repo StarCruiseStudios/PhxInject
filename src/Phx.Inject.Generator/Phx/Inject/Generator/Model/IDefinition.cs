@@ -7,9 +7,5 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model {
-    using Microsoft.CodeAnalysis;
-
-    public interface IDefinition {
-        Location Location { get; }
-    }
+    public interface IDefinition : ISourceCodeElement { }
 }

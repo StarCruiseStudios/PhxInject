@@ -13,7 +13,7 @@ namespace Phx.Inject.Generator.Model.External.Descriptors {
 
     internal delegate ExternalDependencyProviderDescriptor CreateExternalDependencyProviderDescriptor(
             IMethodSymbol providerMethod,
-            IDescriptorGenerationContext context
+            DescriptorGenerationContext context
     );
 
     internal record ExternalDependencyProviderDescriptor(
@@ -24,7 +24,7 @@ namespace Phx.Inject.Generator.Model.External.Descriptors {
         public class Builder {
             public ExternalDependencyProviderDescriptor Build(
                     IMethodSymbol providerMethod,
-                    IDescriptorGenerationContext context
+                    DescriptorGenerationContext context
             ) {
                 var providerLocation = providerMethod.Locations.First();
 

@@ -8,13 +8,12 @@
 
 namespace Phx.Inject.Generator.Controller {
     using Phx.Inject.Generator.Model;
-    using Phx.Inject.Generator.Model.Descriptors;
 
     internal record RegistrationIdentifier(
             TypeModel RegistrationType,
             string Qualifier
     ) {
-        public static RegistrationIdentifier FromQualifiedTypeDescriptor(QualifiedTypeDescriptor type) {
+        public static RegistrationIdentifier FromQualifiedTypeDescriptor(QualifiedTypeModel type) {
             return new RegistrationIdentifier(type.TypeModel, type.Qualifier);
         }
     }

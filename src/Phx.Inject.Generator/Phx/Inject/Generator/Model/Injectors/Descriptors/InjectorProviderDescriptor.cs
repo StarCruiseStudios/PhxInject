@@ -13,7 +13,7 @@ namespace Phx.Inject.Generator.Model.Injectors.Descriptors {
 
     internal delegate InjectorProviderDescriptor? CreateInjectorProviderDescriptor(
             IMethodSymbol providerMethod,
-            IDescriptorGenerationContext context
+            DescriptorGenerationContext context
     );
 
     internal record InjectorProviderDescriptor(
@@ -24,7 +24,7 @@ namespace Phx.Inject.Generator.Model.Injectors.Descriptors {
         public class Builder {
             public InjectorProviderDescriptor? Build(
                     IMethodSymbol providerMethod,
-                    IDescriptorGenerationContext context
+                    DescriptorGenerationContext context
             ) {
                 var providerLocation = providerMethod.Locations.First();
 

@@ -13,7 +13,6 @@ namespace Phx.Inject.Generator.Model.Specifications.Definitions {
     internal record SpecContainerFactoryDefinition(
             QualifiedTypeModel ReturnType,
             string FactoryMethodName,
-            TypeModel SpecContainerCollectionType,
             SpecFactoryMethodFabricationMode FabricationMode,
             IEnumerable<SpecContainerFactoryInvocationDefinition> Arguments,
             Location Location

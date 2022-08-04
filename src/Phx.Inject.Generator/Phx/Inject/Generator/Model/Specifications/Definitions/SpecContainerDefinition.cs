@@ -11,13 +11,12 @@ namespace Phx.Inject.Generator.Model.Specifications.Definitions {
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Controller;
     using Phx.Inject.Generator.Input;
     using Phx.Inject.Generator.Model.Specifications.Descriptors;
 
     internal delegate SpecContainerDefinition CreateSpecContainerDefinition(
             SpecDescriptor specDescriptor,
-            IDefinitionGenerationContext context
+            DefinitionGenerationContext context
     );
 
     internal record SpecContainerDefinition(
@@ -29,38 +28,20 @@ namespace Phx.Inject.Generator.Model.Specifications.Definitions {
             Location Location
     ) : IDefinition {
         public class Builder {
-            public SpecContainerDefinition Build(SpecDescriptor specDescriptor, IDefinitionGenerationContext context) {
+            public SpecContainerDefinition Build(SpecDescriptor specDescriptor, DefinitionGenerationContext context) {
                 var specContainerType = SymbolProcessors.CreateSpecContainerType(
-                        context.InjectorType,
+                        context.Injector.InjectorType,
                         specDescriptor.SpecType);
 
                 var factories = specDescriptor.Factories.Select(
                         factory => {
                             var arguments = factory.Parameters.Select(
-                                            parameter => {
-                                                if (!context.FactoryRegistrations.TryGetValue(
-                                                            RegistrationIdentifier.FromQualifiedTypeDescriptor(
-                                                                    parameter),
-                                                            out var factoryRegistration)) {
-                                                    throw new InjectionException(
-                                                            Diagnostics.IncompleteSpecification,
-                                                            $"Cannot find factory for type {parameter} required by factory method "
-                                                            + $"{factory.FactoryMethodName} in specification {specDescriptor.SpecType} "
-                                                            + $"in injector type {context.InjectorType}.",
-                                                            factory.Location);
-                                                }
-
-                                                return new SpecContainerFactoryInvocationDefinition(
-                                                        factoryRegistration.Specification,
-                                                        factoryRegistration.FactoryDescriptor.FactoryMethodName,
-                                                        factoryRegistration.FactoryDescriptor.Location);
-                                            })
+                                            parameter => context.GetSpecContainerFactoryInvocation(parameter, factory.Location))
                                     .ToImmutableList();
 
                             return new SpecContainerFactoryDefinition(
                                     factory.ReturnType,
                                     factory.FactoryMethodName,
-                                    context.SpecContainerCollectionType,
                                     factory.FabricationMode,
                                     arguments,
                                     factory.Location);
@@ -69,30 +50,12 @@ namespace Phx.Inject.Generator.Model.Specifications.Definitions {
                 var builders = specDescriptor.Builders.Select(
                         builder => {
                             var arguments = builder.Parameters.Select(
-                                            parameter => {
-                                                if (!context.FactoryRegistrations.TryGetValue(
-                                                            RegistrationIdentifier.FromQualifiedTypeDescriptor(
-                                                                    parameter),
-                                                            out var factoryRegistration)) {
-                                                    throw new InjectionException(
-                                                            Diagnostics.IncompleteSpecification,
-                                                            $"Cannot find factory for type {parameter} required by builder method "
-                                                            + $"{builder.BuilderMethodName} in specification {specDescriptor.SpecType} "
-                                                            + $"in injector type {context.InjectorType}.",
-                                                            builder.Location);
-                                                }
-
-                                                return new SpecContainerFactoryInvocationDefinition(
-                                                        factoryRegistration.Specification,
-                                                        factoryRegistration.FactoryDescriptor.FactoryMethodName,
-                                                        factoryRegistration.FactoryDescriptor.Location);
-                                            })
+                                            parameter => context.GetSpecContainerFactoryInvocation(parameter, builder.Location))
                                     .ToImmutableList();
 
                             return new SpecContainerBuilderDefinition(
                                     builder.BuiltType.TypeModel,
                                     builder.BuilderMethodName,
-                                    context.SpecContainerCollectionType,
                                     arguments,
                                     builder.Location);
                         });

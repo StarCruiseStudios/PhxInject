@@ -14,11 +14,12 @@ namespace Phx.Inject.Generator {
 #endif
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Controller;
     using Phx.Inject.Generator.Input;
     using Phx.Inject.Generator.Manager;
     using Phx.Inject.Generator.Model;
-    using Phx.Inject.Generator.Model.Specifications.Descriptors;
     using Phx.Inject.Generator.Presenter;
     using Phx.Inject.Generator.Render;
 
@@ -45,16 +46,6 @@ namespace Phx.Inject.Generator {
         }
 
         public void Execute(GeneratorExecutionContext context) {
-            var injectorExtractor = new InjectorExtractor();
-            var specExtractor = new SpecExtractor();
-
-            var injectionController = new InjectionController();
-
-            var injectorPresenter = new InjectorPresenter();
-            var specContainerPresenter = new SpecContainerPresenter();
-
-            var templateRenderer = new TemplateRenderer(() => new RenderWriter(renderSettings));
-
             try {
                 var syntaxReceiver = context.SyntaxReceiver as InjectorSyntaxReceiver
                         ?? throw new InjectionException(
@@ -62,35 +53,57 @@ namespace Phx.Inject.Generator {
                                 $"Incorrect Syntax Receiver {context.SyntaxReceiver}.",
                                 Location.None);
 
+                //
                 // Extract: SyntaxDeclarations to Descriptors
-                var specDescriptors = specExtractor.Extract(
-                        syntaxReceiver.SpecificationCandidates,
-                        context);
-                Logger.Info($"Discovered {specDescriptors.Count} specifications.");
+                //
+                var descriptorGenerationContext = new DescriptorGenerationContext(context);
 
-                var specDescriptorMap = new Dictionary<TypeModel, SpecDescriptor>();
-                foreach (var specDescriptor in specDescriptors) {
-                    if (specDescriptorMap.ContainsKey(specDescriptor.SpecType)) {
-                        throw new InjectionException(
-                                Diagnostics.InvalidSpecification,
-                                $"Specification for type {specDescriptor.SpecType} is already defined.",
-                                specDescriptor.Location);
-                    }
-
-                    specDescriptorMap.Add(specDescriptor.SpecType, specDescriptor);
-                }
-
-                var injectorDescriptors = injectorExtractor.Extract(
+                var injectorDescriptors = new InjectorExtractor().Extract(
                         syntaxReceiver.InjectorCandidates,
-                        context,
-                        specDescriptorMap);
-                Logger.Info($"Discovered {injectorDescriptors.Count} injectors.");
+                        descriptorGenerationContext);
+                Logger.Info($"Discovered {injectorDescriptors.Count} injector types.");
+
+                var specDescriptors = new SpecExtractor().Extract(
+                        syntaxReceiver.SpecificationCandidates,
+                        descriptorGenerationContext);
+                Logger.Info($"Discovered {specDescriptors.Count} specification types.");
+
+                var externalDependencyDescriptors = new ExternalDependencyExtractor().Extract(
+                        syntaxReceiver.InjectorCandidates,
+                        descriptorGenerationContext);
+                Logger.Info($"Discovered {externalDependencyDescriptors.Count} external dependency types.");
+
+                //
+                // Map: Descriptors to Definitions
+                //
+                var injectorDescriptorMap = CreateTypeMap(
+                        injectorDescriptors,
+                        injector => injector.InjectorInterfaceType);
+                var specDescriptorMap = CreateTypeMap(
+                        specDescriptors,
+                        spec => spec.SpecType);
+                var externalDependencyDescriptorMap = CreateTypeMap(
+                        externalDependencyDescriptors,
+                        dep => dep.ExternalDependencyInterfaceType);
 
                 foreach (var injectorDescriptor in injectorDescriptors) {
-                    // Map: Descriptors to Definitions
-                    var injectionContextDefinition = injectionController.Map(injectorDescriptor);
+                    var definitionGenerationContext = new DefinitionGenerationContext(
+                            injectorDescriptor,
+                            injectorDescriptorMap,
+                            specDescriptorMap,
+                            externalDependencyDescriptorMap,
+                            ImmutableDictionary<RegistrationIdentifier, FactoryRegistration>.Empty,
+                            ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
+                            context);
 
+                    var injectionContextDefinition = new InjectionController().Map(definitionGenerationContext);
+
+                    //
                     // Construct: Definitions to Templates
+                    //
+                    var injectorPresenter = new InjectorPresenter();
+                    var specContainerPresenter = new SpecContainerPresenter();
+
                     var injectorDefinition = injectionContextDefinition.Injector;
                     var templates = new List<(TypeModel, IRenderTemplate)>();
                     foreach (var specContainerDefinition in injectionContextDefinition.SpecContainers) {
@@ -106,7 +119,13 @@ namespace Phx.Inject.Generator {
                                     injectorPresenter.Generate(injectorDefinition)));
                     Logger.Info($"Generated injector {injectorDefinition.InjectorType}.");
 
+
+
+                    var templateRenderer = new TemplateRenderer(() => new RenderWriter(renderSettings));
+
+                    //
                     // Render: Templates to Source.
+                    //
                     foreach (var (classType, template) in templates) {
                         var fileName = $"{classType.QualifiedName}.{GeneratedFileExtension}";
                         Logger.Info($"Rendering source for {fileName}");
@@ -138,6 +157,26 @@ namespace Phx.Inject.Generator {
                 Logger.Error("An unexpected error occurred while generating source.", ex);
                 throw;
             }
+        }
+
+        private static IReadOnlyDictionary<TypeModel, T> CreateTypeMap<T>(
+                IEnumerable<T> values,
+                Func<T, TypeModel> extractKey
+        ) where T : ISourceCodeElement  {
+            var map = new Dictionary<TypeModel, T>();
+            foreach (var value in values) {
+                var key = extractKey(value);
+                if (map.ContainsKey(key)) {
+                    throw new InjectionException(
+                            Diagnostics.InvalidSpecification,
+                            $"{typeof(T).Name} with {key} is already defined.",
+                            value.Location);
+                }
+
+                map.Add(key, value);
+            }
+
+            return map;
         }
     }
 }

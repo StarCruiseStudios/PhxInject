@@ -8,9 +8,16 @@
 
 namespace Phx.Inject.Generator.Model.Injectors.Templates {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Linq;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Input;
+    using Phx.Inject.Generator.Model.Injectors.Definitions;
+    using Phx.Inject.Generator.Model.Specifications.Templates;
 
-    // internal delegate InjectorTemplate CreateInjectorTemplate(InjectorDefinition injectorDefinition);
+    internal delegate InjectorTemplate CreateInjectorTemplate(
+            InjectorDefinition injectorDefinition,
+            TemplateGenerationContext context);
 
     internal record InjectorTemplate(
             string InjectorClassName,
@@ -37,43 +44,117 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
                     .AppendLine("}");
         }
 
-        // public class Builder {
-        //     private CreateSpecContainerCollectionTemplate createSpecContainerCollectionTemplate;
-        //     private CreateInjectorProviderMethodTemplate createInjectorProviderMethodTemplate;
-        //     private CreateInjectorBuilderMethodTemplate createInjectorBuilderMethodTemplate;
-        //
-        //     public Builder(
-        //             CreateSpecContainerCollectionTemplate createSpecContainerCollectionTemplate,
-        //             CreateInjectorProviderMethodTemplate createInjectorProviderMethodTemplate,
-        //             CreateInjectorBuilderMethodTemplate createInjectorBuilderMethodTemplate
-        //     ) {
-        //         this.createSpecContainerCollectionTemplate = createSpecContainerCollectionTemplate;
-        //         this.createInjectorProviderMethodTemplate = createInjectorProviderMethodTemplate;
-        //         this.createInjectorBuilderMethodTemplate = createInjectorBuilderMethodTemplate;
-        //     }
-        //
-        //     public InjectorTemplate Build(InjectorDefinition injectorDefinition) {
-        //         var specContainerCollectionReferenceName = "specContainers";
-        //         var injectorMemberTemplates = new List<IInjectorMemberTemplate>();
-        //         foreach (var provider in injectorDefinition.ProviderMethods) {
-        //             injectorMemberTemplates.Add(
-        //                     createInjectorProviderMethodTemplate(provider, specContainerCollectionReferenceName));
-        //         }
-        //
-        //         foreach (var builder in injectorDefinition.BuilderMethods) {
-        //             injectorMemberTemplates.Add(
-        //                     createInjectorBuilderMethodTemplate(builder, specContainerCollectionReferenceName));
-        //         }
-        //
-        //         return new InjectorTemplate(
-        //                 injectorDefinition.InjectorType.TypeName,
-        //                 injectorDefinition.InjectorInterfaceType.QualifiedName,
-        //                 createSpecContainerCollectionTemplate(
-        //                         injectorDefinition.SpecContainerCollection,
-        //                         specContainerCollectionReferenceName),
-        //                 injectorMemberTemplates,
-        //                 injectorDefinition.Location);
-        //     }
-        // }
+        public class Builder {
+            private const string SpecContainerCollectionReferenceName = "specContainers";
+            private const string SpecContainerCollectionClassName = "SpecContainerCollection";
+
+            public InjectorTemplate Build(
+                    InjectorDefinition injectorDefinition,
+                    TemplateGenerationContext context
+            ) {
+                var specContainerCollectionPropertyDeclarations = injectorDefinition.Specifications.Select(
+                        specType => {
+                            var specContainerType = SymbolProcessors.CreateSpecContainerType(
+                                    injectorDefinition.InjectorType,
+                                    specType);
+                            return new InjectorSpecContainerCollectionPropertyDeclarationTemplate(
+                                    specContainerType.QualifiedName,
+                                    SymbolProcessors.GetSpecContainerReferenceName(specContainerType),
+                                    injectorDefinition.Location);
+                        })
+                        .ToImmutableList();
+                var specContainerCollectionDeclaration = new InjectorSpecContainerCollectionDeclarationTemplate(
+                        SpecContainerCollectionClassName,
+                        specContainerCollectionPropertyDeclarations,
+                        injectorDefinition.Location);
+                var specContainerCollectionReferenceDeclaration
+                        = new InjectorSpecContainerCollectionReferenceDeclarationTemplate(
+                                SpecContainerCollectionClassName,
+                                SpecContainerCollectionReferenceName,
+                                injectorDefinition.Location);
+
+
+                var s = injectorDefinition.Specifications.Select(
+                        spec => {
+                            context.SpecContainers.try
+                        })
+
+
+                var specContainerCollectionInitialization = new InjectorSpecContainerCollectionInitializationTemplate(
+                        SpecContainerCollectionClassName,
+                        SpecContainerCollectionClassName,
+                        null!, // TODO:
+                        injectorDefinition.Location);
+
+                var injectorConstructor = new InjectorConstructorTemplate(
+                        injectorDefinition.InjectorType.TypeName,
+                        null!, // TODO:
+                        specContainerCollectionInitialization,
+                        injectorDefinition.Location);
+
+
+                IEnumerable<IInjectorMemberTemplate> injectorMemberTemplates = injectorDefinition.Providers.Select(
+                                provider => {
+                                    var invocationDefinition = provider.SpecContainerFactoryInvocation;
+                                    var factoryInvocation = new SpecContainerFactoryInvocationTemplate(
+                                            SpecContainerCollectionReferenceName,
+                                            SymbolProcessors.GetSpecContainerReferenceName(invocationDefinition.SpecContainerType),
+                                            invocationDefinition.FactoryMethodName,
+                                            invocationDefinition.Location);
+
+                                    return new InjectorProviderTemplate(
+                                            provider.ProvidedType.QualifiedName,
+                                            provider.InjectorProviderMethodName,
+                                            factoryInvocation,
+                                            provider.Location);
+                                })
+                        .Concat<IInjectorMemberTemplate>(
+                                injectorDefinition.Builders.Select(
+                                        builder => {
+                                            var builderTargetName = "target";
+                                            var invocationDefinition = builder.SpecContainerBuilderInvocation;
+                                            var builderInvocation = new SpecContainerBuilderInvocationTemplate(
+                                                    SpecContainerCollectionReferenceName,
+                                                    SymbolProcessors.GetSpecContainerReferenceName(invocationDefinition.SpecContainerType),
+                                                    invocationDefinition.BuilderMethodName,
+                                                    builderTargetName,
+                                                    invocationDefinition.Location);
+
+                                            return new InjectorBuilderTemplate(
+                                                    builder.BuiltType.QualifiedName,
+                                                    builder.InjectorBuilderMethodName,
+                                                    builderTargetName,
+                                                    builderInvocation,
+                                                    builder.Location);
+                                        }))
+                        .Concat(
+                                injectorDefinition.ChildFactories.Select(
+                                        factory => {
+                                            // Name of the generated child injector type
+                                            var childTypeQualifiedName = "TODO";
+
+                                            // Name of the generated class that implements the external dependency interface.
+                                            var childExternalDependencyImplementationTypeQualifiedName = "TODO";
+
+                                            return new InjectorChildFactoryTemplate(
+                                                    factory.InjectorChildInterfaceType.QualifiedName,
+                                                    factory.InjectorChildFactoryMethodName,
+                                                    childTypeQualifiedName,
+                                                    childExternalDependencyImplementationTypeQualifiedName,
+                                                    SpecContainerCollectionReferenceName,
+                                                    factory.Location);
+                                        }))
+                        .ToImmutableList();
+
+                return new InjectorTemplate(
+                        injectorDefinition.InjectorType.TypeName,
+                        injectorDefinition.InjectorInterfaceType.QualifiedName,
+                        specContainerCollectionDeclaration,
+                        specContainerCollectionReferenceDeclaration,
+                        injectorConstructor,
+                        injectorMemberTemplates,
+                        injectorDefinition.Location);
+            }
+        }
     }
 }

@@ -8,12 +8,15 @@
 
 namespace Phx.Inject.Generator.Model.External.Definitions {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Linq;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Input;
+    using Phx.Inject.Generator.Model.External.Descriptors;
 
-    // delegate ExternalDependencyContainerDefinition CreateExternalDependencyContainerDefinition(
-    //         TypeModel parentInjectorType,
-    //         ExternalDependencyDescriptor externalDependencyDescriptor,
-    //         IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations);
+    delegate ExternalDependencyImplementationDefinition CreateExternalDependencyImplementationDefinition(
+            ExternalDependencyDescriptor externalDependencyDescriptor,
+            DefinitionGenerationContext context);
 
     internal record ExternalDependencyImplementationDefinition(
             TypeModel ExternalDependencyImplementationType,
@@ -21,32 +24,34 @@ namespace Phx.Inject.Generator.Model.External.Definitions {
             IEnumerable<ExternalDependencyProviderMethodDefinition> ProviderMethodDefinitions,
             Location Location
     ) : IDefinition {
-        // public class Builder {
-        //     private readonly CreateExternalDependencyProviderMethodDefinition
-        //             createExternalDependencyProviderMethodDefinition;
-        //
-        //     public Builder(CreateExternalDependencyProviderMethodDefinition externalDependencyProviderMethodDefinition) {
-        //         createExternalDependencyProviderMethodDefinition = externalDependencyProviderMethodDefinition;
-        //     }
-        //
-        //     public ExternalDependencyContainerDefinition Build(
-        //             TypeModel parentInjectorType,
-        //             ExternalDependencyDescriptor externalDependencyDescriptor,
-        //             IDictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations) {
-        //         var providerDefinitions = externalDependencyDescriptor.Providers.Select(
-        //                         provider => createExternalDependencyProviderMethodDefinition(
-        //                                 externalDependencyDescriptor,
-        //                                 provider,
-        //                                 factoryRegistrations))
-        //                 .ToImmutableList();
-        //
-        //         return new ExternalDependencyContainerDefinition(
-        //                 ParentInjectorType: parentInjectorType,
-        //                 ChildInjectorType: externalDependencyDescriptor.DeclaringInjectorInterfaceType,
-        //                 ExternalDependencyInterfaceType: externalDependencyDescriptor.ExternalDependencyInterfaceType,
-        //                 providerDefinitions,
-        //                 externalDependencyDescriptor.Location);
-        //     }
-        // }
+        public class Builder {
+            public ExternalDependencyImplementationDefinition Build(
+                    ExternalDependencyDescriptor externalDependencyDescriptor,
+                    DefinitionGenerationContext context
+            ) {
+                var implementationType = SymbolProcessors.CreateExternalDependencyImplementationType(
+                        context.Injector.InjectorType,
+                        externalDependencyDescriptor.ExternalDependencyInterfaceType);
+
+                var providers = externalDependencyDescriptor.Providers.Select(provider => {
+                            var specContainerFactoryInvocation = context.GetSpecContainerFactoryInvocation(
+                                    provider.ProvidedType,
+                                    provider.Location);
+
+                            return new ExternalDependencyProviderMethodDefinition(
+                                    provider.ProvidedType.TypeModel,
+                                    provider.ProviderMethodName,
+                                    specContainerFactoryInvocation,
+                                    provider.Location);
+                        })
+                        .ToImmutableList();
+
+                return new ExternalDependencyImplementationDefinition(
+                        implementationType,
+                        externalDependencyDescriptor.ExternalDependencyInterfaceType,
+                        providers,
+                        externalDependencyDescriptor.Location);
+            }
+        }
     }
 }

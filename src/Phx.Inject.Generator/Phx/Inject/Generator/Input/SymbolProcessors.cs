@@ -14,6 +14,7 @@ namespace Phx.Inject.Generator.Input {
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Phx.Inject.Generator.Model;
+    using Phx.Inject.Generator.Model.Specifications;
 
     internal static class SymbolProcessors {
         public const string BuilderAttributeClassName = "Phx.Inject.BuilderAttribute";
@@ -29,6 +30,18 @@ namespace Phx.Inject.Generator.Input {
         private const string GeneratedInjectorClassPrefix = "Generated";
 
         private static Regex validCharsRegex = new Regex(@"[^a-zA-Z0-9_]");
+
+        public static string GetSpecContainerReferenceName(TypeModel specContainerType) {
+            return GetValidReferenceName(specContainerType.TypeName, startLowercase: false);
+        }
+
+        public static string GetInstanceHolderName(QualifiedTypeModel heldInstanceType) {
+            string referenceName = string.IsNullOrEmpty(heldInstanceType.Qualifier)
+                    ? heldInstanceType.TypeModel.TypeName
+                    : $"{heldInstanceType.Qualifier}_{heldInstanceType.TypeModel.TypeName}";
+            referenceName = GetValidReferenceName(referenceName, startLowercase: true);
+            return referenceName;
+        }
 
         public static IEnumerable<ITypeSymbol> GetTypeSymbolsFromDeclarations(
                 IEnumerable<TypeDeclarationSyntax> syntaxNodes,
@@ -97,6 +110,10 @@ namespace Phx.Inject.Generator.Input {
             return GetAttributes(builderMethodSymbol, BuilderAttributeClassName);
         }
 
+        public static IList<AttributeData> GetChildInjectorAttributes(ISymbol childInjectorMethodSymbol) {
+            return GetAttributes(childInjectorMethodSymbol, ChildInjectorAttributeClassName);
+        }
+
         public static IEnumerable<ITypeSymbol> GetExternalDependencyTypes(ISymbol injectorSymbol) {
             var externalDependencyAttributes = GetAttributes(injectorSymbol, ExternalDependencyAttributeClassName);
             return externalDependencyAttributes.SelectMany(
@@ -109,11 +126,11 @@ namespace Phx.Inject.Generator.Input {
                     }).ToImmutableList();
         }
 
-        public static ImmutableList<QualifiedTypeDescriptor> GetMethodParametersQualifiedTypes(IMethodSymbol methodSymbol) {
+        public static ImmutableList<QualifiedTypeModel> GetMethodParametersQualifiedTypes(IMethodSymbol methodSymbol) {
             return methodSymbol.Parameters.Select(
                             parameter => {
                                 var qualifier = GetQualifier(parameter);
-                                return new QualifiedTypeDescriptor(
+                                return new QualifiedTypeModel(
                                         TypeModel.FromTypeSymbol(parameter.Type),
                                         qualifier,
                                         parameter.Locations.First());
@@ -237,7 +254,26 @@ namespace Phx.Inject.Generator.Input {
                         .AttributeClass!.ToString();
             }
 
-            return QualifiedTypeDescriptor.NoQualifier;
+            return QualifiedTypeModel.NoQualifier;
+        }
+
+        public static TypeModel CreateSpecContainerType(TypeModel injectorType, TypeModel specType) {
+            return specType with {
+                TypeName = GetValidReferenceName($"{injectorType.TypeName}_{specType.TypeName}", startLowercase: false)
+            };
+        }
+
+        public static TypeModel CreateExternalDependencyImplementationType(
+                TypeModel injectorType,
+                TypeModel dependencyInterfaceType
+        ) {
+            var implementationName = dependencyInterfaceType.TypeName;
+            if (implementationName.StartsWith("I")) {
+                implementationName = implementationName[1..];
+            }
+
+            implementationName = GetValidReferenceName($"{injectorType.TypeName}_{implementationName}", startLowercase: false);
+            return injectorType with { TypeName = implementationName };
         }
     }
 }

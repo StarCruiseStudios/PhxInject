@@ -13,7 +13,7 @@ namespace Phx.Inject.Generator.Model.Injectors.Descriptors {
 
     internal delegate InjectorBuilderDescriptor? CreateInjectorBuilderDescriptor(
             IMethodSymbol builderMethod,
-            IDescriptorGenerationContext context
+            DescriptorGenerationContext context
     );
 
     internal record InjectorBuilderDescriptor(
@@ -24,7 +24,7 @@ namespace Phx.Inject.Generator.Model.Injectors.Descriptors {
         public class Builder {
             public InjectorBuilderDescriptor? Build(
                     IMethodSymbol builderMethod,
-                    IDescriptorGenerationContext context
+                    DescriptorGenerationContext context
             ) {
                 var builderLocation = builderMethod.Locations.First();
 

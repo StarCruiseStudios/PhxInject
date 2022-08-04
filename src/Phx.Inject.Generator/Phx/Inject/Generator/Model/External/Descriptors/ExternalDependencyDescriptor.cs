@@ -14,7 +14,7 @@ namespace Phx.Inject.Generator.Model.External.Descriptors {
 
     internal delegate ExternalDependencyDescriptor CreateExternalDependencyDescriptor(
             ITypeSymbol externalDependencyInterfaceSymbol,
-            IDescriptorGenerationContext context
+            DescriptorGenerationContext context
     );
 
     internal record ExternalDependencyDescriptor(
@@ -31,7 +31,7 @@ namespace Phx.Inject.Generator.Model.External.Descriptors {
 
             public ExternalDependencyDescriptor Build(
                     ITypeSymbol externalDependencyInterfaceSymbol,
-                    IDescriptorGenerationContext context
+                    DescriptorGenerationContext context
             ) {
                 var externalDependencyInterfaceLocation = externalDependencyInterfaceSymbol.Locations.First();
                 var externalDependencyInterfaceType = TypeModel.FromTypeSymbol(externalDependencyInterfaceSymbol);

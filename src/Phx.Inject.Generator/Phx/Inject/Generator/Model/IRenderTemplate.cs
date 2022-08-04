@@ -7,10 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model {
-    using Microsoft.CodeAnalysis;
-
-    internal interface IRenderTemplate {
-        Location Location { get; }
+    internal interface IRenderTemplate : ISourceCodeElement {
         void Render(IRenderWriter writer);
     }
 }

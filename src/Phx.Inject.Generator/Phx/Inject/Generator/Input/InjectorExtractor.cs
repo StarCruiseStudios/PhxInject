@@ -13,7 +13,7 @@ namespace Phx.Inject.Generator.Input {
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Phx.Inject.Generator.Model;
-    using Phx.Inject.Generator.Model.Descriptors;
+    using Phx.Inject.Generator.Model.Injectors.Descriptors;
 
     internal class InjectorExtractor {
 
@@ -25,20 +25,17 @@ namespace Phx.Inject.Generator.Input {
 
         public InjectorExtractor() : this(
                 new InjectorDescriptor.Builder(
-                        new ExternalDependencyDescriptor.Builder(
-                                new ExternalDependencyProviderDescriptor.Builder().Build).Build,
-                        new ChildInjectorDescriptor.Builder().Build,
                         new InjectorProviderDescriptor.Builder().Build,
-                        new InjectorBuilderDescriptor.Builder().Build).Build) { }
+                        new InjectorBuilderDescriptor.Builder().Build,
+                        new InjectorChildFactoryDescriptor.Builder().Build).Build) { }
 
         public IReadOnlyList<InjectorDescriptor> Extract(
                 IEnumerable<TypeDeclarationSyntax> syntaxNodes,
-                GeneratorExecutionContext context,
-                IReadOnlyDictionary<TypeModel, SpecDescriptor> specDescriptors
+                DescriptorGenerationContext context
         ) {
-            return SymbolProcessors.GetTypeSymbolsFromDeclarations(syntaxNodes, context)
+            return SymbolProcessors.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
                     .Where(IsInjectorSymbol)
-                    .Select(symbol => createInjectorDescriptor(symbol, specDescriptors))
+                    .Select(symbol => createInjectorDescriptor(symbol, context))
                     .ToImmutableList();
         }
 
