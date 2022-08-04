@@ -9,21 +9,23 @@
 namespace Phx.Inject.Generator.Model.External.Templates {
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Model.Injectors.Templates;
+    using Phx.Inject.Generator.Model.External.Definitions;
 
-    // internal delegate ExternalDependencyImplementationTemplate CreateExternalDependencyContainerTemplate();
+    internal delegate ExternalDependencyImplementationTemplate CreateExternalDependencyImplementationTemplate(
+            ExternalDependencyImplementationDefinition externalDependencyImplementationDefinition,
+            TemplateGenerationContext context);
 
     internal record ExternalDependencyImplementationTemplate(
             string ExternalDependencyImplementationClassName,
             string ExternalDependencyInterfaceQualifiedName,
-            InjectorSpecContainerCollectionReferenceDeclarationTemplate SpecContainerCollectionReferenceDeclaration,
+            // InjectorSpecContainerCollectionReferenceDeclarationTemplate SpecContainerCollectionReferenceDeclaration,
             ExternalDependencyImplementationConstructorTemplate Constructor,
             IEnumerable<ExternalDependencyProviderMethodTemplate> ExternalDependencyProviderMethods,
             Location Location) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
             writer.AppendLine($"internal class {ExternalDependencyImplementationClassName} : {ExternalDependencyInterfaceQualifiedName} {{")
                     .IncreaseIndent(1);
-            SpecContainerCollectionReferenceDeclaration.Render(writer);
+            // SpecContainerCollectionReferenceDeclaration.Render(writer);
             writer.AppendBlankLine();
             Constructor.Render(writer);
 
@@ -36,22 +38,18 @@ namespace Phx.Inject.Generator.Model.External.Templates {
                     .AppendLine("}");
         }
 
-        // public class Builder {
-        //     private readonly ExternalDependencyProviderMethodTemplate createProviderMethod;
-        //
-        //     public Builder(ExternalDependencyProviderMethodTemplate createProviderMethod) {
-        //         this.createProviderMethod = createProviderMethod;
-        //     }
-        //
-        //     public ExternalDependencyImplementationTemplate Build() {
-        //         return new ExternalDependencyImplementationTemplate(
-        //                 null!,
-        //                 null!,
-        //                 null!,
-        //                 null!,
-        //                 null!,
-        //                 null!);
-        //     }
-        // }
+        public class Builder {
+            public ExternalDependencyImplementationTemplate Build(
+                    ExternalDependencyImplementationDefinition externalDependencyImplementationDefinition,
+                    TemplateGenerationContext context
+            ) {
+                return new ExternalDependencyImplementationTemplate(
+                        null!,
+                        null!,
+                        null!,
+                        null!,
+                        null!);
+            }
+        }
     }
 }
