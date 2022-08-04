@@ -11,13 +11,13 @@
 namespace Phx.Inject.Tests.Data.Inject {
     internal partial class GeneratedLabelInjector : Phx.Inject.Tests.Data.Inject.ILabelInjector {
         internal record SpecContainerCollection (
-            Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecification GeneratedLabelInjector_LabeledLeafSpecification);
+                Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecification GeneratedLabelInjector_LabeledLeafSpecification);
 
         private readonly SpecContainerCollection specContainers;
 
         public GeneratedLabelInjector() {
             specContainers = new SpecContainerCollection(
-                GeneratedLabelInjector_LabeledLeafSpecification: new Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecification());
+                    GeneratedLabelInjector_LabeledLeafSpecification: new Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecification());
         }
 
         public Phx.Inject.Tests.Data.Model.ILeaf GetDefaultLeaf() {
@@ -52,12 +52,12 @@ namespace Phx.Inject.Tests.Data.Inject {
             return specContainers.GeneratedLabelInjector_LabeledLeafSpecification.GetNode(specContainers);
         }
 
-        public void BuildLabeledLazyType(Phx.Inject.Tests.Data.Model.LazyType value) {
-            specContainers.GeneratedLabelInjector_LabeledLeafSpecification.BuildLazyTypeLeafA(value, specContainers);
+        public void BuildLabeledLazyType(Phx.Inject.Tests.Data.Model.LazyType target) {
+            specContainers.GeneratedLabelInjector_LabeledLeafSpecification.BuildLazyTypeLeafA(target, specContainers);
         }
 
-        public void BuildUnlabeledLazyType(Phx.Inject.Tests.Data.Model.LazyType value) {
-            specContainers.GeneratedLabelInjector_LabeledLeafSpecification.BuildLazyTypeDefault(value, specContainers);
+        public void BuildUnlabeledLazyType(Phx.Inject.Tests.Data.Model.LazyType target) {
+            specContainers.GeneratedLabelInjector_LabeledLeafSpecification.BuildLazyTypeDefault(target, specContainers);
         }
     }
 }

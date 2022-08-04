@@ -26,7 +26,7 @@ namespace Phx.Inject.Generator.Input {
         public const string QualifierAttributeClassName = "Phx.Inject.QualifierAttribute";
         public const string SpecificationAttributeClassName = "Phx.Inject.SpecificationAttribute";
 
-        private const string SpecContainerCollectionTypeName = "SpecContainerCollection";
+        public const string SpecContainerCollectionTypeName = "SpecContainerCollection";
 
         public static IEnumerable<ITypeSymbol> GetTypeSymbolsFromDeclarations(
                 IEnumerable<TypeDeclarationSyntax> syntaxNodes,

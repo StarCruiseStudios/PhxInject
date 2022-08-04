@@ -10,7 +10,7 @@
 #nullable enable
 namespace Phx.Inject.Tests.Data.Specification {
     internal class GeneratedConstructedInjector_IConstructedSpecification {
-        private Phx.Inject.Tests.Data.Specification.IConstructedSpecification instance;
+        private readonly Phx.Inject.Tests.Data.Specification.IConstructedSpecification instance;
 
         public GeneratedConstructedInjector_IConstructedSpecification(Phx.Inject.Tests.Data.Specification.IConstructedSpecification instance) {
             this.instance = instance;

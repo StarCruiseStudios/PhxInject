@@ -36,9 +36,9 @@ namespace Phx.Inject.Generator.Model.Specifications.Templates {
                 writer.AppendLine($"private {instanceHolder.InstanceQualifiedType}? {instanceHolder.ReferenceName};");
             }
 
-            //      private readonly ConstructedSpecificationInterfaceType instance;
+            //      private readonly ConstructedSpecificationInterfaceQualifiedType instance;
             //
-            //      public SpecContainerClassName(ConstructedSpecificationInterfaceType instance) {
+            //      public SpecContainerClassName(ConstructedSpecificationInterfaceQualifiedType instance) {
             //          this.instance = instance;
             //      }
             if (ConstructedSpecInterfaceQualifiedType != null) {
@@ -98,7 +98,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Templates {
                 string? constructedSpecInterfaceQualifiedType = null;
                 string? constructedSpecificationReference = null;
                 if (specContainerDefinition.SpecInstantiationMode == SpecInstantiationMode.Instantiated) {
-                    constructedSpecInterfaceQualifiedType = specContainerDefinition.SpecContainerType.QualifiedName;
+                    constructedSpecInterfaceQualifiedType = specContainerDefinition.SpecificationType.QualifiedName;
                     constructedSpecificationReference = SpecReferenceName;
                 }
 

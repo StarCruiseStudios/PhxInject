@@ -11,15 +11,15 @@
 namespace Phx.Inject.Tests.Data.Inject {
     internal partial class GeneratedNestedSpecInjector : Phx.Inject.Tests.Data.Inject.INestedSpecInjector {
         internal record SpecContainerCollection (
-            Phx.Inject.Tests.Data.Specification.GeneratedNestedSpecInjector_OuterNestedSpecification GeneratedNestedSpecInjector_OuterNestedSpecification,
-            Phx.Inject.Tests.Data.Specification.GeneratedNestedSpecInjector_OuterNestedSpecification_Inner GeneratedNestedSpecInjector_OuterNestedSpecification_Inner);
+                Phx.Inject.Tests.Data.Specification.GeneratedNestedSpecInjector_OuterNestedSpecification GeneratedNestedSpecInjector_OuterNestedSpecification,
+                Phx.Inject.Tests.Data.Specification.GeneratedNestedSpecInjector_OuterNestedSpecification_Inner GeneratedNestedSpecInjector_OuterNestedSpecification_Inner);
 
         private readonly SpecContainerCollection specContainers;
 
         public GeneratedNestedSpecInjector() {
             specContainers = new SpecContainerCollection(
-                GeneratedNestedSpecInjector_OuterNestedSpecification: new Phx.Inject.Tests.Data.Specification.GeneratedNestedSpecInjector_OuterNestedSpecification(),
-                GeneratedNestedSpecInjector_OuterNestedSpecification_Inner: new Phx.Inject.Tests.Data.Specification.GeneratedNestedSpecInjector_OuterNestedSpecification_Inner());
+                    GeneratedNestedSpecInjector_OuterNestedSpecification: new Phx.Inject.Tests.Data.Specification.GeneratedNestedSpecInjector_OuterNestedSpecification(),
+                    GeneratedNestedSpecInjector_OuterNestedSpecification_Inner: new Phx.Inject.Tests.Data.Specification.GeneratedNestedSpecInjector_OuterNestedSpecification_Inner());
         }
 
         public Phx.Inject.Tests.Data.Model.IntLeaf GetIntLeaf() {

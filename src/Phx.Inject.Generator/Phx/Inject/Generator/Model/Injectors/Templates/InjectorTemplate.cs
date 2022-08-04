@@ -11,6 +11,7 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Input;
     using Phx.Inject.Generator.Model.Injectors.Definitions;
     using Phx.Inject.Generator.Model.Specifications;
     using Phx.Inject.Generator.Model.Specifications.Templates;
@@ -44,13 +45,16 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
                                    CloseWithNewline: false))) {
                 foreach (var property in SpecContainerCollectionProperties) {
                     var elementWriter = collectionWriter.GetElementWriter();
-                    elementWriter.Append($"{property.PropertyTypeQualifiedName} ${property.PropertyName}");
+                    elementWriter.Append($"{property.PropertyTypeQualifiedName} {property.PropertyName}");
                 }
             }
 
+            writer.AppendBlankLine();
+
             //      private readonly SpecContainerCollection specContainers;
             writer.AppendLine(
-                    $"private readonly {SpecContainerCollectionTypeName} {SpecContainerCollectionReferenceName};");
+                    $"private readonly {SpecContainerCollectionTypeName} {SpecContainerCollectionReferenceName};")
+                    .AppendBlankLine();
 
             //      public InjectorClassName(
             //              ConstructedSpecificationQualifiedName constructedSpecificationReference
@@ -79,7 +83,7 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
                            ))) {
                 foreach (var property in SpecContainerCollectionProperties) {
                     var elementWriter = collectionWriter.GetElementWriter();
-                    elementWriter.Append($"${property.PropertyName}: new {property.PropertyTypeQualifiedName}(");
+                    elementWriter.Append($"{property.PropertyName}: new {property.PropertyTypeQualifiedName}(");
                     if (property.ConstructorArgumentName != null) {
                         elementWriter.Append(property.ConstructorArgumentName);
                     }
@@ -89,7 +93,8 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
             }
 
             //      }
-            writer.DecreaseIndent(1)
+            writer.AppendLine()
+                    .DecreaseIndent(1)
                     .AppendLine("}");
 
             //      public FactoryQualifiedReturnType FactoryName() {
@@ -124,10 +129,16 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
                         spec => context.GetSpecContainer(spec, injectorDefinition.Location));
 
                 var specContainerProperties = specContainers.Select(
-                                specContainer => new InjectorSpecContainerCollectionProperty(
-                                        specContainer.SpecContainerType.QualifiedName,
-                                        specContainer.SpecContainerType.GetPropertyName(),
-                                        specContainer.SpecificationType.GetVariableName()))
+                                specContainer => {
+                                    var constructorArgument = specContainer.SpecInstantiationMode ==
+                                            SpecInstantiationMode.Static
+                                                    ? null
+                                                    : specContainer.SpecificationType.GetVariableName();
+                                    return new InjectorSpecContainerCollectionProperty(
+                                            specContainer.SpecContainerType.QualifiedName,
+                                            specContainer.SpecContainerType.GetPropertyName(),
+                                            constructorArgument);
+                                })
                         .ToImmutableList();
 
                 var constructorParameters = specContainers.Where(
@@ -162,7 +173,7 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
                                             var invocationDefinition = builder.SpecContainerBuilderInvocation;
                                             var builderInvocation = new SpecContainerBuilderInvocationTemplate(
                                                     SpecContainerCollectionReferenceName,
-                                                    NameHelpers.GetSpecContainerReferenceName(invocationDefinition.SpecContainerType),
+                                                    invocationDefinition.SpecContainerType.GetPropertyName(),
                                                     invocationDefinition.BuilderMethodName,
                                                     builderTargetName,
                                                     invocationDefinition.Location);
@@ -207,7 +218,7 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
                 return new InjectorTemplate(
                         injectorDefinition.InjectorType.TypeName,
                         injectorDefinition.InjectorInterfaceType.QualifiedName,
-                        injectorDefinition.SpecContainerCollectionType.TypeName,
+                        SymbolProcessors.SpecContainerCollectionTypeName,
                         SpecContainerCollectionReferenceName,
                         specContainerProperties,
                         constructorParameters,
