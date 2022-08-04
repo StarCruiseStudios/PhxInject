@@ -92,7 +92,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Templates {
                 foreach (var factoryMethod in specContainerDefinition.FactoryMethodDefinitions) {
                     string? instanceHolderReferenceName = null;
                     if (factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.Scoped) {
-                        instanceHolderReferenceName = SymbolProcessors.GetInstanceHolderName(factoryMethod.ReturnType);
+                        instanceHolderReferenceName = factoryMethod.ReturnType.GetVariableName();
                         instanceHolderDeclarations.Add(
                                 new SpecContainerInstanceHolderDeclarationTemplate(
                                         factoryMethod.ReturnType.TypeModel.QualifiedName,
@@ -104,7 +104,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Templates {
                             .Select(
                                     argument => new SpecContainerFactoryInvocationTemplate(
                                             SpecContainerCollectionReferenceName,
-                                            SymbolProcessors.GetSpecContainerReferenceName(argument.SpecContainerType),
+                                            argument.SpecContainerType.GetPropertyName(),
                                             argument.FactoryMethodName,
                                             argument.Location))
                             .ToImmutableList();
@@ -128,7 +128,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Templates {
                             .Select(
                                     argument => new SpecContainerFactoryInvocationTemplate(
                                             SpecContainerCollectionReferenceName,
-                                            SymbolProcessors.GetSpecContainerReferenceName(argument.SpecContainerType),
+                                            argument.SpecContainerType.GetPropertyName(),
                                             argument.FactoryMethodName,
                                             argument.Location))
                             .ToImmutableList();

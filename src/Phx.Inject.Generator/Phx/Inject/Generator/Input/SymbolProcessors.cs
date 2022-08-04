@@ -10,7 +10,6 @@ namespace Phx.Inject.Generator.Input {
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Phx.Inject.Generator.Model;
@@ -26,22 +25,6 @@ namespace Phx.Inject.Generator.Input {
         public const string LinkAttributeClassName = "Phx.Inject.LinkAttribute";
         public const string QualifierAttributeClassName = "Phx.Inject.QualifierAttribute";
         public const string SpecificationAttributeClassName = "Phx.Inject.SpecificationAttribute";
-
-        private const string GeneratedInjectorClassPrefix = "Generated";
-
-        private static Regex validCharsRegex = new Regex(@"[^a-zA-Z0-9_]");
-
-        public static string GetSpecContainerReferenceName(TypeModel specContainerType) {
-            return GetValidReferenceName(specContainerType.TypeName, startLowercase: false);
-        }
-
-        public static string GetInstanceHolderName(QualifiedTypeModel heldInstanceType) {
-            string referenceName = string.IsNullOrEmpty(heldInstanceType.Qualifier)
-                    ? heldInstanceType.TypeModel.TypeName
-                    : $"{heldInstanceType.Qualifier}_{heldInstanceType.TypeModel.TypeName}";
-            referenceName = GetValidReferenceName(referenceName, startLowercase: true);
-            return referenceName;
-        }
 
         public static IEnumerable<ITypeSymbol> GetTypeSymbolsFromDeclarations(
                 IEnumerable<TypeDeclarationSyntax> syntaxNodes,
@@ -138,25 +121,7 @@ namespace Phx.Inject.Generator.Input {
                     .ToImmutableList();
         }
 
-        public static string GetValidReferenceName(string baseName, bool startLowercase) {
-            var referenceName = baseName;
-
-            referenceName = referenceName.Replace(".", "_");
-            referenceName = validCharsRegex.Replace(referenceName, "");
-
-            // Start with a lowercase letter.
-            if (startLowercase) {
-                referenceName = StartLowercase(referenceName);
-            }
-
-            return referenceName;
-        }
-
-        public static string StartLowercase(string input) {
-            return char.ToLower(input[0]) + input[1..];
-        }
-
-        public static string GetGeneratedInjectorClassName(ISymbol injectorInterfaceSymbol) {
+        public static string GetGeneratedInjectorClassName(ITypeSymbol injectorInterfaceSymbol) {
             var injectorAttribute = GetInjectorAttribute(injectorInterfaceSymbol);
             if (injectorAttribute == null) {
                 throw new InjectionException(
@@ -170,15 +135,9 @@ namespace Phx.Inject.Generator.Input {
                     .Value as string;
 
             if (generatedClassName == null) {
-                generatedClassName = injectorInterfaceSymbol.Name;
-
-                // Remove the "I" prefix from interface names.
-                if (generatedClassName.StartsWith("I")) {
-                    generatedClassName = generatedClassName[1..];
-                }
-
-                // Add the generated prefix
-                generatedClassName = GetValidReferenceName($"{GeneratedInjectorClassPrefix}{generatedClassName}", startLowercase: false);
+                generatedClassName = TypeModel.FromTypeSymbol(injectorInterfaceSymbol).GetInjectorClassName();
+            } else {
+                generatedClassName = generatedClassName.AsValidIdentifier().StartUppercase();
             }
 
             return generatedClassName;
@@ -258,8 +217,9 @@ namespace Phx.Inject.Generator.Input {
         }
 
         public static TypeModel CreateSpecContainerType(TypeModel injectorType, TypeModel specType) {
+            var specContainerTypeName = NameHelpers.GetCombinedClassName(injectorType, specType);
             return specType with {
-                TypeName = GetValidReferenceName($"{injectorType.TypeName}_{specType.TypeName}", startLowercase: false)
+                TypeName = specContainerTypeName
             };
         }
 
@@ -267,13 +227,8 @@ namespace Phx.Inject.Generator.Input {
                 TypeModel injectorType,
                 TypeModel dependencyInterfaceType
         ) {
-            var implementationName = dependencyInterfaceType.TypeName;
-            if (implementationName.StartsWith("I")) {
-                implementationName = implementationName[1..];
-            }
-
-            implementationName = GetValidReferenceName($"{injectorType.TypeName}_{implementationName}", startLowercase: false);
-            return injectorType with { TypeName = implementationName };
+            var implementationTypeName = NameHelpers.GetCombinedClassName(injectorType, dependencyInterfaceType);
+            return injectorType with { TypeName = implementationTypeName };
         }
     }
 }

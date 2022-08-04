@@ -77,5 +77,50 @@ namespace Phx.Inject.Generator.Render {
         public string GetRenderedString() {
             return sourceBuilder.ToString();
         }
+
+        public IRenderWriter.ICollectionWriter GetCollectionWriter(CollectionWriterProperties properties) {
+            return new CollectionWriter(this, properties);
+        }
+
+        private class CollectionWriter : IRenderWriter.ICollectionWriter {
+            private bool isFirst = true;
+            private readonly IRenderWriter renderWriter;
+            private readonly CollectionWriterProperties properties;
+
+            public CollectionWriter(IRenderWriter renderWriter, CollectionWriterProperties properties) {
+                this.renderWriter = renderWriter;
+                this.properties = properties;
+
+                if (properties.OpenWithNewline) {
+                    renderWriter.AppendLine(properties.OpeningString);
+                } else {
+                    renderWriter.Append(properties.OpeningString);
+                }
+                renderWriter.IncreaseIndent(properties.Indent);
+            }
+
+            public IRenderWriter GetElementWriter() {
+                if (isFirst) {
+                    isFirst = false;
+                } else {
+                    if (properties.DelimitWithNewline) {
+                        renderWriter.AppendLine(properties.Delimiter);
+                    } else {
+                        renderWriter.Append(properties.Delimiter);
+                    }
+                }
+
+                return renderWriter;
+            }
+
+            public void Dispose() {
+                renderWriter.DecreaseIndent(properties.Indent);
+                if (properties.CloseWithNewline) {
+                    renderWriter.AppendLine(properties.ClosingString);
+                } else {
+                    renderWriter.Append(properties.ClosingString);
+                }
+            }
+        }
     }
 }

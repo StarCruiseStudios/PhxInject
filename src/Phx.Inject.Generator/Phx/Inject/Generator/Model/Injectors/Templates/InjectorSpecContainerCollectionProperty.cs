@@ -7,15 +7,9 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model.Injectors.Templates {
-    using Microsoft.CodeAnalysis;
-
-    internal record InjectorSpecContainerCollectionPropertyDeclarationTemplate(
+    internal record InjectorSpecContainerCollectionProperty(
             string PropertyTypeQualifiedName,
             string PropertyName,
-            Location Location
-    ) : IRenderTemplate {
-        public void Render(IRenderWriter writer) {
-            writer.Append($"{PropertyTypeQualifiedName} ${PropertyName}");
-        }
-    }
+            string? ConstructorArgumentName
+    );
 }

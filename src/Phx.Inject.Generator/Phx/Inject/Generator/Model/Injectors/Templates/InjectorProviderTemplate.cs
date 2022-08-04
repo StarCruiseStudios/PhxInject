@@ -10,11 +10,6 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Model.Specifications.Templates;
 
-    // delegate InjectorProviderTemplate CreateInjectorProviderMethodTemplate(
-    //         InjectorProviderMethodDefinition injectorProviderMethodDefinition,
-    //         string specContainerCollectionReferenceName
-    // );
-
     internal record InjectorProviderTemplate(
             string ReturnTypeQualifiedName,
             string MethodName,
@@ -30,30 +25,5 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
                     .DecreaseIndent(1)
                     .AppendLine("}");
         }
-
-        // public class Builder {
-        //     private readonly CreateSpecContainerFactoryMethodInvocationTemplate
-        //             createSpecContainerFactoryMethodInvocationTemplate;
-        //
-        //     public Builder(CreateSpecContainerFactoryMethodInvocationTemplate createSpecContainerFactoryMethodInvocationTemplate) {
-        //         this.createSpecContainerFactoryMethodInvocationTemplate = createSpecContainerFactoryMethodInvocationTemplate;
-        //     }
-        //
-        //     public InjectorProviderTemplate Build(
-        //             InjectorProviderMethodDefinition injectorProviderMethodDefinition,
-        //             string specContainerCollectionReferenceName
-        //     ) {
-        //         var factoryMethodInvocation
-        //                 = createSpecContainerFactoryMethodInvocationTemplate(
-        //                         injectorProviderMethodDefinition.SpecContainerFactoryInvocation,
-        //                         specContainerCollectionReferenceName);
-        //
-        //         return new InjectorProviderTemplate(
-        //                 injectorProviderMethodDefinition.ProvidedType.QualifiedName,
-        //                 injectorProviderMethodDefinition.InjectorMethodName,
-        //                 factoryMethodInvocation,
-        //                 injectorProviderMethodDefinition.Location);
-        //     }
-        // }
     }
 }

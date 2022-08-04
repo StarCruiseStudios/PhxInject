@@ -16,7 +16,42 @@ namespace Phx.Inject.Generator.Model {
     internal record TemplateGenerationContext(
             IReadOnlyDictionary<TypeModel, InjectorDefinition> Injectors,
             IReadOnlyDictionary<TypeModel, SpecContainerDefinition> SpecContainers,
-            IReadOnlyDictionary<TypeModel, ExternalDependencyImplementationDefinition> ExternalDependencyImplementations,
+            IReadOnlyDictionary<TypeModel, ExternalDependencyImplementationDefinition>
+                    ExternalDependencyImplementations,
             GeneratorExecutionContext GenerationContext
-    );
+    ) {
+        public InjectorDefinition GetInjector(TypeModel type, Location location) {
+            if (Injectors.TryGetValue(type, out var injector)) {
+                return injector;
+            }
+
+            throw new InjectionException(
+                    Diagnostics.IncompleteSpecification,
+                    $"Cannot find required injector type {type}.",
+                    location);
+
+        }
+
+        public SpecContainerDefinition GetSpecContainer(TypeModel type, Location location) {
+            if (SpecContainers.TryGetValue(type, out var spec)) {
+                return spec;
+            }
+
+            throw new InjectionException(
+                    Diagnostics.IncompleteSpecification,
+                    $"Cannot find required specification container type {type}.",
+                    location);
+        }
+
+        public ExternalDependencyImplementationDefinition GetExternalDependency(TypeModel type, Location location) {
+            if (ExternalDependencyImplementations.TryGetValue(type, out var dep)) {
+                return dep;
+            }
+
+            throw new InjectionException(
+                    Diagnostics.IncompleteSpecification,
+                    $"Cannot find required external dependency type {type}.",
+                    location);
+        }
+    }
 }

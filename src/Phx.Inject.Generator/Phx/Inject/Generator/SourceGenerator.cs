@@ -108,16 +108,16 @@ namespace Phx.Inject.Generator {
                         .ToImmutableList();
                 var injectorDefinitionMap = CreateTypeMap(
                         injectorDefinitions,
-                        injector => injector.InjectorType);
+                        injector => injector.InjectorInterfaceType);
 
                 var templates = injectionContextDefinitions.SelectMany(
                         injectionContextDefinition => {
                             var specDefinitionMap = CreateTypeMap(
                                     injectionContextDefinition.SpecContainers,
-                                    spec => spec.SpecContainerType);
+                                    spec => spec.SpecificationType);
                             var externalDependencyDefinitionMap = CreateTypeMap(
                                     injectionContextDefinition.ExternalDependencyImplementations,
-                                    dep => dep.ExternalDependencyImplementationType);
+                                    dep => dep.ExternalDependencyInterfaceType);
                             var templateGenerationContext = new TemplateGenerationContext(
                                     injectorDefinitionMap,
                                     specDefinitionMap,

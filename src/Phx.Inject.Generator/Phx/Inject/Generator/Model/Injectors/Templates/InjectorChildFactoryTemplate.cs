@@ -7,24 +7,31 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model.Injectors.Templates {
+    using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
-
-    // internal delegate InjectorChildMethodTemplate CreateInjectorChildMethodTemplate();
 
     internal record InjectorChildFactoryTemplate(
             string ChildInterfaceTypeQualifiedName,
             string MethodName,
             string ChildTypeQualifiedName,
-            string ChildExternalDependencyImplementationTypeQualifiedName,
+            IEnumerable<string> ChildExternalDependencyImplementationTypeQualifiedNames,
             string SpecContainerCollectionReferenceName,
             Location Location) : IInjectorMemberTemplate {
         public void Render(IRenderWriter writer) {
             writer.AppendLine($"public {ChildInterfaceTypeQualifiedName} {MethodName}() {{")
-                    .IncreaseIndent(1)
-                    .AppendLine($"return new {ChildTypeQualifiedName}(")
-                    .IncreaseIndent(2)
-                    .AppendLine($"new {ChildExternalDependencyImplementationTypeQualifiedName}({SpecContainerCollectionReferenceName}));")
-                    .DecreaseIndent(3)
+                    .IncreaseIndent(1);
+
+            using (var collectionWriter = writer.GetCollectionWriter(new CollectionWriterProperties(
+                           OpeningString: $"return new {ChildTypeQualifiedName}(",
+                           ClosingString:");",
+                           CloseWithNewline: false))) {
+                foreach (var externalDependency in ChildExternalDependencyImplementationTypeQualifiedNames) {
+                    var elementWriter = collectionWriter.GetElementWriter();
+                    elementWriter.Append($"new {externalDependency}({SpecContainerCollectionReferenceName})");
+                }
+            }
+
+            writer.DecreaseIndent(1)
                     .AppendLine("}");
         }
     }
