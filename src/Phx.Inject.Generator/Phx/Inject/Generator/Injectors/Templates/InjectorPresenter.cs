@@ -6,10 +6,9 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Presenter {
-    using Phx.Inject.Generator.Model;
-    using Phx.Inject.Generator.Model.Injectors.Definitions;
-    using Phx.Inject.Generator.Model.Injectors.Templates;
+namespace Phx.Inject.Generator.Injectors.Templates {
+    using Phx.Inject.Generator.Common.Templates;
+    using Phx.Inject.Generator.Injectors.Definitions;
 
     internal class InjectorPresenter {
         private readonly CreateInjectorTemplate createInjectorTemplate;

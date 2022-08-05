@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model {
+namespace Phx.Inject.Generator.Common.Templates {
     using Microsoft.CodeAnalysis;
 
     internal record GeneratedFileTemplate(

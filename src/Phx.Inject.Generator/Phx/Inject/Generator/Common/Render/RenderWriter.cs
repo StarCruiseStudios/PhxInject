@@ -6,9 +6,9 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Render {
+namespace Phx.Inject.Generator.Common.Render {
     using System.Text;
-    using Phx.Inject.Generator.Model;
+    using Phx.Inject.Generator.Common.Templates;
 
     internal class RenderWriter : IRenderWriter {
         private readonly StringBuilder sourceBuilder = new();

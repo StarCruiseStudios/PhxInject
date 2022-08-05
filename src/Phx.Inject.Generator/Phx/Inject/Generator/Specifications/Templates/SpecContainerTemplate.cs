@@ -6,12 +6,14 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Specifications.Templates {
+namespace Phx.Inject.Generator.Specifications.Templates {
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Model.Specifications.Definitions;
+    using Phx.Inject.Generator.Common;
+    using Phx.Inject.Generator.Common.Templates;
+    using Phx.Inject.Generator.Specifications.Definitions;
 
     internal delegate SpecContainerTemplate CreateSpecContainerTemplate(
             SpecContainerDefinition specContainerDefinition,

@@ -6,9 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Controller {
-    using Phx.Inject.Generator.Model;
-
+namespace Phx.Inject.Generator.Common.Definitions {
     internal record RegistrationIdentifier(
             TypeModel RegistrationType,
             string Qualifier

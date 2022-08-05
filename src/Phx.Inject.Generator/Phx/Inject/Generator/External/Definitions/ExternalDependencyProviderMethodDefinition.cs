@@ -6,9 +6,11 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.External.Definitions {
+namespace Phx.Inject.Generator.External.Definitions {
     using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Model.Specifications.Definitions;
+    using Phx.Inject.Generator.Common;
+    using Phx.Inject.Generator.Common.Definitions;
+    using Phx.Inject.Generator.Specifications.Definitions;
 
     internal record ExternalDependencyProviderMethodDefinition(
             TypeModel ProvidedType,

@@ -6,10 +6,11 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.External.Descriptors {
+namespace Phx.Inject.Generator.External.Descriptors {
     using System.Linq;
     using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Input;
+    using Phx.Inject.Generator.Common;
+    using Phx.Inject.Generator.Common.Descriptors;
 
     internal delegate ExternalDependencyProviderDescriptor CreateExternalDependencyProviderDescriptor(
             IMethodSymbol providerMethod,

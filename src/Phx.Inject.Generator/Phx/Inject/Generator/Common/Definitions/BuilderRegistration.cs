@@ -6,8 +6,8 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Controller {
-    using Phx.Inject.Generator.Model.Specifications.Descriptors;
+namespace Phx.Inject.Generator.Common.Definitions {
+    using Phx.Inject.Generator.Specifications.Descriptors;
 
     internal record BuilderRegistration(
             SpecDescriptor Specification,

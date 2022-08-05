@@ -6,12 +6,10 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Manager {
-    using Phx.Inject.Generator.Model;
-    using Phx.Inject.Generator.Model.Definitions;
-    using Phx.Inject.Generator.Model.External.Definitions;
-    using Phx.Inject.Generator.Model.Injectors.Definitions;
-    using Phx.Inject.Generator.Model.Specifications.Definitions;
+namespace Phx.Inject.Generator.Common.Definitions {
+    using Phx.Inject.Generator.External.Definitions;
+    using Phx.Inject.Generator.Injectors.Definitions;
+    using Phx.Inject.Generator.Specifications.Definitions;
 
     internal class InjectionController {
         private readonly CreateInjectionContextDefinition createInjectionContextDefinition;

@@ -6,10 +6,9 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Presenter {
-    using Phx.Inject.Generator.Model;
-    using Phx.Inject.Generator.Model.Specifications.Definitions;
-    using Phx.Inject.Generator.Model.Specifications.Templates;
+namespace Phx.Inject.Generator.Specifications.Templates {
+    using Phx.Inject.Generator.Common.Templates;
+    using Phx.Inject.Generator.Specifications.Definitions;
 
     internal class SpecContainerPresenter {
         private readonly CreateSpecContainerTemplate createSpecContainerTemplate;

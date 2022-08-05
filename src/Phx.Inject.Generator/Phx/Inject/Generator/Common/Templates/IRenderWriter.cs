@@ -6,8 +6,9 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model {
+namespace Phx.Inject.Generator.Common.Templates {
     using System;
+    using Phx.Inject.Generator.Common.Render;
 
     internal delegate IRenderWriter CreateRenderWriter();
 

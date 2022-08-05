@@ -6,9 +6,11 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Specifications.Definitions {
+namespace Phx.Inject.Generator.Specifications.Definitions {
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Common;
+    using Phx.Inject.Generator.Common.Definitions;
 
     internal record SpecContainerFactoryDefinition(
             QualifiedTypeModel ReturnType,

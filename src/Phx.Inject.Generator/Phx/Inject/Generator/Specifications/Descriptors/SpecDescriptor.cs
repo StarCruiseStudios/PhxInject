@@ -6,12 +6,13 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
+namespace Phx.Inject.Generator.Specifications.Descriptors {
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Input;
+    using Phx.Inject.Generator.Common;
+    using Phx.Inject.Generator.Common.Descriptors;
 
     internal delegate SpecDescriptor CreateSpecDescriptor(ITypeSymbol specSymbol, DescriptorGenerationContext context);
 

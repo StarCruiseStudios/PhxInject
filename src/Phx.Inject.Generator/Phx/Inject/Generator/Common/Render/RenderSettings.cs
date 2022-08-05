@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator {
+namespace Phx.Inject.Generator.Common.Render {
     public record RenderSettings(
             int TabSize = 4,
             string GeneratedFileExtension = "generated.cs",

@@ -6,8 +6,10 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
+namespace Phx.Inject.Generator.Specifications.Descriptors {
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Common;
+    using Phx.Inject.Generator.Common.Descriptors;
 
     internal delegate SpecLinkDescriptor CreateSpecLinkDescriptor(
             AttributeData linkAttribute,

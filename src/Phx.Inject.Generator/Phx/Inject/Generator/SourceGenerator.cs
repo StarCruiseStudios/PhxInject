@@ -17,12 +17,17 @@ namespace Phx.Inject.Generator {
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Controller;
-    using Phx.Inject.Generator.Input;
-    using Phx.Inject.Generator.Manager;
-    using Phx.Inject.Generator.Model;
-    using Phx.Inject.Generator.Presenter;
-    using Phx.Inject.Generator.Render;
+    using Phx.Inject.Generator.Common;
+    using Phx.Inject.Generator.Common.Definitions;
+    using Phx.Inject.Generator.Common.Descriptors;
+    using Phx.Inject.Generator.Common.Render;
+    using Phx.Inject.Generator.Common.Templates;
+    using Phx.Inject.Generator.External.Descriptors;
+    using Phx.Inject.Generator.External.Templates;
+    using Phx.Inject.Generator.Injectors.Descriptors;
+    using Phx.Inject.Generator.Injectors.Templates;
+    using Phx.Inject.Generator.Specifications.Descriptors;
+    using Phx.Inject.Generator.Specifications.Templates;
 
     [Generator]
     internal class SourceGenerator : ISourceGenerator {

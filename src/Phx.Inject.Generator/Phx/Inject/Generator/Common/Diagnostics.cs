@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator {
+namespace Phx.Inject.Generator.Common {
     internal static class Diagnostics {
         private const string InjectionCategory = "Injection";
         private const string PhxInjectIdPrefix = "PHXINJECT";

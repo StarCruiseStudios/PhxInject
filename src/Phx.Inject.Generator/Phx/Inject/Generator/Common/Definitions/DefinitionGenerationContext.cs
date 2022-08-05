@@ -6,15 +6,13 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model {
+namespace Phx.Inject.Generator.Common.Definitions {
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Controller;
-    using Phx.Inject.Generator.Input;
-    using Phx.Inject.Generator.Model.External.Descriptors;
-    using Phx.Inject.Generator.Model.Injectors.Descriptors;
-    using Phx.Inject.Generator.Model.Specifications.Definitions;
-    using Phx.Inject.Generator.Model.Specifications.Descriptors;
+    using Phx.Inject.Generator.External.Descriptors;
+    using Phx.Inject.Generator.Injectors.Descriptors;
+    using Phx.Inject.Generator.Specifications.Definitions;
+    using Phx.Inject.Generator.Specifications.Descriptors;
 
     internal record DefinitionGenerationContext(
             InjectorDescriptor Injector,

@@ -6,6 +6,6 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model {
+namespace Phx.Inject.Generator.Common.Definitions {
     public interface IDefinition : ISourceCodeElement { }
 }

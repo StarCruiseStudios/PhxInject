@@ -6,14 +6,14 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Input {
+namespace Phx.Inject.Generator.Injectors.Descriptors {
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Phx.Inject.Generator.Model;
-    using Phx.Inject.Generator.Model.Injectors.Descriptors;
+    using Phx.Inject.Generator.Common;
+    using Phx.Inject.Generator.Common.Descriptors;
 
     internal class InjectorExtractor {
         private readonly CreateInjectorDescriptor createInjectorDescriptor;

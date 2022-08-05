@@ -6,14 +6,13 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Input {
+namespace Phx.Inject.Generator.Common {
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Phx.Inject.Generator.Model;
-    using Phx.Inject.Generator.Model.Specifications;
+    using Phx.Inject.Generator.Specifications;
 
     internal static class SymbolProcessors {
         public const string BuilderAttributeClassName = "Phx.Inject.BuilderAttribute";

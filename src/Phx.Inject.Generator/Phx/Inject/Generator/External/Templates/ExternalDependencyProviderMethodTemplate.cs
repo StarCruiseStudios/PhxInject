@@ -6,9 +6,10 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.External.Templates {
+namespace Phx.Inject.Generator.External.Templates {
     using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Model.Specifications.Templates;
+    using Phx.Inject.Generator.Common.Templates;
+    using Phx.Inject.Generator.Specifications.Templates;
 
     internal record ExternalDependencyProviderMethodTemplate(
             string ReturnTypeQualifiedName,

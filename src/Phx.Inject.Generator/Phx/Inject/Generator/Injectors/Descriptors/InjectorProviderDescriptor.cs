@@ -6,10 +6,11 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Injectors.Descriptors {
+namespace Phx.Inject.Generator.Injectors.Descriptors {
     using System.Linq;
     using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Input;
+    using Phx.Inject.Generator.Common;
+    using Phx.Inject.Generator.Common.Descriptors;
 
     internal delegate InjectorProviderDescriptor? CreateInjectorProviderDescriptor(
             IMethodSymbol providerMethod,

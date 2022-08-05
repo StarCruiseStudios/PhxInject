@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator {
+namespace Phx.Inject.Generator.Common {
     using System;
 
     internal static class Logger {

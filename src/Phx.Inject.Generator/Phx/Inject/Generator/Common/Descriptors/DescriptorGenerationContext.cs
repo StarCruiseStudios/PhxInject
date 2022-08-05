@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model {
+namespace Phx.Inject.Generator.Common.Descriptors {
     using Microsoft.CodeAnalysis;
 
     internal record DescriptorGenerationContext(GeneratorExecutionContext GenerationContext);

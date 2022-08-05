@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model {
+namespace Phx.Inject.Generator.Common.Templates {
     internal interface IRenderTemplate : ISourceCodeElement {
         void Render(IRenderWriter writer);
     }

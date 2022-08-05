@@ -6,9 +6,10 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Injectors.Templates {
+namespace Phx.Inject.Generator.Injectors.Templates {
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Common.Templates;
 
     internal record InjectorChildFactoryTemplate(
             string ChildInterfaceTypeQualifiedName,

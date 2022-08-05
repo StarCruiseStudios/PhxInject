@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model {
+namespace Phx.Inject.Generator.Common {
     internal record QualifiedTypeModel(
             TypeModel TypeModel,
             string Qualifier

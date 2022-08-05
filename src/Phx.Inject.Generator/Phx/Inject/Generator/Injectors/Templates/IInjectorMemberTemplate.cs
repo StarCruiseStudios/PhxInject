@@ -6,6 +6,8 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Injectors.Templates {
+namespace Phx.Inject.Generator.Injectors.Templates {
+    using Phx.Inject.Generator.Common.Templates;
+
     internal interface IInjectorMemberTemplate : IRenderTemplate { }
 }

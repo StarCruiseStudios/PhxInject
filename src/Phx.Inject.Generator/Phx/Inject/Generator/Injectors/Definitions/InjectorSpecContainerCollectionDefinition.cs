@@ -6,9 +6,11 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Injectors.Definitions {
+namespace Phx.Inject.Generator.Injectors.Definitions {
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Common;
+    using Phx.Inject.Generator.Common.Definitions;
 
     // internal delegate SpecContainerCollectionDefinition CreateSpecContainerCollectionDefinition(
     //         InjectorDescriptor injectorDescriptor);

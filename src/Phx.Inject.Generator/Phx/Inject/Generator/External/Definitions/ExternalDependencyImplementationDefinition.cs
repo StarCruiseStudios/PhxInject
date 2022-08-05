@@ -6,13 +6,14 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.External.Definitions {
+namespace Phx.Inject.Generator.External.Definitions {
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Input;
-    using Phx.Inject.Generator.Model.External.Descriptors;
+    using Phx.Inject.Generator.Common;
+    using Phx.Inject.Generator.Common.Definitions;
+    using Phx.Inject.Generator.External.Descriptors;
 
     internal delegate ExternalDependencyImplementationDefinition CreateExternalDependencyImplementationDefinition(
             ExternalDependencyDescriptor externalDependencyDescriptor,

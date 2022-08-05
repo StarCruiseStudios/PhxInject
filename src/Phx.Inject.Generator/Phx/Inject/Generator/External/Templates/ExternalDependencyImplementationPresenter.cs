@@ -6,10 +6,9 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Presenter {
-    using Phx.Inject.Generator.Model;
-    using Phx.Inject.Generator.Model.External.Definitions;
-    using Phx.Inject.Generator.Model.External.Templates;
+namespace Phx.Inject.Generator.External.Templates {
+    using Phx.Inject.Generator.Common.Templates;
+    using Phx.Inject.Generator.External.Definitions;
 
     internal class ExternalDependencyImplementationPresenter {
         private readonly CreateExternalDependencyImplementationTemplate createExternalDependencyImplementationTemplate;

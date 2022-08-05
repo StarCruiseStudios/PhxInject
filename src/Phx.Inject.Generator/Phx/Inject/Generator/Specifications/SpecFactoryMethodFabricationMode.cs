@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Specifications {
+namespace Phx.Inject.Generator.Specifications {
     // These values must match Phx.Inject.FabricationMode to parse correctly.
     internal enum SpecFactoryMethodFabricationMode {
         Scoped = 0,

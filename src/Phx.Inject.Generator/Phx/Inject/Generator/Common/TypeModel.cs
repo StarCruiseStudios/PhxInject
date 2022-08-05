@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model {
+namespace Phx.Inject.Generator.Common {
     using Microsoft.CodeAnalysis;
 
     internal record TypeModel(string NamespaceName, string TypeName) {

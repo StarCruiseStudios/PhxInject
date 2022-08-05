@@ -6,10 +6,11 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Specifications.Templates {
+namespace Phx.Inject.Generator.Specifications.Templates {
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Common.Templates;
 
     internal record SpecContainerBuilderTemplate(
             string BuiltTypeQualifiedName,

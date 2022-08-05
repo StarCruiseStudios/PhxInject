@@ -6,12 +6,12 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model {
+namespace Phx.Inject.Generator.Common.Templates {
     using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Model.External.Definitions;
-    using Phx.Inject.Generator.Model.Injectors.Definitions;
-    using Phx.Inject.Generator.Model.Specifications.Definitions;
+    using Phx.Inject.Generator.External.Definitions;
+    using Phx.Inject.Generator.Injectors.Definitions;
+    using Phx.Inject.Generator.Specifications.Definitions;
 
     internal record TemplateGenerationContext(
             InjectorDefinition Injector,

@@ -6,15 +6,16 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Injectors.Templates {
+namespace Phx.Inject.Generator.Injectors.Templates {
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Input;
-    using Phx.Inject.Generator.Model.Injectors.Definitions;
-    using Phx.Inject.Generator.Model.Specifications;
-    using Phx.Inject.Generator.Model.Specifications.Templates;
+    using Phx.Inject.Generator.Common;
+    using Phx.Inject.Generator.Common.Templates;
+    using Phx.Inject.Generator.Injectors.Definitions;
+    using Phx.Inject.Generator.Specifications;
+    using Phx.Inject.Generator.Specifications.Templates;
 
     internal delegate InjectorTemplate CreateInjectorTemplate(
             InjectorDefinition injectorDefinition,

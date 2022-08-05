@@ -6,11 +6,12 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
+namespace Phx.Inject.Generator.Specifications.Descriptors {
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Input;
+    using Phx.Inject.Generator.Common;
+    using Phx.Inject.Generator.Common.Descriptors;
 
     internal delegate SpecFactoryDescriptor? CreateSpecFactoryDescriptor(
             IMethodSymbol factoryMethod,

@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model.Injectors.Templates {
+namespace Phx.Inject.Generator.Injectors.Templates {
     internal record InjectorSpecContainerCollectionProperty(
             string PropertyTypeQualifiedName,
             string PropertyName,
