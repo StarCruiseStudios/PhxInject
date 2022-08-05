@@ -106,7 +106,7 @@ namespace Phx.Inject.Generator {
                                             ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
                                             context);
 
-                                    return new InjectionController().Map(definitionGenerationContext);
+                                    return new InjectionDefinitionMapper().Map(definitionGenerationContext);
                                 })
                         .ToImmutableList();
 
@@ -141,18 +141,18 @@ namespace Phx.Inject.Generator {
                                     templates.Add(
                                             (
                                                     injectorDefinition.InjectorType,
-                                                    new InjectorPresenter().Generate(
+                                                    new InjectorConstructor().Construct(
                                                             injectorDefinition,
                                                             templateGenerationContext)
                                             ));
                                     Logger.Info($"Generated injector {injectorDefinition.InjectorType}.");
 
-                                    var specContainerPresenter = new SpecContainerPresenter();
+                                    var specContainerPresenter = new SpecContainerConstructor();
                                     foreach (var specContainerDefinition in injectionContextDefinition.SpecContainers) {
                                         templates.Add(
                                                 (
                                                         specContainerDefinition.SpecContainerType,
-                                                        specContainerPresenter.Generate(
+                                                        specContainerPresenter.Construct(
                                                                 specContainerDefinition,
                                                                 templateGenerationContext)
                                                 ));
@@ -161,13 +161,13 @@ namespace Phx.Inject.Generator {
                                     }
 
                                     var externalDependencyImplementationPresenter
-                                            = new ExternalDependencyImplementationPresenter();
+                                            = new ExternalDependencyImplementationConstructor();
                                     foreach (var dependency in injectionContextDefinition
                                                      .ExternalDependencyImplementations) {
                                         templates.Add(
                                                 (
                                                         dependency.ExternalDependencyImplementationType,
-                                                        externalDependencyImplementationPresenter.Generate(
+                                                        externalDependencyImplementationPresenter.Construct(
                                                                 dependency,
                                                                 templateGenerationContext)
                                                 ));
