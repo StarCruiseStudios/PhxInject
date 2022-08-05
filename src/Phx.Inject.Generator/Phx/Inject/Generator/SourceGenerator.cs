@@ -72,6 +72,11 @@ namespace Phx.Inject.Generator {
                         descriptorGenerationContext);
                 Logger.Info($"Discovered {externalDependencyDescriptors.Count} external dependency types.");
 
+                var allSpecDescriptors = externalDependencyDescriptors
+                        .Select(dep => dep.GetSpecDescriptor())
+                        .Concat(specDescriptors)
+                        .ToImmutableList();
+
                 //
                 // Map: Descriptors to Definitions
                 //
@@ -79,7 +84,7 @@ namespace Phx.Inject.Generator {
                         injectorDescriptors,
                         injector => injector.InjectorInterfaceType);
                 var specDescriptorMap = CreateTypeMap(
-                        specDescriptors,
+                        allSpecDescriptors,
                         spec => spec.SpecType);
                 var externalDependencyDescriptorMap = CreateTypeMap(
                         externalDependencyDescriptors,

@@ -11,6 +11,8 @@ namespace Phx.Inject.Generator.Model.External.Descriptors {
     using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Model.Specifications;
+    using Phx.Inject.Generator.Model.Specifications.Descriptors;
 
     internal delegate ExternalDependencyDescriptor CreateExternalDependencyDescriptor(
             ITypeSymbol externalDependencyInterfaceSymbol,
@@ -22,6 +24,26 @@ namespace Phx.Inject.Generator.Model.External.Descriptors {
             IEnumerable<ExternalDependencyProviderDescriptor> Providers,
             Location Location
     ) : IDescriptor {
+
+        public SpecDescriptor GetSpecDescriptor() {
+            var factories = Providers.Select(
+                    provider => new SpecFactoryDescriptor(
+                            provider.ProvidedType,
+                            provider.ProviderMethodName,
+                            ImmutableList<QualifiedTypeModel>.Empty,
+                            SpecFactoryMethodFabricationMode.Recurrent,
+                            provider.Location))
+                    .ToImmutableList();
+
+            return new SpecDescriptor(
+                    ExternalDependencyInterfaceType,
+                    SpecInstantiationMode.Instantiated,
+                    factories,
+                    ImmutableList<SpecBuilderDescriptor>.Empty,
+                    ImmutableList<SpecLinkDescriptor>.Empty,
+                    Location);
+        }
+
         public class Builder {
             private readonly CreateExternalDependencyProviderDescriptor createExternalDependencyProvider;
 

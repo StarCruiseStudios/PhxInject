@@ -31,7 +31,8 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
                 }
             }
 
-            writer.DecreaseIndent(1)
+            writer.AppendLine()
+                    .DecreaseIndent(1)
                     .AppendLine("}");
         }
     }

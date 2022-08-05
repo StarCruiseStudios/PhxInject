@@ -101,12 +101,12 @@ namespace Phx.Inject.Generator.Model.Definitions {
                         .ToImmutableList();
 
                 var externalDependencyImplementationDefinitions = injectorDescriptor.ChildFactories
-                        .Select(childFactory => context.GetInjector(childFactory.ChildInjectorType, childFactory.Location))
+                        .Select(childFactory => generationContext.GetInjector(childFactory.ChildInjectorType, childFactory.Location))
                         .SelectMany(childInjector => childInjector.ExternalDependencyInterfaceTypes)
                         .GroupBy(externalDependencyType => externalDependencyType)
                         .Select(externalDependencyTypeGroup => externalDependencyTypeGroup.First())
                         .Select(externalDependencyType => generationContext.GetExternalDependency(externalDependencyType, injectorDescriptor.Location))
-                        .Select(externalDependency => createExternalDependencyImplementation(externalDependency, context))
+                        .Select(externalDependency => createExternalDependencyImplementation(externalDependency, generationContext))
                         .ToImmutableList();
 
                 return new InjectionContextDefinition(
