@@ -7,5 +7,5 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Model.Injectors.Templates {
-    internal interface IInjectorMemberTemplate : IRenderTemplate { };
+    internal interface IInjectorMemberTemplate : IRenderTemplate { }
 }

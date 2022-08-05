@@ -14,7 +14,8 @@ namespace Phx.Inject.Generator.Model.External.Templates {
             string ReturnTypeQualifiedName,
             string ProviderMethodName,
             SpecContainerFactoryInvocationTemplate FactoryInvocationTemplate,
-            Location Location) : IRenderTemplate {
+            Location Location
+    ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
             writer.AppendLine($"public {ReturnTypeQualifiedName} {ProviderMethodName}() {{")
                     .IncreaseIndent(1)

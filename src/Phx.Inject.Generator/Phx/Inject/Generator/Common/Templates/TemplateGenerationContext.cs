@@ -30,7 +30,6 @@ namespace Phx.Inject.Generator.Model {
                     Diagnostics.IncompleteSpecification,
                     $"Cannot find required injector type {type}.",
                     location);
-
         }
 
         public SpecContainerDefinition GetSpecContainer(TypeModel type, Location location) {

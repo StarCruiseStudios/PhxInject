@@ -12,5 +12,6 @@ namespace Phx.Inject.Generator {
             string GeneratedFileExtension = "generated.cs",
             bool NullableEnabled = true,
             bool ShouldWriteFiles = false,
-            string OutputPath = "");
+            string OutputPath = ""
+    );
 }

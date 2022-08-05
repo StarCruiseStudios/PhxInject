@@ -23,10 +23,10 @@ namespace Phx.Inject.Generator.Input {
         }
 
         public SpecExtractor() : this(
-            new SpecDescriptor.Builder(
-                    new SpecFactoryDescriptor.Builder().Build,
-                    new SpecBuilderDescriptor.Builder().Build,
-                    new SpecLinkDescriptor.Builder().Build).Build) { }
+                new SpecDescriptor.Builder(
+                        new SpecFactoryDescriptor.Builder().Build,
+                        new SpecBuilderDescriptor.Builder().Build,
+                        new SpecLinkDescriptor.Builder().Build).Build) { }
 
         public IReadOnlyList<SpecDescriptor> Extract(
                 IEnumerable<TypeDeclarationSyntax> syntaxNodes,

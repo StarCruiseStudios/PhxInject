@@ -19,7 +19,8 @@ namespace Phx.Inject.Generator.Model.Definitions {
 
     internal delegate InjectionContextDefinition CreateInjectionContextDefinition(
             InjectorDescriptor injectorDescriptor,
-            DefinitionGenerationContext context);
+            DefinitionGenerationContext context
+    );
 
     internal record InjectionContextDefinition(
             InjectorDefinition Injector,
@@ -28,9 +29,9 @@ namespace Phx.Inject.Generator.Model.Definitions {
             Location Location
     ) : IDefinition {
         public class Builder {
+            private readonly CreateExternalDependencyImplementationDefinition createExternalDependencyImplementation;
             private readonly CreateInjectorDefinition createInjector;
             private readonly CreateSpecContainerDefinition createSpecContainer;
-            private readonly CreateExternalDependencyImplementationDefinition createExternalDependencyImplementation;
 
             public Builder(
                     CreateInjectorDefinition createInjector,
@@ -46,13 +47,11 @@ namespace Phx.Inject.Generator.Model.Definitions {
                     InjectorDescriptor injectorDescriptor,
                     DefinitionGenerationContext context
             ) {
-                Dictionary<RegistrationIdentifier, FactoryRegistration> factoryRegistrations
-                        = new Dictionary<RegistrationIdentifier, FactoryRegistration>();
-                Dictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations
-                        = new Dictionary<RegistrationIdentifier, BuilderRegistration>();
+                var factoryRegistrations = new Dictionary<RegistrationIdentifier, FactoryRegistration>();
+                var builderRegistrations = new Dictionary<RegistrationIdentifier, BuilderRegistration>();
 
                 var specDescriptors = injectorDescriptor.SpecificationsTypes.Select(
-                        specType => context.GetSpec(specType, injectorDescriptor.Location))
+                                specType => context.GetSpec(specType, injectorDescriptor.Location))
                         .ToImmutableList();
 
                 // Create a registration for all of the spec descriptors' factory and builder methods.
@@ -101,12 +100,21 @@ namespace Phx.Inject.Generator.Model.Definitions {
                         .ToImmutableList();
 
                 var externalDependencyImplementationDefinitions = injectorDescriptor.ChildFactories
-                        .Select(childFactory => generationContext.GetInjector(childFactory.ChildInjectorType, childFactory.Location))
+                        .Select(
+                                childFactory => generationContext.GetInjector(
+                                        childFactory.ChildInjectorType,
+                                        childFactory.Location))
                         .SelectMany(childInjector => childInjector.ExternalDependencyInterfaceTypes)
                         .GroupBy(externalDependencyType => externalDependencyType)
                         .Select(externalDependencyTypeGroup => externalDependencyTypeGroup.First())
-                        .Select(externalDependencyType => generationContext.GetExternalDependency(externalDependencyType, injectorDescriptor.Location))
-                        .Select(externalDependency => createExternalDependencyImplementation(externalDependency, generationContext))
+                        .Select(
+                                externalDependencyType => generationContext.GetExternalDependency(
+                                        externalDependencyType,
+                                        injectorDescriptor.Location))
+                        .Select(
+                                externalDependency => createExternalDependencyImplementation(
+                                        externalDependency,
+                                        generationContext))
                         .ToImmutableList();
 
                 return new InjectionContextDefinition(

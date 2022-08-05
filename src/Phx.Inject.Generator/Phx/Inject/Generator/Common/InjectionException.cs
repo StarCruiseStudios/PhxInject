@@ -16,7 +16,7 @@ namespace Phx.Inject.Generator {
 
         public InjectionException(
                 Diagnostics.DiagnosticData diagnosticData,
-                string message, 
+                string message,
                 Location location
         ) : base(message) {
             DiagnosticData = diagnosticData;
@@ -24,8 +24,8 @@ namespace Phx.Inject.Generator {
         }
 
         public InjectionException(
-                Diagnostics.DiagnosticData diagnosticData, 
-                string message, 
+                Diagnostics.DiagnosticData diagnosticData,
+                string message,
                 Location location,
                 Exception inner
         ) : base(message, inner) {

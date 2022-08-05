@@ -36,6 +36,6 @@ namespace Phx.Inject.Generator.Model {
             string Delimiter = ",",
             bool DelimitWithNewline = true
     ) {
-        public static CollectionWriterProperties Default = new CollectionWriterProperties();
+        public static CollectionWriterProperties Default = new();
     }
 }

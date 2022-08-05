@@ -22,6 +22,7 @@ namespace Phx.Inject.Generator {
                     if (HasInjectorAttribute(interfaceDeclaration)) {
                         InjectorCandidates.Add(interfaceDeclaration);
                     }
+
                     if (HasSpecificationAttribute(interfaceDeclaration)) {
                         SpecificationCandidates.Add(interfaceDeclaration);
                     }

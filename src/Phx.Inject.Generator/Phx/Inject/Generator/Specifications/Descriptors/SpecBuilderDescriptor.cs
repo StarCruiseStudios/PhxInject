@@ -15,13 +15,15 @@ namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
 
     internal delegate SpecBuilderDescriptor? CreateSpecBuilderDescriptor(
             IMethodSymbol builderMethod,
-            DescriptorGenerationContext context);
+            DescriptorGenerationContext context
+    );
 
     internal record SpecBuilderDescriptor(
             QualifiedTypeModel BuiltType,
             string BuilderMethodName,
             IEnumerable<QualifiedTypeModel> Parameters,
-            Location Location) : IDescriptor {
+            Location Location
+    ) : IDescriptor {
         public class Builder {
             public SpecBuilderDescriptor? Build(IMethodSymbol builderMethod, DescriptorGenerationContext context) {
                 var builderAttributes = SymbolProcessors.GetBuilderAttributes(builderMethod);
@@ -53,7 +55,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
                 // Use the qualifier from the method, not the parameter.
                 var builtType = methodParameterTypes[0] with { Qualifier = qualifier };
                 var builderArguments = methodParameterTypes.Count > 1
-                        ? methodParameterTypes.GetRange(1, methodParameterTypes.Count - 1)
+                        ? methodParameterTypes.GetRange(index: 1, methodParameterTypes.Count - 1)
                         : ImmutableList.Create<QualifiedTypeModel>();
 
                 return new SpecBuilderDescriptor(

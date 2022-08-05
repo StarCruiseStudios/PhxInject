@@ -61,9 +61,11 @@ namespace Phx.Inject.Generator.Model {
         public static string StartLowercase(this string input) {
             return char.ToLower(input[0]) + input[1..];
         }
+
         public static string StartUppercase(this string input) {
             return char.ToUpper(input[0]) + input[1..];
         }
+
         public static string RemoveLeadingI(this string input) {
             return input.StartsWith("I")
                     ? input[1..]
@@ -75,7 +77,7 @@ namespace Phx.Inject.Generator.Model {
         }
 
         private static string AsVariableName(this QualifiedTypeModel type) {
-            string referenceName = string.IsNullOrEmpty(type.Qualifier)
+            var referenceName = string.IsNullOrEmpty(type.Qualifier)
                     ? type.TypeModel.TypeName
                     : $"{type.Qualifier}_{type.TypeModel.TypeName}";
             return referenceName.AsValidIdentifier();

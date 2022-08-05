@@ -18,7 +18,8 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
 
     internal delegate InjectorTemplate CreateInjectorTemplate(
             InjectorDefinition injectorDefinition,
-            TemplateGenerationContext context);
+            TemplateGenerationContext context
+    );
 
     internal record InjectorTemplate(
             string InjectorClassName,
@@ -53,7 +54,7 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
 
             //      private readonly SpecContainerCollection specContainers;
             writer.AppendLine(
-                    $"private readonly {SpecContainerCollectionTypeName} {SpecContainerCollectionReferenceName};")
+                            $"private readonly {SpecContainerCollectionTypeName} {SpecContainerCollectionReferenceName};")
                     .AppendBlankLine();
 
             //      public InjectorClassName(
@@ -76,11 +77,12 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
             //          specContainers = new SpecContainerCollection(
             //                  SpecContainerReference: new SpecContainerQualifiedName(constructedSpecificationReference),
             //                  SpecContainerReference2: new SpecContainerQualifiedName2());
-            using (var collectionWriter = writer.GetCollectionWriter(new CollectionWriterProperties(
-                           OpeningString: $"{SpecContainerCollectionReferenceName} = new {SpecContainerCollectionTypeName}(",
-                           ClosingString: ");",
-                           CloseWithNewline: false
-                           ))) {
+            using (var collectionWriter = writer.GetCollectionWriter(
+                           new CollectionWriterProperties(
+                                   OpeningString:
+                                   $"{SpecContainerCollectionReferenceName} = new {SpecContainerCollectionTypeName}(",
+                                   ClosingString: ");",
+                                   CloseWithNewline: false))) {
                 foreach (var property in SpecContainerCollectionProperties) {
                     var elementWriter = collectionWriter.GetElementWriter();
                     elementWriter.Append($"{property.PropertyName}: new {property.PropertyTypeQualifiedName}(");
@@ -188,7 +190,9 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
                         .Concat(
                                 injectorDefinition.ChildFactories.Select(
                                         factory => {
-                                            var childInjector = context.GetInjector(factory.InjectorChildInterfaceType, factory.Location);
+                                            var childInjector = context.GetInjector(
+                                                    factory.InjectorChildInterfaceType,
+                                                    factory.Location);
                                             var childTypeQualifiedName = childInjector.InjectorType.QualifiedName;
 
                                             // Name of the generated class that implements the external dependency interface.

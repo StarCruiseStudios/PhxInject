@@ -11,12 +11,12 @@ namespace Phx.Inject.Generator.Model {
             TypeModel TypeModel,
             string Qualifier
     ) {
+        public const string NoQualifier = "";
+
         public override string ToString() {
             return string.IsNullOrEmpty(Qualifier)
                     ? TypeModel.ToString()
                     : $"[{Qualifier}] {TypeModel}";
         }
-
-        public const string NoQualifier = "";
     }
 }

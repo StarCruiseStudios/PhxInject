@@ -9,7 +9,5 @@
 namespace Phx.Inject.Generator.Model {
     using Microsoft.CodeAnalysis;
 
-    internal record DescriptorGenerationContext(
-            GeneratorExecutionContext GenerationContext
-    );
+    internal record DescriptorGenerationContext(GeneratorExecutionContext GenerationContext);
 }

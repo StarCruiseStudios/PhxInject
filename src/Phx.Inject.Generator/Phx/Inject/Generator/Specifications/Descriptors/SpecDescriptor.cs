@@ -24,8 +24,8 @@ namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
             Location Location
     ) : IDescriptor {
         public class Builder {
-            private readonly CreateSpecFactoryDescriptor createSpecFactoryDescriptor;
             private readonly CreateSpecBuilderDescriptor createSpecBuilderDescriptor;
+            private readonly CreateSpecFactoryDescriptor createSpecFactoryDescriptor;
             private readonly CreateSpecLinkDescriptor createSpecLinkDescriptor;
 
             public Builder(

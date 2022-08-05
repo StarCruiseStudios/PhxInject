@@ -18,15 +18,13 @@ namespace Phx.Inject.Generator.Presenter {
             this.createInjectorTemplate = createInjectorTemplate;
         }
 
-        public InjectorPresenter() : this(
-                new InjectorTemplate.Builder().Build) { }
+        public InjectorPresenter() : this(new InjectorTemplate.Builder().Build) { }
 
         public IRenderTemplate Generate(InjectorDefinition injectorDefinition, TemplateGenerationContext context) {
             return new GeneratedFileTemplate(
                     injectorDefinition.InjectorType.NamespaceName,
                     createInjectorTemplate(injectorDefinition, context),
-                    injectorDefinition.Location
-            );
+                    injectorDefinition.Location);
         }
     }
 }

@@ -10,26 +10,27 @@ namespace Phx.Inject.Generator {
     internal static class Diagnostics {
         private const string InjectionCategory = "Injection";
         private const string PhxInjectIdPrefix = "PHXINJECT";
-        internal record DiagnosticData(string Id, string Title, string Category);
 
-        public static readonly DiagnosticData UnexpectedError = new DiagnosticData(
+        public static readonly DiagnosticData UnexpectedError = new(
                 PhxInjectIdPrefix + "0001",
                 "An unexpected error occurred.",
                 InjectionCategory);
 
-        public static readonly DiagnosticData InternalError = new DiagnosticData(
+        public static readonly DiagnosticData InternalError = new(
                 PhxInjectIdPrefix + "0002",
                 "An internal error occurred while generating injection.",
                 InjectionCategory);
 
-        public static readonly DiagnosticData IncompleteSpecification = new DiagnosticData(
+        public static readonly DiagnosticData IncompleteSpecification = new(
                 PhxInjectIdPrefix + "0003",
                 "The provided injection specification is incomplete.",
                 InjectionCategory);
 
-        public static readonly DiagnosticData InvalidSpecification = new DiagnosticData(
+        public static readonly DiagnosticData InvalidSpecification = new(
                 PhxInjectIdPrefix + "0004",
                 "The provided injection specification is invalid.",
                 InjectionCategory);
+
+        internal record DiagnosticData(string Id, string Title, string Category);
     }
 }

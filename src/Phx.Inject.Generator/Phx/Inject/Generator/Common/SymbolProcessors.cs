@@ -50,12 +50,13 @@ namespace Phx.Inject.Generator.Input {
 
         public static IList<AttributeData> GetAttributedAttributes(ISymbol symbol, string attributeAttributeClassName) {
             return symbol.GetAttributes()
-                    .Where(attributeData => {
-                        var attributeAttributes = GetAttributes(
-                                attributeData.AttributeClass!,
-                                attributeAttributeClassName);
-                        return attributeAttributes.Count > 0;
-                    })
+                    .Where(
+                            attributeData => {
+                                var attributeAttributes = GetAttributes(
+                                        attributeData.AttributeClass!,
+                                        attributeAttributeClassName);
+                                return attributeAttributes.Count > 0;
+                            })
                     .ToImmutableList();
         }
 
@@ -102,13 +103,14 @@ namespace Phx.Inject.Generator.Input {
         public static IEnumerable<ITypeSymbol> GetExternalDependencyTypes(ISymbol injectorSymbol) {
             var externalDependencyAttributes = GetAttributes(injectorSymbol, ExternalDependencyAttributeClassName);
             return externalDependencyAttributes.SelectMany(
-                    attributeData => {
-                        return attributeData.ConstructorArguments
-                                .Where(argument => argument.Kind == TypedConstantKind.Type)
-                                .Select(argument => argument.Value)
-                                .OfType<ITypeSymbol>()
-                                .ToImmutableList();
-                    }).ToImmutableList();
+                            attributeData => {
+                                return attributeData.ConstructorArguments
+                                        .Where(argument => argument.Kind == TypedConstantKind.Type)
+                                        .Select(argument => argument.Value)
+                                        .OfType<ITypeSymbol>()
+                                        .ToImmutableList();
+                            })
+                    .ToImmutableList();
         }
 
         public static ImmutableList<QualifiedTypeModel> GetMethodParametersQualifiedTypes(IMethodSymbol methodSymbol) {
@@ -168,8 +170,12 @@ namespace Phx.Inject.Generator.Input {
                     .ToImmutableList();
         }
 
-        public static SpecFactoryMethodFabricationMode GetFactoryFabricationMode(AttributeData factoryAttribute, Location location) {
-            var fabricationModes = factoryAttribute.ConstructorArguments.Where(argument => argument.Type!.Name == "FabricationMode")
+        public static SpecFactoryMethodFabricationMode GetFactoryFabricationMode(
+                AttributeData factoryAttribute,
+                Location location
+        ) {
+            var fabricationModes = factoryAttribute.ConstructorArguments
+                    .Where(argument => argument.Type!.Name == "FabricationMode")
                     .Select(argument => (SpecFactoryMethodFabricationMode)argument.Value!)
                     .ToImmutableList();
 
@@ -178,7 +184,7 @@ namespace Phx.Inject.Generator.Input {
                 1 => fabricationModes.Single(),
                 _ => throw new InjectionException(
                         Diagnostics.InternalError,
-                        $"Factories can only have a single fabrication mode.",
+                        "Factories can only have a single fabrication mode.",
                         location)
             };
         }

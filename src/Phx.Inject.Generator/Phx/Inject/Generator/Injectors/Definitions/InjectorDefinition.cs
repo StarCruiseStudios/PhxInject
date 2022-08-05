@@ -30,7 +30,6 @@ namespace Phx.Inject.Generator.Model.Injectors.Definitions {
 
         public class Builder {
             public InjectorDefinition Build(DefinitionGenerationContext context) {
-
                 var providers = context.Injector.Providers
                         .Select(
                                 provider => {

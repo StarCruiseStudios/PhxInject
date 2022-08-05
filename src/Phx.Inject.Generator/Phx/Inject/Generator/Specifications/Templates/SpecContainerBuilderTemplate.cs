@@ -24,7 +24,8 @@ namespace Phx.Inject.Generator.Model.Specifications.Templates {
     ) : ISpecContainerMemberTemplate {
         public void Render(IRenderWriter writer) {
             writer.AppendLine($"internal void {MethodName}(")
-                    .AppendLine($"{BuiltTypeQualifiedName} {BuiltInstanceReferenceName}, {SpecContainerCollectionQualifiedType} {SpecContainerCollectionReferenceName}) {{")
+                    .AppendLine(
+                            $"{BuiltTypeQualifiedName} {BuiltInstanceReferenceName}, {SpecContainerCollectionQualifiedType} {SpecContainerCollectionReferenceName}) {{")
                     .IncreaseIndent(1);
 
             var referenceName = ConstructedSpecificationReference ?? SpecificationQualifiedType;

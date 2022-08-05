@@ -31,11 +31,10 @@ namespace Phx.Inject.Generator.Model {
             }
 
             throw new InjectionException(
-                        Diagnostics.IncompleteSpecification,
-                        $"Cannot find required injector type {type}"
-                        + $" while generating injection for type {Injector.InjectorInterfaceType}.",
-                        location);
-
+                    Diagnostics.IncompleteSpecification,
+                    $"Cannot find required injector type {type}"
+                    + $" while generating injection for type {Injector.InjectorInterfaceType}.",
+                    location);
         }
 
         public SpecDescriptor GetSpec(TypeModel type, Location location) {

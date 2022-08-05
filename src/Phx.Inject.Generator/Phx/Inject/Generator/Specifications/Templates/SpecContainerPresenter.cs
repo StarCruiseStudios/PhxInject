@@ -18,15 +18,16 @@ namespace Phx.Inject.Generator.Presenter {
             this.createSpecContainerTemplate = createSpecContainerTemplate;
         }
 
-        public SpecContainerPresenter() : this(
-                new SpecContainerTemplate.Builder().Build) { }
+        public SpecContainerPresenter() : this(new SpecContainerTemplate.Builder().Build) { }
 
-        public IRenderTemplate Generate(SpecContainerDefinition specContainerDefinition, TemplateGenerationContext context) {
+        public IRenderTemplate Generate(
+                SpecContainerDefinition specContainerDefinition,
+                TemplateGenerationContext context
+        ) {
             return new GeneratedFileTemplate(
                     specContainerDefinition.SpecContainerType.NamespaceName,
                     createSpecContainerTemplate(specContainerDefinition, context),
-                    specContainerDefinition.Location
-            );
+                    specContainerDefinition.Location);
         }
     }
 }

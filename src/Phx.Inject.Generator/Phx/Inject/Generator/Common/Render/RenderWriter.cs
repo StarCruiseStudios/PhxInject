@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------------
-//  <copyright file="IRenderWriter.cs" company="Star Cruise Studios LLC">
+//  <copyright file="RenderWriter.cs" company="Star Cruise Studios LLC">
 //      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
 //      Licensed under the Apache License 2.0 License.
 //      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -16,11 +16,11 @@ namespace Phx.Inject.Generator.Render {
         private string indentString = "";
         private bool isBeginningOfLine = true;
 
-        public RenderSettings Settings { get; }
-
         public RenderWriter(RenderSettings settings) {
             Settings = settings;
         }
+
+        public RenderSettings Settings { get; }
 
         public IRenderWriter IncreaseIndent(int tabs) {
             currentIndent += tabs * Settings.TabSize;
@@ -83,9 +83,9 @@ namespace Phx.Inject.Generator.Render {
         }
 
         private class CollectionWriter : IRenderWriter.ICollectionWriter {
-            private bool isFirst = true;
-            private readonly IRenderWriter renderWriter;
             private readonly CollectionWriterProperties properties;
+            private readonly IRenderWriter renderWriter;
+            private bool isFirst = true;
 
             public CollectionWriter(IRenderWriter renderWriter, CollectionWriterProperties properties) {
                 this.renderWriter = renderWriter;
@@ -96,6 +96,7 @@ namespace Phx.Inject.Generator.Render {
                 } else {
                     renderWriter.Append(properties.OpeningString);
                 }
+
                 renderWriter.IncreaseIndent(properties.Indent);
             }
 

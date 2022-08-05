@@ -36,7 +36,10 @@ namespace Phx.Inject.Generator.Model.Specifications.Definitions {
                 var factories = specDescriptor.Factories.Select(
                         factory => {
                             var arguments = factory.Parameters.Select(
-                                            parameter => context.GetSpecContainerFactoryInvocation(parameter, factory.Location))
+                                            parameter =>
+                                                    context.GetSpecContainerFactoryInvocation(
+                                                            parameter,
+                                                            factory.Location))
                                     .ToImmutableList();
 
                             return new SpecContainerFactoryDefinition(
@@ -50,7 +53,10 @@ namespace Phx.Inject.Generator.Model.Specifications.Definitions {
                 var builders = specDescriptor.Builders.Select(
                         builder => {
                             var arguments = builder.Parameters.Select(
-                                            parameter => context.GetSpecContainerFactoryInvocation(parameter, builder.Location))
+                                            parameter =>
+                                                    context.GetSpecContainerFactoryInvocation(
+                                                            parameter,
+                                                            builder.Location))
                                     .ToImmutableList();
 
                             return new SpecContainerBuilderDefinition(

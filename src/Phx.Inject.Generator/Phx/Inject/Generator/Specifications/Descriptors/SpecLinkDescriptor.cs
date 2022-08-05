@@ -29,7 +29,7 @@ namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
                 if (linkAttribute.ConstructorArguments.Length != 2) {
                     throw new InjectionException(
                             Diagnostics.InternalError,
-                            $"Link attribute must have only an input and return type specified.",
+                            "Link attribute must have only an input and return type specified.",
                             linkLocation);
                 }
 

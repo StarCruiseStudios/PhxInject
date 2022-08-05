@@ -8,9 +8,9 @@
 
 namespace Phx.Inject.Generator.Model.Specifications.Descriptors {
     using System.Collections.Generic;
+    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Input;
-    using System.Linq;
 
     internal delegate SpecFactoryDescriptor? CreateSpecFactoryDescriptor(
             IMethodSymbol factoryMethod,

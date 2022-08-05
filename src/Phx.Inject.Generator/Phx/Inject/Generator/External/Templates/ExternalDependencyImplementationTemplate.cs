@@ -15,7 +15,8 @@ namespace Phx.Inject.Generator.Model.External.Templates {
 
     internal delegate ExternalDependencyImplementationTemplate CreateExternalDependencyImplementationTemplate(
             ExternalDependencyImplementationDefinition externalDependencyImplementationDefinition,
-            TemplateGenerationContext context);
+            TemplateGenerationContext context
+    );
 
     internal record ExternalDependencyImplementationTemplate(
             string ExternalDependencyImplementationClassName,
@@ -23,10 +24,12 @@ namespace Phx.Inject.Generator.Model.External.Templates {
             string InjectorSpecContainerCollectionQualifiedType,
             string SpecContainerCollectionReferenceName,
             IEnumerable<ExternalDependencyProviderMethodTemplate> ExternalDependencyProviderMethods,
-            Location Location) : IRenderTemplate {
+            Location Location
+    ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
             //  internal class ExternalDependencyImplementationClassName : ExternalDependencyInterfaceQualifiedType {
-            writer.AppendLine($"internal class {ExternalDependencyImplementationClassName} : {ExternalDependencyInterfaceQualifiedName} {{")
+            writer.AppendLine(
+                            $"internal class {ExternalDependencyImplementationClassName} : {ExternalDependencyInterfaceQualifiedName} {{")
                     .IncreaseIndent(1);
 
             //      private readonly InjectorSpecContainerCollectionQualifiedType specContainers;

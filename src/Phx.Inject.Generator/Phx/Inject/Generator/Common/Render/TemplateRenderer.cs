@@ -15,7 +15,7 @@ namespace Phx.Inject.Generator.Render {
     using Phx.Inject.Generator.Model;
 
     internal class TemplateRenderer {
-        private CreateRenderWriter createRenderWriter;
+        private readonly CreateRenderWriter createRenderWriter;
 
         public TemplateRenderer(CreateRenderWriter createRenderWriter) {
             this.createRenderWriter = createRenderWriter;
@@ -38,6 +38,7 @@ namespace Phx.Inject.Generator.Render {
                     Logger.Error(ex.ToString());
                 }
             }
+
             var classSourceText = SourceText.From(classSource, Encoding.UTF8);
 
             context.AddSource(fileName, classSourceText);

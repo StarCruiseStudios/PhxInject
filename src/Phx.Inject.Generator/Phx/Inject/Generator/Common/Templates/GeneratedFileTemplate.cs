@@ -30,6 +30,7 @@ namespace Phx.Inject.Generator.Model {
             if (writer.Settings.NullableEnabled) {
                 writer.AppendLine("#nullable enable");
             }
+
             writer.AppendLine($"namespace {NamespaceName} {{")
                     .IncreaseIndent(1);
 
@@ -42,5 +43,5 @@ namespace Phx.Inject.Generator.Model {
                 writer.AppendLine("#nullable restore");
             }
         }
-    };
+    }
 }

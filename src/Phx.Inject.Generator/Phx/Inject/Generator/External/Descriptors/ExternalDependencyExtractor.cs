@@ -23,8 +23,8 @@ namespace Phx.Inject.Generator.Input {
         }
 
         public ExternalDependencyExtractor() : this(
-                new ExternalDependencyDescriptor.Builder(
-                        new ExternalDependencyProviderDescriptor.Builder().Build).Build) { }
+                new ExternalDependencyDescriptor.Builder(new ExternalDependencyProviderDescriptor.Builder().Build)
+                        .Build) { }
 
         public IReadOnlyList<ExternalDependencyDescriptor> Extract(
                 IEnumerable<TypeDeclarationSyntax> syntaxNodes,

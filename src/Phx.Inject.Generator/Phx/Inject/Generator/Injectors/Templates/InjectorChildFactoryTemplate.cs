@@ -16,15 +16,17 @@ namespace Phx.Inject.Generator.Model.Injectors.Templates {
             string ChildTypeQualifiedName,
             IEnumerable<string> ChildExternalDependencyImplementationTypeQualifiedNames,
             string SpecContainerCollectionReferenceName,
-            Location Location) : IInjectorMemberTemplate {
+            Location Location
+    ) : IInjectorMemberTemplate {
         public void Render(IRenderWriter writer) {
             writer.AppendLine($"public {ChildInterfaceTypeQualifiedName} {MethodName}() {{")
                     .IncreaseIndent(1);
 
-            using (var collectionWriter = writer.GetCollectionWriter(new CollectionWriterProperties(
-                           OpeningString: $"return new {ChildTypeQualifiedName}(",
-                           ClosingString:");",
-                           CloseWithNewline: false))) {
+            using (var collectionWriter = writer.GetCollectionWriter(
+                           new CollectionWriterProperties(
+                                   OpeningString: $"return new {ChildTypeQualifiedName}(",
+                                   ClosingString: ");",
+                                   CloseWithNewline: false))) {
                 foreach (var externalDependency in ChildExternalDependencyImplementationTypeQualifiedNames) {
                     var elementWriter = collectionWriter.GetElementWriter();
                     elementWriter.Append($"new {externalDependency}({SpecContainerCollectionReferenceName})");

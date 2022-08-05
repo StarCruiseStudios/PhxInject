@@ -31,9 +31,9 @@ namespace Phx.Inject.Generator.Model.Injectors.Descriptors {
         public TypeModel InjectorType { get; } = InjectorInterfaceType with { TypeName = GeneratedInjectorTypeName };
 
         public class Builder {
-            private readonly CreateInjectorProviderDescriptor createInjectorProvider;
             private readonly CreateInjectorBuilderDescriptor createInjectorBuilder;
             private readonly CreateInjectorChildFactoryDescriptor createInjectorChildFactory;
+            private readonly CreateInjectorProviderDescriptor createInjectorProvider;
 
             public Builder(
                     CreateInjectorProviderDescriptor createInjectorProvider,

@@ -14,9 +14,10 @@ namespace Phx.Inject.Generator.Model.External.Definitions {
     using Phx.Inject.Generator.Input;
     using Phx.Inject.Generator.Model.External.Descriptors;
 
-    delegate ExternalDependencyImplementationDefinition CreateExternalDependencyImplementationDefinition(
+    internal delegate ExternalDependencyImplementationDefinition CreateExternalDependencyImplementationDefinition(
             ExternalDependencyDescriptor externalDependencyDescriptor,
-            DefinitionGenerationContext context);
+            DefinitionGenerationContext context
+    );
 
     internal record ExternalDependencyImplementationDefinition(
             TypeModel ExternalDependencyImplementationType,
@@ -33,17 +34,18 @@ namespace Phx.Inject.Generator.Model.External.Definitions {
                         context.Injector.InjectorType,
                         externalDependencyDescriptor.ExternalDependencyInterfaceType);
 
-                var providers = externalDependencyDescriptor.Providers.Select(provider => {
-                            var specContainerFactoryInvocation = context.GetSpecContainerFactoryInvocation(
-                                    provider.ProvidedType,
-                                    provider.Location);
+                var providers = externalDependencyDescriptor.Providers.Select(
+                                provider => {
+                                    var specContainerFactoryInvocation = context.GetSpecContainerFactoryInvocation(
+                                            provider.ProvidedType,
+                                            provider.Location);
 
-                            return new ExternalDependencyProviderMethodDefinition(
-                                    provider.ProvidedType.TypeModel,
-                                    provider.ProviderMethodName,
-                                    specContainerFactoryInvocation,
-                                    provider.Location);
-                        })
+                                    return new ExternalDependencyProviderMethodDefinition(
+                                            provider.ProvidedType.TypeModel,
+                                            provider.ProviderMethodName,
+                                            specContainerFactoryInvocation,
+                                            provider.Location);
+                                })
                         .ToImmutableList();
 
                 return new ExternalDependencyImplementationDefinition(
