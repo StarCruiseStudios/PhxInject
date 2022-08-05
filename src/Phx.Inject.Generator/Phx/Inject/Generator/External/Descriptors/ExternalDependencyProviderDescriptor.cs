@@ -44,7 +44,7 @@ namespace Phx.Inject.Generator.External.Descriptors {
                 }
 
                 var returnType = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
-                var qualifier = SymbolProcessors.GetQualifier(providerMethod);
+                var qualifier = MetadataHelpers.GetQualifier(providerMethod);
                 return new ExternalDependencyProviderDescriptor(
                         new QualifiedTypeModel(returnType, qualifier),
                         providerMethod.Name,

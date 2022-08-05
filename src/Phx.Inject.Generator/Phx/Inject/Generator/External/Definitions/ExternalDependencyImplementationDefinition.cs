@@ -31,7 +31,7 @@ namespace Phx.Inject.Generator.External.Definitions {
                     ExternalDependencyDescriptor externalDependencyDescriptor,
                     DefinitionGenerationContext context
             ) {
-                var implementationType = SymbolProcessors.CreateExternalDependencyImplementationType(
+                var implementationType = TypeHelpers.CreateExternalDependencyImplementationType(
                         context.Injector.InjectorType,
                         externalDependencyDescriptor.ExternalDependencyInterfaceType);
 

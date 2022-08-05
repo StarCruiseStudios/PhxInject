@@ -11,6 +11,7 @@ namespace Phx.Inject.Generator.Common {
 
     internal static class NameHelpers {
         private const string GeneratedInjectorClassPrefix = "Generated";
+        public const string SpecContainerCollectionTypeName = "SpecContainerCollection";
 
         private static readonly Regex ValidCharsRegex = new(@"[^a-zA-Z0-9_]");
 
@@ -21,14 +22,8 @@ namespace Phx.Inject.Generator.Common {
             return $"{GeneratedInjectorClassPrefix}{baseName}";
         }
 
-        public static string GetSpecContainerReferenceName(TypeModel specContainerType) {
-            return specContainerType.AsVariableName()
-                    .StartLowercase();
-        }
-
-        public static string GetInstanceHolderName(QualifiedTypeModel heldInstanceType) {
-            return heldInstanceType.AsVariableName()
-                    .StartLowercase();
+        public static string GetSpecContainerCollectionTypeName(this TypeModel injectorType) {
+            return $"{injectorType.TypeName}.{SpecContainerCollectionTypeName}";
         }
 
         public static string GetCombinedClassName(TypeModel prefixType, TypeModel suffixType) {
@@ -46,10 +41,6 @@ namespace Phx.Inject.Generator.Common {
         }
 
         public static string GetPropertyName(this TypeModel type) {
-            return type.AsVariableName().StartUppercase();
-        }
-
-        public static string GetPropertyName(this QualifiedTypeModel type) {
             return type.AsVariableName().StartUppercase();
         }
 

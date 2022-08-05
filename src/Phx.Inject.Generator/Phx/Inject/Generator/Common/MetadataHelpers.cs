@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------------
-//  <copyright file="SymbolProcessors.cs" company="Star Cruise Studios LLC">
+//  <copyright file="MetadataHelpers.cs" company="Star Cruise Studios LLC">
 //      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
 //      Licensed under the Apache License 2.0 License.
 //      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -14,19 +14,7 @@ namespace Phx.Inject.Generator.Common {
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Phx.Inject.Generator.Specifications;
 
-    internal static class SymbolProcessors {
-        public const string BuilderAttributeClassName = "Phx.Inject.BuilderAttribute";
-        public const string ChildInjectorAttributeClassName = "Phx.Inject.ChildInjectorAttribute";
-        public const string ExternalDependencyAttributeClassName = "Phx.Inject.ExternalDependencyAttribute";
-        public const string FactoryAttributeClassName = "Phx.Inject.FactoryAttribute";
-        public const string InjectorAttributeClassName = "Phx.Inject.InjectorAttribute";
-        public const string LabelAttributeClassName = "Phx.Inject.LabelAttribute";
-        public const string LinkAttributeClassName = "Phx.Inject.LinkAttribute";
-        public const string QualifierAttributeClassName = "Phx.Inject.QualifierAttribute";
-        public const string SpecificationAttributeClassName = "Phx.Inject.SpecificationAttribute";
-
-        public const string SpecContainerCollectionTypeName = "SpecContainerCollection";
-
+    internal static class MetadataHelpers {
         public static IEnumerable<ITypeSymbol> GetTypeSymbolsFromDeclarations(
                 IEnumerable<TypeDeclarationSyntax> syntaxNodes,
                 GeneratorExecutionContext context
@@ -41,66 +29,8 @@ namespace Phx.Inject.Generator.Common {
                     .ToImmutableList();
         }
 
-        public static IList<AttributeData> GetAttributes(ISymbol symbol, string attributeClassName) {
-            return symbol.GetAttributes()
-                    .Where(attributeData => attributeData.AttributeClass!.ToString() == attributeClassName)
-                    .ToImmutableList();
-        }
-
-        public static IList<AttributeData> GetAttributedAttributes(ISymbol symbol, string attributeAttributeClassName) {
-            return symbol.GetAttributes()
-                    .Where(
-                            attributeData => {
-                                var attributeAttributes = GetAttributes(
-                                        attributeData.AttributeClass!,
-                                        attributeAttributeClassName);
-                                return attributeAttributes.Count > 0;
-                            })
-                    .ToImmutableList();
-        }
-
-        public static AttributeData? GetInjectorAttribute(ISymbol injectorInterfaceSymbol) {
-            var injectorAttributes = GetAttributes(injectorInterfaceSymbol, InjectorAttributeClassName);
-            return injectorAttributes.Count switch {
-                0 => null,
-                1 => injectorAttributes.Single(),
-                _ => throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        $"Injector type {injectorInterfaceSymbol.Name} can only have one Injector attribute. Found {injectorAttributes.Count}.",
-                        injectorInterfaceSymbol.Locations.First())
-            };
-        }
-
-        public static AttributeData? GetSpecificationAttribute(ISymbol specificationSymbol) {
-            var specificationAttributes = GetAttributes(specificationSymbol, SpecificationAttributeClassName);
-            return specificationAttributes.Count switch {
-                0 => null,
-                1 => specificationAttributes.Single(),
-                _ => throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        $"Specification type {specificationSymbol.Name} can only have one Specification attribute. Found {specificationAttributes.Count}.",
-                        specificationSymbol.Locations.First())
-            };
-        }
-
-        public static IList<AttributeData> GetLinkAttributes(ISymbol specificationSymbol) {
-            return GetAttributes(specificationSymbol, LinkAttributeClassName);
-        }
-
-        public static IList<AttributeData> GetFactoryAttributes(ISymbol factoryMethodSymbol) {
-            return GetAttributes(factoryMethodSymbol, FactoryAttributeClassName);
-        }
-
-        public static IList<AttributeData> GetBuilderAttributes(ISymbol builderMethodSymbol) {
-            return GetAttributes(builderMethodSymbol, BuilderAttributeClassName);
-        }
-
-        public static IList<AttributeData> GetChildInjectorAttributes(ISymbol childInjectorMethodSymbol) {
-            return GetAttributes(childInjectorMethodSymbol, ChildInjectorAttributeClassName);
-        }
-
         public static IEnumerable<ITypeSymbol> GetExternalDependencyTypes(ISymbol injectorSymbol) {
-            var externalDependencyAttributes = GetAttributes(injectorSymbol, ExternalDependencyAttributeClassName);
+            var externalDependencyAttributes = injectorSymbol.GetExternalDependencyAttributes();
             return externalDependencyAttributes.SelectMany(
                             attributeData => {
                                 return attributeData.ConstructorArguments
@@ -124,7 +54,7 @@ namespace Phx.Inject.Generator.Common {
         }
 
         public static string GetGeneratedInjectorClassName(ITypeSymbol injectorInterfaceSymbol) {
-            var injectorAttribute = GetInjectorAttribute(injectorInterfaceSymbol);
+            var injectorAttribute = injectorInterfaceSymbol.GetInjectorAttribute();
             if (injectorAttribute == null) {
                 throw new InjectionException(
                         Diagnostics.InternalError,
@@ -145,15 +75,8 @@ namespace Phx.Inject.Generator.Common {
             return generatedClassName;
         }
 
-        public static IEnumerable<IMethodSymbol> GetChildInjectors(ITypeSymbol injectorInterfaceSymbol) {
-            return injectorInterfaceSymbol.GetMembers()
-                    .OfType<IMethodSymbol>()
-                    .Where(methodSymbol => GetAttributes(methodSymbol, ChildInjectorAttributeClassName).Any())
-                    .ToImmutableList();
-        }
-
         public static IEnumerable<ITypeSymbol> GetInjectorSpecificationTypes(ISymbol injectorInterfaceSymbol) {
-            var injectorAttribute = GetInjectorAttribute(injectorInterfaceSymbol);
+            var injectorAttribute = injectorInterfaceSymbol.GetInjectorAttribute();
             if (injectorAttribute == null) {
                 throw new InjectionException(
                         Diagnostics.InternalError,
@@ -189,10 +112,10 @@ namespace Phx.Inject.Generator.Common {
         }
 
         public static string GetQualifier(ISymbol symbol) {
-            var labelAttributes = GetAttributes(symbol, LabelAttributeClassName);
-            var qualifierAttributes = GetAttributedAttributes(symbol, QualifierAttributeClassName);
-            var numLabels = labelAttributes.Count;
-            var numQualifiers = qualifierAttributes.Count;
+            var labelAttributes = symbol.GetLabelAttributes();
+            var qualifierAttributes = symbol.GetQualifierAttributes();
+            var numLabels = labelAttributes.Count();
+            var numQualifiers = qualifierAttributes.Count();
 
             if (numLabels + numQualifiers > 1) {
                 throw new InjectionException(
@@ -222,24 +145,5 @@ namespace Phx.Inject.Generator.Common {
             return QualifiedTypeModel.NoQualifier;
         }
 
-        public static TypeModel CreateSpecContainerType(TypeModel injectorType, TypeModel specType) {
-            var specContainerTypeName = NameHelpers.GetCombinedClassName(injectorType, specType);
-            return specType with {
-                TypeName = specContainerTypeName
-            };
-        }
-
-        public static TypeModel GetSpecContainerCollectionType(TypeModel injectorType) {
-            var specContainerCollectionTypeName = $"{injectorType.TypeName}.{SpecContainerCollectionTypeName}";
-            return injectorType with { TypeName = specContainerCollectionTypeName };
-        }
-
-        public static TypeModel CreateExternalDependencyImplementationType(
-                TypeModel injectorType,
-                TypeModel dependencyInterfaceType
-        ) {
-            var implementationTypeName = NameHelpers.GetCombinedClassName(injectorType, dependencyInterfaceType);
-            return injectorType with { TypeName = implementationTypeName };
-        }
     }
 }

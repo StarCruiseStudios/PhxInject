@@ -27,8 +27,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
     ) : IDescriptor {
         public class Builder {
             public SpecBuilderDescriptor? Build(IMethodSymbol builderMethod, DescriptorGenerationContext context) {
-                var builderAttributes = SymbolProcessors.GetBuilderAttributes(builderMethod);
-
+                var builderAttributes = builderMethod.GetBuilderAttributes();
                 var numBuilderAttributes = builderAttributes.Count;
                 if (numBuilderAttributes == 0) {
                     // This is not a builder method.
@@ -44,7 +43,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                             builderLocation);
                 }
 
-                var methodParameterTypes = SymbolProcessors.GetMethodParametersQualifiedTypes(builderMethod);
+                var methodParameterTypes = MetadataHelpers.GetMethodParametersQualifiedTypes(builderMethod);
                 if (methodParameterTypes.Count == 0) {
                     throw new InjectionException(
                             Diagnostics.InvalidSpecification,
@@ -52,7 +51,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                             builderLocation);
                 }
 
-                var qualifier = SymbolProcessors.GetQualifier(builderMethod);
+                var qualifier = MetadataHelpers.GetQualifier(builderMethod);
                 // Use the qualifier from the method, not the parameter.
                 var builtType = methodParameterTypes[0] with { Qualifier = qualifier };
                 var builderArguments = methodParameterTypes.Count > 1

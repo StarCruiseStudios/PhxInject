@@ -223,7 +223,7 @@ namespace Phx.Inject.Generator.Injectors.Templates {
                 return new InjectorTemplate(
                         injectorDefinition.InjectorType.TypeName,
                         injectorDefinition.InjectorInterfaceType.QualifiedName,
-                        SymbolProcessors.SpecContainerCollectionTypeName,
+                        NameHelpers.SpecContainerCollectionTypeName,
                         SpecContainerCollectionReferenceName,
                         specContainerProperties,
                         constructorParameters,

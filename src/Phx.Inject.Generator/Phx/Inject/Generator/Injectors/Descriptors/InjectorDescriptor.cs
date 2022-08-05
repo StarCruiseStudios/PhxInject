@@ -51,14 +51,14 @@ namespace Phx.Inject.Generator.Injectors.Descriptors {
                     DescriptorGenerationContext context
             ) {
                 var injectorInterfaceType = TypeModel.FromTypeSymbol(injectorInterfaceSymbol);
-                var generatedInjectorTypeName = SymbolProcessors.GetGeneratedInjectorClassName(injectorInterfaceSymbol);
+                var generatedInjectorTypeName = MetadataHelpers.GetGeneratedInjectorClassName(injectorInterfaceSymbol);
 
-                var externalDependencyInterfaceTypes = SymbolProcessors
+                var externalDependencyInterfaceTypes = MetadataHelpers
                         .GetExternalDependencyTypes(injectorInterfaceSymbol)
                         .Select(TypeModel.FromTypeSymbol)
                         .ToImmutableList();
 
-                var specificationTypes = SymbolProcessors.GetInjectorSpecificationTypes(injectorInterfaceSymbol)
+                var specificationTypes = MetadataHelpers.GetInjectorSpecificationTypes(injectorInterfaceSymbol)
                         .Select(TypeModel.FromTypeSymbol)
                         .Concat(externalDependencyInterfaceTypes)
                         .ToImmutableList();

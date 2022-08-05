@@ -27,8 +27,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
     ) : IDescriptor {
         public class Builder {
             public SpecFactoryDescriptor? Build(IMethodSymbol factoryMethod, DescriptorGenerationContext context) {
-                var factoryAttributes = SymbolProcessors.GetFactoryAttributes(factoryMethod);
-
+                var factoryAttributes = factoryMethod.GetFactoryAttributes();
                 var numFactoryAttributes = factoryAttributes.Count;
                 if (numFactoryAttributes == 0) {
                     // This is not a factory method.
@@ -45,13 +44,13 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                 }
 
                 var factoryAttribute = factoryAttributes.Single();
-                var fabricationMode = SymbolProcessors.GetFactoryFabricationMode(
+                var fabricationMode = MetadataHelpers.GetFactoryFabricationMode(
                         factoryAttribute,
                         factoryLocation);
 
-                var methodParameterTypes = SymbolProcessors.GetMethodParametersQualifiedTypes(factoryMethod);
+                var methodParameterTypes = MetadataHelpers.GetMethodParametersQualifiedTypes(factoryMethod);
 
-                var qualifier = SymbolProcessors.GetQualifier(factoryMethod);
+                var qualifier = MetadataHelpers.GetQualifier(factoryMethod);
                 var returnTypeModel = TypeModel.FromTypeSymbol(factoryMethod.ReturnType);
                 var returnType = new QualifiedTypeModel(
                         returnTypeModel,

@@ -30,8 +30,8 @@ namespace Phx.Inject.Generator.External.Descriptors {
                 IEnumerable<TypeDeclarationSyntax> syntaxNodes,
                 DescriptorGenerationContext context
         ) {
-            return SymbolProcessors.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
-                    .SelectMany(SymbolProcessors.GetExternalDependencyTypes)
+            return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
+                    .SelectMany(MetadataHelpers.GetExternalDependencyTypes)
                     .GroupBy(typeSymbol => typeSymbol, SymbolEqualityComparer.Default)
                     .Select(group => group.First())
                     .Where(IsExternalDependencySymbol)

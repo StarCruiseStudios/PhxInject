@@ -27,7 +27,7 @@ namespace Phx.Inject.Generator.Injectors.Definitions {
             Location Location
     ) : IDefinition {
         public TypeModel SpecContainerCollectionType { get; }
-            = SymbolProcessors.GetSpecContainerCollectionType(InjectorType);
+            = TypeHelpers.CreateSpecContainerCollectionType(InjectorType);
 
         public class Builder {
             public InjectorDefinition Build(DefinitionGenerationContext context) {

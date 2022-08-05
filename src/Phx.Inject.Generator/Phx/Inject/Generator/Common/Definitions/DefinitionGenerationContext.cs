@@ -73,7 +73,7 @@ namespace Phx.Inject.Generator.Common.Definitions {
 
             var key = RegistrationIdentifier.FromQualifiedTypeDescriptor(returnedType);
             if (FactoryRegistrations.TryGetValue(key, out var factoryRegistration)) {
-                var specContainerType = SymbolProcessors.CreateSpecContainerType(
+                var specContainerType = TypeHelpers.CreateSpecContainerType(
                         Injector.InjectorType,
                         factoryRegistration.Specification.SpecType);
                 return new SpecContainerFactoryInvocationDefinition(
@@ -104,7 +104,7 @@ namespace Phx.Inject.Generator.Common.Definitions {
 
             var key = RegistrationIdentifier.FromQualifiedTypeDescriptor(builtType);
             if (BuilderRegistrations.TryGetValue(key, out var builderRegistration)) {
-                var specContainerType = SymbolProcessors.CreateSpecContainerType(
+                var specContainerType = TypeHelpers.CreateSpecContainerType(
                         injectorType,
                         builderRegistration.Specification.SpecType);
                 return new SpecContainerBuilderInvocationDefinition(

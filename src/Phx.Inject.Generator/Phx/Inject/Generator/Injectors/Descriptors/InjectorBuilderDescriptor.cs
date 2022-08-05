@@ -42,7 +42,7 @@ namespace Phx.Inject.Generator.Injectors.Descriptors {
                 }
 
                 var builtType = TypeModel.FromTypeSymbol(builderMethod.Parameters[0].Type);
-                var qualifier = SymbolProcessors.GetQualifier(builderMethod);
+                var qualifier = MetadataHelpers.GetQualifier(builderMethod);
                 return new InjectorBuilderDescriptor(
                         new QualifiedTypeModel(builtType, qualifier),
                         builderMethod.Name,

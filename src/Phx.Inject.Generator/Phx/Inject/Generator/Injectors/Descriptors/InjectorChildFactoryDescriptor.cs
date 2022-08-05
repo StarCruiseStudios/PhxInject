@@ -29,7 +29,7 @@ namespace Phx.Inject.Generator.Injectors.Descriptors {
             ) {
                 var childInjectorLocation = childInjectorMethod.Locations.First();
 
-                if (!SymbolProcessors.GetChildInjectorAttributes(childInjectorMethod).Any()) {
+                if (!childInjectorMethod.GetChildInjectorAttributes().Any()) {
                     // This is not an injector child factory.
                     return null;
                 }

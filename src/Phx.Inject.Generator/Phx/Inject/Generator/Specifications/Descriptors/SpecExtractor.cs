@@ -32,14 +32,14 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                 IEnumerable<TypeDeclarationSyntax> syntaxNodes,
                 DescriptorGenerationContext context
         ) {
-            return SymbolProcessors.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
+            return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
                     .Where(IsSpecSymbol)
                     .Select(symbol => createSpecDescriptor(symbol, context))
                     .ToImmutableList();
         }
 
         private static bool IsSpecSymbol(ITypeSymbol symbol) {
-            var specificationAttribute = SymbolProcessors.GetSpecificationAttribute(symbol);
+            var specificationAttribute = symbol.GetSpecificationAttribute();
             if (specificationAttribute == null) {
                 return false;
             }

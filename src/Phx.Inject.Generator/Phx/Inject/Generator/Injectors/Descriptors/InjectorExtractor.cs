@@ -32,14 +32,14 @@ namespace Phx.Inject.Generator.Injectors.Descriptors {
                 IEnumerable<TypeDeclarationSyntax> syntaxNodes,
                 DescriptorGenerationContext context
         ) {
-            return SymbolProcessors.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
+            return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
                     .Where(IsInjectorSymbol)
                     .Select(symbol => createInjectorDescriptor(symbol, context))
                     .ToImmutableList();
         }
 
         private static bool IsInjectorSymbol(ITypeSymbol symbol) {
-            var injectorAttribute = SymbolProcessors.GetInjectorAttribute(symbol);
+            var injectorAttribute = symbol.GetInjectorAttribute();
             if (injectorAttribute == null) {
                 return false;
             }

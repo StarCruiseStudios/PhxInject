@@ -34,7 +34,7 @@ namespace Phx.Inject.Generator.Injectors.Descriptors {
                     return null;
                 }
 
-                if (SymbolProcessors.GetChildInjectorAttributes(providerMethod).Any()) {
+                if (providerMethod.GetChildInjectorAttributes().Any()) {
                     // This is an injector child factory, not a provider.
                     return null;
                 }
@@ -47,7 +47,7 @@ namespace Phx.Inject.Generator.Injectors.Descriptors {
                 }
 
                 var returnType = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
-                var qualifier = SymbolProcessors.GetQualifier(providerMethod);
+                var qualifier = MetadataHelpers.GetQualifier(providerMethod);
                 return new InjectorProviderDescriptor(
                         new QualifiedTypeModel(returnType, qualifier),
                         providerMethod.Name,

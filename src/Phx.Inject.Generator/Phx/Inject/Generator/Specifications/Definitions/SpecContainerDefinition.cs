@@ -30,7 +30,7 @@ namespace Phx.Inject.Generator.Specifications.Definitions {
     ) : IDefinition {
         public class Builder {
             public SpecContainerDefinition Build(SpecDescriptor specDescriptor, DefinitionGenerationContext context) {
-                var specContainerType = SymbolProcessors.CreateSpecContainerType(
+                var specContainerType = TypeHelpers.CreateSpecContainerType(
                         context.Injector.InjectorType,
                         specDescriptor.SpecType);
 

@@ -56,7 +56,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         .Select(builder => builder!)
                         .ToImmutableList();
 
-                var linkAttributes = SymbolProcessors.GetLinkAttributes(specSymbol);
+                var linkAttributes = specSymbol.GetLinkAttributes();
                 var links = linkAttributes.Select(link => createSpecLinkDescriptor(link, specLocation, context));
                 return new SpecDescriptor(
                         specType,
