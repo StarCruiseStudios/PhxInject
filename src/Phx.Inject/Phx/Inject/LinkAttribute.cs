@@ -10,7 +10,7 @@ namespace Phx.Inject {
     using System;
 
     /// <summary> Models a link between one dependency key and another. </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true)]
     public class LinkAttribute : Attribute {
         /// <summary> The dependency key for the type consumed by the link. </summary>
         public Type Input { get; }

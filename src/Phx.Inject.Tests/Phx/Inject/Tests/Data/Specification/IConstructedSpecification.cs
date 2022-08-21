@@ -10,6 +10,7 @@ namespace Phx.Inject.Tests.Data.Specification {
     using Phx.Inject.Tests.Data.Model;
 
     [Specification]
+    [Link(typeof(IntLeaf), typeof(ILeaf))]
     internal interface IConstructedSpecification {
         [Factory]
         public int GetIntValue();
