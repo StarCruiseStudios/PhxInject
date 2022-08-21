@@ -13,5 +13,9 @@ namespace Phx.Inject.Tests.Data.Model {
         public IntLeaf(int value) {
             Value = value;
         }
+
+        public static IntLeaf Construct(int value) {
+            return new IntLeaf(value);
+        }
     }
 }

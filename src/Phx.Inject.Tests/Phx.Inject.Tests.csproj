@@ -25,6 +25,12 @@
         <PackageReference Include="Microsoft.CodeAnalysis.Csharp" Version="3.8.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="Phx\Inject\Tests\Data\Inject\IFactoryReferenceSpec.cs">
+        <Link>Phx\Inject\Tests\Data\Specification\IFactoryReferenceSpec.cs</Link>
+      </Content>
+    </ItemGroup>
+
     <Target Name="EnsureBuildFileImports" BeforeTargets="PrepareForBuild">
         <PropertyGroup>
             <ErrorText>This package relies on imported build files that are not found. Missing: {0}</ErrorText>
