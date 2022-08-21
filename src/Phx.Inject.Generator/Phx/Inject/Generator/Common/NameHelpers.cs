@@ -32,6 +32,7 @@ namespace Phx.Inject.Generator.Common {
             return factory.SpecFactoryMemberType switch {
                 SpecFactoryMemberType.Method => factory.FactoryMemberName,
                 SpecFactoryMemberType.Property => $"GetProperty{factory.FactoryMemberName}",
+                SpecFactoryMemberType.Reference => $"GetReference{factory.FactoryMemberName}",
                 _ => throw new InjectionException(
                         Diagnostics.InternalError,
                         $"Unhandled SpecFactoryMemberType {factory.SpecFactoryMemberType}.",

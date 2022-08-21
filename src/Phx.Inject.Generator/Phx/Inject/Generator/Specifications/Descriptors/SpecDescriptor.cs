@@ -28,16 +28,22 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
             private readonly CreateSpecBuilderDescriptor createSpecBuilderDescriptor;
             private readonly CreateSpecFactoryMethodDescriptor createSpecFactoryMethodDescriptor;
             private readonly CreateSpecFactoryPropertyDescriptor createSpecFactoryPropertyDescriptor;
+            private readonly CreateSpecFactoryReferencePropertyDescriptor createSpecFactoryReferencePropertyDescriptor;
+            private readonly CreateSpecFactoryReferenceFieldDescriptor createSpecFactoryReferenceFieldDescriptor;
             private readonly CreateSpecLinkDescriptor createSpecLinkDescriptor;
 
             public Builder(
                     CreateSpecFactoryMethodDescriptor createSpecFactoryMethodDescriptor,
                     CreateSpecFactoryPropertyDescriptor createSpecFactoryPropertyDescriptor,
+                    CreateSpecFactoryReferencePropertyDescriptor createSpecFactoryReferencePropertyDescriptor,
+                    CreateSpecFactoryReferenceFieldDescriptor createSpecFactoryReferenceFieldDescriptor,
                     CreateSpecBuilderDescriptor createSpecBuilderDescriptor,
                     CreateSpecLinkDescriptor createSpecLinkDescriptor
             ) {
                 this.createSpecFactoryMethodDescriptor = createSpecFactoryMethodDescriptor;
                 this.createSpecFactoryPropertyDescriptor = createSpecFactoryPropertyDescriptor;
+                this.createSpecFactoryReferencePropertyDescriptor = createSpecFactoryReferencePropertyDescriptor;
+                this.createSpecFactoryReferenceFieldDescriptor = createSpecFactoryReferenceFieldDescriptor;
                 this.createSpecBuilderDescriptor = createSpecBuilderDescriptor;
                 this.createSpecLinkDescriptor = createSpecLinkDescriptor;
             }
@@ -49,17 +55,31 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         ? SpecInstantiationMode.Static
                         : SpecInstantiationMode.Instantiated;
 
-                var specProperties = specSymbol.GetMembers().OfType<IPropertySymbol>();
+                var specFields = specSymbol.GetMembers().OfType<IFieldSymbol>();
+                var factoryReferenceFields = specFields
+                        .Select(prop => createSpecFactoryReferenceFieldDescriptor(prop, context))
+                        .Where(factoryReference => factoryReference != null)
+                        .Select(factoryReference => factoryReference!);
+                
+                var specProperties = specSymbol.GetMembers().OfType<IPropertySymbol>()
+                        .ToImmutableArray();
+                var factoryReferenceProperties = specProperties
+                        .Select(prop => createSpecFactoryReferencePropertyDescriptor(prop, context))
+                        .Where(factoryReference => factoryReference != null)
+                        .Select(factoryReference => factoryReference!);
                 var factoryProperties = specProperties
                         .Select(prop => createSpecFactoryPropertyDescriptor(prop, context))
                         .Where(factory => factory != null)
                         .Select(factory => factory!);
 
-                var specMethods = specSymbol.GetMembers().OfType<IMethodSymbol>();                
+                var specMethods = specSymbol.GetMembers().OfType<IMethodSymbol>()
+                        .ToImmutableArray();                
                 var factories = specMethods.Select(method => createSpecFactoryMethodDescriptor(method, context))
                         .Where(factory => factory != null)
                         .Select(factory => factory!)
                         .Concat(factoryProperties)
+                        .Concat(factoryReferenceFields)
+                        .Concat(factoryReferenceProperties)
                         .ToImmutableList();
                 
                 var builders = specMethods.Select(builder => createSpecBuilderDescriptor(builder, context))

@@ -42,6 +42,7 @@ namespace Phx.Inject.Generator.Specifications.Templates {
             
             switch (SpecFactoryMemberType) {
                 case SpecFactoryMemberType.Method:
+                case SpecFactoryMemberType.Reference:
                     writer.Append($"{referenceName}.{SpecFactoryMemberName}");
                     var numArguments = Arguments.Count();
                     if (numArguments == 0) {

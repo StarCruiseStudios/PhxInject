@@ -17,6 +17,7 @@ namespace Phx.Inject.Generator.Common {
         private const string ChildInjectorAttributeClassName = "Phx.Inject.ChildInjectorAttribute";
         private const string ExternalDependencyAttributeClassName = "Phx.Inject.ExternalDependencyAttribute";
         private const string FactoryAttributeClassName = "Phx.Inject.FactoryAttribute";
+        private const string FactoryReferenceAttributeClassName = "Phx.Inject.FactoryReferenceAttribute";
         private const string InjectorAttributeClassName = "Phx.Inject.InjectorAttribute";
         private const string LabelAttributeClassName = "Phx.Inject.LabelAttribute";
         private const string LinkAttributeClassName = "Phx.Inject.LinkAttribute";
@@ -65,6 +66,10 @@ namespace Phx.Inject.Generator.Common {
 
         public static IList<AttributeData> GetFactoryAttributes(this ISymbol factoryMethodSymbol) {
             return GetAttributes(factoryMethodSymbol, FactoryAttributeClassName);
+        }
+        
+        public static IList<AttributeData> GetFactoryReferenceAttributes(this ISymbol factoryMethodSymbol) {
+            return GetAttributes(factoryMethodSymbol, FactoryReferenceAttributeClassName);
         }
 
         public static IList<AttributeData> GetBuilderAttributes(this ISymbol builderMethodSymbol) {
