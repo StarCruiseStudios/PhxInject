@@ -26,15 +26,18 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
     ) : IDescriptor {
         public class Builder {
             private readonly CreateSpecBuilderDescriptor createSpecBuilderDescriptor;
-            private readonly CreateSpecFactoryDescriptor createSpecFactoryDescriptor;
+            private readonly CreateSpecFactoryMethodDescriptor createSpecFactoryMethodDescriptor;
+            private readonly CreateSpecFactoryPropertyDescriptor createSpecFactoryPropertyDescriptor;
             private readonly CreateSpecLinkDescriptor createSpecLinkDescriptor;
 
             public Builder(
-                    CreateSpecFactoryDescriptor createSpecFactoryDescriptor,
+                    CreateSpecFactoryMethodDescriptor createSpecFactoryMethodDescriptor,
+                    CreateSpecFactoryPropertyDescriptor createSpecFactoryPropertyDescriptor,
                     CreateSpecBuilderDescriptor createSpecBuilderDescriptor,
                     CreateSpecLinkDescriptor createSpecLinkDescriptor
             ) {
-                this.createSpecFactoryDescriptor = createSpecFactoryDescriptor;
+                this.createSpecFactoryMethodDescriptor = createSpecFactoryMethodDescriptor;
+                this.createSpecFactoryPropertyDescriptor = createSpecFactoryPropertyDescriptor;
                 this.createSpecBuilderDescriptor = createSpecBuilderDescriptor;
                 this.createSpecLinkDescriptor = createSpecLinkDescriptor;
             }
@@ -46,11 +49,19 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         ? SpecInstantiationMode.Static
                         : SpecInstantiationMode.Instantiated;
 
-                var specMethods = specSymbol.GetMembers().OfType<IMethodSymbol>();
-                var factories = specMethods.Select(method => createSpecFactoryDescriptor(method, context))
+                var specProperties = specSymbol.GetMembers().OfType<IPropertySymbol>();
+                var factoryProperties = specProperties
+                        .Select(prop => createSpecFactoryPropertyDescriptor(prop, context))
+                        .Where(factory => factory != null)
+                        .Select(factory => factory!);
+
+                var specMethods = specSymbol.GetMembers().OfType<IMethodSymbol>();                
+                var factories = specMethods.Select(method => createSpecFactoryMethodDescriptor(method, context))
                         .Where(factory => factory != null)
                         .Select(factory => factory!)
+                        .Concat(factoryProperties)
                         .ToImmutableList();
+                
                 var builders = specMethods.Select(builder => createSpecBuilderDescriptor(builder, context))
                         .Where(builder => builder != null)
                         .Select(builder => builder!)

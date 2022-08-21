@@ -8,19 +8,26 @@
 
 namespace Phx.Inject.Generator.Specifications.Descriptors {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Common.Descriptors;
 
-    internal delegate SpecFactoryDescriptor? CreateSpecFactoryDescriptor(
+    internal delegate SpecFactoryDescriptor? CreateSpecFactoryMethodDescriptor(
             IMethodSymbol factoryMethod,
+            DescriptorGenerationContext context
+    );
+    
+    internal delegate SpecFactoryDescriptor? CreateSpecFactoryPropertyDescriptor(
+            IPropertySymbol factoryProperty,
             DescriptorGenerationContext context
     );
 
     internal record SpecFactoryDescriptor(
             QualifiedTypeModel ReturnType,
             string FactoryMethodName,
+            SpecFactoryMemberType SpecFactoryMemberType,
             IEnumerable<QualifiedTypeModel> Parameters,
             SpecFactoryMethodFabricationMode FabricationMode,
             Location Location
@@ -39,7 +46,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                 if (numFactoryAttributes > 1) {
                     throw new InjectionException(
                             Diagnostics.InvalidSpecification,
-                            "Method can only have a single builder attribute.",
+                            "Method can only have a single factory attribute.",
                             factoryLocation);
                 }
 
@@ -59,6 +66,47 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                 return new SpecFactoryDescriptor(
                         returnType,
                         factoryMethod.Name,
+                        SpecFactoryMemberType.Method,
+                        methodParameterTypes,
+                        fabricationMode,
+                        factoryLocation);
+            }
+
+            public SpecFactoryDescriptor? Build(IPropertySymbol factoryProperty, DescriptorGenerationContext context) {
+                var factoryAttributes = factoryProperty.GetFactoryAttributes();
+                var numFactoryAttributes = factoryAttributes.Count;
+                if (numFactoryAttributes == 0) {
+                    // This is not a factory method.
+                    return null;
+                }
+
+                var factoryLocation = factoryProperty.Locations.First();
+
+                if (numFactoryAttributes > 1) {
+                    throw new InjectionException(
+                            Diagnostics.InvalidSpecification,
+                            "Method can only have a single factory attribute.",
+                            factoryLocation);
+                }
+
+                var factoryAttribute = factoryAttributes.Single();
+                var fabricationMode = MetadataHelpers.GetFactoryFabricationMode(
+                        factoryAttribute,
+                        factoryLocation);
+
+                var methodParameterTypes = ImmutableList.Create<QualifiedTypeModel>();
+                
+                
+                var qualifier = MetadataHelpers.GetQualifier(factoryProperty);
+                var returnTypeModel = TypeModel.FromTypeSymbol(factoryProperty.Type);
+                var returnType = new QualifiedTypeModel(
+                        returnTypeModel,
+                        qualifier);
+
+                return new SpecFactoryDescriptor(
+                        returnType,
+                        factoryProperty.Name,
+                        SpecFactoryMemberType.Property,
                         methodParameterTypes,
                         fabricationMode,
                         factoryLocation);
