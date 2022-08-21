@@ -130,9 +130,9 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                     memberTemplates.Add(
                             new SpecContainerFactoryTemplate(
                                     factoryMethod.ReturnType.TypeModel.QualifiedName,
-                                    factoryMethod.FactoryMethodName,
-                                    factoryMethod.FactoryMethodName,
-                                    SpecFactoryMemberType.Method,
+                                    factoryMethod.SpecContainerFactoryMethodName,
+                                    factoryMethod.SpecFactoryMemberName,
+                                    factoryMethod.SpecFactoryMemberType,
                                     context.Injector.SpecContainerCollectionType.QualifiedName,
                                     SpecContainerCollectionReferenceName,
                                     instanceHolderReferenceName,

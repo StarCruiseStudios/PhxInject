@@ -26,7 +26,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
 
     internal record SpecFactoryDescriptor(
             QualifiedTypeModel ReturnType,
-            string FactoryMethodName,
+            string FactoryMemberName,
             SpecFactoryMemberType SpecFactoryMemberType,
             IEnumerable<QualifiedTypeModel> Parameters,
             SpecFactoryMethodFabricationMode FabricationMode,

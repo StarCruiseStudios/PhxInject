@@ -42,10 +42,20 @@ namespace Phx.Inject.Generator.Specifications.Definitions {
                                                             parameter,
                                                             factory.Location))
                                     .ToImmutableList();
+                            var specContainerFactoryMethodName = factory.SpecFactoryMemberType switch {
+                                SpecFactoryMemberType.Method => factory.FactoryMemberName,
+                                SpecFactoryMemberType.Property => $"GetProperty{factory.FactoryMemberName}",
+                                _ => throw new InjectionException(
+                                        Diagnostics.InternalError,
+                                        $"Unhandled SpecFactoryMemberType {factory.SpecFactoryMemberType}.",
+                                        factory.Location)
+                            };
 
                             return new SpecContainerFactoryDefinition(
                                     factory.ReturnType,
-                                    factory.FactoryMethodName,
+                                    specContainerFactoryMethodName,
+                                    factory.FactoryMemberName,
+                                    factory.SpecFactoryMemberType,
                                     factory.FabricationMode,
                                     arguments,
                                     factory.Location);

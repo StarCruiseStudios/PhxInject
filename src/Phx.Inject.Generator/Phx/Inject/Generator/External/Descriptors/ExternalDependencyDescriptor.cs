@@ -31,6 +31,7 @@ namespace Phx.Inject.Generator.External.Descriptors {
                             provider => new SpecFactoryDescriptor(
                                     provider.ProvidedType,
                                     provider.ProviderMethodName,
+                                    SpecFactoryMemberType.Method,
                                     ImmutableList<QualifiedTypeModel>.Empty,
                                     SpecFactoryMethodFabricationMode.Recurrent,
                                     provider.Location))
