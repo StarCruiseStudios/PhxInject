@@ -10,11 +10,14 @@ namespace Phx.Inject.Generator.Specifications.Templates {
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Common.Templates;
 
     internal record SpecContainerFactoryTemplate(
             string ReturnTypeQualifiedName,
-            string MethodName,
+            string SpecContainerFactoryMethodName,
+            string SpecFactoryMemberName,
+            SpecFactoryMemberType SpecFactoryMemberType,
             string SpecContainerCollectionQualifiedType,
             string SpecContainerCollectionReferenceName,
             string? InstanceHolderReference,
@@ -24,7 +27,7 @@ namespace Phx.Inject.Generator.Specifications.Templates {
             Location Location
     ) : ISpecContainerMemberTemplate {
         public void Render(IRenderWriter writer) {
-            writer.AppendLine($"internal {ReturnTypeQualifiedName} {MethodName}(")
+            writer.AppendLine($"internal {ReturnTypeQualifiedName} {SpecContainerFactoryMethodName}(")
                     .IncreaseIndent(2)
                     .AppendLine($"{SpecContainerCollectionQualifiedType} {SpecContainerCollectionReferenceName}")
                     .DecreaseIndent(2)
@@ -36,25 +39,40 @@ namespace Phx.Inject.Generator.Specifications.Templates {
             }
 
             var referenceName = ConstructedSpecificationReference ?? SpecificationQualifiedType;
-            writer.Append($"{referenceName}.{MethodName}");
-            var numArguments = Arguments.Count();
-            if (numArguments == 0) {
-                writer.AppendLine("();");
-            } else {
-                writer.AppendLine("(")
-                        .IncreaseIndent(1);
-                var isFirst = true;
-                foreach (var argument in Arguments) {
-                    if (!isFirst) {
-                        writer.AppendLine(",");
+            
+            switch (SpecFactoryMemberType) {
+                case SpecFactoryMemberType.Method:
+                    writer.Append($"{referenceName}.{SpecFactoryMemberName}");
+                    var numArguments = Arguments.Count();
+                    if (numArguments == 0) {
+                        writer.AppendLine("();");
+                    } else {
+                        writer.AppendLine("(")
+                                .IncreaseIndent(1);
+                        var isFirst = true;
+                        foreach (var argument in Arguments) {
+                            if (!isFirst) {
+                                writer.AppendLine(",");
+                            }
+
+                            isFirst = false;
+                            argument.Render(writer);
+                        }
+
+                        writer.AppendLine(");")
+                                .DecreaseIndent(1);
                     }
-
-                    isFirst = false;
-                    argument.Render(writer);
-                }
-
-                writer.AppendLine(");")
-                        .DecreaseIndent(1);
+                    break;
+                
+                case SpecFactoryMemberType.Property:
+                    writer.Append($"{referenceName}.{SpecFactoryMemberName};");
+                    break;
+                
+                default:
+                    throw new InjectionException(
+                            Diagnostics.InternalError,
+                            $"Unhandled Spec Factory Member Type {SpecFactoryMemberType}.",
+                            Location);
             }
 
             writer.DecreaseIndent(1)

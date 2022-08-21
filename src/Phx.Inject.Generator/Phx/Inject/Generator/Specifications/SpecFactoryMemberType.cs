@@ -1,4 +1,4 @@
-namespace Phx.Inject.Generator.Specifications.Descriptors {
+namespace Phx.Inject.Generator.Specifications {
     internal enum SpecFactoryMemberType {
         Method,
         Property

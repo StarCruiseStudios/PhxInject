@@ -131,6 +131,8 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                             new SpecContainerFactoryTemplate(
                                     factoryMethod.ReturnType.TypeModel.QualifiedName,
                                     factoryMethod.FactoryMethodName,
+                                    factoryMethod.FactoryMethodName,
+                                    SpecFactoryMemberType.Method,
                                     context.Injector.SpecContainerCollectionType.QualifiedName,
                                     SpecContainerCollectionReferenceName,
                                     instanceHolderReferenceName,
