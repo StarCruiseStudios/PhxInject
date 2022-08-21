@@ -156,7 +156,9 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                     memberTemplates.Add(
                             new SpecContainerBuilderTemplate(
                                     builderMethod.BuiltType.QualifiedName,
-                                    builderMethod.MethodName,
+                                    builderMethod.SpecContainerBuilderMethodName,
+                                    builderMethod.SpecBuilderMemberName,
+                                    builderMethod.SpecBuilderMemberType,
                                     BuiltInstanceReferenceName,
                                     context.Injector.SpecContainerCollectionType.QualifiedName,
                                     SpecContainerCollectionReferenceName,

@@ -167,7 +167,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                 // Cannot be a factory and a factory reference.
                 throw new InjectionException(
                         Diagnostics.InvalidSpecification,
-                        "Method or Property cannot have both Factory and FactoryAttribute attributes.",
+                        "Method or Property cannot have both Factory and FactoryReference attributes.",
                         factoryLocation);
             }
 
@@ -204,7 +204,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                 // Cannot be a factory and a factory reference.
                 throw new InjectionException(
                         Diagnostics.InvalidSpecification,
-                        "Property or Field cannot have both Factory and FactoryAttribute attributes.",
+                        "Property or Field cannot have both Factory and FactoryReference attributes.",
                         factoryReferenceLocation);
             }
 
@@ -218,7 +218,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
         private static void GetFactoryReferenceTypes(
                 ISymbol factoryReferenceSymbol,
                 ITypeSymbol factoryReferenceTypeSymbol,
-                Location factoryLocation,
+                Location factoryReferenceLocation,
                 out QualifiedTypeModel returnType,
                 out IEnumerable<QualifiedTypeModel> parameterTypes
         ) {
@@ -228,7 +228,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                 throw new InjectionException(
                         Diagnostics.InvalidSpecification,
                         "Factory reference must be a field or property of type Func<>.",
-                        factoryLocation);
+                        factoryReferenceLocation);
             }
                 
             var typeArguments = referenceTypeSymbol.TypeArguments;

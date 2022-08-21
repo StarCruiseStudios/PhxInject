@@ -28,7 +28,9 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         new SpecFactoryDescriptor.Builder().BuildFactory,
                         new SpecFactoryDescriptor.Builder().BuildFactoryReference,
                         new SpecFactoryDescriptor.Builder().BuildFactoryReference,
-                        new SpecBuilderDescriptor.Builder().Build,
+                        new SpecBuilderDescriptor.Builder().BuildBuilder,
+                        new SpecBuilderDescriptor.Builder().BuildBuilderReference,
+                        new SpecBuilderDescriptor.Builder().BuildBuilderReference,
                         new SpecLinkDescriptor.Builder().Build).Build) { }
 
         public IReadOnlyList<SpecDescriptor> Extract(

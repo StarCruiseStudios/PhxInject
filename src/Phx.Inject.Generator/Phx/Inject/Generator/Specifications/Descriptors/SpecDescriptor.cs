@@ -26,6 +26,8 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
     ) : IDescriptor {
         public class Builder {
             private readonly CreateSpecBuilderDescriptor createSpecBuilderDescriptor;
+            private readonly CreateSpecBuilderReferencePropertyDescriptor createSpecBuilderReferencePropertyDescriptor;
+            private readonly CreateSpecBuilderReferenceFieldDescriptor createSpecBuilderReferenceFieldDescriptor;
             private readonly CreateSpecFactoryMethodDescriptor createSpecFactoryMethodDescriptor;
             private readonly CreateSpecFactoryPropertyDescriptor createSpecFactoryPropertyDescriptor;
             private readonly CreateSpecFactoryReferencePropertyDescriptor createSpecFactoryReferencePropertyDescriptor;
@@ -38,6 +40,8 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                     CreateSpecFactoryReferencePropertyDescriptor createSpecFactoryReferencePropertyDescriptor,
                     CreateSpecFactoryReferenceFieldDescriptor createSpecFactoryReferenceFieldDescriptor,
                     CreateSpecBuilderDescriptor createSpecBuilderDescriptor,
+                    CreateSpecBuilderReferencePropertyDescriptor createSpecBuilderReferencePropertyDescriptor,
+                    CreateSpecBuilderReferenceFieldDescriptor createSpecBuilderReferenceFieldDescriptor,
                     CreateSpecLinkDescriptor createSpecLinkDescriptor
             ) {
                 this.createSpecFactoryMethodDescriptor = createSpecFactoryMethodDescriptor;
@@ -45,6 +49,8 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                 this.createSpecFactoryReferencePropertyDescriptor = createSpecFactoryReferencePropertyDescriptor;
                 this.createSpecFactoryReferenceFieldDescriptor = createSpecFactoryReferenceFieldDescriptor;
                 this.createSpecBuilderDescriptor = createSpecBuilderDescriptor;
+                this.createSpecBuilderReferencePropertyDescriptor = createSpecBuilderReferencePropertyDescriptor;
+                this.createSpecBuilderReferenceFieldDescriptor = createSpecBuilderReferenceFieldDescriptor;
                 this.createSpecLinkDescriptor = createSpecLinkDescriptor;
             }
 
@@ -55,14 +61,17 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         ? SpecInstantiationMode.Static
                         : SpecInstantiationMode.Instantiated;
 
-                var specFields = specSymbol.GetMembers().OfType<IFieldSymbol>();
+                var specFields = specSymbol.GetMembers().OfType<IFieldSymbol>()
+                        .ToImmutableArray();
+                var specProperties = specSymbol.GetMembers().OfType<IPropertySymbol>()
+                        .ToImmutableArray();
+                var specMethods = specSymbol.GetMembers().OfType<IMethodSymbol>()
+                        .ToImmutableArray();     
+                
                 var factoryReferenceFields = specFields
                         .Select(prop => createSpecFactoryReferenceFieldDescriptor(prop, context))
                         .Where(factoryReference => factoryReference != null)
                         .Select(factoryReference => factoryReference!);
-                
-                var specProperties = specSymbol.GetMembers().OfType<IPropertySymbol>()
-                        .ToImmutableArray();
                 var factoryReferenceProperties = specProperties
                         .Select(prop => createSpecFactoryReferencePropertyDescriptor(prop, context))
                         .Where(factoryReference => factoryReference != null)
@@ -71,20 +80,31 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         .Select(prop => createSpecFactoryPropertyDescriptor(prop, context))
                         .Where(factory => factory != null)
                         .Select(factory => factory!);
-
-                var specMethods = specSymbol.GetMembers().OfType<IMethodSymbol>()
-                        .ToImmutableArray();                
-                var factories = specMethods.Select(method => createSpecFactoryMethodDescriptor(method, context))
+                var factoryMethods = specMethods.Select(method => createSpecFactoryMethodDescriptor(method, context))
                         .Where(factory => factory != null)
-                        .Select(factory => factory!)
+                        .Select(factory => factory!); 
+           
+                var factories = factoryMethods
                         .Concat(factoryProperties)
                         .Concat(factoryReferenceFields)
                         .Concat(factoryReferenceProperties)
                         .ToImmutableList();
-                
-                var builders = specMethods.Select(builder => createSpecBuilderDescriptor(builder, context))
+
+                var builderReferenceFields = specFields
+                        .Select(builderReference => createSpecBuilderReferenceFieldDescriptor(builderReference, context))
+                        .Where(builderReference => builderReference != null)
+                        .Select(builderReference => builderReference!);
+                var builderReferenceProperties = specProperties
+                        .Select(builderReference => createSpecBuilderReferencePropertyDescriptor(builderReference, context))
+                        .Where(builderReference => builderReference != null)
+                        .Select(builderReference => builderReference!);
+                var builderMethods = specMethods.Select(builder => createSpecBuilderDescriptor(builder, context))
                         .Where(builder => builder != null)
-                        .Select(builder => builder!)
+                        .Select(builder => builder!); 
+                
+                var builders = builderMethods
+                        .Concat(builderReferenceProperties)
+                        .Concat(builderReferenceFields)
                         .ToImmutableList();
 
                 var linkAttributes = specSymbol.GetLinkAttributes();

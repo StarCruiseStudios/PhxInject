@@ -14,6 +14,7 @@ namespace Phx.Inject.Generator.Common {
 
     internal static class AttributeHelpers {
         private const string BuilderAttributeClassName = "Phx.Inject.BuilderAttribute";
+        private const string BuilderReferenceAttributeClassName = "Phx.Inject.BuilderReferenceAttribute";
         private const string ChildInjectorAttributeClassName = "Phx.Inject.ChildInjectorAttribute";
         private const string ExternalDependencyAttributeClassName = "Phx.Inject.ExternalDependencyAttribute";
         private const string FactoryAttributeClassName = "Phx.Inject.FactoryAttribute";
@@ -74,6 +75,9 @@ namespace Phx.Inject.Generator.Common {
 
         public static IList<AttributeData> GetBuilderAttributes(this ISymbol builderMethodSymbol) {
             return GetAttributes(builderMethodSymbol, BuilderAttributeClassName);
+        }
+        public static IList<AttributeData> GetBuilderReferenceAttributes(this ISymbol builderMethodSymbol) {
+            return GetAttributes(builderMethodSymbol, BuilderReferenceAttributeClassName);
         }
 
         public static IList<AttributeData> GetChildInjectorAttributes(this ISymbol childInjectorMethodSymbol) {

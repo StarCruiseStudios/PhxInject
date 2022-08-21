@@ -62,10 +62,13 @@ namespace Phx.Inject.Generator.Specifications.Definitions {
                                                             parameter,
                                                             builder.Location))
                                     .ToImmutableList();
+                            var specContainerFactoryMethodName = builder.GetSpecContainerBuilderName();
 
                             return new SpecContainerBuilderDefinition(
                                     builder.BuiltType.TypeModel,
-                                    builder.BuilderMethodName,
+                                    specContainerFactoryMethodName,
+                                    builder.BuilderMemberName,
+                                    builder.SpecBuilderMemberType,
                                     arguments,
                                     builder.Location);
                         });

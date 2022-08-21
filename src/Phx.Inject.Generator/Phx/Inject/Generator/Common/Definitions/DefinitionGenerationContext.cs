@@ -109,7 +109,7 @@ namespace Phx.Inject.Generator.Common.Definitions {
                         builderRegistration.Specification.SpecType);
                 return new SpecContainerBuilderInvocationDefinition(
                         specContainerType,
-                        builderRegistration.BuilderDescriptor.BuilderMethodName,
+                        builderRegistration.BuilderDescriptor.BuilderMemberName,
                         builderRegistration.BuilderDescriptor.Location);
             }
 
