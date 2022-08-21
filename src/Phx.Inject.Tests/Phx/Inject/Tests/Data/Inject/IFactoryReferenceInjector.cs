@@ -9,6 +9,9 @@
         public IntLeaf GetIntLeaf();
         public StringLeaf GetStringLeaf();
         
-        // public void Build(LazyType lazyType);
+        public void Build(LazyType lazyType);
+        
+        [Label("Field")]
+        public void BuildField(LazyType lazyType);
     }
 }

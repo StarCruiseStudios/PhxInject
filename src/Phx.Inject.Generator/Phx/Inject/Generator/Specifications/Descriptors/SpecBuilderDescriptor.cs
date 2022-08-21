@@ -163,7 +163,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                 }
                 
                 var builderAttributes = builderReferenceSymbol.GetBuilderAttributes();
-                if (builderAttributes.Count == 0) {
+                if (builderAttributes.Count > 0) {
                     // Cannot be a builder and a builder reference.
                     throw new InjectionException(
                             Diagnostics.InvalidSpecification,
