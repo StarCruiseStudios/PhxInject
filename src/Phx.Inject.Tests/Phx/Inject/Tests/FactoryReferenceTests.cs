@@ -9,18 +9,26 @@
 namespace Phx.Inject.Tests {
     using NUnit.Framework;
     using Phx.Inject.Tests.Data.Inject;
-    using Phx.Inject.Tests.Data.Model;
     using Phx.Test;
     using Phx.Validation;
 
     public class FactoryReferenceTests : LoggingTestClass {
         [Test]
-        public void AnInjectorMethodIsGenerated() {
-            // IFactoryReferenceInjector injector = Given("A test injector.", () => new GeneratedFactoryReferenceInjector());
-            //
-            // var root = When("An injector method using a factory reference is.", () => injector.GetLeaf());
-            //
-            // Then("A valid value is constructed.", () => Verify.That(root.IsNotNull()));
+        public void AnInjectorFactoryReferencePropertyIsGenerated() {
+            IFactoryReferenceInjector injector = Given("A test injector.", () => new GeneratedFactoryReferenceInjector());
+            
+            var result = When("An injector method using a factory reference property is invoked.", () => injector.GetIntLeaf());
+            
+            Then("A valid value is constructed.", () => Verify.That(result.IsNotNull()));
+        }
+        
+        [Test]
+        public void AnInjectorFactoryReferenceFieldIsGenerated() {
+            IFactoryReferenceInjector injector = Given("A test injector.", () => new GeneratedFactoryReferenceInjector());
+            
+            var result = When("An injector method using a factory reference field is invoked.", () => injector.GetStringLeaf());
+            
+            Then("A valid value is constructed.", () => Verify.That(result.IsNotNull()));
         }
 
         [Test]

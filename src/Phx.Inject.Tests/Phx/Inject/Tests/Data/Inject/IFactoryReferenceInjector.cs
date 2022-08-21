@@ -2,11 +2,13 @@
     using Phx.Inject.Tests.Data.Model;
     using Phx.Inject.Tests.Data.Specification;
 
-    // [Injector(
-    //         typeof(FactoryReferenceSpec)
-    // )]
+    [Injector(
+            typeof(FactoryReferenceSpec)
+    )]
     internal interface IFactoryReferenceInjector {
-        public ILeaf GetLeaf();
-        public void Build(LazyType lazyType);
+        public IntLeaf GetIntLeaf();
+        public StringLeaf GetStringLeaf();
+        
+        // public void Build(LazyType lazyType);
     }
 }
