@@ -65,7 +65,7 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                     break;
                 
                 case SpecFactoryMemberType.Property:
-                    writer.Append($"{referenceName}.{SpecFactoryMemberName};");
+                    writer.AppendLine($"{referenceName}.{SpecFactoryMemberName};");
                     break;
                 
                 default:

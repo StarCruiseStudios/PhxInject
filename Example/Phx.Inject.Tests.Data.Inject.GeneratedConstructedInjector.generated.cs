@@ -27,6 +27,10 @@ namespace Phx.Inject.Tests.Data.Inject {
         public Phx.Inject.Tests.Data.Model.IntLeaf GetIntLeaf() {
             return specContainers.GeneratedConstructedInjector_NonConstructedSpecification.GetIntLeaf(specContainers);
         }
+
+        public Phx.Inject.Tests.Data.Model.ILeaf GetILeaf() {
+            return specContainers.GeneratedConstructedInjector_NonConstructedSpecification.GetIntLeaf(specContainers);
+        }
     }
 }
 #nullable restore

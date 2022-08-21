@@ -78,7 +78,7 @@ namespace Phx.Inject.Generator.Common.Definitions {
                         factoryRegistration.Specification.SpecType);
                 return new SpecContainerFactoryInvocationDefinition(
                         specContainerType,
-                        factoryRegistration.FactoryDescriptor.FactoryMemberName,
+                        factoryRegistration.FactoryDescriptor.GetSpecContainerFactoryName(),
                         factoryRegistration.FactoryDescriptor.Location);
             }
 

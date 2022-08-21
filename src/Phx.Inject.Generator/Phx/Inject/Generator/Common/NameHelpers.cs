@@ -8,6 +8,8 @@
 
 namespace Phx.Inject.Generator.Common {
     using System.Text.RegularExpressions;
+    using Phx.Inject.Generator.Specifications;
+    using Phx.Inject.Generator.Specifications.Descriptors;
 
     internal static class NameHelpers {
         private const string GeneratedInjectorClassPrefix = "Generated";
@@ -24,6 +26,17 @@ namespace Phx.Inject.Generator.Common {
 
         public static string GetSpecContainerCollectionTypeName(this TypeModel injectorType) {
             return $"{injectorType.TypeName}.{SpecContainerCollectionTypeName}";
+        }
+
+        public static string GetSpecContainerFactoryName(this SpecFactoryDescriptor factory) {
+            return factory.SpecFactoryMemberType switch {
+                SpecFactoryMemberType.Method => factory.FactoryMemberName,
+                SpecFactoryMemberType.Property => $"GetProperty{factory.FactoryMemberName}",
+                _ => throw new InjectionException(
+                        Diagnostics.InternalError,
+                        $"Unhandled SpecFactoryMemberType {factory.SpecFactoryMemberType}.",
+                        factory.Location)
+            };
         }
 
         public static string GetCombinedClassName(TypeModel prefixType, TypeModel suffixType) {

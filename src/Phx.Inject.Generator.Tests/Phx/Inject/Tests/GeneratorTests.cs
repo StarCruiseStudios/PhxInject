@@ -29,10 +29,10 @@ namespace Phx.Inject.Tests {
             ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedLabelInjector");
             ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedNestedSpecInjector");
             ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedRawInjector");
-
             ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedParentInjector");
             ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedChildInjector");
             ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedGrandchildInjector");
+            ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedPropertyFactoryInjector");
 
         }
 
@@ -62,6 +62,9 @@ namespace Phx.Inject.Tests {
             ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedParentInjector_ParentSpecification");
             ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedChildInjector_ChildSpecification");
             ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedGrandchildInjector_GrandchildSpecification");
+            
+            ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedPropertyFactoryInjector_IPropertyFactorySpec");
+            ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedPropertyFactoryInjector_PropertyFactoryStaticSpec");
         }
 
         [Test]
