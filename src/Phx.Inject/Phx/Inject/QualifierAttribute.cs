@@ -20,6 +20,9 @@ namespace Phx.Inject {
         ///     The <see cref="AttributeTargets" /> flags applied to a qualifier
         ///     attribute.
         /// </summary>
-        public const AttributeTargets Usage = AttributeTargets.Method | AttributeTargets.Parameter | AttributeTargets.Field;
+        public const AttributeTargets Usage = AttributeTargets.Method 
+                | AttributeTargets.Property
+                | AttributeTargets.Parameter
+                | AttributeTargets.Field;
     }
 }
