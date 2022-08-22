@@ -15,6 +15,7 @@ namespace Phx.Inject.Generator.Injectors.Templates {
     using Phx.Inject.Generator.Common.Templates;
     using Phx.Inject.Generator.Injectors.Definitions;
     using Phx.Inject.Generator.Specifications;
+    using Phx.Inject.Generator.Specifications.Definitions;
     using Phx.Inject.Generator.Specifications.Templates;
 
     internal delegate InjectorTemplate CreateInjectorTemplate(
@@ -129,7 +130,8 @@ namespace Phx.Inject.Generator.Injectors.Templates {
                     TemplateGenerationContext context
             ) {
                 var specContainers = injectorDefinition.Specifications.Select(
-                        spec => context.GetSpecContainer(spec, injectorDefinition.Location));
+                        spec => context.GetSpecContainer(spec, injectorDefinition.Location))
+                        .ToImmutableList();
 
                 var specContainerProperties = specContainers.Select(
                                 specContainer => {
@@ -210,10 +212,18 @@ namespace Phx.Inject.Generator.Injectors.Templates {
                                                                             .QualifiedName)
                                                     .ToImmutableList();
 
+                                            var childConstructorParameters = childInjector.ConstructedSpecifications
+                                                    .Select(
+                                                            specType => new InjectorConstructorParameter(
+                                                                    specType.QualifiedName,
+                                                                    specType.GetVariableName()))
+                                                    .ToImmutableList();
+                                            
                                             return new InjectorChildFactoryTemplate(
                                                     factory.InjectorChildInterfaceType.QualifiedName,
                                                     factory.InjectorChildFactoryMethodName,
                                                     childTypeQualifiedName,
+                                                    childConstructorParameters,
                                                     childExternalDependencies,
                                                     SpecContainerCollectionReferenceName,
                                                     factory.Location);

@@ -41,13 +41,6 @@ namespace Phx.Inject.Generator.Injectors.Descriptors {
                             childInjectorLocation);
                 }
 
-                if (childInjectorMethod.Parameters.Length > 0) {
-                    throw new InjectionException(
-                            Diagnostics.InvalidSpecification,
-                            $"Injector child factory {childInjectorMethod.Name} must not have any parameters.",
-                            childInjectorLocation);
-                }
-
                 var returnType = TypeModel.FromTypeSymbol(childInjectorMethod.ReturnType);
                 return new InjectorChildFactoryDescriptor(
                         returnType,

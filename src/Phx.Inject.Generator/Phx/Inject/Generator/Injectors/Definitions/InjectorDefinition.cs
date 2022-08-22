@@ -13,6 +13,7 @@ namespace Phx.Inject.Generator.Injectors.Definitions {
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Common.Definitions;
+    using Phx.Inject.Generator.Specifications;
 
     internal delegate InjectorDefinition CreateInjectorDefinition(DefinitionGenerationContext context);
 
@@ -20,6 +21,7 @@ namespace Phx.Inject.Generator.Injectors.Definitions {
             TypeModel InjectorType,
             TypeModel InjectorInterfaceType,
             IEnumerable<TypeModel> Specifications,
+            IEnumerable<TypeModel> ConstructedSpecifications,
             IEnumerable<TypeModel> ExternalDependencies,
             IEnumerable<InjectorProviderDefinition> Providers,
             IEnumerable<InjectorBuilderDefinition> Builders,
@@ -31,6 +33,14 @@ namespace Phx.Inject.Generator.Injectors.Definitions {
 
         public class Builder {
             public InjectorDefinition Build(DefinitionGenerationContext context) {
+                var constructedSpecifications = context.Injector.SpecificationsTypes
+                        .Where(spec => {
+                            var specDescriptor = context.GetSpec(spec, context.Injector.Location);
+                            return specDescriptor.InstantiationMode == SpecInstantiationMode.Instantiated;
+                        })
+                        .Where(spec => context.Injector.ExternalDependencyInterfaceTypes.Contains(spec) == false)
+                        .ToImmutableList();
+                
                 var providers = context.Injector.Providers
                         .Select(
                                 provider => {
@@ -74,6 +84,7 @@ namespace Phx.Inject.Generator.Injectors.Definitions {
                         context.Injector.InjectorType,
                         context.Injector.InjectorInterfaceType,
                         context.Injector.SpecificationsTypes,
+                        constructedSpecifications,
                         context.Injector.ExternalDependencyInterfaceTypes,
                         providers,
                         builders,

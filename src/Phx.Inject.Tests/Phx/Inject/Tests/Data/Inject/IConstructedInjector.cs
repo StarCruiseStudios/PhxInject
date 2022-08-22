@@ -17,4 +17,10 @@ namespace Phx.Inject.Tests.Data.Inject {
         public IntLeaf GetIntLeaf();
         public ILeaf GetILeaf();
     }
+
+    [Injector]
+    internal interface IConstructedParentInjector {
+        [ChildInjector]
+        public IConstructedInjector GetChildInjector(IConstructedSpecification iConstructedSpecification);
+    }
 }

@@ -26,6 +26,7 @@ namespace Phx.Inject.Tests {
 
             ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "CustomInjector");
             ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedConstructedInjector");
+            ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedConstructedParentInjector");
             ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedLabelInjector");
             ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedNestedSpecInjector");
             ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedRawInjector");
