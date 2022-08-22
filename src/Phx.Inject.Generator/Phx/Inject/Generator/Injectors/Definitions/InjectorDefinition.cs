@@ -77,6 +77,7 @@ namespace Phx.Inject.Generator.Injectors.Definitions {
                                 factory => new InjectorChildFactoryDefinition(
                                         factory.ChildInjectorType,
                                         factory.InjectorChildFactoryMethodName,
+                                        factory.Parameters,
                                         factory.Location))
                         .ToImmutableList();
 

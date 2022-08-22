@@ -48,5 +48,22 @@ namespace Phx.Inject.Tests {
                 Verify.That(leaf.IsType<IntLeaf>());
             });
         }
+        
+        [Test]
+        public void AConstructedSpecificationInjectorCanBeAChild() {
+            IConstructedSpecification spec = Given(
+                    "A constructed specification.",
+                    () => new ConstructedSpecificationImplementation());
+            IConstructedParentInjector injector = Given(
+                    "A test parent injector.",
+                    () => new GeneratedConstructedParentInjector());
+
+            var childInjector = When("A child injector is retrieved that uses the constructed specification.",
+                    () => injector.GetChildInjector(spec));
+
+            Then(
+                    "The value from the constructed spec was returned.",
+                    () => Verify.That(childInjector.GetIntLeaf().Value.IsEqualTo(ConstructedSpecificationImplementation.IntValue)));
+        }
     }
 }

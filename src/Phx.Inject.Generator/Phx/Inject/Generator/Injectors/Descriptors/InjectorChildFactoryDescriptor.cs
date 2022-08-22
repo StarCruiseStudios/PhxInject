@@ -7,6 +7,8 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Injectors.Descriptors {
+    using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Common;
@@ -20,6 +22,7 @@ namespace Phx.Inject.Generator.Injectors.Descriptors {
     internal record InjectorChildFactoryDescriptor(
             TypeModel ChildInjectorType,
             string InjectorChildFactoryMethodName,
+            IList<TypeModel> Parameters,
             Location Location
     ) : IDescriptor {
         public class Builder {
@@ -41,10 +44,15 @@ namespace Phx.Inject.Generator.Injectors.Descriptors {
                             childInjectorLocation);
                 }
 
+                var parameters = childInjectorMethod.Parameters
+                        .Select(parameter => TypeModel.FromTypeSymbol(parameter.Type))
+                        .ToImmutableList();
+
                 var returnType = TypeModel.FromTypeSymbol(childInjectorMethod.ReturnType);
                 return new InjectorChildFactoryDescriptor(
                         returnType,
                         childInjectorMethod.Name,
+                        parameters,
                         childInjectorLocation);
             }
         }

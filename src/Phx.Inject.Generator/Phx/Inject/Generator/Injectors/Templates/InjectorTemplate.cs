@@ -198,7 +198,39 @@ namespace Phx.Inject.Generator.Injectors.Templates {
                                                     factory.Location);
                                             var childTypeQualifiedName = childInjector.InjectorType.QualifiedName;
 
-                                            var childConstructorParameters = childInjector.ConstructedSpecifications
+                                            var missingExternalDependencies =
+                                                    childInjector.ConstructedSpecifications.Where(specType =>
+                                                            !factory.Parameters.Contains(specType))
+                                                            .ToImmutableList();
+                                            if (missingExternalDependencies.Any()) {
+                                                var constructedSpecificationsString = string.Join(",", 
+                                                        childInjector.ConstructedSpecifications.Select(spec => spec.ToString()));
+                                                var missingExternalDependenciesString = string.Join(",", 
+                                                        missingExternalDependencies.Select(dep => dep.ToString()));
+                                                
+                                                throw new InjectionException(
+                                                        Diagnostics.InvalidSpecification,
+                                                        $"Child Injector factory must contain parameters for each of the child injector's constructed specification types: {constructedSpecificationsString}."
+                                                        + $" Missing: {missingExternalDependenciesString}.",
+                                                        factory.Location);
+                                            }
+
+                                            var unusedParameters = factory.Parameters.Where(paramType =>
+                                                    !childInjector.ConstructedSpecifications.Contains(paramType))
+                                                    .ToImmutableList();
+                                            if (unusedParameters.Any()) {
+                                                var unusedParametersString = string.Join(",", 
+                                                        unusedParameters.Select(dep => dep.ToString()));
+                                                throw new InjectionException(
+                                                        Diagnostics.InvalidSpecification,
+                                                        $"Child Injector factory contains unused parameters: {unusedParametersString}.",
+                                                        factory.Location);
+                                            }
+                                            
+                                            // Use factory.Parameters instead of childInjector.ConstructedSpecifications
+                                            // to guarantee the ordering is the same as the interface. Validation logic
+                                            // above checks the two lists are otherwise identical.
+                                            var childConstructorParameters = factory.Parameters
                                                     .Select(
                                                             specType => new InjectorConstructorParameter(
                                                                     specType.QualifiedName,
