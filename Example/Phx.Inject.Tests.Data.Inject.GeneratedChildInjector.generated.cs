@@ -26,7 +26,7 @@ namespace Phx.Inject.Tests.Data.Inject {
 
         public Phx.Inject.Tests.Data.Inject.IGrandchildInjector GetGrandchildInjector() {
             return new Phx.Inject.Tests.Data.Inject.GeneratedGrandchildInjector(
-                    new Phx.Inject.Tests.Data.Inject.GeneratedChildInjector_IGrandchildExternalDependencies(specContainers));
+                    iGrandchildExternalDependencies: new Phx.Inject.Tests.Data.Inject.GeneratedChildInjector_IGrandchildExternalDependencies(specContainers));
         }
     }
 }

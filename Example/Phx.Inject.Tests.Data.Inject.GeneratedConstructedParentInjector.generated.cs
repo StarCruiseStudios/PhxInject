@@ -24,7 +24,7 @@ namespace Phx.Inject.Tests.Data.Inject {
                 Phx.Inject.Tests.Data.Specification.IConstructedSpecification iConstructedSpecification
         ) {
             return new Phx.Inject.Tests.Data.Inject.GeneratedConstructedInjector(
-                    iConstructedSpecification);
+                    iConstructedSpecification: iConstructedSpecification);
         }
     }
 }

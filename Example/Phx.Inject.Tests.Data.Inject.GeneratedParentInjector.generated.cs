@@ -22,7 +22,7 @@ namespace Phx.Inject.Tests.Data.Inject {
 
         public Phx.Inject.Tests.Data.Inject.IChildInjector GetChildInjector() {
             return new Phx.Inject.Tests.Data.Inject.GeneratedChildInjector(
-                    new Phx.Inject.Tests.Data.Inject.GeneratedParentInjector_IChildExternalDependencies(specContainers));
+                    iChildExternalDependencies: new Phx.Inject.Tests.Data.Inject.GeneratedParentInjector_IChildExternalDependencies(specContainers));
         }
     }
 }

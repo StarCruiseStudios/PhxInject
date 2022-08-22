@@ -17,8 +17,7 @@ namespace Phx.Inject.Generator.Injectors.Templates {
             string MethodName,
             string ChildTypeQualifiedName,
             IEnumerable<InjectorConstructorParameter> ConstructorParameters,
-            IEnumerable<string> ChildExternalDependencyImplementationTypeQualifiedNames,
-            string SpecContainerCollectionReferenceName,
+            IEnumerable<IInjectorChildConstructorArgumentTemplate> ChildConstructorArguments,
             Location Location
     ) : IInjectorMemberTemplate {
         public void Render(IRenderWriter writer) {
@@ -41,14 +40,9 @@ namespace Phx.Inject.Generator.Injectors.Templates {
                                    OpeningString: $"return new {ChildTypeQualifiedName}(",
                                    ClosingString: ");",
                                    CloseWithNewline: false))) {
-                foreach (var parameter in ConstructorParameters) {
+                foreach (var arg in ChildConstructorArguments) {
                     var elementWriter = collectionWriter.GetElementWriter();
-                    elementWriter.Append(parameter.ParameterName);
-                }
-                
-                foreach (var externalDependency in ChildExternalDependencyImplementationTypeQualifiedNames) {
-                    var elementWriter = collectionWriter.GetElementWriter();
-                    elementWriter.Append($"new {externalDependency}({SpecContainerCollectionReferenceName})");
+                    arg.Render(elementWriter);
                 }
             }
 

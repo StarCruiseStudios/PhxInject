@@ -198,25 +198,38 @@ namespace Phx.Inject.Generator.Injectors.Templates {
                                                     factory.Location);
                                             var childTypeQualifiedName = childInjector.InjectorType.QualifiedName;
 
-                                            // Name of the generated class that implements the external dependency interface.
-                                            var childExternalDependencies = childInjector.ExternalDependencies
-                                                    .Select(
-                                                            externalDependencyInterfaceType =>
-                                                                    context.GetExternalDependency(
-                                                                            externalDependencyInterfaceType,
-                                                                            childInjector.Location))
-                                                    .Select(
-                                                            externalDependencyImplementation =>
-                                                                    externalDependencyImplementation
-                                                                            .ExternalDependencyImplementationType
-                                                                            .QualifiedName)
-                                                    .ToImmutableList();
-
                                             var childConstructorParameters = childInjector.ConstructedSpecifications
                                                     .Select(
                                                             specType => new InjectorConstructorParameter(
                                                                     specType.QualifiedName,
                                                                     specType.GetVariableName()))
+                                                    .ToImmutableList();
+
+                                            var specConstructorArgs = childConstructorParameters.Select(parameter =>
+                                                    new InjectorChildConstructedSpecConstructorArgumentTemplate(
+                                                            parameter.ParameterName,
+                                                            parameter.ParameterName,
+                                                            childInjector.Location));
+                                            var externalDependencyConstructorArgs = childInjector.ExternalDependencies
+                                                    .Select(externalDependencyInterfaceType => {
+                                                        var externalDependencyImplementation =
+                                                                context.GetExternalDependency(
+                                                                        externalDependencyInterfaceType,
+                                                                        childInjector.Location);
+                                                        var externalDependencyImplementationQualifiedName =
+                                                                externalDependencyImplementation
+                                                                        .ExternalDependencyImplementationType
+                                                                        .QualifiedName;
+
+                                                        return new InjectorChildExternalDependencyConstructorArgumentTemplate(
+                                                                externalDependencyInterfaceType.GetVariableName(),
+                                                                externalDependencyImplementationQualifiedName,
+                                                                SpecContainerCollectionReferenceName,
+                                                                childInjector.Location);
+                                                    });
+
+                                            var args = specConstructorArgs
+                                                    .Concat<IInjectorChildConstructorArgumentTemplate>(externalDependencyConstructorArgs)
                                                     .ToImmutableList();
                                             
                                             return new InjectorChildFactoryTemplate(
@@ -224,8 +237,7 @@ namespace Phx.Inject.Generator.Injectors.Templates {
                                                     factory.InjectorChildFactoryMethodName,
                                                     childTypeQualifiedName,
                                                     childConstructorParameters,
-                                                    childExternalDependencies,
-                                                    SpecContainerCollectionReferenceName,
+                                                    args,
                                                     factory.Location);
                                         }))
                         .ToImmutableList();
