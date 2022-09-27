@@ -10,7 +10,7 @@
     <Import Project="../../resources/build/PhxLib.common.props" Condition="Exists('../../resources/build/PhxLib.common.props')" />
 
     <PropertyGroup>
-        <Version>$(PhxLibMajorVersion).4.0</Version>
+        <Version>$(VersionPhxInject)</Version>
         <Description>Roslyn based Dependency Injection Generator.</Description>
     </PropertyGroup>
 

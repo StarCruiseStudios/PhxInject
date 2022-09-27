@@ -8,10 +8,13 @@
 
 <Project Sdk="Microsoft.NET.Sdk">
     <Import Project="../../resources/build/PhxLib.common.props" Condition="Exists('../../resources/build/PhxLib.common.props')" />
+    <Import Project="../../resources/build/NugetProperties.props" Condition="Exists('../../resources/build/NugetProperties.props')"/>
 
     <PropertyGroup>
-        <Version>$(PhxLibMajorVersion).4.0</Version>
+        <Version>$(VersionPhxInject)</Version>
         <Description>Roslyn based Dependency Injection.</Description>
+        <PackageProjectUrl>https://github.com/StarCruiseStudios/PhxInject</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/StarCruiseStudios/PhxInject</RepositoryUrl>
     </PropertyGroup>
 
     <Target Name="EnsureBuildFileImports" BeforeTargets="PrepareForBuild">
@@ -19,5 +22,6 @@
             <ErrorText>This package relies on imported build files that are not found. Missing: {0}</ErrorText>
         </PropertyGroup>
         <Error Condition="!Exists('../../resources/build/PhxLib.common.props')" Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/PhxLib.common.props'))" />
+        <Error Condition="!Exists('../../resources/build/NugetProperties.props')" Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/NugetProperties.props'))" />
     </Target>
 </Project>
