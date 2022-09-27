@@ -7,5 +7,5 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Common.Descriptors {
-    public interface IDescriptor : ISourceCodeElement { }
+    internal interface IDescriptor : ISourceCodeElement { }
 }

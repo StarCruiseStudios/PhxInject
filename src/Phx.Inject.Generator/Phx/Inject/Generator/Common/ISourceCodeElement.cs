@@ -9,7 +9,7 @@
 namespace Phx.Inject.Generator.Common {
     using Microsoft.CodeAnalysis;
 
-    public interface ISourceCodeElement {
+    internal interface ISourceCodeElement {
         Location Location { get; }
     }
 }

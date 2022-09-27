@@ -7,7 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Common.Render {
-    public record RenderSettings(
+    internal record RenderSettings(
             int TabSize = 4,
             string GeneratedFileExtension = "generated.cs",
             bool NullableEnabled = true,

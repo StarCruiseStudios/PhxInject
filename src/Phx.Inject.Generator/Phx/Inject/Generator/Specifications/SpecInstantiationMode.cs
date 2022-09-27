@@ -7,7 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Specifications {
-    public enum SpecInstantiationMode {
+    internal enum SpecInstantiationMode {
         Static = 0,
         Instantiated = 1
     }

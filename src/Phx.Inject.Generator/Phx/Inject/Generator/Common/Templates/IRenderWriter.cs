@@ -28,7 +28,7 @@ namespace Phx.Inject.Generator.Common.Templates {
         }
     }
 
-    public record CollectionWriterProperties(
+    internal record CollectionWriterProperties(
             int Indent = 2,
             string OpeningString = "",
             bool OpenWithNewline = true,
