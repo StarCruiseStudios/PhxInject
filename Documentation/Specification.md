@@ -160,7 +160,7 @@ internal static class TestSpecification {
 }
 ```
 
-## Factory  and Builder References
+## Factory and Builder References
 There are times when a factory or builder method is already defined. This could
 be invoked using a normal factory or builder method.
 ```csharp
