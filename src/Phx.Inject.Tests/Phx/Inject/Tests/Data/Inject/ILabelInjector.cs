@@ -15,11 +15,9 @@ namespace Phx.Inject.Tests.Data.Inject {
         public ILeaf GetDefaultLeaf();
 
         [Label("NonDefaultLeafA")]
-        [Factory]
         public ILeaf GetNonDefaultLeafA();
 
         [Label("NonDefaultLeafB")]
-        [Factory]
         public ILeaf GetNonDefaultLeafB();
 
         [NamedLeafA]
@@ -29,11 +27,9 @@ namespace Phx.Inject.Tests.Data.Inject {
         public ILeaf GetAttributeNamedLeafB();
 
         [Label("NamedLeafA")]
-        [Factory]
         public ILeaf GetStringNamedLeafA();
 
         [Label("NamedLeafA")]
-        [Factory]
         public StringLeaf GetNamedStringLeaf();
 
         public Node GetNode();
