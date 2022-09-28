@@ -111,6 +111,8 @@ See the [Documentation](Documentation/Index.md) for more details.
 
 ---
 
-Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.  
-Licensed under the Apache License 2.0 License.  
-See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
+<div align="center">
+Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.</br>
+Licensed under the Apache License 2.0 License.</br>
+See http://www.apache.org/licenses/LICENSE-2.0 for full license information.</br>
+</div>
