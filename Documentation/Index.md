@@ -1,4 +1,10 @@
 ﻿# PHX.Inject Documentation
+
+## Components
+* [Injectors](Injector.md)
+* [Specifications](Specification.md)
+
+## Topics
 * [Injector Naming](Injector.md#generated-injector-naming)
 * [Providers](Injector.md#providers)
   * [Factories](Specification.md#factories)
