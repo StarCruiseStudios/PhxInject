@@ -22,6 +22,7 @@ namespace Phx.Inject.Tests.Data.Inject {
         public Node GetNode();
         public IntLeaf GetIntLeaf();
         public StringLeaf GetStringLeaf();
+        public ParametricLeaf<int> GetParametricLeaf();
         public ILeaf GetILeaf();
 
         public void Build(LazyType lazyType);

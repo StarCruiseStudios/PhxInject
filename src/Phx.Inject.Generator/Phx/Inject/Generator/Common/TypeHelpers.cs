@@ -7,17 +7,23 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Common {
+    using System.Collections.Immutable;
+
     internal static class TypeHelpers {
         public static TypeModel CreateSpecContainerType(TypeModel injectorType, TypeModel specType) {
             var specContainerTypeName = NameHelpers.GetCombinedClassName(injectorType, specType);
             return specType with {
-                TypeName = specContainerTypeName
+                BaseTypeName = specContainerTypeName,
+                TypeArguments = ImmutableList<TypeModel>.Empty
             };
         }
 
         public static TypeModel CreateSpecContainerCollectionType(TypeModel injectorType) {
             var specContainerCollectionTypeName = injectorType.GetSpecContainerCollectionTypeName();
-            return injectorType with { TypeName = specContainerCollectionTypeName };
+            return injectorType with { 
+                BaseTypeName = specContainerCollectionTypeName, 
+                TypeArguments = ImmutableList<TypeModel>.Empty 
+            };
         }
 
         public static TypeModel CreateExternalDependencyImplementationType(
@@ -25,7 +31,10 @@ namespace Phx.Inject.Generator.Common {
                 TypeModel dependencyInterfaceType
         ) {
             var implementationTypeName = NameHelpers.GetCombinedClassName(injectorType, dependencyInterfaceType);
-            return injectorType with { TypeName = implementationTypeName };
+            return injectorType with {
+                BaseTypeName = implementationTypeName,
+                TypeArguments = ImmutableList<TypeModel>.Empty
+            };
         }
     }
 }

@@ -54,5 +54,16 @@ namespace Phx.Inject.Tests {
                     "The instance was constructed using the linked factory.",
                     () => Verify.That(leaf.IsType<StringLeaf>()));
         }
+
+        [Test]
+        public void AParametricTypedFactoryIsInvoked() {
+            IRawInjector injector = Given("A test injector.", () => new GeneratedRawInjector());
+        
+            var leaf = When("A factory method is constructed via a linked factory.", () => injector.GetParametricLeaf());
+        
+            Then(
+                    "The instance was constructed using the linked factory.",
+                    () => Verify.That(leaf.IsType<ParametricLeaf<int>>()));
+        }
     }
 }

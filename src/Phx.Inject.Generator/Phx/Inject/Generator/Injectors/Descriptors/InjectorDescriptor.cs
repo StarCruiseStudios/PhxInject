@@ -29,7 +29,10 @@ namespace Phx.Inject.Generator.Injectors.Descriptors {
             IEnumerable<InjectorChildFactoryDescriptor> ChildFactories,
             Location Location
     ) : IDescriptor {
-        public TypeModel InjectorType { get; } = InjectorInterfaceType with { TypeName = GeneratedInjectorTypeName };
+        public TypeModel InjectorType { get; } = InjectorInterfaceType with {
+            BaseTypeName = GeneratedInjectorTypeName,
+            TypeArguments = ImmutableList<TypeModel>.Empty
+        };
 
         public class Builder {
             private readonly CreateInjectorBuilderDescriptor createInjectorBuilder;

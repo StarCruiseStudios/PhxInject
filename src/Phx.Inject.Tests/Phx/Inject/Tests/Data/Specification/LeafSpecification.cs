@@ -20,6 +20,11 @@ namespace Phx.Inject.Tests.Data.Specification {
         internal static StringLeaf GetStringLeaf() {
             return new StringLeaf("Hello");
         }
+        
+        [Factory]
+        internal static ParametricLeaf<int> GetParametricLeaf() {
+            return new ParametricLeaf<int>(15);
+        }
     }
 
     [Specification]

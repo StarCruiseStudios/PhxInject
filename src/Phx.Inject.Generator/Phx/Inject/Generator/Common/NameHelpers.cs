@@ -25,7 +25,7 @@ namespace Phx.Inject.Generator.Common {
         }
 
         public static string GetSpecContainerCollectionTypeName(this TypeModel injectorType) {
-            return $"{injectorType.TypeName}.{SpecContainerCollectionTypeName}";
+            return $"{injectorType.BaseTypeName}.{SpecContainerCollectionTypeName}";
         }
 
         public static string GetSpecContainerFactoryName(this SpecFactoryDescriptor factory) {
@@ -53,7 +53,7 @@ namespace Phx.Inject.Generator.Common {
         
 
         public static string GetCombinedClassName(TypeModel prefixType, TypeModel suffixType) {
-            return $"{prefixType.TypeName}_{suffixType.TypeName}"
+            return $"{prefixType.BaseTypeName}_{suffixType.BaseTypeName}"
                     .AsValidIdentifier()
                     .StartUppercase();
         }
@@ -90,13 +90,13 @@ namespace Phx.Inject.Generator.Common {
         }
 
         private static string AsVariableName(this TypeModel type) {
-            return type.TypeName.AsValidIdentifier();
+            return type.BaseTypeName.AsValidIdentifier();
         }
 
         private static string AsVariableName(this QualifiedTypeModel type) {
             var referenceName = string.IsNullOrEmpty(type.Qualifier)
-                    ? type.TypeModel.TypeName
-                    : $"{type.Qualifier}_{type.TypeModel.TypeName}";
+                    ? type.TypeModel.BaseTypeName
+                    : $"{type.Qualifier}_{type.TypeModel.BaseTypeName}";
             return referenceName.AsValidIdentifier();
         }
     }
