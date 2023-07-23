@@ -18,12 +18,12 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
             IMethodSymbol builderMethod,
             DescriptorGenerationContext context
     );
-    
+
     internal delegate SpecBuilderDescriptor? CreateSpecBuilderReferencePropertyDescriptor(
             IPropertySymbol builderMethod,
             DescriptorGenerationContext context
     );
-    
+
     internal delegate SpecBuilderDescriptor? CreateSpecBuilderReferenceFieldDescriptor(
             IFieldSymbol builderMethod,
             DescriptorGenerationContext context
@@ -37,7 +37,9 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
             Location Location
     ) : IDescriptor {
         public class Builder {
-            public SpecBuilderDescriptor? BuildBuilder(IMethodSymbol builderMethod, DescriptorGenerationContext context) {
+            public SpecBuilderDescriptor? BuildBuilder(
+                    IMethodSymbol builderMethod,
+                    DescriptorGenerationContext context) {
                 var builderLocation = builderMethod.Locations.First();
 
                 if (!ValidateBuilder(builderMethod, builderLocation, context)) {
@@ -55,7 +57,9 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
 
                 var qualifier = MetadataHelpers.GetQualifier(builderMethod);
                 // Use the qualifier from the method, not the parameter.
-                var builtType = methodParameterTypes[0] with { Qualifier = qualifier };
+                var builtType = methodParameterTypes[0] with {
+                    Qualifier = qualifier
+                };
                 var builderArguments = methodParameterTypes.Count > 1
                         ? methodParameterTypes.GetRange(index: 1, methodParameterTypes.Count - 1)
                         : ImmutableList.Create<QualifiedTypeModel>();
@@ -67,8 +71,10 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         builderArguments,
                         builderLocation);
             }
-            
-            public SpecBuilderDescriptor? BuildBuilderReference(IPropertySymbol builderProperty, DescriptorGenerationContext context) {
+
+            public SpecBuilderDescriptor? BuildBuilderReference(
+                    IPropertySymbol builderProperty,
+                    DescriptorGenerationContext context) {
                 var builderReferenceLocation = builderProperty.Locations.First();
 
                 if (!ValidateBuilderReference(builderProperty, builderReferenceLocation, context)) {
@@ -89,8 +95,10 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         parameterTypes,
                         builderReferenceLocation);
             }
-            
-            public SpecBuilderDescriptor? BuildBuilderReference(IFieldSymbol builderField, DescriptorGenerationContext context) {
+
+            public SpecBuilderDescriptor? BuildBuilderReference(
+                    IFieldSymbol builderField,
+                    DescriptorGenerationContext context) {
                 var builderReferenceLocation = builderField.Locations.First();
 
                 if (!ValidateBuilderReference(builderField, builderReferenceLocation, context)) {
@@ -111,7 +119,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         parameterTypes,
                         builderReferenceLocation);
             }
-            
+
             private static bool ValidateBuilder(
                     ISymbol builderSymbol,
                     Location builderLocation,
@@ -130,7 +138,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                             "Method can only have a single builder attribute.",
                             builderLocation);
                 }
-                
+
                 var builderReferenceAttributes = builderSymbol.GetBuilderReferenceAttributes();
                 if (builderReferenceAttributes.Count > 0) {
                     // Cannot be a builder and a builder reference.
@@ -142,7 +150,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
 
                 return true;
             }
-            
+
             private static bool ValidateBuilderReference(
                     ISymbol builderReferenceSymbol,
                     Location builderReferenceLocation,
@@ -154,14 +162,14 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                     // This is not a builder reference.
                     return false;
                 }
-                
+
                 if (numBuilderReferenceAttributes > 1) {
                     throw new InjectionException(
                             Diagnostics.InvalidSpecification,
                             "Method can only have a single builder reference attribute.",
                             builderReferenceLocation);
                 }
-                
+
                 var builderAttributes = builderReferenceSymbol.GetBuilderAttributes();
                 if (builderAttributes.Count > 0) {
                     // Cannot be a builder and a builder reference.
@@ -170,11 +178,10 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                             "Property or Field cannot have both Builder and BuilderReference attributes.",
                             builderReferenceLocation);
                 }
-                
+
                 return true;
             }
-            
-            
+
             private static void GetBuilderReferenceTypes(
                     ISymbol builderReferenceSymbol,
                     ITypeSymbol builderReferenceTypeSymbol,
@@ -190,9 +197,9 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                             "Factory reference must be a field or property of type Action<>.",
                             builderReferenceLocation);
                 }
-                
+
                 var typeArguments = referenceTypeSymbol.TypeArguments;
-                
+
                 var qualifier = MetadataHelpers.GetQualifier(builderReferenceSymbol);
                 var returnTypeModel = TypeModel.FromTypeSymbol(typeArguments[0]);
                 builtType = new QualifiedTypeModel(

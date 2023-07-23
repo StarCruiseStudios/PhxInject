@@ -66,8 +66,8 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                 var specProperties = specSymbol.GetMembers().OfType<IPropertySymbol>()
                         .ToImmutableArray();
                 var specMethods = specSymbol.GetMembers().OfType<IMethodSymbol>()
-                        .ToImmutableArray();     
-                
+                        .ToImmutableArray();
+
                 var factoryReferenceFields = specFields
                         .Select(prop => createSpecFactoryReferenceFieldDescriptor(prop, context))
                         .Where(factoryReference => factoryReference != null)
@@ -82,8 +82,8 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         .Select(factory => factory!);
                 var factoryMethods = specMethods.Select(method => createSpecFactoryMethodDescriptor(method, context))
                         .Where(factory => factory != null)
-                        .Select(factory => factory!); 
-           
+                        .Select(factory => factory!);
+
                 var factories = factoryMethods
                         .Concat(factoryProperties)
                         .Concat(factoryReferenceFields)
@@ -91,17 +91,19 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         .ToImmutableList();
 
                 var builderReferenceFields = specFields
-                        .Select(builderReference => createSpecBuilderReferenceFieldDescriptor(builderReference, context))
+                        .Select(builderReference =>
+                                createSpecBuilderReferenceFieldDescriptor(builderReference, context))
                         .Where(builderReference => builderReference != null)
                         .Select(builderReference => builderReference!);
                 var builderReferenceProperties = specProperties
-                        .Select(builderReference => createSpecBuilderReferencePropertyDescriptor(builderReference, context))
+                        .Select(builderReference =>
+                                createSpecBuilderReferencePropertyDescriptor(builderReference, context))
                         .Where(builderReference => builderReference != null)
                         .Select(builderReference => builderReference!);
                 var builderMethods = specMethods.Select(builder => createSpecBuilderDescriptor(builder, context))
                         .Where(builder => builder != null)
-                        .Select(builder => builder!); 
-                
+                        .Select(builder => builder!);
+
                 var builders = builderMethods
                         .Concat(builderReferenceProperties)
                         .Concat(builderReferenceFields)

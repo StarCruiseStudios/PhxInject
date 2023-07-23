@@ -39,7 +39,7 @@ namespace Phx.Inject.Generator.Specifications.Templates {
             }
 
             var referenceName = ConstructedSpecificationReference ?? SpecificationQualifiedType;
-            
+
             switch (SpecFactoryMemberType) {
                 case SpecFactoryMemberType.Method:
                 case SpecFactoryMemberType.Reference:
@@ -63,12 +63,13 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                         writer.AppendLine(");")
                                 .DecreaseIndent(1);
                     }
+
                     break;
-                
+
                 case SpecFactoryMemberType.Property:
                     writer.AppendLine($"{referenceName}.{SpecFactoryMemberName};");
                     break;
-                
+
                 default:
                     throw new InjectionException(
                             Diagnostics.InternalError,

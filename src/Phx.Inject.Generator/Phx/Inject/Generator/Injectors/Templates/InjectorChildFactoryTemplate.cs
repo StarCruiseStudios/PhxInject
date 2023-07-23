@@ -22,7 +22,7 @@ namespace Phx.Inject.Generator.Injectors.Templates {
     ) : IInjectorMemberTemplate {
         public void Render(IRenderWriter writer) {
             writer.Append($"public {ChildInterfaceTypeQualifiedName} {MethodName}(");
-            
+
             if (ConstructorParameters.Any()) {
                 using (var collectionWriter = writer.GetCollectionWriter(CollectionWriterProperties.Default)) {
                     foreach (var parameter in ConstructorParameters) {
@@ -31,15 +31,15 @@ namespace Phx.Inject.Generator.Injectors.Templates {
                     }
                 }
             }
-            
+
             writer.AppendLine(") {")
                     .IncreaseIndent(1);
-            
+
             using (var collectionWriter = writer.GetCollectionWriter(
-                           new CollectionWriterProperties(
-                                   OpeningString: $"return new {ChildTypeQualifiedName}(",
-                                   ClosingString: ");",
-                                   CloseWithNewline: false))) {
+                    new CollectionWriterProperties(
+                            OpeningString: $"return new {ChildTypeQualifiedName}(",
+                            ClosingString: ");",
+                            CloseWithNewline: false))) {
                 foreach (var arg in ChildConstructorArguments) {
                     var elementWriter = collectionWriter.GetElementWriter();
                     arg.Render(elementWriter);

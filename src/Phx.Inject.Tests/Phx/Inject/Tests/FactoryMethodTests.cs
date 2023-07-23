@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------------
 //  <copyright file="FactoryMethodTests.cs" company="Star Cruise Studios LLC">
-//      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
+//      Copyright (c) 2023 Star Cruise Studios LLC. All rights reserved.
 //      Licensed under the Apache License, Version 2.0.
 //      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
 //  </copyright>
@@ -58,9 +58,10 @@ namespace Phx.Inject.Tests {
         [Test]
         public void AParametricTypedFactoryIsInvoked() {
             IRawInjector injector = Given("A test injector.", () => new GeneratedRawInjector());
-        
-            var leaf = When("A factory method is constructed via a linked factory.", () => injector.GetParametricLeaf());
-        
+
+            var leaf = When("A factory method is constructed via a linked factory.",
+                    () => injector.GetParametricLeaf());
+
             Then(
                     "The instance was constructed using the linked factory.",
                     () => Verify.That(leaf.IsType<ParametricLeaf<int>>()));

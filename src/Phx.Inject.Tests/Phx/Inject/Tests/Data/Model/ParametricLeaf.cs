@@ -12,7 +12,7 @@ namespace Phx.Inject.Tests.Data.Model {
         public ParametricLeaf(T value) {
             Value = value;
         }
-        
+
         public static ParametricLeaf<T> Construct(T value) {
             return new ParametricLeaf<T>(value);
         }

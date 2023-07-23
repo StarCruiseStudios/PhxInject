@@ -20,9 +20,9 @@ namespace Phx.Inject.Generator.Common {
 
         public static TypeModel CreateSpecContainerCollectionType(TypeModel injectorType) {
             var specContainerCollectionTypeName = injectorType.GetSpecContainerCollectionTypeName();
-            return injectorType with { 
-                BaseTypeName = specContainerCollectionTypeName, 
-                TypeArguments = ImmutableList<TypeModel>.Empty 
+            return injectorType with {
+                BaseTypeName = specContainerCollectionTypeName,
+                TypeArguments = ImmutableList<TypeModel>.Empty
             };
         }
 

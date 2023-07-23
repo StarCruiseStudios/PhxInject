@@ -39,7 +39,7 @@ namespace Phx.Inject.Generator.Common {
                         factory.Location)
             };
         }
-        
+
         public static string GetSpecContainerBuilderName(this SpecBuilderDescriptor builder) {
             return builder.SpecBuilderMemberType switch {
                 SpecBuilderMemberType.Method => builder.BuilderMemberName,
@@ -50,7 +50,6 @@ namespace Phx.Inject.Generator.Common {
                         builder.Location)
             };
         }
-        
 
         public static string GetCombinedClassName(TypeModel prefixType, TypeModel suffixType) {
             return $"{prefixType.BaseTypeName}_{suffixType.BaseTypeName}"

@@ -10,8 +10,8 @@ namespace Phx.Inject {
     using System;
 
     /// <summary>
-    ///     Annotates a builder method that will be invoked to complete the
-    ///     construction of a given dependency.
+    ///     Annotates a builder method that will be invoked to complete the construction of a given
+    ///     dependency.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public class BuilderAttribute : Attribute { }

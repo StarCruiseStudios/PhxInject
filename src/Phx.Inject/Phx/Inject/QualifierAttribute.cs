@@ -10,17 +10,14 @@ namespace Phx.Inject {
     using System;
 
     /// <summary>
-    ///     Annotates an attribute as a qualifier that can be applied to a factory
-    ///     method or dependency as a unique label used to discriminate them from other
-    ///     dependencies with the same type.
+    ///     Annotates an attribute as a qualifier that can be applied to a factory method or
+    ///     dependency as a unique label used to discriminate them from other dependencies with the same
+    ///     type.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class QualifierAttribute : Attribute {
-        /// <summary>
-        ///     The <see cref="AttributeTargets" /> flags applied to a qualifier
-        ///     attribute.
-        /// </summary>
-        public const AttributeTargets Usage = AttributeTargets.Method 
+        /// <summary> The <see cref="AttributeTargets" /> flags applied to a qualifier attribute. </summary>
+        public const AttributeTargets Usage = AttributeTargets.Method
                 | AttributeTargets.Property
                 | AttributeTargets.Parameter
                 | AttributeTargets.Field;

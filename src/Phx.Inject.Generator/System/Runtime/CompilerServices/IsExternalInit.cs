@@ -11,17 +11,15 @@ namespace System.Runtime.CompilerServices {
     using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
-    ///     Reserved to be used by the compiler for tracking metadata. This class
-    ///     should not be used by developers in source code.
+    ///     Reserved to be used by the compiler for tracking metadata. This class should not be used
+    ///     by developers in source code.
     /// </summary>
     /// <remarks>
-    ///     C# 9 added support for the init and record keywords. When using C# 9 with
-    ///     target frameworks prior to .NET 5.0, using these new features is not
-    ///     possible because the compiler is missing the IsExternalInit class. This
-    ///     problem can be solved by re-declaring the IsExternalInit class as an
-    ///     internal class in your own project. The compiler will use this custom class
-    ///     definition and allow you to use both the init keywords and records in any
-    ///     project.
+    ///     C# 9 added support for the init and record keywords. When using C# 9 with target
+    ///     frameworks prior to .NET 5.0, using these new features is not possible because the compiler is
+    ///     missing the IsExternalInit class. This problem can be solved by re-declaring the IsExternalInit
+    ///     class as an internal class in your own project. The compiler will use this custom class
+    ///     definition and allow you to use both the init keywords and records in any project.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Never)]
     [SuppressMessage("ReSharper", "UnusedType.Global")]

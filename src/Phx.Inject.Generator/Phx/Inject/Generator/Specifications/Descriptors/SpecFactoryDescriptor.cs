@@ -18,17 +18,17 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
             IMethodSymbol factoryMethod,
             DescriptorGenerationContext context
     );
-    
+
     internal delegate SpecFactoryDescriptor? CreateSpecFactoryPropertyDescriptor(
             IPropertySymbol factoryProperty,
             DescriptorGenerationContext context
     );
-    
+
     internal delegate SpecFactoryDescriptor? CreateSpecFactoryReferencePropertyDescriptor(
             IPropertySymbol factoryReferenceProperty,
             DescriptorGenerationContext context
     );
-    
+
     internal delegate SpecFactoryDescriptor? CreateSpecFactoryReferenceFieldDescriptor(
             IFieldSymbol factoryReferenceField,
             DescriptorGenerationContext context
@@ -43,14 +43,16 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
             Location Location
     ) : IDescriptor {
         public class Builder {
-            public SpecFactoryDescriptor? BuildFactory(IMethodSymbol factoryMethod, DescriptorGenerationContext context) {
+            public SpecFactoryDescriptor? BuildFactory(
+                    IMethodSymbol factoryMethod,
+                    DescriptorGenerationContext context) {
                 var factoryLocation = factoryMethod.Locations.First();
 
                 if (!TryGetFactoryFabricationMode(factoryMethod, factoryLocation, context, out var fabricationMode)) {
                     // This is not a factory.
                     return null;
                 }
-                
+
                 var methodParameterTypes = MetadataHelpers.GetMethodParametersQualifiedTypes(factoryMethod);
 
                 var qualifier = MetadataHelpers.GetQualifier(factoryMethod);
@@ -68,16 +70,18 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         factoryLocation);
             }
 
-            public SpecFactoryDescriptor? BuildFactory(IPropertySymbol factoryProperty, DescriptorGenerationContext context) {
+            public SpecFactoryDescriptor? BuildFactory(
+                    IPropertySymbol factoryProperty,
+                    DescriptorGenerationContext context) {
                 var factoryLocation = factoryProperty.Locations.First();
-                
+
                 if (!TryGetFactoryFabricationMode(factoryProperty, factoryLocation, context, out var fabricationMode)) {
                     // This is not a factory.
                     return null;
                 }
-                
+
                 var methodParameterTypes = ImmutableList.Create<QualifiedTypeModel>();
-                
+
                 var qualifier = MetadataHelpers.GetQualifier(factoryProperty);
                 var returnTypeModel = TypeModel.FromTypeSymbol(factoryProperty.Type);
                 var returnType = new QualifiedTypeModel(
@@ -92,22 +96,26 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         fabricationMode,
                         factoryLocation);
             }
-            
-            public SpecFactoryDescriptor? BuildFactoryReference(IPropertySymbol factoryReferenceProperty, DescriptorGenerationContext context) {
-                
+
+            public SpecFactoryDescriptor? BuildFactoryReference(
+                    IPropertySymbol factoryReferenceProperty,
+                    DescriptorGenerationContext context) {
                 var factoryReferenceLocation = factoryReferenceProperty.Locations.First();
-                if (!TryGetFactoryReferenceFabricationMode(factoryReferenceProperty, factoryReferenceLocation, context, out var fabricationMode)) {
+                if (!TryGetFactoryReferenceFabricationMode(factoryReferenceProperty,
+                        factoryReferenceLocation,
+                        context,
+                        out var fabricationMode)) {
                     // This is not a factory reference.
                     return null;
                 }
-                
+
                 GetFactoryReferenceTypes(
                         factoryReferenceProperty,
                         factoryReferenceProperty.Type,
                         factoryReferenceLocation,
                         out var returnType,
                         out var parameterTypes);
-                
+
                 return new SpecFactoryDescriptor(
                         returnType,
                         factoryReferenceProperty.Name,
@@ -116,21 +124,26 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         fabricationMode,
                         factoryReferenceLocation);
             }
-            
-            public SpecFactoryDescriptor? BuildFactoryReference(IFieldSymbol factoryReferenceField, DescriptorGenerationContext context) {
+
+            public SpecFactoryDescriptor? BuildFactoryReference(
+                    IFieldSymbol factoryReferenceField,
+                    DescriptorGenerationContext context) {
                 var factoryReferenceLocation = factoryReferenceField.Locations.First();
-                if (!TryGetFactoryReferenceFabricationMode(factoryReferenceField, factoryReferenceLocation, context, out var fabricationMode)) {
+                if (!TryGetFactoryReferenceFabricationMode(factoryReferenceField,
+                        factoryReferenceLocation,
+                        context,
+                        out var fabricationMode)) {
                     // This is not a factory reference.
                     return null;
                 }
-                
+
                 GetFactoryReferenceTypes(
                         factoryReferenceField,
                         factoryReferenceField.Type,
                         factoryReferenceLocation,
                         out var returnType,
                         out var parameterTypes);
-                
+
                 return new SpecFactoryDescriptor(
                         returnType,
                         factoryReferenceField.Name,
@@ -154,14 +167,14 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                 fabricationMode = SpecFactoryMethodFabricationMode.Recurrent;
                 return false;
             }
-            
+
             if (numFactoryAttributes > 1) {
                 throw new InjectionException(
                         Diagnostics.InvalidSpecification,
                         "Method or Property can only have a single factory attribute.",
                         factoryLocation);
             }
-                
+
             var factoryReferenceAttributes = factorySymbol.GetFactoryReferenceAttributes();
             if (factoryReferenceAttributes.Count > 0) {
                 // Cannot be a factory and a factory reference.
@@ -181,7 +194,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
         private static bool TryGetFactoryReferenceFabricationMode(
                 ISymbol factoryReferenceSymbol,
                 Location factoryReferenceLocation,
-                DescriptorGenerationContext context, 
+                DescriptorGenerationContext context,
                 out SpecFactoryMethodFabricationMode fabricationMode
         ) {
             var factoryReferenceAttributes = factoryReferenceSymbol.GetFactoryReferenceAttributes();
@@ -198,7 +211,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         "Property or Field can only have a single factory reference attribute.",
                         factoryReferenceLocation);
             }
-                
+
             var factoryAttributes = factoryReferenceSymbol.GetFactoryAttributes();
             if (factoryAttributes.Count > 0) {
                 // Cannot be a factory and a factory reference.
@@ -230,9 +243,9 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         "Factory reference must be a field or property of type Func<>.",
                         factoryReferenceLocation);
             }
-                
+
             var typeArguments = referenceTypeSymbol.TypeArguments;
-                
+
             var qualifier = MetadataHelpers.GetQualifier(factoryReferenceSymbol);
             var returnTypeModel = TypeModel.FromTypeSymbol(typeArguments[^1]);
             returnType = new QualifiedTypeModel(

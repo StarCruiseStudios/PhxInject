@@ -68,7 +68,7 @@ namespace Phx.Inject.Generator.Common {
         public static IList<AttributeData> GetFactoryAttributes(this ISymbol factoryMethodSymbol) {
             return GetAttributes(factoryMethodSymbol, FactoryAttributeClassName);
         }
-        
+
         public static IList<AttributeData> GetFactoryReferenceAttributes(this ISymbol factoryMethodSymbol) {
             return GetAttributes(factoryMethodSymbol, FactoryReferenceAttributeClassName);
         }
@@ -90,7 +90,9 @@ namespace Phx.Inject.Generator.Common {
                     .ToImmutableList();
         }
 
-        private static IList<AttributeData> GetAttributedAttributes(ISymbol symbol, string attributeAttributeClassName) {
+        private static IList<AttributeData> GetAttributedAttributes(
+                ISymbol symbol,
+                string attributeAttributeClassName) {
             return symbol.GetAttributes()
                     .Where(
                             attributeData => {

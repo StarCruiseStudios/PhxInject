@@ -144,6 +144,5 @@ namespace Phx.Inject.Generator.Common {
 
             return QualifiedTypeModel.NoQualifier;
         }
-
     }
 }

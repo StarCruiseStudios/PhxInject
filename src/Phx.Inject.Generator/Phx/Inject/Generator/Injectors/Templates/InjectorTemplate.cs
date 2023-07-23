@@ -15,7 +15,6 @@ namespace Phx.Inject.Generator.Injectors.Templates {
     using Phx.Inject.Generator.Common.Templates;
     using Phx.Inject.Generator.Injectors.Definitions;
     using Phx.Inject.Generator.Specifications;
-    using Phx.Inject.Generator.Specifications.Definitions;
     using Phx.Inject.Generator.Specifications.Templates;
 
     internal delegate InjectorTemplate CreateInjectorTemplate(
@@ -42,10 +41,10 @@ namespace Phx.Inject.Generator.Injectors.Templates {
             //              SpecContainerQualifiedName SpecContainerReference,
             //              SpecContainerQualifiedName2 SpecContainerReference2);
             using (var collectionWriter = writer.GetCollectionWriter(
-                           new CollectionWriterProperties(
-                                   OpeningString: $"internal record {SpecContainerCollectionTypeName} (",
-                                   ClosingString: ");",
-                                   CloseWithNewline: false))) {
+                    new CollectionWriterProperties(
+                            OpeningString: $"internal record {SpecContainerCollectionTypeName} (",
+                            ClosingString: ");",
+                            CloseWithNewline: false))) {
                 foreach (var property in SpecContainerCollectionProperties) {
                     var elementWriter = collectionWriter.GetElementWriter();
                     elementWriter.Append($"{property.PropertyTypeQualifiedName} {property.PropertyName}");
@@ -80,11 +79,11 @@ namespace Phx.Inject.Generator.Injectors.Templates {
             //                  SpecContainerReference: new SpecContainerQualifiedName(constructedSpecificationReference),
             //                  SpecContainerReference2: new SpecContainerQualifiedName2());
             using (var collectionWriter = writer.GetCollectionWriter(
-                           new CollectionWriterProperties(
-                                   OpeningString:
-                                   $"{SpecContainerCollectionReferenceName} = new {SpecContainerCollectionTypeName}(",
-                                   ClosingString: ");",
-                                   CloseWithNewline: false))) {
+                    new CollectionWriterProperties(
+                            OpeningString:
+                            $"{SpecContainerCollectionReferenceName} = new {SpecContainerCollectionTypeName}(",
+                            ClosingString: ");",
+                            CloseWithNewline: false))) {
                 foreach (var property in SpecContainerCollectionProperties) {
                     var elementWriter = collectionWriter.GetElementWriter();
                     elementWriter.Append($"{property.PropertyName}: new {property.PropertyTypeQualifiedName}(");
@@ -130,7 +129,7 @@ namespace Phx.Inject.Generator.Injectors.Templates {
                     TemplateGenerationContext context
             ) {
                 var specContainers = injectorDefinition.Specifications.Select(
-                        spec => context.GetSpecContainer(spec, injectorDefinition.Location))
+                                spec => context.GetSpecContainer(spec, injectorDefinition.Location))
                         .ToImmutableList();
 
                 var specContainerProperties = specContainers.Select(
@@ -200,14 +199,15 @@ namespace Phx.Inject.Generator.Injectors.Templates {
 
                                             var missingExternalDependencies =
                                                     childInjector.ConstructedSpecifications.Where(specType =>
-                                                            !factory.Parameters.Contains(specType))
+                                                                    !factory.Parameters.Contains(specType))
                                                             .ToImmutableList();
                                             if (missingExternalDependencies.Any()) {
-                                                var constructedSpecificationsString = string.Join(",", 
-                                                        childInjector.ConstructedSpecifications.Select(spec => spec.ToString()));
-                                                var missingExternalDependenciesString = string.Join(",", 
+                                                var constructedSpecificationsString = string.Join(",",
+                                                        childInjector.ConstructedSpecifications.Select(spec =>
+                                                                spec.ToString()));
+                                                var missingExternalDependenciesString = string.Join(",",
                                                         missingExternalDependencies.Select(dep => dep.ToString()));
-                                                
+
                                                 throw new InjectionException(
                                                         Diagnostics.InvalidSpecification,
                                                         $"Child Injector factory must contain parameters for each of the child injector's constructed specification types: {constructedSpecificationsString}."
@@ -216,17 +216,18 @@ namespace Phx.Inject.Generator.Injectors.Templates {
                                             }
 
                                             var unusedParameters = factory.Parameters.Where(paramType =>
-                                                    !childInjector.ConstructedSpecifications.Contains(paramType))
+                                                            !childInjector.ConstructedSpecifications
+                                                                    .Contains(paramType))
                                                     .ToImmutableList();
                                             if (unusedParameters.Any()) {
-                                                var unusedParametersString = string.Join(",", 
+                                                var unusedParametersString = string.Join(",",
                                                         unusedParameters.Select(dep => dep.ToString()));
                                                 throw new InjectionException(
                                                         Diagnostics.InvalidSpecification,
                                                         $"Child Injector factory contains unused parameters: {unusedParametersString}.",
                                                         factory.Location);
                                             }
-                                            
+
                                             // Use factory.Parameters instead of childInjector.ConstructedSpecifications
                                             // to guarantee the ordering is the same as the interface. Validation logic
                                             // above checks the two lists are otherwise identical.
@@ -253,17 +254,20 @@ namespace Phx.Inject.Generator.Injectors.Templates {
                                                                         .ExternalDependencyImplementationType
                                                                         .QualifiedName;
 
-                                                        return new InjectorChildExternalDependencyConstructorArgumentTemplate(
-                                                                externalDependencyInterfaceType.GetVariableName(),
-                                                                externalDependencyImplementationQualifiedName,
-                                                                SpecContainerCollectionReferenceName,
-                                                                childInjector.Location);
+                                                        return new
+                                                                InjectorChildExternalDependencyConstructorArgumentTemplate(
+                                                                        externalDependencyInterfaceType
+                                                                                .GetVariableName(),
+                                                                        externalDependencyImplementationQualifiedName,
+                                                                        SpecContainerCollectionReferenceName,
+                                                                        childInjector.Location);
                                                     });
 
                                             var args = specConstructorArgs
-                                                    .Concat<IInjectorChildConstructorArgumentTemplate>(externalDependencyConstructorArgs)
+                                                    .Concat<IInjectorChildConstructorArgumentTemplate>(
+                                                            externalDependencyConstructorArgs)
                                                     .ToImmutableList();
-                                            
+
                                             return new InjectorChildFactoryTemplate(
                                                     factory.InjectorChildInterfaceType.QualifiedName,
                                                     factory.InjectorChildFactoryMethodName,

@@ -9,9 +9,7 @@
 namespace Phx.Inject {
     using System;
 
-    /// <summary>
-    ///     Annotates a method used to retrieve a child injector instance.
-    /// </summary>
+    /// <summary> Annotates a method used to retrieve a child injector instance. </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public class ChildInjectorAttribute : Attribute { }
 }

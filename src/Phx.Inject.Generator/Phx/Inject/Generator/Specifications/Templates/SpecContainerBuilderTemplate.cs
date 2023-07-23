@@ -52,14 +52,14 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                     writer.AppendLine(");")
                             .DecreaseIndent(1);
                     break;
-                
+
                 default:
                     throw new InjectionException(
                             Diagnostics.InternalError,
                             $"Unhandled Spec Builder Member Type {SpecBuilderMemberType}.",
                             Location);
             }
-            
+
             writer.DecreaseIndent(1)
                     .AppendLine("}");
         }

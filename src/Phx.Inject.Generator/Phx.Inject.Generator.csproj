@@ -7,7 +7,7 @@
 -->
 
 <Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="../../resources/build/PhxLib.common.props" Condition="Exists('../../resources/build/PhxLib.common.props')" />
+    <Import Project="../../resources/build/PhxLib.common.props" Condition="Exists('../../resources/build/PhxLib.common.props')"/>
     <Import Project="../../resources/build/NugetProperties.props" Condition="Exists('../../resources/build/NugetProperties.props')"/>
 
     <PropertyGroup>
@@ -25,24 +25,24 @@
     </ItemGroup>
 
     <ItemGroup>
-<PackageReference Include="Phx.Inject" Version="$(VersionPhxInject)" />
-        
+        <PackageReference Include="Phx.Inject" Version="$(VersionPhxInject)"/>
+
         <!-- Keep these packages as private assets so they aren't included in the Nuget package. -->
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="$(VersionMicrosoftCodeAnalysisAnalyzers)">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.Csharp" Version="$(VersionMicrosoftCodeAnalysisCsharp)" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Csharp" Version="$(VersionMicrosoftCodeAnalysisCsharp)" PrivateAssets="all"/>
 
         <!-- Include the output assembly in the analyzers directory of the nuget package. -->
-        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
     </ItemGroup>
-    
+
     <Target Name="EnsureBuildFileImports" BeforeTargets="PrepareForBuild">
         <PropertyGroup>
             <ErrorText>This package relies on imported build files that are not found. Missing: {0}</ErrorText>
         </PropertyGroup>
-        <Error Condition="!Exists('../../resources/build/PhxLib.common.props')" Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/PhxLib.common.props'))" />
-        <Error Condition="!Exists('../../resources/build/NugetProperties.props')" Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/NugetProperties.props'))" />
+        <Error Condition="!Exists('../../resources/build/PhxLib.common.props')" Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/PhxLib.common.props'))"/>
+        <Error Condition="!Exists('../../resources/build/NugetProperties.props')" Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/NugetProperties.props'))"/>
     </Target>
 </Project>

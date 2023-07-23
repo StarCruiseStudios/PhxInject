@@ -30,7 +30,7 @@ namespace Phx.Inject.Tests {
                     "The value from the constructed spec was returned.",
                     () => Verify.That(leaf.Value.IsEqualTo(ConstructedSpecificationImplementation.IntValue)));
         }
-        
+
         [Test]
         public void AConstructedSpecificationCanHaveLinkAttributes() {
             IConstructedSpecification spec = Given(
@@ -40,15 +40,14 @@ namespace Phx.Inject.Tests {
                     "A test injector built with the spec.",
                     () => new GeneratedConstructedInjector(spec));
 
-            ILeaf leaf = When("A factory method is invoked on the injector using a linked dependency.", () => injector.GetILeaf());
+            ILeaf leaf = When("A factory method is invoked on the injector using a linked dependency.",
+                    () => injector.GetILeaf());
 
             Then(
-            "The linked type was returned.",
-            () => {
-                Verify.That(leaf.IsType<IntLeaf>());
-            });
+                    "The linked type was returned.",
+                    () => { Verify.That(leaf.IsType<IntLeaf>()); });
         }
-        
+
         [Test]
         public void AConstructedSpecificationInjectorCanBeAChild() {
             IConstructedSpecification spec = Given(
@@ -63,7 +62,8 @@ namespace Phx.Inject.Tests {
 
             Then(
                     "The value from the constructed spec was returned.",
-                    () => Verify.That(childInjector.GetIntLeaf().Value.IsEqualTo(ConstructedSpecificationImplementation.IntValue)));
+                    () => Verify.That(childInjector.GetIntLeaf().Value
+                            .IsEqualTo(ConstructedSpecificationImplementation.IntValue)));
         }
     }
 }

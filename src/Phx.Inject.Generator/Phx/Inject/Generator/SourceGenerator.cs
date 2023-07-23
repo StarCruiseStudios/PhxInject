@@ -163,7 +163,7 @@ namespace Phx.Inject.Generator {
                                     var externalDependencyImplementationPresenter
                                             = new ExternalDependencyImplementationConstructor();
                                     foreach (var dependency in injectionContextDefinition
-                                                     .ExternalDependencyImplementations) {
+                                            .ExternalDependencyImplementations) {
                                         templates.Add(
                                                 (
                                                         dependency.ExternalDependencyImplementationType,

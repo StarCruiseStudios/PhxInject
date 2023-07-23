@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------------
-//  <copyright file="ConstructedSpecificationTests.cs" company="Star Cruise Studios LLC">
+//  <copyright file="PropertyFactoryTests.cs" company="Star Cruise Studios LLC">
 //      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
 //      Licensed under the Apache License, Version 2.0.
 //      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -21,13 +21,15 @@ namespace Phx.Inject.Tests {
                     "A test injector.",
                     () => new GeneratedPropertyFactoryInjector(new PropertyFactorySpec(new IntLeaf(10))));
 
-            var result = When("A property factory method provided by a static spec is invoked on the injector.", () => injector.GetStringLeaf());
+            var result = When("A property factory method provided by a static spec is invoked on the injector.",
+                    () => injector.GetStringLeaf());
 
             Then(
-                    "The value from the constructed spec was returned.", PropertyFactoryStaticSpec.StringValue,
+                    "The value from the constructed spec was returned.",
+                    PropertyFactoryStaticSpec.StringValue,
                     (expected) => Verify.That(result.Value.IsEqualTo(expected)));
         }
-        
+
         [Test]
         public void APropertyCanBeUsedAsAFactoryMethodInAConstructedSpec() {
             int expectedValue = Given("An int value", () => 10);
@@ -42,7 +44,8 @@ namespace Phx.Inject.Tests {
             var result = When("The property factory method is invoked on the injector.", () => injector.GetLeaf());
 
             Then(
-                    "The value from the constructed spec was returned.", expectedValue,
+                    "The value from the constructed spec was returned.",
+                    expectedValue,
                     (expected) => Verify.That((result as IntLeaf)!.Value.IsEqualTo(expected)));
         }
     }

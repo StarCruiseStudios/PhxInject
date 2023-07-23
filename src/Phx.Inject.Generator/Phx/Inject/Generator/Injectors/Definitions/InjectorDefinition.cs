@@ -40,7 +40,7 @@ namespace Phx.Inject.Generator.Injectors.Definitions {
                         })
                         .Where(spec => context.Injector.ExternalDependencyInterfaceTypes.Contains(spec) == false)
                         .ToImmutableList();
-                
+
                 var providers = context.Injector.Providers
                         .Select(
                                 provider => {

@@ -73,8 +73,8 @@ namespace Phx.Inject.Generator.Common.Definitions {
                 foreach (var specDescriptor in specDescriptors) {
                     foreach (var link in specDescriptor.Links) {
                         if (factoryRegistrations.TryGetValue(
-                                    RegistrationIdentifier.FromQualifiedTypeDescriptor(link.InputType),
-                                    out var targetRegistration)) {
+                                RegistrationIdentifier.FromQualifiedTypeDescriptor(link.InputType),
+                                out var targetRegistration)) {
                             factoryRegistrations.Add(
                                     RegistrationIdentifier.FromQualifiedTypeDescriptor(link.ReturnType),
                                     targetRegistration);

@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------------
 //  <copyright file="TypeModel.cs" company="Star Cruise Studios LLC">
-//      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
+//      Copyright (c) 2023 Star Cruise Studios LLC. All rights reserved.
 //      Licensed under the Apache License, Version 2.0.
 //      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
 //  </copyright>
@@ -21,11 +21,11 @@ namespace Phx.Inject.Generator.Common {
                             .AppendJoin(',', TypeArguments.Select(argumentType => argumentType.QualifiedName))
                             .Append(">");
                 }
-        
+
                 return builder.ToString();
             }
         }
-        
+
         public string QualifiedName => $"{NamespaceName}.{TypeName}";
 
         public override string ToString() {
@@ -35,7 +35,7 @@ namespace Phx.Inject.Generator.Common {
         public virtual bool Equals(TypeModel? other) {
             return QualifiedName == other?.QualifiedName;
         }
-        
+
         public override int GetHashCode() {
             return QualifiedName.GetHashCode();
         }
@@ -45,10 +45,10 @@ namespace Phx.Inject.Generator.Common {
 
             var typeArguments = (typeSymbol is INamedTypeSymbol namedTypeSymbol)
                     ? namedTypeSymbol.TypeArguments
-                            .Select(argumentType => TypeModel.FromTypeSymbol(argumentType))
+                            .Select(argumentType => FromTypeSymbol(argumentType))
                             .ToImmutableList()
                     : ImmutableList<TypeModel>.Empty;
-            
+
             if (typeSymbol.ContainingType != null) {
                 var containingType = FromTypeSymbol(typeSymbol.ContainingType);
                 name = $"{containingType.TypeName}.{name}";

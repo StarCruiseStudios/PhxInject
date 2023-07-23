@@ -7,21 +7,17 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject {
-    /// <summary>
-    ///     Enumerates the modes of fabrication that can be used by a factory
-    ///     method.
-    /// </summary>
+    /// <summary> Enumerates the modes of fabrication that can be used by a factory method. </summary>
     public enum FabricationMode {
         /// <summary>
-        ///     Indicates that the factory method should only construct a single instance
-        ///     within a given scope. Returning that first instance on all invocations
-        ///     after the first.
+        ///     Indicates that the factory method should only construct a single instance within a given
+        ///     scope. Returning that first instance on all invocations after the first.
         /// </summary>
         Scoped,
 
         /// <summary>
-        ///     Indicates that the factory method should construct a new instance each time
-        ///     it is invoked.
+        ///     Indicates that the factory method should construct a new instance each time it is
+        ///     invoked.
         /// </summary>
         Recurrent
     }
