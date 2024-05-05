@@ -247,7 +247,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
             var typeArguments = referenceTypeSymbol.TypeArguments;
 
             var qualifier = MetadataHelpers.GetQualifier(factoryReferenceSymbol);
-            var returnTypeModel = TypeModel.FromTypeSymbol(typeArguments[^1]);
+            var returnTypeModel = TypeModel.FromTypeSymbol(typeArguments[typeArguments.Length - 1]);
             returnType = new QualifiedTypeModel(
                     returnTypeModel,
                     qualifier);

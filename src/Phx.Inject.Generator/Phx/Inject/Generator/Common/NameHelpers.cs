@@ -75,16 +75,16 @@ namespace Phx.Inject.Generator.Common {
         }
 
         public static string StartLowercase(this string input) {
-            return char.ToLower(input[0]) + input[1..];
+            return char.ToLower(input[0]) + input.Substring(1);
         }
 
         public static string StartUppercase(this string input) {
-            return char.ToUpper(input[0]) + input[1..];
+            return char.ToUpper(input[0]) + input.Substring(1);
         }
 
         public static string RemoveLeadingI(this string input) {
             return input.StartsWith("I")
-                    ? input[1..]
+                    ? input.Substring(1)
                     : input;
         }
 

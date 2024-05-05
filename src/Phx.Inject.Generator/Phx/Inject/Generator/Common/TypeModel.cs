@@ -18,7 +18,7 @@ namespace Phx.Inject.Generator.Common {
                 var builder = new StringBuilder(BaseTypeName);
                 if (TypeArguments.Count > 0) {
                     builder.Append("<")
-                            .AppendJoin(',', TypeArguments.Select(argumentType => argumentType.QualifiedName))
+                            .Append(String.Join(",", TypeArguments.Select(argumentType => argumentType.QualifiedName)))
                             .Append(">");
                 }
 

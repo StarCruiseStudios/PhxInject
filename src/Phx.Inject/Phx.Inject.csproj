@@ -7,21 +7,11 @@
 -->
 
 <Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="../../resources/build/PhxLib.common.props" Condition="Exists('../../resources/build/PhxLib.common.props')"/>
-    <Import Project="../../resources/build/NugetProperties.props" Condition="Exists('../../resources/build/NugetProperties.props')"/>
-
-    <PropertyGroup>
-        <Version>$(VersionPhxInject)</Version>
-        <Description>Roslyn based Dependency Injection.</Description>
-        <PackageProjectUrl>https://github.com/StarCruiseStudios/PhxInject</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/StarCruiseStudios/PhxInject</RepositoryUrl>
-    </PropertyGroup>
-
+    <Import Project="Cobalt.props" Condition="Exists('Cobalt.props')"/>
     <Target Name="EnsureBuildFileImports" BeforeTargets="PrepareForBuild">
         <PropertyGroup>
             <ErrorText>This package relies on imported build files that are not found. Missing: {0}</ErrorText>
         </PropertyGroup>
-        <Error Condition="!Exists('../../resources/build/PhxLib.common.props')" Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/PhxLib.common.props'))"/>
-        <Error Condition="!Exists('../../resources/build/NugetProperties.props')" Text="$([System.String]::Format('$(ErrorText)', '../../resources/build/NugetProperties.props'))"/>
+        <Error Condition="!Exists('Cobalt.props')" Text="$([System.String]::Format('$(ErrorText)', 'Cobalt.props'))"/>
     </Target>
 </Project>
