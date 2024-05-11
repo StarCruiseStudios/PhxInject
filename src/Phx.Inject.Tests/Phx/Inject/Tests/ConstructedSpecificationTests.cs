@@ -32,6 +32,23 @@ namespace Phx.Inject.Tests {
         }
 
         [Test]
+        public void AConstructedSpecificationCanHaveAutoFactories() {
+            IConstructedSpecification spec = Given(
+                    "A constructed specification.",
+                    () => new ConstructedSpecificationImplementation());
+            IConstructedInjector injector = Given(
+                    "A test injector built with the spec.",
+                    () => new GeneratedConstructedInjector(spec));
+
+            var outer = When("A factory method is invoked on the injector using an auto dependency.",
+                    () => injector.GetOuterType());
+
+            Then(
+                    "The auto injected type was returned.",
+                    () => { Verify.That(outer.AutoType.IsType<AutoType>()); });
+        }
+
+        [Test]
         public void AConstructedSpecificationCanHaveLinkAttributes() {
             IConstructedSpecification spec = Given(
                     "A constructed specification.",

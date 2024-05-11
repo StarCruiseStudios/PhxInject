@@ -10,7 +10,7 @@ namespace Phx.Inject {
     using System;
 
     /// <summary> Annotates a factory method that will be invoked to construct a given dependency. </summary>
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Class)]
     public class FactoryAttribute : Attribute {
         /// <summary>
         ///     Indicates the <see cref="FabricationMode" /> used when invoking this factory method more

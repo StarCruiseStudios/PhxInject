@@ -9,13 +9,22 @@
 namespace Phx.Inject.Tests.Data.Model {
     public class AutoType {
         public ILeaf Value { get; }
-        public AutoType(ILeaf value) {
+        
+        public AutoTypeWithFabricationMode AutoTypeWithFabricationMode { get; }
+        public AutoType(ILeaf value, AutoTypeWithFabricationMode autoTypeWithFabricationMode) {
             Value = value;
+            AutoTypeWithFabricationMode = autoTypeWithFabricationMode;
         }
+    }
+
+    [Factory(FabricationMode.Scoped)]
+    public class AutoTypeWithFabricationMode {
+        public int X { get; } = 10;
     }
 
     public class OuterType {
         public AutoType AutoType { get; }
+        
         public OuterType(AutoType autoType) {
             AutoType = autoType;
         }

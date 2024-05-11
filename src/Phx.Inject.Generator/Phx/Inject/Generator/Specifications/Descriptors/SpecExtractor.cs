@@ -42,6 +42,18 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         new SpecFactoryDescriptor.Builder().BuildConstructorFactory).BuildConstructorSpec
         ) { }
 
+        private HashSet<QualifiedTypeModel> GetParameterTypes(ITypeSymbol type, HashSet<QualifiedTypeModel> providedTypes) {
+            var neededTypes = new HashSet<QualifiedTypeModel>();
+            MetadataHelpers.GetConstructorParameterQualifiedTypes(type).ForEach(parameter => {
+                if (!providedTypes.Contains(parameter)) {
+                    neededTypes.Add(parameter);
+                    neededTypes.UnionWith(GetParameterTypes(parameter.TypeModel.typeSymbol, providedTypes));   
+                }
+            });
+
+            return neededTypes;
+        }
+        
         public IReadOnlyList<SpecDescriptor> ExtractConstructorSpecForContext(
                 DefinitionGenerationContext context
         ) {
@@ -58,7 +70,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
 
                 foreach (var link in specDescriptor.Links) {
                     providedTypes.Add(link.ReturnType);
-                    neededTypes.Add(link.ReturnType);
+                    neededTypes.Add(link.InputType);
                 }
 
                 foreach (var builder in specDescriptor.Builders) {
@@ -67,6 +79,16 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                     }
                 }
             }
+
+            var transitiveTypes = new HashSet<QualifiedTypeModel>();
+            foreach (var neededType in neededTypes) {
+                if (!providedTypes.Contains(neededType)) {
+                    transitiveTypes.UnionWith(GetParameterTypes(neededType.TypeModel.typeSymbol, providedTypes));
+                }
+            }
+
+            neededTypes.UnionWith(transitiveTypes);
+            
 
             var missingTypes = neededTypes.Except(providedTypes).ToImmutableList();
             return missingTypes.Any()

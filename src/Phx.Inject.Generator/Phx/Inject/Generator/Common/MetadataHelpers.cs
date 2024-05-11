@@ -53,6 +53,32 @@ namespace Phx.Inject.Generator.Common {
                     .ToImmutableList();
         }
 
+        public static ImmutableList<QualifiedTypeModel> GetConstructorParameterQualifiedTypes(ITypeSymbol type) {
+            var typeLocation = type.Locations.First();
+            if (type.DeclaredAccessibility != Accessibility.Public || type.IsStatic || type.IsAbstract) {
+                throw new InjectionException(
+                        Diagnostics.InvalidSpecification,
+                        "Auto injected type must be public, non-static, and non-abstract.",
+                        typeLocation);
+            }
+                
+            var constructors = type
+                    .GetMembers()
+                    .OfType<IMethodSymbol>()
+                    .Where(m => m.MethodKind == MethodKind.Constructor && m.DeclaredAccessibility == Accessibility.Public)
+                    .ToList();
+            if (constructors.Count != 1) {
+                throw new InjectionException(
+                        Diagnostics.InvalidSpecification,
+                        "Auto injected type must contain exactly one public constructor.",
+                        typeLocation);
+            }
+
+            var constructorMethod = constructors.Single();
+                
+            return GetMethodParametersQualifiedTypes(constructorMethod);
+        }
+
         public static string GetGeneratedInjectorClassName(ITypeSymbol injectorInterfaceSymbol) {
             var injectorAttribute = injectorInterfaceSymbol.GetInjectorAttribute();
             if (injectorAttribute == null) {

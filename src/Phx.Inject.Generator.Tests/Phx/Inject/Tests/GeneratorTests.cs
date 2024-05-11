@@ -39,6 +39,9 @@ namespace Phx.Inject.Tests {
             ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedGrandchildInjector");
             ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedPropertyFactoryInjector");
             ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedFactoryReferenceInjector");
+
+            ThenTheNamespaceContainsTheExpectedType(injectorNamespace,
+                    "GeneratedConstructedInjector_GeneratedConstructedInjector_ConstructorFactories");
         }
 
         [Test]

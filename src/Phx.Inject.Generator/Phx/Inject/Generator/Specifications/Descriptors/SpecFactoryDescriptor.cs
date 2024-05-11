@@ -55,29 +55,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                 var factoryLocation = factorySymbol.Locations.First();
                 TryGetConstructorFactoryFabricationMode(factorySymbol, factoryLocation, out var fabricationMode);
 
-
-                if (factorySymbol.DeclaredAccessibility != Accessibility.Public || factorySymbol.IsStatic || factorySymbol.IsAbstract) {
-                    throw new InjectionException(
-                            Diagnostics.InvalidSpecification,
-                            "Auto injected type must be public, non-static, and non-abstract.",
-                            factoryLocation);
-                }
-                
-                var constructors = factorySymbol
-                        .GetMembers()
-                        .OfType<IMethodSymbol>()
-                        .Where(m => m.MethodKind == MethodKind.Constructor && m.DeclaredAccessibility == Accessibility.Public)
-                        .ToList();
-                if (constructors.Count != 1) {
-                    throw new InjectionException(
-                            Diagnostics.InvalidSpecification,
-                            "Auto injected type must contain exactly one public constructor.",
-                            factoryLocation);
-                }
-
-                var constructorMethod = constructors.Single();
-                
-                var constructorParameterTypes = MetadataHelpers.GetMethodParametersQualifiedTypes(constructorMethod);
+                var constructorParameterTypes = MetadataHelpers.GetConstructorParameterQualifiedTypes(factorySymbol);
                 var qualifier = MetadataHelpers.GetQualifier(factorySymbol);
                 var returnType = factoryType with {
                     Qualifier = qualifier
