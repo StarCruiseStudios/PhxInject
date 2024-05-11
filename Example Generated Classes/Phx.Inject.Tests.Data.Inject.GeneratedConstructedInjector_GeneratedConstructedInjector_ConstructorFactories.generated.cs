@@ -8,18 +8,14 @@
 //------------------------------------------------------------------------------
 
 #nullable enable
-namespace Phx.Inject.Tests.Data.Specification {
-    internal class GeneratedConstructedInjector_IConstructedSpecification {
-        private readonly Phx.Inject.Tests.Data.Specification.IConstructedSpecification instance;
+namespace Phx.Inject.Tests.Data.Inject {
+    internal class GeneratedConstructedInjector_GeneratedConstructedInjector_ConstructorFactories {
 
-        public GeneratedConstructedInjector_IConstructedSpecification(Phx.Inject.Tests.Data.Specification.IConstructedSpecification instance) {
-            this.instance = instance;
-        }
-
-        internal System.Int32 GetIntValue(
+        internal Phx.Inject.Tests.Data.Model.AutoType GetConstructorautoType(
                 Phx.Inject.Tests.Data.Inject.GeneratedConstructedInjector.SpecContainerCollection specContainers
         ) {
-            return instance.GetIntValue();
+            return new Phx.Inject.Tests.Data.Model.AutoType(
+                specContainers.GeneratedConstructedInjector_NonConstructedSpecification.GetIntLeaf(specContainers));
         }
     }
 }
