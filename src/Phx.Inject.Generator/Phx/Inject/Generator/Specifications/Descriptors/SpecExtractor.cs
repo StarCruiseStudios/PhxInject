@@ -13,8 +13,8 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Phx.Inject.Generator.Common;
+    using Phx.Inject.Generator.Common.Definitions;
     using Phx.Inject.Generator.Common.Descriptors;
-    using Phx.Inject.Generator.Injectors.Descriptors;
 
     internal class SpecExtractor {
         private readonly CreateSpecDescriptor createSpecDescriptor;
@@ -42,17 +42,40 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         new SpecFactoryDescriptor.Builder().BuildConstructorFactory).BuildConstructorSpec
         ) { }
 
-        public IReadOnlyList<SpecDescriptor> ExtractConstructorSpecForInjector(
-                InjectorDescriptor injectorDescriptor,
-                DescriptorGenerationContext context) {
-            this.createConstructorSpecDescriptor(
-                    injectorDescriptor.InjectorType,
-                    ImmutableList<ITypeSymbol>.Empty,
-                    context);
-            
-            // TODO: Identify constructor types and define the spec descriptor
-            
-            return ImmutableList<SpecDescriptor>.Empty;
+        public IReadOnlyList<SpecDescriptor> ExtractConstructorSpecForContext(
+                DefinitionGenerationContext context
+        ) {
+            var providedTypes = new HashSet<QualifiedTypeModel>();
+            var neededTypes = new HashSet<QualifiedTypeModel>();
+            foreach (var specDescriptor in context.Specifications.Values) {
+                foreach (var factory in specDescriptor.Factories) {
+                    providedTypes.Add(factory.ReturnType);
+                    
+                    foreach (var parameterType in factory.Parameters) {
+                        neededTypes.Add(parameterType);
+                    }
+                }
+
+                foreach (var link in specDescriptor.Links) {
+                    providedTypes.Add(link.ReturnType);
+                    neededTypes.Add(link.ReturnType);
+                }
+
+                foreach (var builder in specDescriptor.Builders) {
+                    foreach (var parameterType in builder.Parameters) {
+                        neededTypes.Add(parameterType);
+                    }
+                }
+            }
+
+            var missingTypes = neededTypes.Except(providedTypes).ToImmutableList();
+            return missingTypes.Any()
+                    ? new List<SpecDescriptor>() {
+                        createConstructorSpecDescriptor(
+                                context.Injector.InjectorType,
+                                missingTypes)
+                    }
+                    : ImmutableList<SpecDescriptor>.Empty;
         }
         
         public IReadOnlyList<SpecDescriptor> Extract(

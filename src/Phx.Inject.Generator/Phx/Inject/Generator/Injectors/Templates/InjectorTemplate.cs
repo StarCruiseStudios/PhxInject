@@ -128,10 +128,7 @@ namespace Phx.Inject.Generator.Injectors.Templates {
                     InjectorDefinition injectorDefinition,
                     TemplateGenerationContext context
             ) {
-                var specContainers = injectorDefinition.Specifications.Select(
-                                spec => context.GetSpecContainer(spec, injectorDefinition.Location))
-                        .ToImmutableList();
-
+                var specContainers = context.SpecContainers.Values.ToImmutableList();
                 var specContainerProperties = specContainers.Select(
                                 specContainer => {
                                     var constructorArgument = specContainer.SpecInstantiationMode ==

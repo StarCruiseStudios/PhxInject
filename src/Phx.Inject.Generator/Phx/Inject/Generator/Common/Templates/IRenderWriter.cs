@@ -13,7 +13,7 @@ namespace Phx.Inject.Generator.Common.Templates {
     internal delegate IRenderWriter CreateRenderWriter();
 
     internal interface IRenderWriter {
-        public RenderSettings Settings { get; }
+        public GeneratorSettings Settings { get; }
         public IRenderWriter IncreaseIndent(int tabs);
         public IRenderWriter DecreaseIndent(int tabs);
         public IRenderWriter Append(string str, bool autoIndent = true);

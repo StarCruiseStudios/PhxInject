@@ -18,8 +18,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
 
     internal delegate SpecDescriptor CreateConstructorSpecDescriptor(
             TypeModel typeModel,
-            IReadOnlyList<ITypeSymbol> constructorTypes,
-            DescriptorGenerationContext context);
+            IReadOnlyList<QualifiedTypeModel> constructorTypes);
 
     internal record SpecDescriptor(
             TypeModel SpecType,
@@ -39,13 +38,13 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
             }
             
             
-            public SpecDescriptor BuildConstructorSpec(TypeModel injectorType, IReadOnlyList<ITypeSymbol> constructorTypes,  DescriptorGenerationContext context) {
+            public SpecDescriptor BuildConstructorSpec(TypeModel injectorType, IReadOnlyList<QualifiedTypeModel> constructorTypes) {
                 var specLocation = injectorType.typeSymbol.Locations.First();
                 var specType = TypeHelpers.CreateConstructorSpecContainerType(injectorType);
                 var specInstantiationMode = SpecInstantiationMode.Static;
 
                 var factories = constructorTypes
-                        .Select(type => createSpecConstructorFactoryDescriptor(type, context))
+                        .Select(type => createSpecConstructorFactoryDescriptor(type))
                         .ToImmutableList();
 
                 return new SpecDescriptor(

@@ -16,11 +16,11 @@ namespace Phx.Inject.Generator.Common.Render {
         private string indentString = "";
         private bool isBeginningOfLine = true;
 
-        public RenderWriter(RenderSettings settings) {
+        public RenderWriter(GeneratorSettings settings) {
             Settings = settings;
         }
 
-        public RenderSettings Settings { get; }
+        public GeneratorSettings Settings { get; }
 
         public IRenderWriter IncreaseIndent(int tabs) {
             currentIndent += tabs * Settings.TabSize;

@@ -15,8 +15,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
     using Phx.Inject.Generator.Common.Descriptors;
 
     internal delegate SpecFactoryDescriptor CreateSpecConstructorFactoryDescriptor(
-            ITypeSymbol factoryType,
-            DescriptorGenerationContext context
+            QualifiedTypeModel factoryType
     );
     
     internal delegate SpecFactoryDescriptor? CreateSpecFactoryMethodDescriptor(
@@ -50,21 +49,21 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
         public class Builder {
 
             public SpecFactoryDescriptor BuildConstructorFactory(
-                    ITypeSymbol factoryType,
-                    DescriptorGenerationContext context
+                    QualifiedTypeModel factoryType
             ) {
-                var factoryLocation = factoryType.Locations.First();
-                TryGetConstructorFactoryFabricationMode(factoryType, factoryLocation, context, out var fabricationMode);
+                var factorySymbol = factoryType.TypeModel.typeSymbol;
+                var factoryLocation = factorySymbol.Locations.First();
+                TryGetConstructorFactoryFabricationMode(factorySymbol, factoryLocation, out var fabricationMode);
 
 
-                if (factoryType.DeclaredAccessibility != Accessibility.Public || factoryType.IsStatic || factoryType.IsAbstract) {
+                if (factorySymbol.DeclaredAccessibility != Accessibility.Public || factorySymbol.IsStatic || factorySymbol.IsAbstract) {
                     throw new InjectionException(
                             Diagnostics.InvalidSpecification,
                             "Auto injected type must be public, non-static, and non-abstract.",
                             factoryLocation);
                 }
                 
-                var constructors = factoryType
+                var constructors = factorySymbol
                         .GetMembers()
                         .OfType<IMethodSymbol>()
                         .Where(m => m.MethodKind == MethodKind.Constructor && m.DeclaredAccessibility == Accessibility.Public)
@@ -79,15 +78,14 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                 var constructorMethod = constructors.Single();
                 
                 var constructorParameterTypes = MetadataHelpers.GetMethodParametersQualifiedTypes(constructorMethod);
-                var qualifier = MetadataHelpers.GetQualifier(factoryType);
-                var returnTypeModel = TypeModel.FromTypeSymbol(factoryType);
-                var returnType = new QualifiedTypeModel(
-                        returnTypeModel,
-                        qualifier);
+                var qualifier = MetadataHelpers.GetQualifier(factorySymbol);
+                var returnType = factoryType with {
+                    Qualifier = qualifier
+                };
 
                 return new SpecFactoryDescriptor(
                         returnType,
-                        factoryType.Name,
+                        factoryType.TypeModel.GetVariableName(),
                         SpecFactoryMemberType.Constructor,
                         constructorParameterTypes,
                         fabricationMode,
@@ -208,7 +206,6 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
         private static bool TryGetConstructorFactoryFabricationMode(
                 ITypeSymbol constructorFactoryType,
                 Location constructorFactoryLocation,
-                DescriptorGenerationContext context,
                 out SpecFactoryMethodFabricationMode fabricationMode
         ) {
             var factoryAttributes = constructorFactoryType.GetFactoryAttributes();

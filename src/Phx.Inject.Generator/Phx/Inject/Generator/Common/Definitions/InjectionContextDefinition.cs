@@ -49,10 +49,8 @@ namespace Phx.Inject.Generator.Common.Definitions {
                 var factoryRegistrations = new Dictionary<RegistrationIdentifier, FactoryRegistration>();
                 var builderRegistrations = new Dictionary<RegistrationIdentifier, BuilderRegistration>();
 
-                var specDescriptors = injectorDescriptor.SpecificationsTypes.Select(
-                                specType => context.GetSpec(specType, injectorDescriptor.Location))
-                        .ToImmutableList();
-
+                var specDescriptors = context.Specifications.Values.ToImmutableList();
+                
                 // Create a registration for all of the spec descriptors' factory and builder methods.
                 foreach (var specDescriptor in specDescriptors) {
                     foreach (var factory in specDescriptor.Factories) {

@@ -31,12 +31,12 @@ namespace Phx.Inject.Generator {
 
     [Generator]
     internal class SourceGenerator : ISourceGenerator {
-        private readonly RenderSettings renderSettings;
+        private readonly GeneratorSettings generatorSettings;
 
-        public SourceGenerator() : this(new RenderSettings()) { }
+        public SourceGenerator() : this(new GeneratorSettings()) { }
 
-        public SourceGenerator(RenderSettings renderSettings) {
-            this.renderSettings = renderSettings;
+        public SourceGenerator(GeneratorSettings generatorSettings) {
+            this.generatorSettings = generatorSettings;
         }
 
         public void Initialize(GeneratorInitializationContext context) {
@@ -98,18 +98,33 @@ namespace Phx.Inject.Generator {
                 var injectionContextDefinitions = injectorDescriptors.Select(
                                 injectorDescriptor => {
                                     var injectorSpecDescriptorMap = new Dictionary<TypeModel, SpecDescriptor>();
-                                    foreach (var entry in specDescriptorMap) {
-                                        injectorSpecDescriptorMap.Add(entry.Key, entry.Value);
+                                    foreach (var spec in injectorDescriptor.SpecificationsTypes) {
+                                        if (!specDescriptorMap.TryGetValue(spec, out var specDescriptor)) {
+                                            throw new InjectionException(
+                                                    Diagnostics.IncompleteSpecification,
+                                                    $"Cannot find required specification type {spec}"
+                                                    + $" while generating injection for type {injectorDescriptor.InjectorInterfaceType}.",
+                                                    injectorDescriptor.Location);
+                                        }
+
+                                        injectorSpecDescriptorMap.Add(spec, specDescriptor);
+                                    }
+                                    if (generatorSettings.allowConstructorFactories) {
+                                        var constructorSpecs = new SpecExtractor()
+                                                .ExtractConstructorSpecForContext(new DefinitionGenerationContext(
+                                                        injectorDescriptor,
+                                                        injectorDescriptorMap,
+                                                        injectorSpecDescriptorMap,
+                                                        externalDependencyDescriptorMap,
+                                                        ImmutableDictionary<RegistrationIdentifier, FactoryRegistration>.Empty,
+                                                        ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
+                                                        context));
+                                        
+                                        foreach (var constructorSpec in constructorSpecs) {
+                                            injectorSpecDescriptorMap.Add(constructorSpec.SpecType, constructorSpec);
+                                        }
                                     }
 
-                                    var constructorSpecs = new SpecExtractor()
-                                            .ExtractConstructorSpecForInjector(
-                                                    injectorDescriptor,
-                                                    descriptorGenerationContext);
-                                    foreach (var constructorSpec in constructorSpecs) {
-                                        injectorSpecDescriptorMap.Add(constructorSpec.SpecType, constructorSpec);
-                                    };
-                                    
                                     var definitionGenerationContext = new DefinitionGenerationContext(
                                             injectorDescriptor,
                                             injectorDescriptorMap,
@@ -195,9 +210,9 @@ namespace Phx.Inject.Generator {
                 //
                 // Render: Templates to Source.
                 //
-                var templateRenderer = new TemplateRenderer(() => new RenderWriter(renderSettings));
+                var templateRenderer = new TemplateRenderer(() => new RenderWriter(generatorSettings));
                 foreach (var (classType, template) in templates) {
-                    var fileName = $"{classType.QualifiedName}.{renderSettings.GeneratedFileExtension}";
+                    var fileName = $"{classType.QualifiedName}.{generatorSettings.GeneratedFileExtension}";
                     Logger.Info($"Rendering source for {fileName}");
                     templateRenderer.RenderTemplate(fileName, template, context);
                 }

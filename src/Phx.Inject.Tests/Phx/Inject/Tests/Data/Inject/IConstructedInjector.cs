@@ -16,6 +16,8 @@ namespace Phx.Inject.Tests.Data.Inject {
     internal interface IConstructedInjector {
         public IntLeaf GetIntLeaf();
         public ILeaf GetILeaf();
+
+        public OuterType GetOuterType();
     }
 
     [Injector]
