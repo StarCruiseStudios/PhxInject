@@ -55,10 +55,13 @@ namespace Phx.Inject.Generator.Common {
 
         public static ImmutableList<QualifiedTypeModel> GetConstructorParameterQualifiedTypes(ITypeSymbol type) {
             var typeLocation = type.Locations.First();
-            if (type.DeclaredAccessibility != Accessibility.Public || type.IsStatic || type.IsAbstract) {
+
+            var isVisible = type.DeclaredAccessibility == Accessibility.Public
+                    || type.DeclaredAccessibility == Accessibility.Internal;
+            if (!isVisible || type.IsStatic || type.IsAbstract) {
                 throw new InjectionException(
                         Diagnostics.InvalidSpecification,
-                        "Auto injected type must be public, non-static, and non-abstract.",
+                        "Auto injected type must be public or internal, non-static, and non-abstract.",
                         typeLocation);
             }
                 
