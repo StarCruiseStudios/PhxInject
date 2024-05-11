@@ -24,6 +24,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
 
         public SpecExtractor() : this(
                 new SpecDescriptor.Builder(
+                        new SpecFactoryDescriptor.Builder().BuildConstructorFactory,
                         new SpecFactoryDescriptor.Builder().BuildFactory,
                         new SpecFactoryDescriptor.Builder().BuildFactory,
                         new SpecFactoryDescriptor.Builder().BuildFactoryReference,

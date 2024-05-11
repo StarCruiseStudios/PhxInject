@@ -14,6 +14,11 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Common.Descriptors;
 
+    internal delegate SpecFactoryDescriptor CreateSpecConstructorFactoryDescriptor(
+            ITypeSymbol factoryType,
+            DescriptorGenerationContext context
+    );
+    
     internal delegate SpecFactoryDescriptor? CreateSpecFactoryMethodDescriptor(
             IMethodSymbol factoryMethod,
             DescriptorGenerationContext context
@@ -43,6 +48,52 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
             Location Location
     ) : IDescriptor {
         public class Builder {
+
+            public SpecFactoryDescriptor BuildConstructorFactory(
+                    ITypeSymbol factoryType,
+                    DescriptorGenerationContext context
+            ) {
+                var factoryLocation = factoryType.Locations.First();
+                TryGetConstructorFactoryFabricationMode(factoryType, factoryLocation, context, out var fabricationMode);
+
+
+                if (factoryType.DeclaredAccessibility != Accessibility.Public || factoryType.IsStatic || factoryType.IsAbstract) {
+                    throw new InjectionException(
+                            Diagnostics.InvalidSpecification,
+                            "Auto injected type must be public, non-static, and non-abstract.",
+                            factoryLocation);
+                }
+                
+                var constructors = factoryType
+                        .GetMembers()
+                        .OfType<IMethodSymbol>()
+                        .Where(m => m.MethodKind == MethodKind.Constructor && m.DeclaredAccessibility == Accessibility.Public)
+                        .ToList();
+                if (constructors.Count != 1) {
+                    throw new InjectionException(
+                            Diagnostics.InvalidSpecification,
+                            "Auto injected type must contain exactly one public constructor.",
+                            factoryLocation);
+                }
+
+                var constructorMethod = constructors.Single();
+                
+                var constructorParameterTypes = MetadataHelpers.GetMethodParametersQualifiedTypes(constructorMethod);
+                var qualifier = MetadataHelpers.GetQualifier(factoryType);
+                var returnTypeModel = TypeModel.FromTypeSymbol(factoryType);
+                var returnType = new QualifiedTypeModel(
+                        returnTypeModel,
+                        qualifier);
+
+                return new SpecFactoryDescriptor(
+                        returnType,
+                        factoryType.Name,
+                        SpecFactoryMemberType.Constructor,
+                        constructorParameterTypes,
+                        fabricationMode,
+                        factoryLocation);
+            }
+            
             public SpecFactoryDescriptor? BuildFactory(
                     IMethodSymbol factoryMethod,
                     DescriptorGenerationContext context) {
@@ -154,6 +205,34 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
             }
         }
 
+        private static bool TryGetConstructorFactoryFabricationMode(
+                ITypeSymbol constructorFactoryType,
+                Location constructorFactoryLocation,
+                DescriptorGenerationContext context,
+                out SpecFactoryMethodFabricationMode fabricationMode
+        ) {
+            var factoryAttributes = constructorFactoryType.GetFactoryAttributes();
+            var numFactoryAttributes = factoryAttributes.Count;
+            if (numFactoryAttributes == 0) {
+                // This is an implicit constructor factory.
+                fabricationMode = SpecFactoryMethodFabricationMode.Recurrent;
+                return false;
+            }
+
+            if (numFactoryAttributes > 1) {
+                throw new InjectionException(
+                        Diagnostics.InvalidSpecification,
+                        "Method or Property can only have a single factory attribute.",
+                        constructorFactoryLocation);
+            }
+
+            var factoryAttribute = factoryAttributes.Single();
+            fabricationMode = MetadataHelpers.GetFactoryFabricationMode(
+                    factoryAttribute,
+                    constructorFactoryLocation);
+            return true;
+        }
+        
         private static bool TryGetFactoryFabricationMode(
                 ISymbol factorySymbol,
                 Location factoryLocation,
