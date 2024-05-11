@@ -254,5 +254,31 @@ internal static class TestSpecification {
 }
 ```
 
+## Auto Dependencies
+Dependencies that are non-static, non-abstract, and public, and that contain a
+single constructor with parameters that are provided in the dependency graph or
+that also fit this criteria, can be automatically linked by the framework. 
+Simply declare the dependency as a parameter in a factory method and the
+framework will automatically link the dependency.
+
+Auto dependencies can also be scoped by applying a `Factory` attribute to the 
+class. This will ensure that they are scoped to the injector that contains them.
+By default, auto dependencies are `Recurrent`.
+
+```csharp
+[Factory(FabricationMode.Scoped)]
+public class AutoTypeWithFabricationMode {
+    public int X { get; } = 10;
+}
+
+public class AutoType {
+    public AutoTypeWithFabricationMode Y { get; }
+    
+    public AutoType(AutoTypeWithFabricationMode y) {
+        Y = y;
+    }
+}
+```
+
 ## Constructed Specifications
 See [Constructed Injectors](Injector.md#constructed-injectors).
