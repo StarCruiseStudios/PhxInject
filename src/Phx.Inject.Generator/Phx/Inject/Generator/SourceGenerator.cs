@@ -97,10 +97,23 @@ namespace Phx.Inject.Generator {
 
                 var injectionContextDefinitions = injectorDescriptors.Select(
                                 injectorDescriptor => {
+                                    var injectorSpecDescriptorMap = new Dictionary<TypeModel, SpecDescriptor>();
+                                    foreach (var entry in specDescriptorMap) {
+                                        injectorSpecDescriptorMap.Add(entry.Key, entry.Value);
+                                    }
+
+                                    var constructorSpecs = new SpecExtractor()
+                                            .ExtractConstructorSpecForInjector(
+                                                    injectorDescriptor,
+                                                    descriptorGenerationContext);
+                                    foreach (var constructorSpec in constructorSpecs) {
+                                        injectorSpecDescriptorMap.Add(constructorSpec.SpecType, constructorSpec);
+                                    };
+                                    
                                     var definitionGenerationContext = new DefinitionGenerationContext(
                                             injectorDescriptor,
                                             injectorDescriptorMap,
-                                            specDescriptorMap,
+                                            injectorSpecDescriptorMap,
                                             externalDependencyDescriptorMap,
                                             ImmutableDictionary<RegistrationIdentifier, FactoryRegistration>.Empty,
                                             ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,

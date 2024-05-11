@@ -17,6 +17,14 @@ namespace Phx.Inject.Generator.Common {
                 TypeArguments = ImmutableList<TypeModel>.Empty
             };
         }
+        
+        public static TypeModel CreateConstructorSpecContainerType(TypeModel injectorType) {
+            var specContainerTypeName = NameHelpers.GetAppendedClassName(injectorType, "ConstructorFactories");
+            return injectorType with {
+                BaseTypeName = specContainerTypeName,
+                TypeArguments = ImmutableList<TypeModel>.Empty
+            };
+        }
 
         public static TypeModel CreateSpecContainerCollectionType(TypeModel injectorType) {
             var specContainerCollectionTypeName = injectorType.GetSpecContainerCollectionTypeName();

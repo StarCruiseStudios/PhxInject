@@ -53,7 +53,12 @@ namespace Phx.Inject.Generator.Common {
         }
 
         public static string GetCombinedClassName(TypeModel prefixType, TypeModel suffixType) {
-            return $"{prefixType.BaseTypeName}_{suffixType.BaseTypeName}"
+            return GetAppendedClassName(prefixType, suffixType.BaseTypeName);
+
+        }
+
+        public static string GetAppendedClassName(TypeModel prefixType, string suffix) {
+            return $"{prefixType.BaseTypeName}_{suffix}"
                     .AsValidIdentifier()
                     .StartUppercase();
         }

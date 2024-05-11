@@ -12,7 +12,12 @@ namespace Phx.Inject.Generator.Common {
     using System.Text;
     using Microsoft.CodeAnalysis;
 
-    internal record TypeModel(string NamespaceName, string BaseTypeName, IImmutableList<TypeModel> TypeArguments) {
+    internal record TypeModel(
+            string NamespaceName,
+            string BaseTypeName,
+            IImmutableList<TypeModel> TypeArguments,
+            ITypeSymbol typeSymbol
+    ) {
         public string TypeName {
             get {
                 var builder = new StringBuilder(BaseTypeName);
@@ -57,7 +62,8 @@ namespace Phx.Inject.Generator.Common {
             return new TypeModel(
                     typeSymbol.ContainingNamespace.ToString(),
                     name,
-                    typeArguments);
+                    typeArguments,
+                    typeSymbol);
         }
     }
 }

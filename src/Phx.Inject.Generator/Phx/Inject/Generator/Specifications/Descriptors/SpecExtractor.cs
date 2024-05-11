@@ -14,17 +14,22 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Common.Descriptors;
+    using Phx.Inject.Generator.Injectors.Descriptors;
 
     internal class SpecExtractor {
         private readonly CreateSpecDescriptor createSpecDescriptor;
+        private readonly CreateConstructorSpecDescriptor createConstructorSpecDescriptor;
 
-        public SpecExtractor(CreateSpecDescriptor createSpecDescriptor) {
+        public SpecExtractor(
+                CreateSpecDescriptor createSpecDescriptor,
+                CreateConstructorSpecDescriptor createConstructorSpecDescriptor
+        ) {
             this.createSpecDescriptor = createSpecDescriptor;
+            this.createConstructorSpecDescriptor = createConstructorSpecDescriptor;
         }
 
         public SpecExtractor() : this(
                 new SpecDescriptor.Builder(
-                        new SpecFactoryDescriptor.Builder().BuildConstructorFactory,
                         new SpecFactoryDescriptor.Builder().BuildFactory,
                         new SpecFactoryDescriptor.Builder().BuildFactory,
                         new SpecFactoryDescriptor.Builder().BuildFactoryReference,
@@ -32,8 +37,24 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         new SpecBuilderDescriptor.Builder().BuildBuilder,
                         new SpecBuilderDescriptor.Builder().BuildBuilderReference,
                         new SpecBuilderDescriptor.Builder().BuildBuilderReference,
-                        new SpecLinkDescriptor.Builder().Build).Build) { }
+                        new SpecLinkDescriptor.Builder().Build).Build,
+                new SpecDescriptor.ConstructorBuilder(
+                        new SpecFactoryDescriptor.Builder().BuildConstructorFactory).BuildConstructorSpec
+        ) { }
 
+        public IReadOnlyList<SpecDescriptor> ExtractConstructorSpecForInjector(
+                InjectorDescriptor injectorDescriptor,
+                DescriptorGenerationContext context) {
+            this.createConstructorSpecDescriptor(
+                    injectorDescriptor.InjectorType,
+                    ImmutableList<ITypeSymbol>.Empty,
+                    context);
+            
+            // TODO: Identify constructor types and define the spec descriptor
+            
+            return ImmutableList<SpecDescriptor>.Empty;
+        }
+        
         public IReadOnlyList<SpecDescriptor> Extract(
                 IEnumerable<TypeDeclarationSyntax> syntaxNodes,
                 DescriptorGenerationContext context
