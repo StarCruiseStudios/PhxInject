@@ -39,12 +39,34 @@ namespace Phx.Inject.Generator.Specifications.Templates {
             }
 
             var referenceName = ConstructedSpecificationReference ?? SpecificationQualifiedType;
-
+            var numArguments = Arguments.Count();
             switch (SpecFactoryMemberType) {
                 case SpecFactoryMemberType.Method:
                 case SpecFactoryMemberType.Reference:
                     writer.Append($"{referenceName}.{SpecFactoryMemberName}");
-                    var numArguments = Arguments.Count();
+                    if (numArguments == 0) {
+                        writer.AppendLine("();");
+                    } else {
+                        writer.AppendLine("(")
+                                .IncreaseIndent(1);
+                        var isFirst = true;
+                        foreach (var argument in Arguments) {
+                            if (!isFirst) {
+                                writer.AppendLine(",");
+                            }
+
+                            isFirst = false;
+                            argument.Render(writer);
+                        }
+
+                        writer.AppendLine(");")
+                                .DecreaseIndent(1);
+                    }
+
+                    break;
+                
+                case SpecFactoryMemberType.Constructor:
+                    writer.Append($"new {ReturnTypeQualifiedName}");
                     if (numArguments == 0) {
                         writer.AppendLine("();");
                     } else {

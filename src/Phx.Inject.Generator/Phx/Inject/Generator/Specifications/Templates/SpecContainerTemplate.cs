@@ -78,6 +78,13 @@ namespace Phx.Inject.Generator.Specifications.Templates {
             //                  value,
             //                  specContainers.SomeSpecContainer.GetDependency(specContainers));
             //      }
+            //
+            //      public ConstructorFactoryType GetConstructorFactoryType(
+            //              SpecContainerCollectionType specContainers
+            //      ) {
+            //          return new ConstructorFactoryTYpe(
+            //                  specContainers.SomeSpecContainer.GetDependency(specContainers));
+            //      }
             foreach (var memberTemplate in MemberTemplates) {
                 writer.AppendBlankLine();
                 memberTemplate.Render(writer);
