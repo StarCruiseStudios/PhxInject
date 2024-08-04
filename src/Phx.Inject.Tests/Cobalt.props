@@ -18,7 +18,7 @@
     <RootNamespace></RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
+    <CompilerGeneratedFilesOutputPath>$(MSBuildProjectFullPath)\..\..\..\Example Generated Classes</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
   <!-- Dependencies -->
   <ItemGroup>

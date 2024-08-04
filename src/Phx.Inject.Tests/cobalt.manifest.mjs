@@ -30,7 +30,7 @@ export default {
                 ImplicitUsings: 'enable',
                 RootNamespace: '',
                 EmitCompilerGeneratedFiles: 'true',
-                CompilerGeneratedFilesOutputPath: '$(BaseIntermediateOutputPath)\\GeneratedFiles',
+                CompilerGeneratedFilesOutputPath: '$(MSBuildProjectFullPath)\\..\\..\\..\\Example Generated Classes',
             }
         });
         cobalt.dependencies.add(
