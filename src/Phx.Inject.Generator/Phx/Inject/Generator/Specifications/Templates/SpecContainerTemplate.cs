@@ -131,6 +131,7 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                                             SpecContainerCollectionReferenceName,
                                             argument.SpecContainerType.GetPropertyName(),
                                             argument.FactoryMethodName,
+                                            argument.RuntimeFactoryProvidedType?.QualifiedName,
                                             argument.Location))
                             .ToImmutableList();
 
@@ -157,6 +158,7 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                                             SpecContainerCollectionReferenceName,
                                             argument.SpecContainerType.GetPropertyName(),
                                             argument.FactoryMethodName,
+                                            argument.RuntimeFactoryProvidedType?.QualifiedName,
                                             argument.Location))
                             .ToImmutableList();
 

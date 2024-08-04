@@ -75,6 +75,7 @@ namespace Phx.Inject.Generator.External.Templates {
                                     specContainerCollectionReferenceName,
                                     provider.SpecContainerFactoryInvocation.SpecContainerType.GetPropertyName(),
                                     provider.SpecContainerFactoryInvocation.FactoryMethodName,
+                                    provider.SpecContainerFactoryInvocation.RuntimeFactoryProvidedType?.QualifiedName,
                                     provider.Location);
 
                             return new ExternalDependencyProviderMethodTemplate(

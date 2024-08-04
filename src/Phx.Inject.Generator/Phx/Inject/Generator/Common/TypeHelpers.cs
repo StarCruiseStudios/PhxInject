@@ -10,6 +10,8 @@ namespace Phx.Inject.Generator.Common {
     using System.Collections.Immutable;
 
     internal static class TypeHelpers {
+        public const string FactoryTypeName = "Phx.Inject.Factory";
+        
         public static TypeModel CreateSpecContainerType(TypeModel injectorType, TypeModel specType) {
             var specContainerTypeName = NameHelpers.GetCombinedClassName(injectorType, specType);
             return specType with {

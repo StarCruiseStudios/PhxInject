@@ -159,6 +159,7 @@ namespace Phx.Inject.Generator.Injectors.Templates {
                                             SpecContainerCollectionReferenceName,
                                             invocationDefinition.SpecContainerType.GetPropertyName(),
                                             invocationDefinition.FactoryMethodName,
+                                            invocationDefinition.RuntimeFactoryProvidedType?.QualifiedName,
                                             invocationDefinition.Location);
 
                                     return new InjectorProviderTemplate(

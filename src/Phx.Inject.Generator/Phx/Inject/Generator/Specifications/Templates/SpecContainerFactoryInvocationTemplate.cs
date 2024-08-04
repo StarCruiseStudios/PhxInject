@@ -8,17 +8,27 @@
 
 namespace Phx.Inject.Generator.Specifications.Templates {
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Common.Templates;
 
     internal record SpecContainerFactoryInvocationTemplate(
             string SpecContainerCollectionReferenceName,
             string SpecContainerReferenceName,
             string SpecContainerFactoryMethodName,
+            string? runtimeFactoryProvidedTypeQualifiedName,
             Location Location
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
+            if (runtimeFactoryProvidedTypeQualifiedName != null) {
+                writer.Append($"new {TypeHelpers.FactoryTypeName}<{runtimeFactoryProvidedTypeQualifiedName}>(() => ");
+            }
+
             writer.Append(
                     $"{SpecContainerCollectionReferenceName}.{SpecContainerReferenceName}.{SpecContainerFactoryMethodName}({SpecContainerCollectionReferenceName})");
+            
+            if (runtimeFactoryProvidedTypeQualifiedName != null) {
+                writer.Append(")");
+            }
         }
     }
 }

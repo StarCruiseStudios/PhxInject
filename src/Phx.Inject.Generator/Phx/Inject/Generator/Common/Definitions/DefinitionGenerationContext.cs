@@ -71,7 +71,16 @@ namespace Phx.Inject.Generator.Common.Definitions {
                         location);
             }
 
-            var key = RegistrationIdentifier.FromQualifiedTypeDescriptor(returnedType);
+            TypeModel? runtimeFactoryProvidedType = null;
+            var factoryType = returnedType;
+            if (returnedType.TypeModel.QualifiedBaseTypeName == TypeHelpers.FactoryTypeName) {
+                factoryType = returnedType with {
+                    TypeModel = returnedType.TypeModel.TypeArguments.Single()
+                };
+                runtimeFactoryProvidedType = factoryType.TypeModel;
+            }
+
+            var key = RegistrationIdentifier.FromQualifiedTypeDescriptor(factoryType);
             if (FactoryRegistrations.TryGetValue(key, out var factoryRegistration)) {
                 var specContainerType = TypeHelpers.CreateSpecContainerType(
                         Injector.InjectorType,
@@ -79,12 +88,13 @@ namespace Phx.Inject.Generator.Common.Definitions {
                 return new SpecContainerFactoryInvocationDefinition(
                         specContainerType,
                         factoryRegistration.FactoryDescriptor.GetSpecContainerFactoryName(),
+                        runtimeFactoryProvidedType,
                         factoryRegistration.FactoryDescriptor.Location);
             }
 
             throw new InjectionException(
                     Diagnostics.IncompleteSpecification,
-                    $"Cannot find factory for type {returnedType}"
+                    $"Cannot find factory for type {factoryType}"
                     + $" while generating injection for type {Injector.InjectorInterfaceType}.",
                     location);
         }

@@ -64,7 +64,14 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                     providedTypes.Add(factory.ReturnType);
                     
                     foreach (var parameterType in factory.Parameters) {
-                        neededTypes.Add(parameterType);
+                        if (parameterType.TypeModel.QualifiedBaseTypeName == TypeHelpers.FactoryTypeName) {
+                            var factoryType = parameterType with {
+                                TypeModel = parameterType.TypeModel.TypeArguments.Single()
+                            };
+                            neededTypes.Add(factoryType);
+                        } else {
+                            neededTypes.Add(parameterType);
+                        }
                     }
                 }
 

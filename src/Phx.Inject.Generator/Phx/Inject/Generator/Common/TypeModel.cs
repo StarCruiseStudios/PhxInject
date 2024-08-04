@@ -30,6 +30,8 @@ namespace Phx.Inject.Generator.Common {
                 return builder.ToString();
             }
         }
+        
+        public string QualifiedBaseTypeName => $"{NamespaceName}.{BaseTypeName}";
 
         public string QualifiedName => $"{NamespaceName}.{TypeName}";
 

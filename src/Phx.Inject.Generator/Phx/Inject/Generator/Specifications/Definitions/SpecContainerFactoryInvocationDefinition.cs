@@ -14,6 +14,7 @@ namespace Phx.Inject.Generator.Specifications.Definitions {
     internal record SpecContainerFactoryInvocationDefinition(
             TypeModel SpecContainerType,
             string FactoryMethodName,
+            TypeModel? RuntimeFactoryProvidedType,
             Location Location
     ) : IDefinition;
 }
