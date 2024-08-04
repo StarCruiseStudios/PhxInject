@@ -29,6 +29,8 @@ export default {
             props: {
                 ImplicitUsings: 'enable',
                 RootNamespace: '',
+                EmitCompilerGeneratedFiles: 'true',
+                CompilerGeneratedFilesOutputPath: '$(BaseIntermediateOutputPath)\\GeneratedFiles',
             }
         });
         cobalt.dependencies.add(

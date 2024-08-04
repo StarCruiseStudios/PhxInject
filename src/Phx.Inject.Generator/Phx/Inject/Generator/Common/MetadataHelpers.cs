@@ -61,7 +61,7 @@ namespace Phx.Inject.Generator.Common {
             if (!isVisible || type.IsStatic || type.IsAbstract) {
                 throw new InjectionException(
                         Diagnostics.InvalidSpecification,
-                        "Auto injected type must be public or internal, non-static, and non-abstract.",
+                        $"Auto injected type '{type.Name}' must be public or internal, non-static, and non-abstract.",
                         typeLocation);
             }
                 
@@ -73,7 +73,7 @@ namespace Phx.Inject.Generator.Common {
             if (constructors.Count != 1) {
                 throw new InjectionException(
                         Diagnostics.InvalidSpecification,
-                        "Auto injected type must contain exactly one public constructor.",
+                        $"Auto injected type '{type.Name}' must contain exactly one public constructor",
                         typeLocation);
             }
 

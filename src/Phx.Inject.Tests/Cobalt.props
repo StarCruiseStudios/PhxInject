@@ -17,6 +17,8 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RootNamespace></RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
   <!-- Dependencies -->
   <ItemGroup>

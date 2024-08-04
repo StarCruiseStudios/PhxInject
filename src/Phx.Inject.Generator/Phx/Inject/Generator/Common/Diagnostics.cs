@@ -7,10 +7,14 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Common {
+    using Microsoft.CodeAnalysis;
+
     internal static class Diagnostics {
         private const string InjectionCategory = "Injection";
         private const string PhxInjectIdPrefix = "PHXINJECT";
-
+        
+        private const string DebugMessageId = PhxInjectIdPrefix + "0000";
+        
         public static readonly DiagnosticData UnexpectedError = new(
                 PhxInjectIdPrefix + "0001",
                 "An unexpected error occurred.",
@@ -32,5 +36,19 @@ namespace Phx.Inject.Generator.Common {
                 InjectionCategory);
 
         internal record DiagnosticData(string Id, string Title, string Category);
+
+
+        public static GeneratorExecutionContext? GeneratorExecutionContext = null;
+
+        public static void Log(string message, Location? location) {
+            GeneratorExecutionContext?.ReportDiagnostic(Diagnostic.Create(new DiagnosticDescriptor(
+                id: DebugMessageId,
+                title: "Debug message",
+                messageFormat: message,
+                category: InjectionCategory,
+                DiagnosticSeverity.Info,
+                isEnabledByDefault: true
+            ), location));
+        }
     }
 }

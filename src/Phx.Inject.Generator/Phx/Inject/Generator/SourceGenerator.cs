@@ -50,6 +50,7 @@ namespace Phx.Inject.Generator {
         }
 
         public void Execute(GeneratorExecutionContext context) {
+            Diagnostics.GeneratorExecutionContext = context;
             try {
                 var syntaxReceiver = context.SyntaxReceiver as InjectorSyntaxReceiver
                         ?? throw new InjectionException(

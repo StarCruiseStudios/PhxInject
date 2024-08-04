@@ -8,10 +8,11 @@
 
 namespace Phx.Inject.Generator.Common {
     using System;
+    using Microsoft.CodeAnalysis;
 
     internal static class Logger {
-        public static void Info(string message) {
-            Console.Out.WriteLine(message);
+        public static void Info(string message, Location? location = null) {
+            Diagnostics.Log(message, null);
         }
 
         public static void Error(string message) {
