@@ -20,3 +20,4 @@
 * [Constructed Injectors](Injector.md#constructed-injectors)
   * [Constructed Specifications](Specification.md#constructed-specifications)
 * [Auto Dependencies](Specification.md#auto-dependencies)
+* [Runtime Factories](Specification.md#runtime-factories)

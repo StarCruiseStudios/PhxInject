@@ -280,5 +280,28 @@ public class AutoType {
 }
 ```
 
+## Runtime Factories
+Sometimes a factory method needs to be called one or more times at runtime, instead
+of when the injector is created. This can be done using a runtime factory by 
+declaring a dependency on a `Factory<T>` type.
+
+```csharp
+[Specification]
+internal static class RuntimeFactorySpecification {
+    [Factory]
+    internal static MyClass GetMyClass(int intValue) {
+        return new MyClass(intValue);
+    }
+    
+    [Factory]
+    internal static MyOtherClass GetMyOtherClass(Phx.Inject.Factory<MyClass> factory) {
+        return new MyOtherClass(factory.Create);
+    }
+}
+```
+
+Instead of injector the constructed instance of `MyClass`, this will inject a 
+`Factory` instance that can be used to create an instance of `MyClass` at runtime.
+
 ## Constructed Specifications
 See [Constructed Injectors](Injector.md#constructed-injectors).
