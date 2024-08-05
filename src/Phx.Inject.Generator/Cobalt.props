@@ -3,7 +3,7 @@
   <!-- Project Information -->
   <PropertyGroup>
     <PackageId>Phx.Inject.Generator</PackageId>
-    <Version>0.5.2</Version>
+    <Version>0.6.0</Version>
     <Description>Roslyn based Dependency Injection Generator.</Description>
     <Authors>Star Cruise Studios LLC</Authors>
     <Company>Star Cruise Studios LLC</Company>
@@ -26,7 +26,7 @@
   </PropertyGroup>
   <!-- Dependencies -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Csharp" Version="4.3.*" />
-    <PackageReference Include="Phx.Inject" Version="0.5.*" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Csharp" Version="[4.3.0,)" />
+    <PackageReference Include="Phx.Inject" Version="[0.5.0,)" />
   </ItemGroup>
 </Project>

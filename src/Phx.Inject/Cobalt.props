@@ -3,7 +3,7 @@
   <!-- Project Information -->
   <PropertyGroup>
     <PackageId>Phx.Inject</PackageId>
-    <Version>0.5.1</Version>
+    <Version>0.6.0</Version>
     <Description>Roslyn based Dependency Injection.</Description>
     <Authors>Star Cruise Studios LLC</Authors>
     <Company>Star Cruise Studios LLC</Company>
