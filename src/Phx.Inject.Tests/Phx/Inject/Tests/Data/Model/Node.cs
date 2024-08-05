@@ -15,5 +15,9 @@ namespace Phx.Inject.Tests.Data.Model {
             Left = left;
             Right = right;
         }
+        
+        public override string ToString() {
+            return $"Node({Left}, {Right})";
+        }
     }
 }

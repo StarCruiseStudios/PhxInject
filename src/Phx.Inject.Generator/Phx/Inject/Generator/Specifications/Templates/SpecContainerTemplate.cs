@@ -56,7 +56,7 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                         .AppendLine("}");
             }
             
-            //      internal SpecContainerClassName Clone() {
+            //      internal SpecContainerClassName CreateNewFrame() {
             //          var c = new SpecContainerClassName();
             //          c.scopedInstanceType = this.scopedInstanceType;
             //          return c;
@@ -73,7 +73,10 @@ namespace Phx.Inject.Generator.Specifications.Templates {
             }
 
             foreach (var instanceHolder in InstanceHolders) {
-                writer.AppendLine($"newFrame.{instanceHolder.ReferenceName} = this.{instanceHolder.ReferenceName};");
+                if (!instanceHolder.isContainerScoped) {
+                    writer.AppendLine(
+                        $"newFrame.{instanceHolder.ReferenceName} = this.{instanceHolder.ReferenceName};");
+                }
             }
             
             writer.Append("return newFrame;")
@@ -142,12 +145,14 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                 // Create factory methods and instance holder declarations.
                 foreach (var factoryMethod in specContainerDefinition.FactoryMethodDefinitions) {
                     string? instanceHolderReferenceName = null;
-                    if (factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.Scoped) {
+                    if (factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.Scoped 
+                            || factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.ContainerScoped) {
                         instanceHolderReferenceName = factoryMethod.ReturnType.GetVariableName();
                         instanceHolders.Add(
                                 new SpecContainerInstanceHolder(
                                         factoryMethod.ReturnType.TypeModel.QualifiedName,
-                                        instanceHolderReferenceName));
+                                        instanceHolderReferenceName,
+                                        isContainerScoped: factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.ContainerScoped));
                     }
 
                     var arguments = factoryMethod.Arguments
@@ -178,6 +183,8 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                             })
                             .ToImmutableList();
 
+                    var startNewContainer = factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.Container;
+                    
                     memberTemplates.Add(
                             new SpecContainerFactoryTemplate(
                                     factoryMethod.ReturnType.TypeModel.QualifiedName,
@@ -187,6 +194,7 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                                     context.Injector.SpecContainerCollectionType.QualifiedName,
                                     SpecContainerCollectionReferenceName,
                                     instanceHolderReferenceName,
+                                    startNewContainer,
                                     constructedSpecificationReference,
                                     specContainerDefinition.SpecificationType.QualifiedName,
                                     arguments,

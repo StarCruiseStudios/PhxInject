@@ -125,6 +125,49 @@ internal static class TestSpecification {
 }
 ```
 
+A factory defined with the `Container` fabrication mode will construct a new 
+instance each time it is invoked, similar to the `Recurrent` mode, but any 
+dependencies that use the `ContainerScoped` fabrication mode will be reused
+within the container.
+
+> **Note:** A `Container` scoped factory consumed by another `Container` scoped factory
+> will define a new container, and will not share any `ContainerScoped` dependencies
+> with the parent container.
+
+```csharp
+[Specification]
+internal static class TestSpecification {
+    private static int currentInt = 0;
+    
+    [Factory(FabricationMode.ContainerScoped)]
+    internal static int GetInt() {
+        return currentInt++;
+    }
+    
+    [Factory]
+    [Partial]
+    internal static List<IntLeaf> GetIntLeaf1(IntLeaf leaf) {
+        return new List<IntLeaf> { leaf };
+    }
+    
+    [Factory]
+    [Partial]
+    internal static List<IntLeaf> GetIntLeaf2(IntLeaf leaf) {
+        return new List<IntLeaf> { leaf };
+    }
+
+    [Factory(FabricationMode.Container)]
+    internal static Node GetNode(List<IntLeaf> leaves) {
+        var left = leaves[0];
+        var right = leaves[1];
+        return new Node(left, right);
+    }
+}
+```
+In the example above, each `Node` will contain `IntLeaf` instances that both
+have the same `int` value. But each new `Node` instance created will use a 
+different `int` value.
+
 ## Qualifiers
 Qualifiers are attributes that differentiate dependencies of the same type.
 

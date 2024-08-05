@@ -9,6 +9,7 @@
 namespace Phx.Inject.Generator.Specifications.Templates {
     internal record SpecContainerInstanceHolder(
             string InstanceQualifiedType,
-            string ReferenceName
+            string ReferenceName,
+            bool isContainerScoped
     );
 }

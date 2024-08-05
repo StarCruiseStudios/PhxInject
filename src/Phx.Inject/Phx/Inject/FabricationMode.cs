@@ -19,6 +19,18 @@ namespace Phx.Inject {
         ///     Indicates that the factory method should construct a new instance each time it is
         ///     invoked.
         /// </summary>
-        Recurrent
+        Recurrent,
+        
+        /// <summary>
+        ///     Indicates that the factory method should construct a new instance each time it is
+        ///     invoked and create a new container for child container scoped dependencies.
+        /// </summary>
+        Container,
+        
+        /// <summary>
+        ///     Indicates that the factory method should only construct a single instance within a given
+        ///     container. Returning that first instance on all invocations after the first.
+        /// </summary>
+        ContainerScoped,
     }
 }

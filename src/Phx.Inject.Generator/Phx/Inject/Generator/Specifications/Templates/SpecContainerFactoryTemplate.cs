@@ -21,19 +21,29 @@ namespace Phx.Inject.Generator.Specifications.Templates {
             string SpecContainerCollectionQualifiedType,
             string SpecContainerCollectionReferenceName,
             string? InstanceHolderReference,
+            bool startNewContainer,
             string? ConstructedSpecificationReference,
             string SpecificationQualifiedType,
             IEnumerable<SpecContainerFactoryInvocationTemplate> Arguments,
             Location Location
     ) : ISpecContainerMemberTemplate {
         public void Render(IRenderWriter writer) {
+            var specContainerCollectionArgName = startNewContainer ? "parentSpecContainer" : SpecContainerCollectionReferenceName;
+
             writer.AppendLine($"internal {ReturnTypeQualifiedName} {SpecContainerFactoryMethodName}(")
                     .IncreaseIndent(2)
-                    .AppendLine($"{SpecContainerCollectionQualifiedType} {SpecContainerCollectionReferenceName}")
+                    .AppendLine($"{SpecContainerCollectionQualifiedType} {specContainerCollectionArgName}")
                     .DecreaseIndent(2)
                     .AppendLine(") {")
-                    .IncreaseIndent(1)
-                    .Append("return ");
+                    .IncreaseIndent(1);
+
+            if (startNewContainer) {
+                writer.AppendLine(
+                    $"var {SpecContainerCollectionReferenceName} = parentSpecContainer.CreateNewFrame();");
+            }
+            
+            
+            writer.Append("return ");
             if (!string.IsNullOrEmpty(InstanceHolderReference)) {
                 writer.Append($"{InstanceHolderReference} ??= ");
             }
