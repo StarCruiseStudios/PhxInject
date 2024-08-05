@@ -46,7 +46,7 @@ namespace Phx.Inject.Generator.Common.Definitions {
                     InjectorDescriptor injectorDescriptor,
                     DefinitionGenerationContext context
             ) {
-                var factoryRegistrations = new Dictionary<RegistrationIdentifier, FactoryRegistration>();
+                var factoryRegistrations = new Dictionary<RegistrationIdentifier, List<FactoryRegistration>>();
                 var builderRegistrations = new Dictionary<RegistrationIdentifier, BuilderRegistration>();
 
                 var specDescriptors = context.Specifications.Values.ToImmutableList();
@@ -54,9 +54,21 @@ namespace Phx.Inject.Generator.Common.Definitions {
                 // Create a registration for all of the spec descriptors' factory and builder methods.
                 foreach (var specDescriptor in specDescriptors) {
                     foreach (var factory in specDescriptor.Factories) {
-                        factoryRegistrations.Add(
-                                RegistrationIdentifier.FromQualifiedTypeDescriptor(factory.ReturnType),
-                                new FactoryRegistration(specDescriptor, factory));
+                        List<FactoryRegistration> registrationList;
+                        var key = RegistrationIdentifier.FromQualifiedTypeDescriptor(factory.ReturnType);
+                        if (factoryRegistrations.TryGetValue(key, out registrationList)) {
+                            if (!registrationList.First().FactoryDescriptor.isPartial || !factory.isPartial) {
+                                throw new InjectionException(
+                                        Diagnostics.InvalidSpecification,
+                                        $"Factory for type {factory.ReturnType} must be unique or all factories must be partial.",
+                                        factory.Location);
+                            }
+                        } else {
+                            registrationList = new List<FactoryRegistration>();
+                            factoryRegistrations.Add(key, registrationList);
+                        }
+                        
+                        registrationList.Add(new FactoryRegistration(specDescriptor, factory));
                     }
 
                     foreach (var builder in specDescriptor.Builders) {

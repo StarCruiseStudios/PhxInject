@@ -22,6 +22,7 @@ namespace Phx.Inject.Generator.Common {
         private const string InjectorAttributeClassName = "Phx.Inject.InjectorAttribute";
         private const string LabelAttributeClassName = "Phx.Inject.LabelAttribute";
         private const string LinkAttributeClassName = "Phx.Inject.LinkAttribute";
+        private const string PartialAttributeClassName = "Phx.Inject.PartialAttribute";
         private const string QualifierAttributeClassName = "Phx.Inject.QualifierAttribute";
         private const string SpecificationAttributeClassName = "Phx.Inject.SpecificationAttribute";
 
@@ -82,6 +83,10 @@ namespace Phx.Inject.Generator.Common {
 
         public static IList<AttributeData> GetChildInjectorAttributes(this ISymbol childInjectorMethodSymbol) {
             return GetAttributes(childInjectorMethodSymbol, ChildInjectorAttributeClassName);
+        }
+        
+        public static IList<AttributeData> GetPartialAttributes(this ISymbol partialMethodSymbol) {
+            return GetAttributes(partialMethodSymbol, PartialAttributeClassName);
         }
 
         private static IList<AttributeData> GetAttributes(ISymbol symbol, string attributeClassName) {

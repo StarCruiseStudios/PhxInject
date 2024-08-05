@@ -71,12 +71,29 @@ namespace Phx.Inject.Generator.External.Templates {
                 var specContainerCollectionReferenceName = "specContainers";
                 var providerMethods = externalDependencyImplementationDefinition.ProviderMethodDefinitions.Select(
                         provider => {
+                            var singleInvocationTemplates =
+                                provider.SpecContainerFactoryInvocation.FactoryInvocationDefinitions.Select(
+                                    def => {
+                                        return new SpecContainerFactorySingleInvocationTemplate(
+                                            specContainerCollectionReferenceName,
+                                            def.SpecContainerType.GetPropertyName(),
+                                            def.FactoryMethodName,
+                                            def.Location
+                                        );
+                                    }).ToList();
+
+                            string? multiBindQualifiedTypeArgs = null;
+                            if (provider.SpecContainerFactoryInvocation.FactoryInvocationDefinitions.Count > 1) {
+                                multiBindQualifiedTypeArgs =
+                                    TypeHelpers.GetQualifiedTypeArgs(
+                                        provider.SpecContainerFactoryInvocation.FactoryReturnType);
+                            }
+                            
                             var factoryInvocation = new SpecContainerFactoryInvocationTemplate(
-                                    specContainerCollectionReferenceName,
-                                    provider.SpecContainerFactoryInvocation.SpecContainerType.GetPropertyName(),
-                                    provider.SpecContainerFactoryInvocation.FactoryMethodName,
-                                    provider.SpecContainerFactoryInvocation.RuntimeFactoryProvidedType?.QualifiedName,
-                                    provider.Location);
+                                singleInvocationTemplates,
+                                multiBindQualifiedTypeArgs,
+                                provider.SpecContainerFactoryInvocation.RuntimeFactoryProvidedType?.QualifiedName,
+                                provider.Location);
 
                             return new ExternalDependencyProviderMethodTemplate(
                                     provider.ProvidedType.QualifiedName,

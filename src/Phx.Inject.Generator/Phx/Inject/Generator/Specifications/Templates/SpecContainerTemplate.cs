@@ -126,13 +126,31 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                     }
 
                     var arguments = factoryMethod.Arguments
-                            .Select(
-                                    argument => new SpecContainerFactoryInvocationTemplate(
-                                            SpecContainerCollectionReferenceName,
-                                            argument.SpecContainerType.GetPropertyName(),
-                                            argument.FactoryMethodName,
-                                            argument.RuntimeFactoryProvidedType?.QualifiedName,
-                                            argument.Location))
+                            .Select(argument => {
+                                var singleInvocationTemplates =
+                                    argument.FactoryInvocationDefinitions.Select(
+                                        def => {
+                                            return new SpecContainerFactorySingleInvocationTemplate(
+                                                SpecContainerCollectionReferenceName,
+                                                def.SpecContainerType.GetPropertyName(),
+                                                def.FactoryMethodName,
+                                                def.Location
+                                            );
+                                        }).ToList();
+                                
+                                string? multiBindQualifiedTypeArgs = null;
+                                if (argument.FactoryInvocationDefinitions.Count > 1) {
+                                    multiBindQualifiedTypeArgs =
+                                        TypeHelpers.GetQualifiedTypeArgs(
+                                            argument.FactoryReturnType);
+                                }
+                                
+                                return new SpecContainerFactoryInvocationTemplate(
+                                    singleInvocationTemplates,
+                                    multiBindQualifiedTypeArgs,
+                                    argument.RuntimeFactoryProvidedType?.QualifiedName,
+                                    argument.Location);
+                            })
                             .ToImmutableList();
 
                     memberTemplates.Add(
@@ -153,13 +171,31 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                 // Create builder methods.
                 foreach (var builderMethod in specContainerDefinition.BuilderMethodDefinitions) {
                     var arguments = builderMethod.Arguments
-                            .Select(
-                                    argument => new SpecContainerFactoryInvocationTemplate(
-                                            SpecContainerCollectionReferenceName,
-                                            argument.SpecContainerType.GetPropertyName(),
-                                            argument.FactoryMethodName,
-                                            argument.RuntimeFactoryProvidedType?.QualifiedName,
-                                            argument.Location))
+                            .Select(argument => {
+                                var singleInvocationTemplates =
+                                    argument.FactoryInvocationDefinitions.Select(
+                                        def => {
+                                            return new SpecContainerFactorySingleInvocationTemplate(
+                                                SpecContainerCollectionReferenceName,
+                                                def.SpecContainerType.GetPropertyName(),
+                                                def.FactoryMethodName,
+                                                def.Location
+                                            );
+                                        }).ToList();
+                                
+                                string? multiBindQualifiedTypeArgs = null;
+                                if (argument.FactoryInvocationDefinitions.Count > 1) {
+                                    multiBindQualifiedTypeArgs =
+                                        TypeHelpers.GetQualifiedTypeArgs(
+                                            argument.FactoryReturnType);
+                                }
+                                
+                                return new SpecContainerFactoryInvocationTemplate(
+                                    singleInvocationTemplates,
+                                    multiBindQualifiedTypeArgs,
+                                    argument.RuntimeFactoryProvidedType?.QualifiedName,
+                                    argument.Location);
+                            })
                             .ToImmutableList();
 
                     memberTemplates.Add(

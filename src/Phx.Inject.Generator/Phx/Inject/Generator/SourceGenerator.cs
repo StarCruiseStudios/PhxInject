@@ -117,7 +117,7 @@ namespace Phx.Inject.Generator {
                                                         injectorDescriptorMap,
                                                         injectorSpecDescriptorMap,
                                                         externalDependencyDescriptorMap,
-                                                        ImmutableDictionary<RegistrationIdentifier, FactoryRegistration>.Empty,
+                                                        ImmutableDictionary<RegistrationIdentifier, List<FactoryRegistration>>.Empty,
                                                         ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
                                                         context));
                                         
@@ -131,7 +131,7 @@ namespace Phx.Inject.Generator {
                                             injectorDescriptorMap,
                                             injectorSpecDescriptorMap,
                                             externalDependencyDescriptorMap,
-                                            ImmutableDictionary<RegistrationIdentifier, FactoryRegistration>.Empty,
+                                            ImmutableDictionary<RegistrationIdentifier, List<FactoryRegistration>>.Empty,
                                             ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
                                             context);
 

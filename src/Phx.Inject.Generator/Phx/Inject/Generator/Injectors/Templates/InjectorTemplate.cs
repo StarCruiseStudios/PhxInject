@@ -155,13 +155,28 @@ namespace Phx.Inject.Generator.Injectors.Templates {
                 IEnumerable<IInjectorMemberTemplate> injectorMemberTemplates = injectorDefinition.Providers.Select(
                                 provider => {
                                     var invocationDefinition = provider.SpecContainerFactoryInvocation;
-                                    var factoryInvocation = new SpecContainerFactoryInvocationTemplate(
+                                    
+                                    var singleInvocationTemplates = invocationDefinition.FactoryInvocationDefinitions.Select(def => {
+                                        return new SpecContainerFactorySingleInvocationTemplate(
                                             SpecContainerCollectionReferenceName,
-                                            invocationDefinition.SpecContainerType.GetPropertyName(),
-                                            invocationDefinition.FactoryMethodName,
-                                            invocationDefinition.RuntimeFactoryProvidedType?.QualifiedName,
-                                            invocationDefinition.Location);
-
+                                            def.SpecContainerType.GetPropertyName(),
+                                            def.FactoryMethodName,
+                                            def.Location
+                                        );
+                                    }).ToList();
+                                    
+                                    string? multiBindQualifiedTypeArgs = null;
+                                    if (invocationDefinition.FactoryInvocationDefinitions.Count > 1) {
+                                        multiBindQualifiedTypeArgs =
+                                            TypeHelpers.GetQualifiedTypeArgs(invocationDefinition.FactoryReturnType);
+                                    }
+                                    
+                                    var factoryInvocation = new SpecContainerFactoryInvocationTemplate(
+                                        singleInvocationTemplates,
+                                        multiBindQualifiedTypeArgs,
+                                        invocationDefinition.RuntimeFactoryProvidedType?.QualifiedName,
+                                        invocationDefinition.Location);
+                                    
                                     return new InjectorProviderTemplate(
                                             provider.ProvidedType.TypeModel.QualifiedName,
                                             provider.InjectorProviderMethodName,

@@ -34,6 +34,7 @@ namespace Phx.Inject.Generator.External.Descriptors {
                                     SpecFactoryMemberType.Method,
                                     ImmutableList<QualifiedTypeModel>.Empty,
                                     SpecFactoryMethodFabricationMode.Recurrent,
+                                    provider.isPartial,
                                     provider.Location))
                     .ToImmutableList();
 

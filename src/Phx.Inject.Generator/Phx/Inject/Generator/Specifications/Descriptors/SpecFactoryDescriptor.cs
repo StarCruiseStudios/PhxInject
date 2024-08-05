@@ -44,6 +44,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
             SpecFactoryMemberType SpecFactoryMemberType,
             IEnumerable<QualifiedTypeModel> Parameters,
             SpecFactoryMethodFabricationMode FabricationMode,
+            bool isPartial,
             Location Location
     ) : IDescriptor {
         public class Builder {
@@ -67,6 +68,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         SpecFactoryMemberType.Constructor,
                         constructorParameterTypes,
                         fabricationMode,
+                        false, // Constructor factories cannot be partial
                         factoryLocation);
             }
             
@@ -87,6 +89,9 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                 var returnType = new QualifiedTypeModel(
                         returnTypeModel,
                         qualifier);
+                
+                var isPartial = GetIsPartial(factoryMethod);
+                TypeHelpers.ValidatePartialType(returnType, isPartial, factoryLocation);
 
                 return new SpecFactoryDescriptor(
                         returnType,
@@ -94,6 +99,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         SpecFactoryMemberType.Method,
                         methodParameterTypes,
                         fabricationMode,
+                        isPartial,
                         factoryLocation);
             }
 
@@ -115,12 +121,16 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         returnTypeModel,
                         qualifier);
 
+                var isPartial = GetIsPartial(factoryProperty);
+                TypeHelpers.ValidatePartialType(returnType, isPartial, factoryLocation);
+                
                 return new SpecFactoryDescriptor(
                         returnType,
                         factoryProperty.Name,
                         SpecFactoryMemberType.Property,
                         methodParameterTypes,
                         fabricationMode,
+                        isPartial,
                         factoryLocation);
             }
 
@@ -142,6 +152,8 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         factoryReferenceLocation,
                         out var returnType,
                         out var parameterTypes);
+                var isPartial = GetIsPartial(factoryReferenceProperty);
+                TypeHelpers.ValidatePartialType(returnType, isPartial, factoryReferenceLocation);
 
                 return new SpecFactoryDescriptor(
                         returnType,
@@ -149,6 +161,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         SpecFactoryMemberType.Reference,
                         parameterTypes,
                         fabricationMode,
+                        isPartial,
                         factoryReferenceLocation);
             }
 
@@ -170,6 +183,8 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         factoryReferenceLocation,
                         out var returnType,
                         out var parameterTypes);
+                var isPartial = GetIsPartial(factoryReferenceField);
+                TypeHelpers.ValidatePartialType(returnType, isPartial, factoryReferenceLocation);
 
                 return new SpecFactoryDescriptor(
                         returnType,
@@ -177,6 +192,7 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                         SpecFactoryMemberType.Reference,
                         parameterTypes,
                         fabricationMode,
+                        isPartial,
                         factoryReferenceLocation);
             }
         }
@@ -312,6 +328,11 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
                             .Select(typeArgument => TypeModel.FromTypeSymbol(typeArgument))
                             .Select(typeModel => new QualifiedTypeModel(typeModel, QualifiedTypeModel.NoQualifier))
                             .ToImmutableList();
+        }
+        
+        private static bool GetIsPartial(ISymbol factorySymbol) {
+            var partialAttributes = AttributeHelpers.GetPartialAttributes(factorySymbol);
+            return partialAttributes.Any();
         }
     }
 }

@@ -20,6 +20,7 @@ namespace Phx.Inject.Generator.External.Descriptors {
     internal record ExternalDependencyProviderDescriptor(
             QualifiedTypeModel ProvidedType,
             string ProviderMethodName,
+            bool isPartial,
             Location Location
     ) : IDescriptor {
         public class Builder {
@@ -42,13 +43,28 @@ namespace Phx.Inject.Generator.External.Descriptors {
                             $"External dependency provider {providerMethod.Name} must not have any parameters.",
                             providerLocation);
                 }
-
-                var returnType = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
+                
+                var partialAttributes = AttributeHelpers.GetPartialAttributes(providerMethod);
+                
                 var qualifier = MetadataHelpers.GetQualifier(providerMethod);
+                var returnTypeModel = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
+                var returnType = new QualifiedTypeModel(
+                    returnTypeModel,
+                    qualifier);
+                
+                var isPartial = partialAttributes.Any();
+                TypeHelpers.ValidatePartialType(returnType, isPartial, providerLocation);
+                
                 return new ExternalDependencyProviderDescriptor(
-                        new QualifiedTypeModel(returnType, qualifier),
+                        returnType,
                         providerMethod.Name,
+                        isPartial,
                         providerLocation);
+            }
+        
+            private static bool GetIsPartial(ISymbol factorySymbol) {
+                var partialAttributes = AttributeHelpers.GetPartialAttributes(factorySymbol);
+                return partialAttributes.Any();
             }
         }
     }

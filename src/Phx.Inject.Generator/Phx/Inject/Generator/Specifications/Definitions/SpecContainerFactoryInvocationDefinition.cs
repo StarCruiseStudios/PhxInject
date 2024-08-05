@@ -12,9 +12,9 @@ namespace Phx.Inject.Generator.Specifications.Definitions {
     using Phx.Inject.Generator.Common.Definitions;
 
     internal record SpecContainerFactoryInvocationDefinition(
-            TypeModel SpecContainerType,
-            string FactoryMethodName,
-            TypeModel? RuntimeFactoryProvidedType,
-            Location Location
+        List<SpecContainerFactorySingleInvocationDefinition> FactoryInvocationDefinitions,
+        QualifiedTypeModel FactoryReturnType,
+        TypeModel? RuntimeFactoryProvidedType,
+        Location Location
     ) : IDefinition;
 }

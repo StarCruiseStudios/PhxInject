@@ -8,9 +8,37 @@
 
 namespace Phx.Inject.Generator.Common {
     using System.Collections.Immutable;
+    using Microsoft.CodeAnalysis;
 
     internal static class TypeHelpers {
         public const string FactoryTypeName = "Phx.Inject.Factory";
+        public const string InjectionUtilTypeName = "Phx.Inject.InjectionUtil";
+        public const string ListTypeName = "System.Collections.Generic.List";
+        public const string HashSetTypeName = "System.Collections.Generic.HashSet";
+        public const string DictionaryTypeName = "System.Collections.Generic.Dictionary";
+        
+        private static readonly HashSet<string> MultiBindTypes = new() {
+            ListTypeName,
+            HashSetTypeName,
+            DictionaryTypeName
+        };
+        
+        public static void ValidatePartialType(QualifiedTypeModel returnType, bool isPartial, Location location) {
+            if (isPartial) {
+                if (!MultiBindTypes.Contains(returnType.TypeModel.QualifiedBaseTypeName)) {
+                    throw new InjectionException(
+                        Diagnostics.InvalidSpecification,
+                        "Partial factories must return a List, HashSet, or Dictionary.",
+                        location);
+                }
+            }
+        }
+
+        public static string GetQualifiedTypeArgs(QualifiedTypeModel type) {
+            return string.Join(
+                ", ",
+                type.TypeModel.TypeArguments.Select(arg => arg.QualifiedName));
+        }
         
         public static TypeModel CreateSpecContainerType(TypeModel injectorType, TypeModel specType) {
             var specContainerTypeName = NameHelpers.GetCombinedClassName(injectorType, specType);

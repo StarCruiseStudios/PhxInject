@@ -12,9 +12,8 @@ namespace Phx.Inject.Generator.Specifications.Templates {
     using Phx.Inject.Generator.Common.Templates;
 
     internal record SpecContainerFactoryInvocationTemplate(
-            string SpecContainerCollectionReferenceName,
-            string SpecContainerReferenceName,
-            string SpecContainerFactoryMethodName,
+            List<SpecContainerFactorySingleInvocationTemplate> FactoryInvocationTemplates,
+            string? multiBindQualifiedTypeArgs,
             string? runtimeFactoryProvidedTypeQualifiedName,
             Location Location
     ) : IRenderTemplate {
@@ -23,8 +22,26 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                 writer.Append($"new {TypeHelpers.FactoryTypeName}<{runtimeFactoryProvidedTypeQualifiedName}>(() => ");
             }
 
-            writer.Append(
-                    $"{SpecContainerCollectionReferenceName}.{SpecContainerReferenceName}.{SpecContainerFactoryMethodName}({SpecContainerCollectionReferenceName})");
+            if (FactoryInvocationTemplates.Count == 1) {
+                FactoryInvocationTemplates[0].Render(writer);
+            } else {
+                writer.Append($"{TypeHelpers.InjectionUtilTypeName}.Combine<{multiBindQualifiedTypeArgs}> (");
+                writer.IncreaseIndent(1);
+                writer.AppendLine();
+                var isFirst = true;
+                foreach (var factoryInvocationTemplate in FactoryInvocationTemplates) {
+                    if (!isFirst) {
+                        writer.Append(",");
+                        writer.AppendLine();
+                    }
+
+                    isFirst = false;
+                    factoryInvocationTemplate.Render(writer);
+                }
+                writer.DecreaseIndent(1);
+                writer.AppendLine();
+                writer.Append(")");
+            }
             
             if (runtimeFactoryProvidedTypeQualifiedName != null) {
                 writer.Append(")");

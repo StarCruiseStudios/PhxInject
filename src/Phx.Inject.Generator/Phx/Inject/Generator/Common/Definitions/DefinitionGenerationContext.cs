@@ -19,7 +19,7 @@ namespace Phx.Inject.Generator.Common.Definitions {
             IReadOnlyDictionary<TypeModel, InjectorDescriptor> Injectors,
             IReadOnlyDictionary<TypeModel, SpecDescriptor> Specifications,
             IReadOnlyDictionary<TypeModel, ExternalDependencyDescriptor> ExternalDependencies,
-            IReadOnlyDictionary<RegistrationIdentifier, FactoryRegistration> FactoryRegistrations,
+            IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> FactoryRegistrations,
             IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> BuilderRegistrations,
             GeneratorExecutionContext GenerationContext
     ) {
@@ -82,14 +82,22 @@ namespace Phx.Inject.Generator.Common.Definitions {
 
             var key = RegistrationIdentifier.FromQualifiedTypeDescriptor(factoryType);
             if (FactoryRegistrations.TryGetValue(key, out var factoryRegistration)) {
-                var specContainerType = TypeHelpers.CreateSpecContainerType(
+                var singleInvocationDefinitions = factoryRegistration.Select(reg => {
+                    var specContainerType = TypeHelpers.CreateSpecContainerType(
                         Injector.InjectorType,
-                        factoryRegistration.Specification.SpecType);
-                return new SpecContainerFactoryInvocationDefinition(
+                        reg.Specification.SpecType);
+                    return new SpecContainerFactorySingleInvocationDefinition(
                         specContainerType,
-                        factoryRegistration.FactoryDescriptor.GetSpecContainerFactoryName(),
-                        runtimeFactoryProvidedType,
-                        factoryRegistration.FactoryDescriptor.Location);
+                        reg.FactoryDescriptor.GetSpecContainerFactoryName(),
+                        reg.FactoryDescriptor.Location
+                    );
+                }).ToList();
+
+                return new SpecContainerFactoryInvocationDefinition(
+                    singleInvocationDefinitions,
+                    factoryType,
+                    runtimeFactoryProvidedType,
+                    location);
             }
 
             throw new InjectionException(
