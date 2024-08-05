@@ -12,8 +12,7 @@ namespace Phx.Inject.Tests.Data.Specification {
     internal class GeneratedNestedSpecInjector_OuterNestedSpecification_Inner {
 
         internal GeneratedNestedSpecInjector_OuterNestedSpecification_Inner CreateNewFrame() {
-            var newFrame = new GeneratedNestedSpecInjector_OuterNestedSpecification_Inner();
-            return newFrame;
+            return this;
         }
 
         internal System.Int32 GetIntValue(

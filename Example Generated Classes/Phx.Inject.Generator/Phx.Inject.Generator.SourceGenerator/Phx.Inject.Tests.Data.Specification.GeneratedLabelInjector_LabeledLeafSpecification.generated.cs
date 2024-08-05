@@ -12,8 +12,7 @@ namespace Phx.Inject.Tests.Data.Specification {
     internal class GeneratedLabelInjector_LabeledLeafSpecification {
 
         internal GeneratedLabelInjector_LabeledLeafSpecification CreateNewFrame() {
-            var newFrame = new GeneratedLabelInjector_LabeledLeafSpecification();
-            return newFrame;
+            return this;
         }
 
         internal Phx.Inject.Tests.Data.Model.ILeaf GetDefaultLeaf(

@@ -29,13 +29,47 @@ namespace Phx.Inject.Generator.Specifications.Templates {
             Location Location
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
+            var hasContainerScopedReferences = InstanceHolders.Any(it => it.isContainerScoped);
+            
             //  internal class SpecContainerClassName {
             writer.AppendLine($"internal class {SpecContainerClassName} {{")
                     .IncreaseIndent(1);
+            if (hasContainerScopedReferences) {
+                //      private SpecContainerClassName? parent;
+                writer.AppendLine($"private {SpecContainerClassName}? parent;");
+            }
 
             //      private ScopedInstanceType? scopedInstanceType;
             foreach (var instanceHolder in InstanceHolders) {
-                writer.AppendLine($"private {instanceHolder.InstanceQualifiedType}? {instanceHolder.ReferenceName};");
+                // instanceHolder.isContainerScoped
+                if (!hasContainerScopedReferences || instanceHolder.isContainerScoped) {
+                    writer.AppendLine(
+                        $"private {instanceHolder.InstanceQualifiedType}? {instanceHolder.ReferenceName};");
+                } else {
+                    writer.AppendLine(
+                            $"private {instanceHolder.InstanceQualifiedType}? _{instanceHolder.ReferenceName};")
+                        .Append($"private {instanceHolder.InstanceQualifiedType}? {instanceHolder.ReferenceName} {{")
+                        .IncreaseIndent(1)
+                        .AppendLine()
+                        .AppendLine($"get {{ return _{instanceHolder.ReferenceName}; }}")
+                        .Append("set {")
+                        .IncreaseIndent(1)
+                        .AppendLine()
+                        .AppendLine($"this._{instanceHolder.ReferenceName} = value;")
+                        .Append("if (parent != null) {")
+                        .IncreaseIndent(1)
+                        .AppendLine()
+                        .Append($"parent.{instanceHolder.ReferenceName} = value;")
+                        .DecreaseIndent(1)
+                        .AppendLine()
+                        .Append("}")
+                        .DecreaseIndent(1)
+                        .AppendLine()
+                        .Append("}")
+                        .DecreaseIndent(1)
+                        .AppendLine()
+                        .Append("}");
+                }                
             }
 
             //      private readonly ConstructedSpecificationInterfaceQualifiedType instance;
@@ -57,30 +91,39 @@ namespace Phx.Inject.Generator.Specifications.Templates {
             }
             
             //      internal SpecContainerClassName CreateNewFrame() {
-            //          var c = new SpecContainerClassName();
-            //          c.scopedInstanceType = this.scopedInstanceType;
-            //          return c;
+            //          var newFrame = new SpecContainerClassName();
+            //          newFrame.scopedInstanceType = this.scopedInstanceType;
+            //          newFrame.parent = this;
+            //          return newFrame;
             //      }
             writer.AppendBlankLine()
                 .Append($"internal {SpecContainerClassName} CreateNewFrame() {{")
                 .IncreaseIndent(1)
                 .AppendLine();
-            
-            if (ConstructedSpecInterfaceQualifiedType != null) {
-                writer.AppendLine($"var newFrame = new {SpecContainerClassName}(this.{ConstructedSpecInstanceReferenceName});");
+
+
+            if (hasContainerScopedReferences) {
+                if (ConstructedSpecInterfaceQualifiedType != null) {
+                    writer.AppendLine(
+                        $"var newFrame = new {SpecContainerClassName}(this.{ConstructedSpecInstanceReferenceName});");
+                } else {
+                    writer.AppendLine($"var newFrame = new {SpecContainerClassName}();");
+                }
+
+                foreach (var instanceHolder in InstanceHolders) {
+                    if (!instanceHolder.isContainerScoped) {
+                        writer.AppendLine(
+                            $"newFrame.{instanceHolder.ReferenceName} = this.{instanceHolder.ReferenceName};");
+                    }
+                }
+
+                writer.AppendLine("newFrame.parent = this;")
+                    .Append("return newFrame;");
             } else {
-                writer.AppendLine($"var newFrame = new {SpecContainerClassName}();");
+                writer.Append("return this;");
             }
 
-            foreach (var instanceHolder in InstanceHolders) {
-                if (!instanceHolder.isContainerScoped) {
-                    writer.AppendLine(
-                        $"newFrame.{instanceHolder.ReferenceName} = this.{instanceHolder.ReferenceName};");
-                }
-            }
-            
-            writer.Append("return newFrame;")
-                .DecreaseIndent(1)
+            writer.DecreaseIndent(1)
                 .AppendLine()
                 .AppendLine("}");
             

@@ -7,7 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Tests.Data.Model {
-    internal class IntLeaf : ILeaf {
+    public class IntLeaf : ILeaf {
         public int Value { get; }
 
         public IntLeaf(int value) {

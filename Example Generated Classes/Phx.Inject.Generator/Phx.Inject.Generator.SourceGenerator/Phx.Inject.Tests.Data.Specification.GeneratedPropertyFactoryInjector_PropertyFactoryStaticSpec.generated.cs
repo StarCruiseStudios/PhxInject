@@ -12,8 +12,7 @@ namespace Phx.Inject.Tests.Data.Specification {
     internal class GeneratedPropertyFactoryInjector_PropertyFactoryStaticSpec {
 
         internal GeneratedPropertyFactoryInjector_PropertyFactoryStaticSpec CreateNewFrame() {
-            var newFrame = new GeneratedPropertyFactoryInjector_PropertyFactoryStaticSpec();
-            return newFrame;
+            return this;
         }
 
         internal Phx.Inject.Tests.Data.Model.StringLeaf GetPropertyStringLeaf(

@@ -18,6 +18,11 @@ namespace Phx.Inject.Tests.Data.Specification {
         internal static int GetInt() {
             return currentInt++;
         }
+        
+        [Factory(FabricationMode.Scoped)]
+        internal static StringLeaf GetStringLeaf(int value) {
+            return new StringLeaf(value.ToString());
+        }
 
         [Factory]
         [Partial]
@@ -36,6 +41,12 @@ namespace Phx.Inject.Tests.Data.Specification {
             var left = leaves[0];
             var right = leaves[1];
             return new Node(left, right);
+        }
+        
+        [Factory(FabricationMode.Container)]
+        [Label("WithScoped")]
+        internal static Node GetNode2(IntLeaf intLeaf, StringLeaf stringLeaf) {
+            return new Node(intLeaf, stringLeaf);
         }
     }
 }

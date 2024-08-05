@@ -32,6 +32,21 @@ namespace Phx.Inject.Tests.Data.Inject {
         public Phx.Inject.Tests.Data.Model.Node GetNode() {
             return specContainers.GeneratedContainerInjector_ContainerSpecification.GetNode(specContainers);
         }
+
+        public Phx.Inject.Tests.Data.Model.Node GetNodeWithScoped() {
+            return specContainers.GeneratedContainerInjector_ContainerSpecification.GetNode2(specContainers);
+        }
+
+        public System.Collections.Generic.List<Phx.Inject.Tests.Data.Model.IntLeaf> GetIntLeaves() {
+            return Phx.Inject.InjectionUtil.Combine<Phx.Inject.Tests.Data.Model.IntLeaf> (
+                specContainers.GeneratedContainerInjector_ContainerSpecification.GetIntLeaf1(specContainers),
+                specContainers.GeneratedContainerInjector_ContainerSpecification.GetIntLeaf2(specContainers)
+            );
+        }
+
+        public Phx.Inject.Tests.Data.Model.StringLeaf GetStringLeaf() {
+            return specContainers.GeneratedContainerInjector_ContainerSpecification.GetStringLeaf(specContainers);
+        }
     }
 }
 #nullable restore

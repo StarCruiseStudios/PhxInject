@@ -12,8 +12,7 @@ namespace Phx.Inject.Tests.Data.Specification {
     internal class GeneratedRawInjector_LazySpecification {
 
         internal GeneratedRawInjector_LazySpecification CreateNewFrame() {
-            var newFrame = new GeneratedRawInjector_LazySpecification();
-            return newFrame;
+            return this;
         }
 
         internal void BuildLazyType(

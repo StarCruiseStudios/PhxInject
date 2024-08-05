@@ -13,9 +13,7 @@ namespace Phx.Inject.Tests.Data.Specification {
         private Phx.Inject.Tests.Data.Model.IntLeaf? intLeaf;
 
         internal GeneratedRawInjector_LeafSpecification CreateNewFrame() {
-            var newFrame = new GeneratedRawInjector_LeafSpecification();
-            newFrame.intLeaf = this.intLeaf;
-            return newFrame;
+            return this;
         }
 
         internal Phx.Inject.Tests.Data.Model.IntLeaf GetIntLeaf(

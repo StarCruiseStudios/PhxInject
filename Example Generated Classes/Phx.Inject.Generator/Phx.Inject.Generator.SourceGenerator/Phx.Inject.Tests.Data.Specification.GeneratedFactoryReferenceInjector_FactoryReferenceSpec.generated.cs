@@ -14,10 +14,7 @@ namespace Phx.Inject.Tests.Data.Specification {
         private Phx.Inject.Tests.Data.Model.IntLeaf? intLeaf;
 
         internal GeneratedFactoryReferenceInjector_FactoryReferenceSpec CreateNewFrame() {
-            var newFrame = new GeneratedFactoryReferenceInjector_FactoryReferenceSpec();
-            newFrame.stringLeaf = this.stringLeaf;
-            newFrame.intLeaf = this.intLeaf;
-            return newFrame;
+            return this;
         }
 
         internal System.Int32 GetPropertyIntValue(

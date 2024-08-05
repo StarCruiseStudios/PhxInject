@@ -13,9 +13,7 @@ namespace Phx.Inject.Tests.Data.Specification {
         private Phx.Inject.Tests.Data.Model.Root? root;
 
         internal GeneratedRawInjector_RootSpecification CreateNewFrame() {
-            var newFrame = new GeneratedRawInjector_RootSpecification();
-            newFrame.root = this.root;
-            return newFrame;
+            return this;
         }
 
         internal Phx.Inject.Tests.Data.Model.Root GetRoot(

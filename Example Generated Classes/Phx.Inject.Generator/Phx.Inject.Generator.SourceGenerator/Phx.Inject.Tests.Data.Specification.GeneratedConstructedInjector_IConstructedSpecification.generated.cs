@@ -17,8 +17,7 @@ namespace Phx.Inject.Tests.Data.Specification {
         }
 
         internal GeneratedConstructedInjector_IConstructedSpecification CreateNewFrame() {
-            var newFrame = new GeneratedConstructedInjector_IConstructedSpecification(this.instance);
-            return newFrame;
+            return this;
         }
 
         internal System.Int32 GetIntValue(

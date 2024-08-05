@@ -17,8 +17,7 @@ namespace Phx.Inject.Tests.Data.External {
         }
 
         internal GeneratedChildInjector_IChildExternalDependencies CreateNewFrame() {
-            var newFrame = new GeneratedChildInjector_IChildExternalDependencies(this.instance);
-            return newFrame;
+            return this;
         }
 
         internal Phx.Inject.Tests.Data.Model.ILeaf GetLeftLeaf(

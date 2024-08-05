@@ -12,8 +12,7 @@ namespace Phx.Inject.Tests.Data.Inject {
     internal class GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories {
 
         internal GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories CreateNewFrame() {
-            var newFrame = new GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories();
-            return newFrame;
+            return this;
         }
 
         internal Phx.Inject.Tests.Data.Model.IntLeaf GetConstructorintLeaf(

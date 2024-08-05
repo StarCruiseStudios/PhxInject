@@ -12,8 +12,7 @@ namespace Phx.Inject.Tests.Data.Specification {
     internal class CustomInjector_LeafLinks {
 
         internal CustomInjector_LeafLinks CreateNewFrame() {
-            var newFrame = new CustomInjector_LeafLinks();
-            return newFrame;
+            return this;
         }
     }
 }

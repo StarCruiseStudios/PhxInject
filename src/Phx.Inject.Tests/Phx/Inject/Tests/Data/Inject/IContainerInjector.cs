@@ -13,5 +13,12 @@ namespace Phx.Inject.Tests.Data.Inject {
     [Injector(typeof(ContainerSpecification))]
     public interface IContainerInjector {
         Node GetNode();
+        
+        [Label("WithScoped")]
+        Node GetNodeWithScoped();
+
+        List<IntLeaf> GetIntLeaves();
+
+        StringLeaf GetStringLeaf();
     }
 }

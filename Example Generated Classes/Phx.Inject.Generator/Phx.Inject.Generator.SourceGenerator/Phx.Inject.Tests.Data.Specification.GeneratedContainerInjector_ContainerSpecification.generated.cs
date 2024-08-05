@@ -10,10 +10,23 @@
 #nullable enable
 namespace Phx.Inject.Tests.Data.Specification {
     internal class GeneratedContainerInjector_ContainerSpecification {
+        private GeneratedContainerInjector_ContainerSpecification? parent;
         private System.Int32? int32;
+        private Phx.Inject.Tests.Data.Model.StringLeaf? _stringLeaf;
+        private Phx.Inject.Tests.Data.Model.StringLeaf? stringLeaf {
+            get { return _stringLeaf; }
+            set {
+                this._stringLeaf = value;
+                if (parent != null) {
+                    parent.stringLeaf = value;
+                }
+            }
+        }
 
         internal GeneratedContainerInjector_ContainerSpecification CreateNewFrame() {
             var newFrame = new GeneratedContainerInjector_ContainerSpecification();
+            newFrame.stringLeaf = this.stringLeaf;
+            newFrame.parent = this;
             return newFrame;
         }
 
@@ -21,6 +34,13 @@ namespace Phx.Inject.Tests.Data.Specification {
                 Phx.Inject.Tests.Data.Inject.GeneratedContainerInjector.SpecContainerCollection specContainers
         ) {
             return int32 ??= Phx.Inject.Tests.Data.Specification.ContainerSpecification.GetInt();
+        }
+
+        internal Phx.Inject.Tests.Data.Model.StringLeaf GetStringLeaf(
+                Phx.Inject.Tests.Data.Inject.GeneratedContainerInjector.SpecContainerCollection specContainers
+        ) {
+            return stringLeaf ??= Phx.Inject.Tests.Data.Specification.ContainerSpecification.GetStringLeaf(
+                specContainers.GeneratedContainerInjector_ContainerSpecification.GetInt(specContainers));
         }
 
         internal System.Collections.Generic.List<Phx.Inject.Tests.Data.Model.IntLeaf> GetIntLeaf1(
@@ -46,6 +66,15 @@ namespace Phx.Inject.Tests.Data.Specification {
                     specContainers.GeneratedContainerInjector_ContainerSpecification.GetIntLeaf1(specContainers),
                     specContainers.GeneratedContainerInjector_ContainerSpecification.GetIntLeaf2(specContainers)
                 ));
+        }
+
+        internal Phx.Inject.Tests.Data.Model.Node GetNode2(
+                Phx.Inject.Tests.Data.Inject.GeneratedContainerInjector.SpecContainerCollection parentSpecContainer
+        ) {
+            var specContainers = parentSpecContainer.CreateNewFrame();
+            return Phx.Inject.Tests.Data.Specification.ContainerSpecification.GetNode2(
+                specContainers.GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories.GetConstructorintLeaf(specContainers),
+                specContainers.GeneratedContainerInjector_ContainerSpecification.GetStringLeaf(specContainers));
         }
     }
 }
