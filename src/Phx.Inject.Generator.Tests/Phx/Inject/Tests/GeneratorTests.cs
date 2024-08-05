@@ -117,9 +117,22 @@ namespace Phx.Inject.Tests {
             var generator = Given("A source generator.", () => new SourceGenerator(renderSettings));
             var rootDirectory = Given("A directory with source files.", () => TestFiles.RootDirectory);
 
-            return When(
+            var compilation = When(
                     "The source is compiled with the generator.",
                     () => TestCompiler.CompileDirectory(rootDirectory, generator));
+            
+            var diagnostics = compilation.GetDiagnostics();
+            foreach (Diagnostic diagnostic in diagnostics) {
+                if (diagnostic.Severity >= DiagnosticSeverity.Warning) {
+                    Log(diagnostic.ToString());                    
+                }
+            }
+
+            Then("No errors were found during compilation.",
+                () =>
+                    Verify.That(diagnostics.Where(it => it.Severity == DiagnosticSeverity.Error).Count().IsEqualTo(0)));
+            
+            return compilation;
         }
 
         private INamespaceSymbol ThenTheExpectedNamespaceExists(INamespaceSymbol root, params string[] ns) {

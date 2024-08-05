@@ -21,7 +21,7 @@ namespace Phx.Inject.Tests.Helpers {
         private static readonly CSharpParseOptions ParserOptions = new(LanguageVersion.CSharp9);
 
         private static readonly CSharpCompilationOptions CompilationOptions = new(
-                OutputKind.ConsoleApplication,
+                outputKind: OutputKind.ConsoleApplication,
                 nullableContextOptions: NullableContextOptions.Enable);
 
         public static Compilation CompileDirectory(string directory, params ISourceGenerator[] generators) {
