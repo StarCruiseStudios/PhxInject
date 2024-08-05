@@ -8,6 +8,7 @@
 * [Injector Naming](Injector.md#generated-injector-naming)
 * [Providers](Injector.md#providers)
   * [Factories](Specification.md#factories)
+  * [Partial Factories](Specification.md#partial-factories)
   * [Scope](Injector.md#Scope)
   * [Fabrication Modes](Specification.md#fabrication-modes)
   * [Factory References](Specification.md#factory-and-builder-references)

@@ -38,6 +38,52 @@ internal static class TestSpecification {
 }
 ```
 
+## Partial Factories
+Multiple factories from the dependency graph can be combined into a single 
+collection by using the `[Partial]` attribute. This attribute can be used on
+factories that return a `List`, `HashSet`, or `Dictionary`, and all partial
+factories that return the same qualified type will be combined into a single 
+collection. Partial factories cannot be declared with the same qualified type as
+non-partial factories.
+
+```csharp
+[Specification]
+internal static class TestSpecification {
+    [Factory]
+    [Partial]
+    internal static List<MyClass> GetMyClassList1() {
+        return new List<MyClass> { new MyClass(10) };
+    }
+    
+    [Factory]
+    [Partial]
+    internal static List<MyClass> GetMyClassList2() {
+        return new List<MyClass> { new MyClass(20) };
+    }
+    
+    [Factory]
+    internal static MyClassConsumer GetMyClassConsumer(List<MyClass> myClasses) {
+        // The injected `myClasses` list will contain both `MyClass` instances.
+        return new MyClassConsumer(myClasses);
+    }
+    
+    [Factory]
+    [Partial]
+    internal static HashSet<MyClass> GetMyClassSet() {
+        return new HashSet<MyClass> { new MyClass(10) };
+    }
+    
+    [Factory]
+    [Label("MyClassDictionary")]
+    [Partial]
+    internal static Dictionary<string, MyClass> GetMyClassSet() {
+        return new Dictionary<string, ILeaf> {
+            { "key1", new MyClass(10) }
+        };
+    }
+}
+```
+
 ## Builders
 Builders are methods used to initialize an existing object with values from the
 dependency graph. They must have a `void` return type, and the first parameter
