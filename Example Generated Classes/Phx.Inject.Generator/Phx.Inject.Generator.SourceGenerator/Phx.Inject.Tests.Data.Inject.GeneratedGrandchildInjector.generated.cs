@@ -12,7 +12,14 @@ namespace Phx.Inject.Tests.Data.Inject {
     internal partial class GeneratedGrandchildInjector : Phx.Inject.Tests.Data.Inject.IGrandchildInjector {
         internal record SpecContainerCollection (
                 Phx.Inject.Tests.Data.Specification.GeneratedGrandchildInjector_GrandchildSpecification GeneratedGrandchildInjector_GrandchildSpecification,
-                Phx.Inject.Tests.Data.External.GeneratedGrandchildInjector_IGrandchildExternalDependencies GeneratedGrandchildInjector_IGrandchildExternalDependencies);
+                Phx.Inject.Tests.Data.External.GeneratedGrandchildInjector_IGrandchildExternalDependencies GeneratedGrandchildInjector_IGrandchildExternalDependencies
+        ) {
+            internal SpecContainerCollection CreateNewFrame() {
+                return new SpecContainerCollection(
+                        GeneratedGrandchildInjector_GrandchildSpecification.CreateNewFrame(),
+                        GeneratedGrandchildInjector_IGrandchildExternalDependencies.CreateNewFrame());
+            }
+        }
 
         private readonly SpecContainerCollection specContainers;
 

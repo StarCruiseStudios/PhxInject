@@ -16,6 +16,11 @@ namespace Phx.Inject.Tests.Data.External {
             this.instance = instance;
         }
 
+        internal GeneratedChildInjector_IChildExternalDependencies CreateNewFrame() {
+            var newFrame = new GeneratedChildInjector_IChildExternalDependencies(this.instance);
+            return newFrame;
+        }
+
         internal Phx.Inject.Tests.Data.Model.ILeaf GetLeftLeaf(
                 Phx.Inject.Tests.Data.Inject.GeneratedChildInjector.SpecContainerCollection specContainers
         ) {

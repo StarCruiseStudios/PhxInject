@@ -11,6 +11,11 @@
 namespace Phx.Inject.Tests.Data.Specification {
     internal class GeneratedMultiBindInjector_MultiBindSpecification {
 
+        internal GeneratedMultiBindInjector_MultiBindSpecification CreateNewFrame() {
+            var newFrame = new GeneratedMultiBindInjector_MultiBindSpecification();
+            return newFrame;
+        }
+
         internal System.Collections.Generic.List<Phx.Inject.Tests.Data.Model.ILeaf> GetListLeaf1(
                 Phx.Inject.Tests.Data.Inject.GeneratedMultiBindInjector.SpecContainerCollection specContainers
         ) {

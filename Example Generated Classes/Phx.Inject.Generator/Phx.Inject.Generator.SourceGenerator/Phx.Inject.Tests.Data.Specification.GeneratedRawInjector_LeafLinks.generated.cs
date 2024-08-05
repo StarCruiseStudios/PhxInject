@@ -10,6 +10,11 @@
 #nullable enable
 namespace Phx.Inject.Tests.Data.Specification {
     internal class GeneratedRawInjector_LeafLinks {
+
+        internal GeneratedRawInjector_LeafLinks CreateNewFrame() {
+            var newFrame = new GeneratedRawInjector_LeafLinks();
+            return newFrame;
+        }
     }
 }
 #nullable restore

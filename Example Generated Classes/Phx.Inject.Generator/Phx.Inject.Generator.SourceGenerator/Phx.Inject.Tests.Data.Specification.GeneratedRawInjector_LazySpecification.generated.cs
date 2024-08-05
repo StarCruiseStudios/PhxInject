@@ -11,6 +11,11 @@
 namespace Phx.Inject.Tests.Data.Specification {
     internal class GeneratedRawInjector_LazySpecification {
 
+        internal GeneratedRawInjector_LazySpecification CreateNewFrame() {
+            var newFrame = new GeneratedRawInjector_LazySpecification();
+            return newFrame;
+        }
+
         internal void BuildLazyType(
                 Phx.Inject.Tests.Data.Model.LazyType target,
                 Phx.Inject.Tests.Data.Inject.GeneratedRawInjector.SpecContainerCollection specContainers

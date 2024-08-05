@@ -16,6 +16,11 @@ namespace Phx.Inject.Tests.Data.Specification {
             this.instance = instance;
         }
 
+        internal GeneratedConstructedInjector_IConstructedSpecification CreateNewFrame() {
+            var newFrame = new GeneratedConstructedInjector_IConstructedSpecification(this.instance);
+            return newFrame;
+        }
+
         internal System.Int32 GetIntValue(
                 Phx.Inject.Tests.Data.Inject.GeneratedConstructedInjector.SpecContainerCollection specContainers
         ) {

@@ -13,7 +13,15 @@ namespace Phx.Inject.Tests.Data.Inject {
         internal record SpecContainerCollection (
                 Phx.Inject.Tests.Data.Specification.GeneratedConstructedInjector_IConstructedSpecification GeneratedConstructedInjector_IConstructedSpecification,
                 Phx.Inject.Tests.Data.Specification.GeneratedConstructedInjector_NonConstructedSpecification GeneratedConstructedInjector_NonConstructedSpecification,
-                Phx.Inject.Tests.Data.Inject.GeneratedConstructedInjector_GeneratedConstructedInjector_ConstructorFactories GeneratedConstructedInjector_GeneratedConstructedInjector_ConstructorFactories);
+                Phx.Inject.Tests.Data.Inject.GeneratedConstructedInjector_GeneratedConstructedInjector_ConstructorFactories GeneratedConstructedInjector_GeneratedConstructedInjector_ConstructorFactories
+        ) {
+            internal SpecContainerCollection CreateNewFrame() {
+                return new SpecContainerCollection(
+                        GeneratedConstructedInjector_IConstructedSpecification.CreateNewFrame(),
+                        GeneratedConstructedInjector_NonConstructedSpecification.CreateNewFrame(),
+                        GeneratedConstructedInjector_GeneratedConstructedInjector_ConstructorFactories.CreateNewFrame());
+            }
+        }
 
         private readonly SpecContainerCollection specContainers;
 

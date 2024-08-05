@@ -11,6 +11,11 @@
 namespace Phx.Inject.Tests.Data.Specification {
     internal class GeneratedConstructedInjector_NonConstructedSpecification {
 
+        internal GeneratedConstructedInjector_NonConstructedSpecification CreateNewFrame() {
+            var newFrame = new GeneratedConstructedInjector_NonConstructedSpecification();
+            return newFrame;
+        }
+
         internal Phx.Inject.Tests.Data.Model.IntLeaf GetIntLeaf(
                 Phx.Inject.Tests.Data.Inject.GeneratedConstructedInjector.SpecContainerCollection specContainers
         ) {

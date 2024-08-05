@@ -11,7 +11,13 @@
 namespace Phx.Inject.Tests.Data.Inject {
     internal partial class GeneratedRuntimeFactoryInjector : Phx.Inject.Tests.Data.Inject.IRuntimeFactoryInjector {
         internal record SpecContainerCollection (
-                Phx.Inject.Tests.Data.Specification.GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification);
+                Phx.Inject.Tests.Data.Specification.GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification
+        ) {
+            internal SpecContainerCollection CreateNewFrame() {
+                return new SpecContainerCollection(
+                        GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification.CreateNewFrame());
+            }
+        }
 
         private readonly SpecContainerCollection specContainers;
 

@@ -12,6 +12,12 @@ namespace Phx.Inject.Tests.Data.Inject {
     internal class GeneratedConstructedInjector_GeneratedConstructedInjector_ConstructorFactories {
         private Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode? autoTypeWithFabricationMode;
 
+        internal GeneratedConstructedInjector_GeneratedConstructedInjector_ConstructorFactories CreateNewFrame() {
+            var newFrame = new GeneratedConstructedInjector_GeneratedConstructedInjector_ConstructorFactories();
+            newFrame.autoTypeWithFabricationMode = this.autoTypeWithFabricationMode;
+            return newFrame;
+        }
+
         internal Phx.Inject.Tests.Data.Model.AutoType GetConstructorautoType(
                 Phx.Inject.Tests.Data.Inject.GeneratedConstructedInjector.SpecContainerCollection specContainers
         ) {

@@ -16,6 +16,11 @@ namespace Phx.Inject.Tests.Data.External {
             this.instance = instance;
         }
 
+        internal GeneratedGrandchildInjector_IGrandchildExternalDependencies CreateNewFrame() {
+            var newFrame = new GeneratedGrandchildInjector_IGrandchildExternalDependencies(this.instance);
+            return newFrame;
+        }
+
         internal Phx.Inject.Tests.Data.Model.Node GetNode(
                 Phx.Inject.Tests.Data.Inject.GeneratedGrandchildInjector.SpecContainerCollection specContainers
         ) {

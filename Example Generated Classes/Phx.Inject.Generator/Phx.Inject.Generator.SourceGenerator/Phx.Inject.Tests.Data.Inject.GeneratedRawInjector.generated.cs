@@ -14,7 +14,16 @@ namespace Phx.Inject.Tests.Data.Inject {
                 Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_RootSpecification GeneratedRawInjector_RootSpecification,
                 Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LazySpecification GeneratedRawInjector_LazySpecification,
                 Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LeafSpecification GeneratedRawInjector_LeafSpecification,
-                Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LeafLinks GeneratedRawInjector_LeafLinks);
+                Phx.Inject.Tests.Data.Specification.GeneratedRawInjector_LeafLinks GeneratedRawInjector_LeafLinks
+        ) {
+            internal SpecContainerCollection CreateNewFrame() {
+                return new SpecContainerCollection(
+                        GeneratedRawInjector_RootSpecification.CreateNewFrame(),
+                        GeneratedRawInjector_LazySpecification.CreateNewFrame(),
+                        GeneratedRawInjector_LeafSpecification.CreateNewFrame(),
+                        GeneratedRawInjector_LeafLinks.CreateNewFrame());
+            }
+        }
 
         private readonly SpecContainerCollection specContainers;
 

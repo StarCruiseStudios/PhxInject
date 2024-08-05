@@ -12,7 +12,14 @@ namespace Phx.Inject.Tests.Data.Inject {
     internal partial class GeneratedPropertyFactoryInjector : Phx.Inject.Tests.Data.Inject.IPropertyFactoryInjector {
         internal record SpecContainerCollection (
                 Phx.Inject.Tests.Data.Specification.GeneratedPropertyFactoryInjector_IPropertyFactorySpec GeneratedPropertyFactoryInjector_IPropertyFactorySpec,
-                Phx.Inject.Tests.Data.Specification.GeneratedPropertyFactoryInjector_PropertyFactoryStaticSpec GeneratedPropertyFactoryInjector_PropertyFactoryStaticSpec);
+                Phx.Inject.Tests.Data.Specification.GeneratedPropertyFactoryInjector_PropertyFactoryStaticSpec GeneratedPropertyFactoryInjector_PropertyFactoryStaticSpec
+        ) {
+            internal SpecContainerCollection CreateNewFrame() {
+                return new SpecContainerCollection(
+                        GeneratedPropertyFactoryInjector_IPropertyFactorySpec.CreateNewFrame(),
+                        GeneratedPropertyFactoryInjector_PropertyFactoryStaticSpec.CreateNewFrame());
+            }
+        }
 
         private readonly SpecContainerCollection specContainers;
 

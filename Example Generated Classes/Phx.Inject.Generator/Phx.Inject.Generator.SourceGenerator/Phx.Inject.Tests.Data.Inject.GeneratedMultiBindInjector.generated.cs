@@ -11,7 +11,13 @@
 namespace Phx.Inject.Tests.Data.Inject {
     internal partial class GeneratedMultiBindInjector : Phx.Inject.Tests.Data.Inject.IMultiBindInjector {
         internal record SpecContainerCollection (
-                Phx.Inject.Tests.Data.Specification.GeneratedMultiBindInjector_MultiBindSpecification GeneratedMultiBindInjector_MultiBindSpecification);
+                Phx.Inject.Tests.Data.Specification.GeneratedMultiBindInjector_MultiBindSpecification GeneratedMultiBindInjector_MultiBindSpecification
+        ) {
+            internal SpecContainerCollection CreateNewFrame() {
+                return new SpecContainerCollection(
+                        GeneratedMultiBindInjector_MultiBindSpecification.CreateNewFrame());
+            }
+        }
 
         private readonly SpecContainerCollection specContainers;
 

@@ -11,6 +11,11 @@
 namespace Phx.Inject.Tests.Data.Specification {
     internal class GeneratedChildInjector_ChildSpecification {
 
+        internal GeneratedChildInjector_ChildSpecification CreateNewFrame() {
+            var newFrame = new GeneratedChildInjector_ChildSpecification();
+            return newFrame;
+        }
+
         internal Phx.Inject.Tests.Data.Model.Node GetNode(
                 Phx.Inject.Tests.Data.Inject.GeneratedChildInjector.SpecContainerCollection specContainers
         ) {

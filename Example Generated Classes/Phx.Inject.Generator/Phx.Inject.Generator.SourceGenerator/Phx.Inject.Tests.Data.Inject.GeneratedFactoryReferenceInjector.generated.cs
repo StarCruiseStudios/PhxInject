@@ -11,7 +11,13 @@
 namespace Phx.Inject.Tests.Data.Inject {
     internal partial class GeneratedFactoryReferenceInjector : Phx.Inject.Tests.Data.Inject.IFactoryReferenceInjector {
         internal record SpecContainerCollection (
-                Phx.Inject.Tests.Data.Specification.GeneratedFactoryReferenceInjector_FactoryReferenceSpec GeneratedFactoryReferenceInjector_FactoryReferenceSpec);
+                Phx.Inject.Tests.Data.Specification.GeneratedFactoryReferenceInjector_FactoryReferenceSpec GeneratedFactoryReferenceInjector_FactoryReferenceSpec
+        ) {
+            internal SpecContainerCollection CreateNewFrame() {
+                return new SpecContainerCollection(
+                        GeneratedFactoryReferenceInjector_FactoryReferenceSpec.CreateNewFrame());
+            }
+        }
 
         private readonly SpecContainerCollection specContainers;
 

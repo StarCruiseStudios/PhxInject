@@ -11,7 +11,13 @@
 namespace Phx.Inject.Tests.Data.Inject {
     internal partial class GeneratedParentInjector : Phx.Inject.Tests.Data.Inject.IParentInjector {
         internal record SpecContainerCollection (
-                Phx.Inject.Tests.Data.Specification.GeneratedParentInjector_ParentSpecification GeneratedParentInjector_ParentSpecification);
+                Phx.Inject.Tests.Data.Specification.GeneratedParentInjector_ParentSpecification GeneratedParentInjector_ParentSpecification
+        ) {
+            internal SpecContainerCollection CreateNewFrame() {
+                return new SpecContainerCollection(
+                        GeneratedParentInjector_ParentSpecification.CreateNewFrame());
+            }
+        }
 
         private readonly SpecContainerCollection specContainers;
 

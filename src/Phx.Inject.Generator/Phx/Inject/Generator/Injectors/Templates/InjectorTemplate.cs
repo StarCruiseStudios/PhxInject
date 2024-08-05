@@ -39,17 +39,52 @@ namespace Phx.Inject.Generator.Injectors.Templates {
 
             //      internal record SpecContainerCollection(
             //              SpecContainerQualifiedName SpecContainerReference,
-            //              SpecContainerQualifiedName2 SpecContainerReference2);
+            //              SpecContainerQualifiedName2 SpecContainerReference2
+            //      ) {
             using (var collectionWriter = writer.GetCollectionWriter(
                     new CollectionWriterProperties(
-                            OpeningString: $"internal record {SpecContainerCollectionTypeName} (",
-                            ClosingString: ");",
-                            CloseWithNewline: false))) {
+                            OpeningString: $"internal record {SpecContainerCollectionTypeName} ("))) {
                 foreach (var property in SpecContainerCollectionProperties) {
                     var elementWriter = collectionWriter.GetElementWriter();
                     elementWriter.Append($"{property.PropertyTypeQualifiedName} {property.PropertyName}");
                 }
             }
+
+            writer.Append(") {")
+                .IncreaseIndent(1)
+                .AppendLine();
+            
+            //          internal SpecContainerCollection CreateNewFrame() {
+            //              return new SpecContainerCollection(
+            //                      SpecContainerReference.CreateNewFrame(),
+            //                      SpecContainerReference2.CreateNewFrame());
+            //          }
+            //      }
+            writer.Append($"internal {SpecContainerCollectionTypeName} CreateNewFrame() {{")
+                .IncreaseIndent(1)
+                .AppendLine();
+
+            if (SpecContainerCollectionProperties.Any()) {
+                using (var collectionWriter = writer.GetCollectionWriter(
+                    new CollectionWriterProperties(
+                        OpeningString: $"return new {SpecContainerCollectionTypeName}(",
+                        ClosingString: ");",
+                        CloseWithNewline: false))) {
+                    foreach (var property in SpecContainerCollectionProperties) {
+                        var elementWriter = collectionWriter.GetElementWriter();
+                        elementWriter.Append($"{property.PropertyName}.CreateNewFrame()");
+                    }
+                }
+            } else {
+                writer.Append("return this;");
+            }
+
+            writer.DecreaseIndent(1)
+                .AppendLine()
+                .Append("}")
+                .DecreaseIndent(1)
+                .AppendLine()
+                .Append("}");
 
             writer.AppendBlankLine();
 

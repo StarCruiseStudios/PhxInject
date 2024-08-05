@@ -55,7 +55,32 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                         .DecreaseIndent(1)
                         .AppendLine("}");
             }
+            
+            //      internal SpecContainerClassName Clone() {
+            //          var c = new SpecContainerClassName();
+            //          c.scopedInstanceType = this.scopedInstanceType;
+            //          return c;
+            //      }
+            writer.AppendBlankLine()
+                .Append($"internal {SpecContainerClassName} CreateNewFrame() {{")
+                .IncreaseIndent(1)
+                .AppendLine();
+            
+            if (ConstructedSpecInterfaceQualifiedType != null) {
+                writer.AppendLine($"var newFrame = new {SpecContainerClassName}(this.{ConstructedSpecInstanceReferenceName});");
+            } else {
+                writer.AppendLine($"var newFrame = new {SpecContainerClassName}();");
+            }
 
+            foreach (var instanceHolder in InstanceHolders) {
+                writer.AppendLine($"newFrame.{instanceHolder.ReferenceName} = this.{instanceHolder.ReferenceName};");
+            }
+            
+            writer.Append("return newFrame;")
+                .DecreaseIndent(1)
+                .AppendLine()
+                .AppendLine("}");
+            
             //      public FactoryType GetFactoryType(
             //              SpecContainerCollectionType specContainers
             //      ) {

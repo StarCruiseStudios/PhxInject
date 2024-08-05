@@ -13,6 +13,13 @@ namespace Phx.Inject.Tests.Data.Specification {
         private Phx.Inject.Tests.Data.Model.StringLeaf? stringLeaf;
         private Phx.Inject.Tests.Data.Model.IntLeaf? intLeaf;
 
+        internal GeneratedFactoryReferenceInjector_FactoryReferenceSpec CreateNewFrame() {
+            var newFrame = new GeneratedFactoryReferenceInjector_FactoryReferenceSpec();
+            newFrame.stringLeaf = this.stringLeaf;
+            newFrame.intLeaf = this.intLeaf;
+            return newFrame;
+        }
+
         internal System.Int32 GetPropertyIntValue(
                 Phx.Inject.Tests.Data.Inject.GeneratedFactoryReferenceInjector.SpecContainerCollection specContainers
         ) {

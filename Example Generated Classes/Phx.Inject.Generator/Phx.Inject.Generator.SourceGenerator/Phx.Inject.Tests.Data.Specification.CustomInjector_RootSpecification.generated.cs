@@ -12,6 +12,12 @@ namespace Phx.Inject.Tests.Data.Specification {
     internal class CustomInjector_RootSpecification {
         private Phx.Inject.Tests.Data.Model.Root? root;
 
+        internal CustomInjector_RootSpecification CreateNewFrame() {
+            var newFrame = new CustomInjector_RootSpecification();
+            newFrame.root = this.root;
+            return newFrame;
+        }
+
         internal Phx.Inject.Tests.Data.Model.Root GetRoot(
                 Phx.Inject.Tests.Data.Inject.CustomInjector.SpecContainerCollection specContainers
         ) {

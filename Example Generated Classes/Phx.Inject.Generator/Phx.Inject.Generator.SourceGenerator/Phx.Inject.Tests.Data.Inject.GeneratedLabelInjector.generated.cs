@@ -11,7 +11,13 @@
 namespace Phx.Inject.Tests.Data.Inject {
     internal partial class GeneratedLabelInjector : Phx.Inject.Tests.Data.Inject.ILabelInjector {
         internal record SpecContainerCollection (
-                Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecification GeneratedLabelInjector_LabeledLeafSpecification);
+                Phx.Inject.Tests.Data.Specification.GeneratedLabelInjector_LabeledLeafSpecification GeneratedLabelInjector_LabeledLeafSpecification
+        ) {
+            internal SpecContainerCollection CreateNewFrame() {
+                return new SpecContainerCollection(
+                        GeneratedLabelInjector_LabeledLeafSpecification.CreateNewFrame());
+            }
+        }
 
         private readonly SpecContainerCollection specContainers;
 

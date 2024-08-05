@@ -11,6 +11,11 @@
 namespace Phx.Inject.Tests.Data.Specification {
     internal class GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification {
 
+        internal GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification CreateNewFrame() {
+            var newFrame = new GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification();
+            return newFrame;
+        }
+
         internal Phx.Inject.Tests.Data.Model.ILeaf GetLeaf(
                 Phx.Inject.Tests.Data.Inject.GeneratedRuntimeFactoryInjector.SpecContainerCollection specContainers
         ) {

@@ -12,6 +12,12 @@ namespace Phx.Inject.Tests.Data.Specification {
     internal class CustomInjector_LeafSpecification {
         private Phx.Inject.Tests.Data.Model.IntLeaf? intLeaf;
 
+        internal CustomInjector_LeafSpecification CreateNewFrame() {
+            var newFrame = new CustomInjector_LeafSpecification();
+            newFrame.intLeaf = this.intLeaf;
+            return newFrame;
+        }
+
         internal Phx.Inject.Tests.Data.Model.IntLeaf GetIntLeaf(
                 Phx.Inject.Tests.Data.Inject.CustomInjector.SpecContainerCollection specContainers
         ) {
