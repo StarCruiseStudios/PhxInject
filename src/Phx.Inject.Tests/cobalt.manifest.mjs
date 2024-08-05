@@ -33,7 +33,12 @@ export default {
                 CompilerGeneratedFilesOutputPath: '$(MSBuildProjectFullPath)\\..\\..\\..\\Example Generated Classes',
             }
         });
+        
+        cobalt.dependencies.remove("NUnit");
+        cobalt.dependencies.remove("Phx.Validation");
         cobalt.dependencies.add(
+          { artifact: "NUnit", versionRange: '3.13.3' },
+          { artifact: "Phx.Validation", versionRange: '0.1.1' },
             context.versions.microsoft.codeanalysis.csharp.sourcegenerators.testing.nunit,
             context.versions.microsoft.codeanalysis.csharp.csharp,
             context.versions.microsoft.codeanalysis.csharp.workspaces,

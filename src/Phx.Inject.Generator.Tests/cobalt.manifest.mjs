@@ -31,7 +31,12 @@ export default {
                 RootNamespace: '',
             }
         });
+        
+        cobalt.dependencies.remove("NUnit", undefined);
+        cobalt.dependencies.remove("Phx.Validation", undefined);
         cobalt.dependencies.add(
+            { artifact: "NUnit", versionRange: '3.13.3' },
+            { artifact: "Phx.Validation", versionRange: '0.1.1' },
             context.versions.microsoft.codeanalysis.csharp.sourcegenerators.testing.nunit,
             context.versions.microsoft.codeanalysis.csharp.csharp,
             context.versions.microsoft.codeanalysis.csharp.workspaces,

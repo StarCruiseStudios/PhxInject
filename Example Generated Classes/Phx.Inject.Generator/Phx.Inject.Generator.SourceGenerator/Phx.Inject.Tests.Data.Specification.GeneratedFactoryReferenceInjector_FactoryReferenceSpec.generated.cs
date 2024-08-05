@@ -40,14 +40,18 @@ namespace Phx.Inject.Tests.Data.Specification {
         }
 
         internal void GetReferenceBuildLazyType(
-        Phx.Inject.Tests.Data.Model.LazyType target, Phx.Inject.Tests.Data.Inject.GeneratedFactoryReferenceInjector.SpecContainerCollection specContainers) {
+                Phx.Inject.Tests.Data.Model.LazyType target,
+                Phx.Inject.Tests.Data.Inject.GeneratedFactoryReferenceInjector.SpecContainerCollection specContainers
+        ) {
             Phx.Inject.Tests.Data.Specification.FactoryReferenceSpec.BuildLazyType(
                 target,
                 specContainers.GeneratedFactoryReferenceInjector_FactoryReferenceSpec.GetReferenceGetIntLeaf(specContainers));
         }
 
         internal void GetReferenceBuildLazyTypeField(
-        Phx.Inject.Tests.Data.Model.LazyType target, Phx.Inject.Tests.Data.Inject.GeneratedFactoryReferenceInjector.SpecContainerCollection specContainers) {
+                Phx.Inject.Tests.Data.Model.LazyType target,
+                Phx.Inject.Tests.Data.Inject.GeneratedFactoryReferenceInjector.SpecContainerCollection specContainers
+        ) {
             Phx.Inject.Tests.Data.Specification.FactoryReferenceSpec.BuildLazyTypeField(
                 target,
                 specContainers.GeneratedFactoryReferenceInjector_FactoryReferenceSpec.GetReferenceGetIntLeaf(specContainers));

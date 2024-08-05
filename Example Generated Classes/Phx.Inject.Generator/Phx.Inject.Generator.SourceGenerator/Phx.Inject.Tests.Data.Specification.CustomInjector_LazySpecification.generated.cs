@@ -12,7 +12,9 @@ namespace Phx.Inject.Tests.Data.Specification {
     internal class CustomInjector_LazySpecification {
 
         internal void BuildLazyType(
-        Phx.Inject.Tests.Data.Model.LazyType target, Phx.Inject.Tests.Data.Inject.CustomInjector.SpecContainerCollection specContainers) {
+                Phx.Inject.Tests.Data.Model.LazyType target,
+                Phx.Inject.Tests.Data.Inject.CustomInjector.SpecContainerCollection specContainers
+        ) {
             Phx.Inject.Tests.Data.Specification.LazySpecification.BuildLazyType(
                 target,
                 specContainers.CustomInjector_LeafSpecification.GetStringLeaf(specContainers));

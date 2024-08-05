@@ -62,14 +62,18 @@ namespace Phx.Inject.Tests.Data.Specification {
         }
 
         internal void BuildLazyTypeLeafA(
-        Phx.Inject.Tests.Data.Model.LazyType target, Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers) {
+                Phx.Inject.Tests.Data.Model.LazyType target,
+                Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers
+        ) {
             Phx.Inject.Tests.Data.Specification.LabeledLeafSpecification.BuildLazyTypeLeafA(
                 target,
                 specContainers.GeneratedLabelInjector_LabeledLeafSpecification.GetNonDefaultLeafA(specContainers));
         }
 
         internal void BuildLazyTypeDefault(
-        Phx.Inject.Tests.Data.Model.LazyType target, Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers) {
+                Phx.Inject.Tests.Data.Model.LazyType target,
+                Phx.Inject.Tests.Data.Inject.GeneratedLabelInjector.SpecContainerCollection specContainers
+        ) {
             Phx.Inject.Tests.Data.Specification.LabeledLeafSpecification.BuildLazyTypeDefault(
                 target,
                 specContainers.GeneratedLabelInjector_LabeledLeafSpecification.GetDefaultLeaf(specContainers));
