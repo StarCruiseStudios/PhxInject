@@ -75,9 +75,7 @@ namespace Phx.Inject.Tests {
         }
 
         private Compilation CompileCode() {
-            var renderSettings = new GeneratorSettings(
-                    ShouldWriteFiles: true,  // SHOULD_WRITE_FILES
-                    OutputPath: Path.Join(TestContext.CurrentContext.TestDirectory, "Generated"));
+            var renderSettings = new GeneratorSettings();
             var generator = Given("A source generator.", () => new SourceGenerator(renderSettings));
             var rootDirectory = Given("A directory with source files.", () => TestFiles.RootDirectory);
 

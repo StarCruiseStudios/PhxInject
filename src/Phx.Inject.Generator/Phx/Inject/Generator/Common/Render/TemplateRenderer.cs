@@ -6,13 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-#undef SHOULD_WRITE_FILES
-
 namespace Phx.Inject.Generator.Common.Render {
-#if SHOULD_WRITE_FILES
-    using System;
-    using System.IO;
-#endif
     using System.Text;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Text;
@@ -30,21 +24,6 @@ namespace Phx.Inject.Generator.Common.Render {
             template.Render(renderWriter);
 
             var classSource = renderWriter.GetRenderedString();
-#if SHOULD_WRITE_FILES
-            if (renderWriter.Settings.ShouldWriteFiles) {
-                try {
-                    if (!Directory.Exists(renderWriter.Settings.OutputPath)) {
-                        Directory.CreateDirectory(renderWriter.Settings.OutputPath);
-                    }
-
-                    var outputPath = Path.Combine(renderWriter.Settings.OutputPath, fileName);
-                    File.WriteAllText(outputPath, classSource);
-                } catch (Exception ex) {
-                    Logger.Error(ex.ToString());
-                }
-            }
-#endif
-
             var classSourceText = SourceText.From(classSource, Encoding.UTF8);
 
             context.AddSource(fileName, classSourceText);

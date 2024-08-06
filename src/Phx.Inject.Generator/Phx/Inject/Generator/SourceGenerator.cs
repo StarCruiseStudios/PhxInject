@@ -99,7 +99,7 @@ namespace Phx.Inject.Generator {
 
                                         injectorSpecDescriptorMap.Add(spec, specDescriptor);
                                     }
-                                    if (generatorSettings.allowConstructorFactories) {
+                                    if (generatorSettings.AllowConstructorFactories) {
                                         var constructorSpecs = new SpecExtractor()
                                                 .ExtractConstructorSpecForContext(new DefinitionGenerationContext(
                                                         injectorDescriptor,

@@ -11,8 +11,6 @@ namespace Phx.Inject.Generator.Common.Render {
             int TabSize = 4,
             string GeneratedFileExtension = "generated.cs",
             bool NullableEnabled = true,
-            bool allowConstructorFactories = true,
-            bool ShouldWriteFiles = false,
-            string OutputPath = ""
+            bool AllowConstructorFactories = true
     );
 }

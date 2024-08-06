@@ -36,7 +36,7 @@ export default {
             props: {
                 ImplicitUsings: 'enable',
                 RootNamespace: '',
-                EnforceExtendedAnalyzerRules: 'true', // SHOULD_WRITE_FILES
+                EnforceExtendedAnalyzerRules: 'true',
             }
         });
         cobalt.dependencies.add(
