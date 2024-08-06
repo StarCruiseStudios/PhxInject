@@ -25,7 +25,7 @@
             <Link>Phx\Inject\%(Filename)%(Extension)</Link>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="Data\**\*.*">
+        <Content Include="Phx\Inject\Tests\Data\**\*.*">
             <Link>Phx\Inject\Tests\Data\%(Filename)%(Extension)</Link>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>

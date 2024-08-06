@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Specification {
+namespace Phx.Inject.Tests.Data.Inject {
     using Phx.Inject.Tests.Data.Model;
 
     [Specification]

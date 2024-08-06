@@ -29,19 +29,9 @@ namespace Phx.Inject.Tests {
                     "Inject");
 
             ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "CustomInjector");
-            // ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedConstructedInjector");
-            // ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedConstructedParentInjector");
-            // ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedLabelInjector");
-            // ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedNestedSpecInjector");
-            // ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedRawInjector");
-            // ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedParentInjector");
-            // ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedChildInjector");
-            // ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedGrandchildInjector");
-            // ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedPropertyFactoryInjector");
-            // ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedFactoryReferenceInjector");
-            //
-            // ThenTheNamespaceContainsTheExpectedType(injectorNamespace,
-            //         "GeneratedConstructedInjector_GeneratedConstructedInjector_ConstructorFactories");
+            ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedParentInjector");
+            ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedChildInjector");
+            ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedGrandchildInjector");
         }
 
         [Test]
@@ -52,42 +42,17 @@ namespace Phx.Inject.Tests {
                     "Inject",
                     "Tests",
                     "Data",
-                    "Specification");
+                    "Inject");
 
             ThenTheNamespaceContainsTheExpectedType(specNamespace, "CustomInjector_LazySpecification");
             ThenTheNamespaceContainsTheExpectedType(specNamespace, "CustomInjector_LeafLinks");
             ThenTheNamespaceContainsTheExpectedType(specNamespace, "CustomInjector_LeafSpecification");
             ThenTheNamespaceContainsTheExpectedType(specNamespace, "CustomInjector_RootSpecification");
 
-            // ThenTheNamespaceContainsTheExpectedType(specNamespace,
-            //         "GeneratedConstructedInjector_IConstructedSpecification");
-            // ThenTheNamespaceContainsTheExpectedType(specNamespace,
-            //         "GeneratedConstructedInjector_NonConstructedSpecification");
-            //
-            // ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedLabelInjector_LabeledLeafSpecification");
-            //
-            // ThenTheNamespaceContainsTheExpectedType(specNamespace,
-            //         "GeneratedNestedSpecInjector_OuterNestedSpecification");
-            // ThenTheNamespaceContainsTheExpectedType(specNamespace,
-            //         "GeneratedNestedSpecInjector_OuterNestedSpecification_Inner");
-            //
-            // ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedRawInjector_LazySpecification");
-            // ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedRawInjector_LeafLinks");
-            // ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedRawInjector_LeafSpecification");
-            // ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedRawInjector_RootSpecification");
-            //
-            // ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedParentInjector_ParentSpecification");
-            // ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedChildInjector_ChildSpecification");
-            // ThenTheNamespaceContainsTheExpectedType(specNamespace,
-            //         "GeneratedGrandchildInjector_GrandchildSpecification");
-            //
-            // ThenTheNamespaceContainsTheExpectedType(specNamespace,
-            //         "GeneratedPropertyFactoryInjector_IPropertyFactorySpec");
-            // ThenTheNamespaceContainsTheExpectedType(specNamespace,
-            //         "GeneratedPropertyFactoryInjector_PropertyFactoryStaticSpec");
-            //
-            // ThenTheNamespaceContainsTheExpectedType(specNamespace,
-            //         "GeneratedFactoryReferenceInjector_FactoryReferenceSpec");
+            ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedParentInjector_ParentSpecification");
+            ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedChildInjector_ChildSpecification");
+            ThenTheNamespaceContainsTheExpectedType(specNamespace,
+                    "GeneratedGrandchildInjector_GrandchildSpecification");
         }
 
         [Test]
@@ -96,18 +61,17 @@ namespace Phx.Inject.Tests {
             var dataNamespace =
                     ThenTheExpectedNamespaceExists(compilation.GlobalNamespace, "Phx", "Inject", "Tests", "Data");
 
-            var injectorNamespace = ThenTheExpectedNamespaceExists(dataNamespace, "Inject");
-            // var externalNamespace = ThenTheExpectedNamespaceExists(dataNamespace, "External");
+            var externalNamespace = ThenTheExpectedNamespaceExists(dataNamespace, "Inject");
 
-            // ThenTheNamespaceContainsTheExpectedType(injectorNamespace,
-            //         "GeneratedParentInjector_IChildExternalDependencies");
-            // ThenTheNamespaceContainsTheExpectedType(injectorNamespace,
-            //         "GeneratedChildInjector_IGrandchildExternalDependencies");
+            ThenTheNamespaceContainsTheExpectedType(externalNamespace,
+                    "GeneratedParentInjector_IChildExternalDependencies");
+            ThenTheNamespaceContainsTheExpectedType(externalNamespace,
+                    "GeneratedChildInjector_IGrandchildExternalDependencies");
 
-            // ThenTheNamespaceContainsTheExpectedType(externalNamespace,
-            //         "GeneratedChildInjector_IChildExternalDependencies");
-            // ThenTheNamespaceContainsTheExpectedType(externalNamespace,
-            //         "GeneratedGrandchildInjector_IGrandchildExternalDependencies");
+            ThenTheNamespaceContainsTheExpectedType(externalNamespace,
+                    "GeneratedChildInjector_IChildExternalDependencies");
+            ThenTheNamespaceContainsTheExpectedType(externalNamespace,
+                    "GeneratedGrandchildInjector_IGrandchildExternalDependencies");
         }
 
         private Compilation CompileCode() {
