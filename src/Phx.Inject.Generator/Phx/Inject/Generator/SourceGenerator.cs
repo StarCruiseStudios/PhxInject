@@ -6,12 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-// #define ATTACH_DEBUGGER
-
 namespace Phx.Inject.Generator {
-#if ATTACH_DEBUGGER
-    using System.Threading;
-#endif
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
@@ -40,12 +35,6 @@ namespace Phx.Inject.Generator {
         }
 
         public void Initialize(GeneratorInitializationContext context) {
-#if ATTACH_DEBUGGER
-            System.Diagnostics.Debugger.Launch();
-            while (!System.Diagnostics.Debugger.IsAttached) {
-                Thread.Sleep(500);
-            }
-#endif
             context.RegisterForSyntaxNotifications(() => new InjectorSyntaxReceiver());
         }
 
