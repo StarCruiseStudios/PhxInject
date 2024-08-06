@@ -69,7 +69,7 @@ public interface ITestInjector {
     /// Qualifier attributes should be placed on the builder method, not on the
     /// parameter.
     [Label("MyLabel")]
-    pubilc void BuildOther(MyClass class);
+    public void BuildOther(MyClass class);
 }
 ```
 
@@ -208,10 +208,13 @@ var requestInjector = sessionInjector.GetRequestInjector();
 
 requestInjector.GetRequestId();
 ```
+> **Note:** The external interface implementation does not accept values from the child injector.
+> This means that factory defined in the parent cannot be injected with a value from the child,
+> if it is invoked from a factory on the child.
 
 ## Constructed Injectors
 Sometimes a dependency is not known at compile time and has to be inserted into
-the dependecy graph at runtime. This can still be done in a safe and compile
+the dependency graph at runtime. This can still be done in a safe and compile
 time verifiable way using Constructed Injectors and Constructed Specifications.
 ```csharp
 /// Instead of using a static class, declare the specficiation as an interface.

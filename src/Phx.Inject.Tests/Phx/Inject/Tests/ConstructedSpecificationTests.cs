@@ -8,79 +8,108 @@
 
 namespace Phx.Inject.Tests {
     using NUnit.Framework;
-    using Phx.Inject.Tests.Data.Inject;
     using Phx.Inject.Tests.Data.Model;
-    using Phx.Inject.Tests.Data.Specification;
     using Phx.Test;
     using Phx.Validation;
 
+    #region Specifications
+    
+    [Specification]
+    internal interface IConstructedSpecification {
+        [Factory]
+        public int GetIntValue();
+    }
+    
+    internal class ConstructedSpecificationImplementation : IConstructedSpecification {
+        private readonly int intValue;
+        
+        public int GetIntValue() {
+            return intValue;
+        }
+
+        public ConstructedSpecificationImplementation(int intValue) {
+            this.intValue = intValue;
+        }
+    }
+    
+    [Specification]
+    [Link(typeof(IntLeaf), typeof(ILeaf))]
+    internal static class NonConstructedSpecification {
+        [Factory]
+        public static IntLeaf GetIntLeaf(int intValue) {
+            return new IntLeaf(intValue);
+        }
+    
+        [Factory]
+        public static OuterType GetOuterType(AutoType auto) {
+            return new OuterType(auto);
+        }
+    }
+    
+    #endregion Specifications
+    
+    #region Basic Constructed Injector
+
+    [Injector(
+        generatedClassName: "BasicConstructedInjector",
+        typeof(IConstructedSpecification)
+    )]
+    internal interface IBasicConstructedInjector {
+        public int GetIntValue();
+    }
+    
+    #endregion Basic Constructed Injector
+    
+    #region Parent Constructed Injector
+    
+    [Injector(generatedClassName: "ConstructedParentInjector")]
+    internal interface IConstructedParentInjector {
+        [ChildInjector]
+        public IConstructedChildInjector GetChildInjector(IConstructedSpecification iConstructedSpecification);
+    }
+    
+    #endregion Parent Constructed Injector
+    
+    #region Child Constructed Injector
+
+    [Injector(
+        generatedClassName: "ConstructedChildInjector",
+        typeof(IConstructedSpecification),
+        typeof(NonConstructedSpecification))]
+    internal interface IConstructedChildInjector {
+        public IntLeaf GetIntLeaf();
+        public ILeaf GetILeaf();
+        public OuterType GetOuterType();
+    }
+    
+    #endregion Child Constructed Injector
+    
     public class ConstructedSpecificationTests : LoggingTestClass {
         [Test]
-        public void AConstructedSpecificationInjectorIsConstructed() {
-            IConstructedSpecification spec = Given(
-                "A constructed specification.",
-                () => new ConstructedSpecificationImplementation());
-            IConstructedInjector injector = Given(
-                "A test injector built with the spec.",
-                () => new GeneratedConstructedInjector(spec));
+        public void ABasicConstructedSpecificationInjectorIsConstructed() {
+            var intValue = Given("An int value", () => 42);
+            IConstructedSpecification spec = Given("A constructed specification.", () => new ConstructedSpecificationImplementation(intValue));
+            IBasicConstructedInjector injector = Given("An injector built with the spec.",() => new BasicConstructedInjector(spec));
 
-            var leaf = When("A factory method is invoked on the injector.", () => injector.GetIntLeaf());
+            var actual = When("A factory method is invoked on the injector.", () => injector.GetIntValue());
 
             Then(
-                "The value from the constructed spec was returned.",
-                () => Verify.That(leaf.Value.IsEqualTo(ConstructedSpecificationImplementation.IntValue)));
+                "The value from the constructed spec was returned.", intValue,
+                (expected) => Verify.That(actual.IsEqualTo(expected)));
         }
-
-        [Test]
-        public void AConstructedSpecificationCanHaveAutoFactories() {
-            IConstructedSpecification spec = Given(
-                "A constructed specification.",
-                () => new ConstructedSpecificationImplementation());
-            IConstructedInjector injector = Given(
-                "A test injector built with the spec.",
-                () => new GeneratedConstructedInjector(spec));
-
-            var outer = When("A factory method is invoked on the injector using an auto dependency.",
-                () => injector.GetOuterType());
-
-            Then(
-                "The auto injected type was returned.",
-                () => { Verify.That(outer.AutoType.IsType<AutoType>()); });
-        }
-
-        [Test]
-        public void AConstructedSpecificationCanHaveLinkAttributes() {
-            IConstructedSpecification spec = Given(
-                "A constructed specification.",
-                () => new ConstructedSpecificationImplementation());
-            IConstructedInjector injector = Given(
-                "A test injector built with the spec.",
-                () => new GeneratedConstructedInjector(spec));
-
-            ILeaf leaf = When("A factory method is invoked on the injector using a linked dependency.",
-                () => injector.GetILeaf());
-
-            Then(
-                "The linked type was returned.",
-                () => { Verify.That(leaf.IsType<IntLeaf>()); });
-        }
-
+        
         [Test]
         public void AConstructedSpecificationInjectorCanBeAChild() {
-            IConstructedSpecification spec = Given(
-                "A constructed specification.",
-                () => new ConstructedSpecificationImplementation());
-            IConstructedParentInjector injector = Given(
-                "A test parent injector.",
-                () => new GeneratedConstructedParentInjector());
-
+            var intValue = Given("An int value", () => 42);
+            IConstructedSpecification spec = Given("A constructed specification.", () => new ConstructedSpecificationImplementation(intValue));
+            IConstructedParentInjector injector = Given("A test parent injector.", () => new ConstructedParentInjector());
+        
             var childInjector = When("A child injector is retrieved that uses the constructed specification.",
                 () => injector.GetChildInjector(spec));
-
+        
             Then(
-                "The value from the constructed spec was returned.",
-                () => Verify.That(childInjector.GetIntLeaf().Value
-                    .IsEqualTo(ConstructedSpecificationImplementation.IntValue)));
+                "The value from the constructed spec was returned.", intValue,
+                (expected) => Verify.That(childInjector.GetIntLeaf().Value.IsEqualTo(expected)));
         }
     }
 }
