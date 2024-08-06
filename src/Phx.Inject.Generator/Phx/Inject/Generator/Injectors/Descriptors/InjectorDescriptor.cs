@@ -7,27 +7,25 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Injectors.Descriptors {
-    using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Common.Descriptors;
 
     internal delegate InjectorDescriptor CreateInjectorDescriptor(
-            ITypeSymbol injectorInterfaceSymbol,
-            DescriptorGenerationContext context
+        ITypeSymbol injectorInterfaceSymbol,
+        DescriptorGenerationContext context
     );
 
     internal record InjectorDescriptor(
-            TypeModel InjectorInterfaceType,
-            string GeneratedInjectorTypeName,
-            IEnumerable<TypeModel> SpecificationsTypes,
-            IEnumerable<TypeModel> ExternalDependencyInterfaceTypes,
-            IEnumerable<InjectorProviderDescriptor> Providers,
-            IEnumerable<InjectorBuilderDescriptor> Builders,
-            IEnumerable<InjectorChildFactoryDescriptor> ChildFactories,
-            Location Location
+        TypeModel InjectorInterfaceType,
+        string GeneratedInjectorTypeName,
+        IEnumerable<TypeModel> SpecificationsTypes,
+        IEnumerable<TypeModel> ExternalDependencyInterfaceTypes,
+        IEnumerable<InjectorProviderDescriptor> Providers,
+        IEnumerable<InjectorBuilderDescriptor> Builders,
+        IEnumerable<InjectorChildFactoryDescriptor> ChildFactories,
+        Location Location
     ) : IDescriptor {
         public TypeModel InjectorType { get; } = InjectorInterfaceType with {
             BaseTypeName = GeneratedInjectorTypeName,
@@ -40,9 +38,9 @@ namespace Phx.Inject.Generator.Injectors.Descriptors {
             private readonly CreateInjectorProviderDescriptor createInjectorProvider;
 
             public Builder(
-                    CreateInjectorProviderDescriptor createInjectorProvider,
-                    CreateInjectorBuilderDescriptor createInjectorBuilder,
-                    CreateInjectorChildFactoryDescriptor createInjectorChildFactory
+                CreateInjectorProviderDescriptor createInjectorProvider,
+                CreateInjectorBuilderDescriptor createInjectorBuilder,
+                CreateInjectorChildFactoryDescriptor createInjectorChildFactory
             ) {
                 this.createInjectorProvider = createInjectorProvider;
                 this.createInjectorBuilder = createInjectorBuilder;
@@ -50,53 +48,53 @@ namespace Phx.Inject.Generator.Injectors.Descriptors {
             }
 
             public InjectorDescriptor Build(
-                    ITypeSymbol injectorInterfaceSymbol,
-                    DescriptorGenerationContext context
+                ITypeSymbol injectorInterfaceSymbol,
+                DescriptorGenerationContext context
             ) {
                 var injectorInterfaceType = TypeModel.FromTypeSymbol(injectorInterfaceSymbol);
                 var generatedInjectorTypeName = MetadataHelpers.GetGeneratedInjectorClassName(injectorInterfaceSymbol);
 
                 var externalDependencyInterfaceTypes = MetadataHelpers
-                        .GetExternalDependencyTypes(injectorInterfaceSymbol)
-                        .Select(TypeModel.FromTypeSymbol)
-                        .ToImmutableList();
+                    .GetExternalDependencyTypes(injectorInterfaceSymbol)
+                    .Select(TypeModel.FromTypeSymbol)
+                    .ToImmutableList();
 
                 var specificationTypes = MetadataHelpers.GetInjectorSpecificationTypes(injectorInterfaceSymbol)
-                        .Select(TypeModel.FromTypeSymbol)
-                        .Concat(externalDependencyInterfaceTypes)
-                        .ToImmutableList();
+                    .Select(TypeModel.FromTypeSymbol)
+                    .Concat(externalDependencyInterfaceTypes)
+                    .ToImmutableList();
 
                 var injectorMethods = injectorInterfaceSymbol
-                        .GetMembers()
-                        .OfType<IMethodSymbol>();
+                    .GetMembers()
+                    .OfType<IMethodSymbol>();
 
                 var providers = injectorMethods
-                        .Select(method => createInjectorProvider(method, context))
-                        .Where(provider => provider != null)
-                        .Select(provider => provider!)
-                        .ToImmutableList();
+                    .Select(method => createInjectorProvider(method, context))
+                    .Where(provider => provider != null)
+                    .Select(provider => provider!)
+                    .ToImmutableList();
 
                 var builders = injectorMethods
-                        .Select(method => createInjectorBuilder(method, context))
-                        .Where(builder => builder != null)
-                        .Select(builder => builder!)
-                        .ToImmutableList();
+                    .Select(method => createInjectorBuilder(method, context))
+                    .Where(builder => builder != null)
+                    .Select(builder => builder!)
+                    .ToImmutableList();
 
                 var childFactories = injectorMethods
-                        .Select(method => createInjectorChildFactory(method, context))
-                        .Where(childFactory => childFactory != null)
-                        .Select(childFactory => childFactory!)
-                        .ToImmutableList();
+                    .Select(method => createInjectorChildFactory(method, context))
+                    .Where(childFactory => childFactory != null)
+                    .Select(childFactory => childFactory!)
+                    .ToImmutableList();
 
                 return new InjectorDescriptor(
-                        injectorInterfaceType,
-                        generatedInjectorTypeName,
-                        specificationTypes,
-                        externalDependencyInterfaceTypes,
-                        providers,
-                        builders,
-                        childFactories,
-                        injectorInterfaceSymbol.Locations.First());
+                    injectorInterfaceType,
+                    generatedInjectorTypeName,
+                    specificationTypes,
+                    externalDependencyInterfaceTypes,
+                    providers,
+                    builders,
+                    childFactories,
+                    injectorInterfaceSymbol.Locations.First());
             }
         }
     }

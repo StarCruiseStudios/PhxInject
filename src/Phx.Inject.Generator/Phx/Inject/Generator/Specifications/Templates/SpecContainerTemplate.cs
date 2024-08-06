@@ -7,33 +7,31 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Specifications.Templates {
-    using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Common.Templates;
     using Phx.Inject.Generator.Specifications.Definitions;
 
     internal delegate SpecContainerTemplate CreateSpecContainerTemplate(
-            SpecContainerDefinition specContainerDefinition,
-            TemplateGenerationContext context
+        SpecContainerDefinition specContainerDefinition,
+        TemplateGenerationContext context
     );
 
     internal record SpecContainerTemplate(
-            string SpecContainerClassName,
-            string? ConstructedSpecInterfaceQualifiedType,
-            string? ConstructedSpecInstanceReferenceName,
-            IEnumerable<SpecContainerInstanceHolder> InstanceHolders,
-            IEnumerable<ISpecContainerMemberTemplate> MemberTemplates,
-            Location Location
+        string SpecContainerClassName,
+        string? ConstructedSpecInterfaceQualifiedType,
+        string? ConstructedSpecInstanceReferenceName,
+        IEnumerable<SpecContainerInstanceHolder> InstanceHolders,
+        IEnumerable<ISpecContainerMemberTemplate> MemberTemplates,
+        Location Location
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
             var hasContainerScopedReferences = InstanceHolders.Any(it => it.isContainerScoped);
-            
+
             //  internal class SpecContainerClassName {
             writer.AppendLine($"internal class {SpecContainerClassName} {{")
-                    .IncreaseIndent(1);
+                .IncreaseIndent(1);
             if (hasContainerScopedReferences) {
                 //      private SpecContainerClassName? parent;
                 writer.AppendLine($"private {SpecContainerClassName}? parent;");
@@ -69,7 +67,7 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                         .DecreaseIndent(1)
                         .AppendLine()
                         .Append("}");
-                }                
+                }
             }
 
             //      private readonly ConstructedSpecificationInterfaceQualifiedType instance;
@@ -79,17 +77,17 @@ namespace Phx.Inject.Generator.Specifications.Templates {
             //      }
             if (ConstructedSpecInterfaceQualifiedType != null) {
                 writer.AppendLine(
-                                $"private readonly {ConstructedSpecInterfaceQualifiedType} {ConstructedSpecInstanceReferenceName};")
-                        .AppendBlankLine()
-                        .AppendLine(
-                                $"public {SpecContainerClassName}({ConstructedSpecInterfaceQualifiedType} {ConstructedSpecInstanceReferenceName}) {{")
-                        .IncreaseIndent(1)
-                        .AppendLine(
-                                $"this.{ConstructedSpecInstanceReferenceName} = {ConstructedSpecInstanceReferenceName};")
-                        .DecreaseIndent(1)
-                        .AppendLine("}");
+                        $"private readonly {ConstructedSpecInterfaceQualifiedType} {ConstructedSpecInstanceReferenceName};")
+                    .AppendBlankLine()
+                    .AppendLine(
+                        $"public {SpecContainerClassName}({ConstructedSpecInterfaceQualifiedType} {ConstructedSpecInstanceReferenceName}) {{")
+                    .IncreaseIndent(1)
+                    .AppendLine(
+                        $"this.{ConstructedSpecInstanceReferenceName} = {ConstructedSpecInstanceReferenceName};")
+                    .DecreaseIndent(1)
+                    .AppendLine("}");
             }
-            
+
             //      internal SpecContainerClassName CreateNewFrame() {
             //          var newFrame = new SpecContainerClassName();
             //          newFrame.scopedInstanceType = this.scopedInstanceType;
@@ -100,7 +98,6 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                 .Append($"internal {SpecContainerClassName} CreateNewFrame() {{")
                 .IncreaseIndent(1)
                 .AppendLine();
-
 
             if (hasContainerScopedReferences) {
                 if (ConstructedSpecInterfaceQualifiedType != null) {
@@ -126,7 +123,7 @@ namespace Phx.Inject.Generator.Specifications.Templates {
             writer.DecreaseIndent(1)
                 .AppendLine()
                 .AppendLine("}");
-            
+
             //      public FactoryType GetFactoryType(
             //              SpecContainerCollectionType specContainers
             //      ) {
@@ -163,7 +160,7 @@ namespace Phx.Inject.Generator.Specifications.Templates {
 
             //  }
             writer.DecreaseIndent(1)
-                    .AppendLine("}");
+                .AppendLine("}");
         }
 
         public class Builder {
@@ -172,8 +169,8 @@ namespace Phx.Inject.Generator.Specifications.Templates {
             private const string BuiltInstanceReferenceName = "target";
 
             public SpecContainerTemplate Build(
-                    SpecContainerDefinition specContainerDefinition,
-                    TemplateGenerationContext context
+                SpecContainerDefinition specContainerDefinition,
+                TemplateGenerationContext context
             ) {
                 string? constructedSpecInterfaceQualifiedType = null;
                 string? constructedSpecificationReference = null;
@@ -188,114 +185,115 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                 // Create factory methods and instance holder declarations.
                 foreach (var factoryMethod in specContainerDefinition.FactoryMethodDefinitions) {
                     string? instanceHolderReferenceName = null;
-                    if (factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.Scoped 
-                            || factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.ContainerScoped) {
+                    if (factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.Scoped
+                        || factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.ContainerScoped) {
                         instanceHolderReferenceName = factoryMethod.ReturnType.GetVariableName();
                         instanceHolders.Add(
-                                new SpecContainerInstanceHolder(
-                                        factoryMethod.ReturnType.TypeModel.QualifiedName,
-                                        instanceHolderReferenceName,
-                                        isContainerScoped: factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.ContainerScoped));
+                            new SpecContainerInstanceHolder(
+                                factoryMethod.ReturnType.TypeModel.QualifiedName,
+                                instanceHolderReferenceName,
+                                isContainerScoped: factoryMethod.FabricationMode
+                                == SpecFactoryMethodFabricationMode.ContainerScoped));
                     }
 
                     var arguments = factoryMethod.Arguments
-                            .Select(argument => {
-                                var singleInvocationTemplates =
-                                    argument.FactoryInvocationDefinitions.Select(
-                                        def => {
-                                            return new SpecContainerFactorySingleInvocationTemplate(
-                                                SpecContainerCollectionReferenceName,
-                                                def.SpecContainerType.GetPropertyName(),
-                                                def.FactoryMethodName,
-                                                def.Location
-                                            );
-                                        }).ToList();
-                                
-                                string? multiBindQualifiedTypeArgs = null;
-                                if (argument.FactoryInvocationDefinitions.Count > 1) {
-                                    multiBindQualifiedTypeArgs =
-                                        TypeHelpers.GetQualifiedTypeArgs(
-                                            argument.FactoryReturnType);
-                                }
-                                
-                                return new SpecContainerFactoryInvocationTemplate(
-                                    singleInvocationTemplates,
-                                    multiBindQualifiedTypeArgs,
-                                    argument.RuntimeFactoryProvidedType?.QualifiedName,
-                                    argument.Location);
-                            })
-                            .ToImmutableList();
+                        .Select(argument => {
+                            var singleInvocationTemplates =
+                                argument.FactoryInvocationDefinitions.Select(
+                                    def => {
+                                        return new SpecContainerFactorySingleInvocationTemplate(
+                                            SpecContainerCollectionReferenceName,
+                                            def.SpecContainerType.GetPropertyName(),
+                                            def.FactoryMethodName,
+                                            def.Location
+                                        );
+                                    }).ToList();
+
+                            string? multiBindQualifiedTypeArgs = null;
+                            if (argument.FactoryInvocationDefinitions.Count > 1) {
+                                multiBindQualifiedTypeArgs =
+                                    TypeHelpers.GetQualifiedTypeArgs(
+                                        argument.FactoryReturnType);
+                            }
+
+                            return new SpecContainerFactoryInvocationTemplate(
+                                singleInvocationTemplates,
+                                multiBindQualifiedTypeArgs,
+                                argument.RuntimeFactoryProvidedType?.QualifiedName,
+                                argument.Location);
+                        })
+                        .ToImmutableList();
 
                     var startNewContainer = factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.Container;
-                    
+
                     memberTemplates.Add(
-                            new SpecContainerFactoryTemplate(
-                                    factoryMethod.ReturnType.TypeModel.QualifiedName,
-                                    factoryMethod.SpecContainerFactoryMethodName,
-                                    factoryMethod.SpecFactoryMemberName,
-                                    factoryMethod.SpecFactoryMemberType,
-                                    context.Injector.SpecContainerCollectionType.QualifiedName,
-                                    SpecContainerCollectionReferenceName,
-                                    instanceHolderReferenceName,
-                                    startNewContainer,
-                                    constructedSpecificationReference,
-                                    specContainerDefinition.SpecificationType.QualifiedName,
-                                    arguments,
-                                    specContainerDefinition.Location));
+                        new SpecContainerFactoryTemplate(
+                            factoryMethod.ReturnType.TypeModel.QualifiedName,
+                            factoryMethod.SpecContainerFactoryMethodName,
+                            factoryMethod.SpecFactoryMemberName,
+                            factoryMethod.SpecFactoryMemberType,
+                            context.Injector.SpecContainerCollectionType.QualifiedName,
+                            SpecContainerCollectionReferenceName,
+                            instanceHolderReferenceName,
+                            startNewContainer,
+                            constructedSpecificationReference,
+                            specContainerDefinition.SpecificationType.QualifiedName,
+                            arguments,
+                            specContainerDefinition.Location));
                 }
 
                 // Create builder methods.
                 foreach (var builderMethod in specContainerDefinition.BuilderMethodDefinitions) {
                     var arguments = builderMethod.Arguments
-                            .Select(argument => {
-                                var singleInvocationTemplates =
-                                    argument.FactoryInvocationDefinitions.Select(
-                                        def => {
-                                            return new SpecContainerFactorySingleInvocationTemplate(
-                                                SpecContainerCollectionReferenceName,
-                                                def.SpecContainerType.GetPropertyName(),
-                                                def.FactoryMethodName,
-                                                def.Location
-                                            );
-                                        }).ToList();
-                                
-                                string? multiBindQualifiedTypeArgs = null;
-                                if (argument.FactoryInvocationDefinitions.Count > 1) {
-                                    multiBindQualifiedTypeArgs =
-                                        TypeHelpers.GetQualifiedTypeArgs(
-                                            argument.FactoryReturnType);
-                                }
-                                
-                                return new SpecContainerFactoryInvocationTemplate(
-                                    singleInvocationTemplates,
-                                    multiBindQualifiedTypeArgs,
-                                    argument.RuntimeFactoryProvidedType?.QualifiedName,
-                                    argument.Location);
-                            })
-                            .ToImmutableList();
+                        .Select(argument => {
+                            var singleInvocationTemplates =
+                                argument.FactoryInvocationDefinitions.Select(
+                                    def => {
+                                        return new SpecContainerFactorySingleInvocationTemplate(
+                                            SpecContainerCollectionReferenceName,
+                                            def.SpecContainerType.GetPropertyName(),
+                                            def.FactoryMethodName,
+                                            def.Location
+                                        );
+                                    }).ToList();
+
+                            string? multiBindQualifiedTypeArgs = null;
+                            if (argument.FactoryInvocationDefinitions.Count > 1) {
+                                multiBindQualifiedTypeArgs =
+                                    TypeHelpers.GetQualifiedTypeArgs(
+                                        argument.FactoryReturnType);
+                            }
+
+                            return new SpecContainerFactoryInvocationTemplate(
+                                singleInvocationTemplates,
+                                multiBindQualifiedTypeArgs,
+                                argument.RuntimeFactoryProvidedType?.QualifiedName,
+                                argument.Location);
+                        })
+                        .ToImmutableList();
 
                     memberTemplates.Add(
-                            new SpecContainerBuilderTemplate(
-                                    builderMethod.BuiltType.QualifiedName,
-                                    builderMethod.SpecContainerBuilderMethodName,
-                                    builderMethod.SpecBuilderMemberName,
-                                    builderMethod.SpecBuilderMemberType,
-                                    BuiltInstanceReferenceName,
-                                    context.Injector.SpecContainerCollectionType.QualifiedName,
-                                    SpecContainerCollectionReferenceName,
-                                    constructedSpecificationReference,
-                                    specContainerDefinition.SpecificationType.QualifiedName,
-                                    arguments,
-                                    builderMethod.Location));
+                        new SpecContainerBuilderTemplate(
+                            builderMethod.BuiltType.QualifiedName,
+                            builderMethod.SpecContainerBuilderMethodName,
+                            builderMethod.SpecBuilderMemberName,
+                            builderMethod.SpecBuilderMemberType,
+                            BuiltInstanceReferenceName,
+                            context.Injector.SpecContainerCollectionType.QualifiedName,
+                            SpecContainerCollectionReferenceName,
+                            constructedSpecificationReference,
+                            specContainerDefinition.SpecificationType.QualifiedName,
+                            arguments,
+                            builderMethod.Location));
                 }
 
                 return new SpecContainerTemplate(
-                        specContainerDefinition.SpecContainerType.TypeName,
-                        constructedSpecInterfaceQualifiedType,
-                        constructedSpecificationReference,
-                        instanceHolders,
-                        memberTemplates,
-                        specContainerDefinition.Location);
+                    specContainerDefinition.SpecContainerType.TypeName,
+                    constructedSpecInterfaceQualifiedType,
+                    constructedSpecificationReference,
+                    instanceHolders,
+                    memberTemplates,
+                    specContainerDefinition.Location);
             }
         }
     }

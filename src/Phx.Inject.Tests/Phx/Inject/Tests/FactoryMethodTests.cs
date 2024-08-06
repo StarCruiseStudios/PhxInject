@@ -19,14 +19,14 @@ namespace Phx.Inject.Tests {
             IRawInjector injector = Given("A test injector.", () => new GeneratedRawInjector());
 
             var (root1, root2) = When(
-                    "A factory method with scoped fabrication mode is invoked twice.",
-                    () => (injector.GetRoot(), injector.GetRoot()));
+                "A factory method with scoped fabrication mode is invoked twice.",
+                () => (injector.GetRoot(), injector.GetRoot()));
 
             Then(
-                    "The same instance is returned both times.",
-                    () => Verify.That(
-                            ReferenceEquals(root1, root2)
-                                    .IsTrue()));
+                "The same instance is returned both times.",
+                () => Verify.That(
+                    ReferenceEquals(root1, root2)
+                        .IsTrue()));
         }
 
         [Test]
@@ -34,14 +34,14 @@ namespace Phx.Inject.Tests {
             IRawInjector injector = Given("A test injector.", () => new GeneratedRawInjector());
 
             var (node1, node2) = When(
-                    "A factory method with recurrent fabrication mode is invoked twice.",
-                    () => (injector.GetNode(), injector.GetNode()));
+                "A factory method with recurrent fabrication mode is invoked twice.",
+                () => (injector.GetNode(), injector.GetNode()));
 
             Then(
-                    "Different instances are returned each time.",
-                    () => Verify.That(
-                            ReferenceEquals(node1, node2)
-                                    .IsFalse()));
+                "Different instances are returned each time.",
+                () => Verify.That(
+                    ReferenceEquals(node1, node2)
+                        .IsFalse()));
         }
 
         [Test]
@@ -51,8 +51,8 @@ namespace Phx.Inject.Tests {
             var leaf = When("A factory method is constructed via a linked factory.", () => injector.GetILeaf());
 
             Then(
-                    "The instance was constructed using the linked factory.",
-                    () => Verify.That(leaf.IsType<StringLeaf>()));
+                "The instance was constructed using the linked factory.",
+                () => Verify.That(leaf.IsType<StringLeaf>()));
         }
 
         [Test]
@@ -60,11 +60,11 @@ namespace Phx.Inject.Tests {
             IRawInjector injector = Given("A test injector.", () => new GeneratedRawInjector());
 
             var leaf = When("A factory method is constructed via a linked factory.",
-                    () => injector.GetParametricLeaf());
+                () => injector.GetParametricLeaf());
 
             Then(
-                    "The instance was constructed using the linked factory.",
-                    () => Verify.That(leaf.IsType<ParametricLeaf<int>>()));
+                "The instance was constructed using the linked factory.",
+                () => Verify.That(leaf.IsType<ParametricLeaf<int>>()));
         }
     }
 }

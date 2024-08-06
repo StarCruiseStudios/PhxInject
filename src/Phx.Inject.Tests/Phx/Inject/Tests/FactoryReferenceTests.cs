@@ -17,10 +17,10 @@ namespace Phx.Inject.Tests {
         [Test]
         public void AnInjectorFactoryReferencePropertyIsGenerated() {
             IFactoryReferenceInjector injector = Given("A test injector.",
-                    () => new GeneratedFactoryReferenceInjector());
+                () => new GeneratedFactoryReferenceInjector());
 
             var result = When("An injector method using a factory reference property is invoked.",
-                    () => injector.GetIntLeaf());
+                () => injector.GetIntLeaf());
 
             Then("A valid value is constructed.", () => Verify.That(result.IsNotNull()));
         }
@@ -28,10 +28,10 @@ namespace Phx.Inject.Tests {
         [Test]
         public void AnInjectorFactoryReferenceFieldIsGenerated() {
             IFactoryReferenceInjector injector = Given("A test injector.",
-                    () => new GeneratedFactoryReferenceInjector());
+                () => new GeneratedFactoryReferenceInjector());
 
             var result = When("An injector method using a factory reference field is invoked.",
-                    () => injector.GetStringLeaf());
+                () => injector.GetStringLeaf());
 
             Then("A valid value is constructed.", () => Verify.That(result.IsNotNull()));
         }
@@ -39,11 +39,11 @@ namespace Phx.Inject.Tests {
         [Test]
         public void AnInjectorBuilderPropertyIsGenerated() {
             IFactoryReferenceInjector injector = Given("A test injector.",
-                    () => new GeneratedFactoryReferenceInjector());
+                () => new GeneratedFactoryReferenceInjector());
             var lazyType = Given("An uninitialized lazy type.", () => new LazyType());
 
             When("An injector builder method using a builder reference property is invoked.",
-                    () => injector.Build(lazyType));
+                () => injector.Build(lazyType));
 
             Then("The lazy type is initialized.", () => Verify.That(lazyType.Value.IsNotNull()));
         }
@@ -51,11 +51,11 @@ namespace Phx.Inject.Tests {
         [Test]
         public void AnInjectorBuilderFieldIsGenerated() {
             IFactoryReferenceInjector injector = Given("A test injector.",
-                    () => new GeneratedFactoryReferenceInjector());
+                () => new GeneratedFactoryReferenceInjector());
             var lazyType = Given("An uninitialized lazy type.", () => new LazyType());
 
             When("An injector builder method using a builder reference field is invoked.",
-                    () => injector.BuildField(lazyType));
+                () => injector.BuildField(lazyType));
 
             Then("The lazy type is initialized.", () => Verify.That(lazyType.Value.IsNotNull()));
         }

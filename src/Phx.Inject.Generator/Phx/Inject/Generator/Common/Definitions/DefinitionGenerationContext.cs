@@ -7,7 +7,6 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Common.Definitions {
-    using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.External.Descriptors;
     using Phx.Inject.Generator.Injectors.Descriptors;
@@ -15,13 +14,13 @@ namespace Phx.Inject.Generator.Common.Definitions {
     using Phx.Inject.Generator.Specifications.Descriptors;
 
     internal record DefinitionGenerationContext(
-            InjectorDescriptor Injector,
-            IReadOnlyDictionary<TypeModel, InjectorDescriptor> Injectors,
-            IReadOnlyDictionary<TypeModel, SpecDescriptor> Specifications,
-            IReadOnlyDictionary<TypeModel, ExternalDependencyDescriptor> ExternalDependencies,
-            IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> FactoryRegistrations,
-            IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> BuilderRegistrations,
-            GeneratorExecutionContext GenerationContext
+        InjectorDescriptor Injector,
+        IReadOnlyDictionary<TypeModel, InjectorDescriptor> Injectors,
+        IReadOnlyDictionary<TypeModel, SpecDescriptor> Specifications,
+        IReadOnlyDictionary<TypeModel, ExternalDependencyDescriptor> ExternalDependencies,
+        IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> FactoryRegistrations,
+        IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> BuilderRegistrations,
+        GeneratorExecutionContext GenerationContext
     ) {
         public InjectorDescriptor GetInjector(TypeModel type, Location location) {
             if (Injectors.TryGetValue(type, out var injector)) {
@@ -29,10 +28,10 @@ namespace Phx.Inject.Generator.Common.Definitions {
             }
 
             throw new InjectionException(
-                    Diagnostics.IncompleteSpecification,
-                    $"Cannot find required injector type {type}"
-                    + $" while generating injection for type {Injector.InjectorInterfaceType}.",
-                    location);
+                Diagnostics.IncompleteSpecification,
+                $"Cannot find required injector type {type}"
+                + $" while generating injection for type {Injector.InjectorInterfaceType}.",
+                location);
         }
 
         public SpecDescriptor GetSpec(TypeModel type, Location location) {
@@ -41,10 +40,10 @@ namespace Phx.Inject.Generator.Common.Definitions {
             }
 
             throw new InjectionException(
-                    Diagnostics.IncompleteSpecification,
-                    $"Cannot find required specification type {type}"
-                    + $" while generating injection for type {Injector.InjectorInterfaceType}.",
-                    location);
+                Diagnostics.IncompleteSpecification,
+                $"Cannot find required specification type {type}"
+                + $" while generating injection for type {Injector.InjectorInterfaceType}.",
+                location);
         }
 
         public ExternalDependencyDescriptor GetExternalDependency(TypeModel type, Location location) {
@@ -53,22 +52,22 @@ namespace Phx.Inject.Generator.Common.Definitions {
             }
 
             throw new InjectionException(
-                    Diagnostics.IncompleteSpecification,
-                    $"Cannot find required external dependency type {type}"
-                    + $" while generating injection for type {Injector.InjectorInterfaceType}.",
-                    location);
+                Diagnostics.IncompleteSpecification,
+                $"Cannot find required external dependency type {type}"
+                + $" while generating injection for type {Injector.InjectorInterfaceType}.",
+                location);
         }
 
         public SpecContainerFactoryInvocationDefinition GetSpecContainerFactoryInvocation(
-                QualifiedTypeModel returnedType,
-                Location location
+            QualifiedTypeModel returnedType,
+            Location location
         ) {
             if (FactoryRegistrations.Count == 0) {
                 throw new InjectionException(
-                        Diagnostics.InternalError,
-                        $"Cannot search factory for type {returnedType} before factory registrations are created "
-                        + $" while generating injection for type {Injector.InjectorInterfaceType}.",
-                        location);
+                    Diagnostics.InternalError,
+                    $"Cannot search factory for type {returnedType} before factory registrations are created "
+                    + $" while generating injection for type {Injector.InjectorInterfaceType}.",
+                    location);
             }
 
             TypeModel? runtimeFactoryProvidedType = null;
@@ -101,41 +100,41 @@ namespace Phx.Inject.Generator.Common.Definitions {
             }
 
             throw new InjectionException(
-                    Diagnostics.IncompleteSpecification,
-                    $"Cannot find factory for type {factoryType}"
-                    + $" while generating injection for type {Injector.InjectorInterfaceType}.",
-                    location);
+                Diagnostics.IncompleteSpecification,
+                $"Cannot find factory for type {factoryType}"
+                + $" while generating injection for type {Injector.InjectorInterfaceType}.",
+                location);
         }
 
         public SpecContainerBuilderInvocationDefinition GetSpecContainerBuilderInvocation(
-                TypeModel injectorType,
-                QualifiedTypeModel builtType,
-                Location location
+            TypeModel injectorType,
+            QualifiedTypeModel builtType,
+            Location location
         ) {
             if (BuilderRegistrations.Count == 0) {
                 throw new InjectionException(
-                        Diagnostics.InternalError,
-                        $"Cannot search builder for type {builtType} before builder registrations are created "
-                        + $" while generating injection for type {Injector.InjectorInterfaceType}.",
-                        location);
+                    Diagnostics.InternalError,
+                    $"Cannot search builder for type {builtType} before builder registrations are created "
+                    + $" while generating injection for type {Injector.InjectorInterfaceType}.",
+                    location);
             }
 
             var key = RegistrationIdentifier.FromQualifiedTypeDescriptor(builtType);
             if (BuilderRegistrations.TryGetValue(key, out var builderRegistration)) {
                 var specContainerType = TypeHelpers.CreateSpecContainerType(
-                        injectorType,
-                        builderRegistration.Specification.SpecType);
+                    injectorType,
+                    builderRegistration.Specification.SpecType);
                 return new SpecContainerBuilderInvocationDefinition(
-                        specContainerType,
-                        builderRegistration.BuilderDescriptor.GetSpecContainerBuilderName(),
-                        builderRegistration.BuilderDescriptor.Location);
+                    specContainerType,
+                    builderRegistration.BuilderDescriptor.GetSpecContainerBuilderName(),
+                    builderRegistration.BuilderDescriptor.Location);
             }
 
             throw new InjectionException(
-                    Diagnostics.IncompleteSpecification,
-                    $"Cannot find builder for type {builtType}"
-                    + $" while generating injection for type {Injector.InjectorInterfaceType}.",
-                    location);
+                Diagnostics.IncompleteSpecification,
+                $"Cannot find builder for type {builtType}"
+                + $" while generating injection for type {Injector.InjectorInterfaceType}.",
+                location);
         }
     }
 }

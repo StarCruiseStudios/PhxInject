@@ -7,9 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Specifications.Descriptors {
-    using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Phx.Inject.Generator.Common;
@@ -21,48 +19,50 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
         private readonly CreateConstructorSpecDescriptor createConstructorSpecDescriptor;
 
         public SpecExtractor(
-                CreateSpecDescriptor createSpecDescriptor,
-                CreateConstructorSpecDescriptor createConstructorSpecDescriptor
+            CreateSpecDescriptor createSpecDescriptor,
+            CreateConstructorSpecDescriptor createConstructorSpecDescriptor
         ) {
             this.createSpecDescriptor = createSpecDescriptor;
             this.createConstructorSpecDescriptor = createConstructorSpecDescriptor;
         }
 
         public SpecExtractor() : this(
-                new SpecDescriptor.Builder(
-                        new SpecFactoryDescriptor.Builder().BuildFactory,
-                        new SpecFactoryDescriptor.Builder().BuildFactory,
-                        new SpecFactoryDescriptor.Builder().BuildFactoryReference,
-                        new SpecFactoryDescriptor.Builder().BuildFactoryReference,
-                        new SpecBuilderDescriptor.Builder().BuildBuilder,
-                        new SpecBuilderDescriptor.Builder().BuildBuilderReference,
-                        new SpecBuilderDescriptor.Builder().BuildBuilderReference,
-                        new SpecLinkDescriptor.Builder().Build).Build,
-                new SpecDescriptor.ConstructorBuilder(
-                        new SpecFactoryDescriptor.Builder().BuildConstructorFactory).BuildConstructorSpec
+            new SpecDescriptor.Builder(
+                new SpecFactoryDescriptor.Builder().BuildFactory,
+                new SpecFactoryDescriptor.Builder().BuildFactory,
+                new SpecFactoryDescriptor.Builder().BuildFactoryReference,
+                new SpecFactoryDescriptor.Builder().BuildFactoryReference,
+                new SpecBuilderDescriptor.Builder().BuildBuilder,
+                new SpecBuilderDescriptor.Builder().BuildBuilderReference,
+                new SpecBuilderDescriptor.Builder().BuildBuilderReference,
+                new SpecLinkDescriptor.Builder().Build).Build,
+            new SpecDescriptor.ConstructorBuilder(
+                new SpecFactoryDescriptor.Builder().BuildConstructorFactory).BuildConstructorSpec
         ) { }
 
-        private HashSet<QualifiedTypeModel> GetParameterTypes(ITypeSymbol type, HashSet<QualifiedTypeModel> providedTypes) {
+        private HashSet<QualifiedTypeModel> GetParameterTypes(
+            ITypeSymbol type,
+            HashSet<QualifiedTypeModel> providedTypes) {
             var neededTypes = new HashSet<QualifiedTypeModel>();
             MetadataHelpers.GetConstructorParameterQualifiedTypes(type).ForEach(parameter => {
                 if (!providedTypes.Contains(parameter)) {
                     neededTypes.Add(parameter);
-                    neededTypes.UnionWith(GetParameterTypes(parameter.TypeModel.typeSymbol, providedTypes));   
+                    neededTypes.UnionWith(GetParameterTypes(parameter.TypeModel.typeSymbol, providedTypes));
                 }
             });
 
             return neededTypes;
         }
-        
+
         public IReadOnlyList<SpecDescriptor> ExtractConstructorSpecForContext(
-                DefinitionGenerationContext context
+            DefinitionGenerationContext context
         ) {
             var providedTypes = new HashSet<QualifiedTypeModel>();
             var neededTypes = new HashSet<QualifiedTypeModel>();
             foreach (var specDescriptor in context.Specifications.Values) {
                 foreach (var factory in specDescriptor.Factories) {
                     providedTypes.Add(factory.ReturnType);
-                    
+
                     foreach (var parameterType in factory.Parameters) {
                         if (parameterType.TypeModel.QualifiedBaseTypeName == TypeHelpers.FactoryTypeName) {
                             var factoryType = parameterType with {
@@ -95,26 +95,25 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
             }
 
             neededTypes.UnionWith(transitiveTypes);
-            
 
             var missingTypes = neededTypes.Except(providedTypes).ToImmutableList();
             return missingTypes.Any()
-                    ? new List<SpecDescriptor>() {
-                        createConstructorSpecDescriptor(
-                                context.Injector.InjectorType,
-                                missingTypes)
-                    }
-                    : ImmutableList<SpecDescriptor>.Empty;
+                ? new List<SpecDescriptor>() {
+                    createConstructorSpecDescriptor(
+                        context.Injector.InjectorType,
+                        missingTypes)
+                }
+                : ImmutableList<SpecDescriptor>.Empty;
         }
-        
+
         public IReadOnlyList<SpecDescriptor> Extract(
-                IEnumerable<TypeDeclarationSyntax> syntaxNodes,
-                DescriptorGenerationContext context
+            IEnumerable<TypeDeclarationSyntax> syntaxNodes,
+            DescriptorGenerationContext context
         ) {
             return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
-                    .Where(IsSpecSymbol)
-                    .Select(symbol => createSpecDescriptor(symbol, context))
-                    .ToImmutableList();
+                .Where(IsSpecSymbol)
+                .Select(symbol => createSpecDescriptor(symbol, context))
+                .ToImmutableList();
         }
 
         private static bool IsSpecSymbol(ITypeSymbol symbol) {
@@ -128,9 +127,9 @@ namespace Phx.Inject.Generator.Specifications.Descriptors {
 
             if (!isStaticSpecification && !isInterfaceSpecification) {
                 throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        $"Specification type {symbol.Name} must be a static class or interface.",
-                        symbol.Locations.First());
+                    Diagnostics.InvalidSpecification,
+                    $"Specification type {symbol.Name} must be a static class or interface.",
+                    symbol.Locations.First());
             }
 
             return true;

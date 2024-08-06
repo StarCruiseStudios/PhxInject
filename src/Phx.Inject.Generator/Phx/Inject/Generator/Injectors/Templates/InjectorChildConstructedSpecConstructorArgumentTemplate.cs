@@ -11,9 +11,9 @@ namespace Phx.Inject.Generator.Injectors.Templates {
     using Phx.Inject.Generator.Common.Templates;
 
     internal record InjectorChildConstructedSpecConstructorArgumentTemplate(
-            string ArgumentName,
-            string SpecParameterName,
-            Location Location
+        string ArgumentName,
+        string SpecParameterName,
+        Location Location
     ) : IInjectorChildConstructorArgumentTemplate {
         public void Render(IRenderWriter writer) {
             writer.Append($"{ArgumentName}: {SpecParameterName}");

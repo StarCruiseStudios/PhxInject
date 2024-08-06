@@ -32,12 +32,13 @@ namespace Phx.Inject.Tests {
                     Verify.That((leaf as IntLeaf)!.Value.IsEqualTo(10));
                 });
         }
-        
+
         [Test]
         public void LabeledRuntimeFactoryIsInjected() {
             IRuntimeFactoryInjector injector = Given("A test injector.", () => new GeneratedRuntimeFactoryInjector());
 
-            var leafFactory = When("Getting a type injected with a runtime factory", () => injector.GetLabeledLeafFactory());
+            var leafFactory = When("Getting a type injected with a runtime factory",
+                () => injector.GetLabeledLeafFactory());
 
             var leaf = Then("The runtime factory can be used to create an instance",
                 () => {
@@ -51,12 +52,13 @@ namespace Phx.Inject.Tests {
                     Verify.That((leaf as IntLeaf)!.Value.IsEqualTo(42));
                 });
         }
-        
+
         [Test]
         public void RuntimeFactoryIsProvidedOnInjector() {
             IRuntimeFactoryInjector injector = Given("A test injector.", () => new GeneratedRuntimeFactoryInjector());
 
-            var leafFactory = When("Getting a type injected with a runtime factory", () => injector.GetLeafRuntimeFactory());
+            var leafFactory = When("Getting a type injected with a runtime factory",
+                () => injector.GetLeafRuntimeFactory());
 
             var leaf = Then("The runtime factory can be used to create an instance",
                 () => {
@@ -70,12 +72,13 @@ namespace Phx.Inject.Tests {
                     Verify.That((leaf as IntLeaf)!.Value.IsEqualTo(10));
                 });
         }
-        
+
         [Test]
         public void LabeledRuntimeFactoryIsProvidedOnInjector() {
             IRuntimeFactoryInjector injector = Given("A test injector.", () => new GeneratedRuntimeFactoryInjector());
 
-            var leafFactory = When("Getting a type injected with a runtime factory", () => injector.GetLabeledLeafRuntimeFactory());
+            var leafFactory = When("Getting a type injected with a runtime factory",
+                () => injector.GetLabeledLeafRuntimeFactory());
 
             var leaf = Then("The runtime factory can be used to create an instance",
                 () => {

@@ -7,9 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.External.Descriptors {
-    using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Phx.Inject.Generator.Common;
@@ -23,28 +21,28 @@ namespace Phx.Inject.Generator.External.Descriptors {
         }
 
         public ExternalDependencyExtractor() : this(
-                new ExternalDependencyDescriptor.Builder(new ExternalDependencyProviderDescriptor.Builder().Build)
-                        .Build) { }
+            new ExternalDependencyDescriptor.Builder(new ExternalDependencyProviderDescriptor.Builder().Build)
+                .Build) { }
 
         public IReadOnlyList<ExternalDependencyDescriptor> Extract(
-                IEnumerable<TypeDeclarationSyntax> syntaxNodes,
-                DescriptorGenerationContext context
+            IEnumerable<TypeDeclarationSyntax> syntaxNodes,
+            DescriptorGenerationContext context
         ) {
             return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
-                    .SelectMany(MetadataHelpers.GetExternalDependencyTypes)
-                    .GroupBy(typeSymbol => typeSymbol, SymbolEqualityComparer.Default)
-                    .Select(group => group.First())
-                    .Where(IsExternalDependencySymbol)
-                    .Select(type => createExternalDependency(type, context))
-                    .ToImmutableList();
+                .SelectMany(MetadataHelpers.GetExternalDependencyTypes)
+                .GroupBy(typeSymbol => typeSymbol, SymbolEqualityComparer.Default)
+                .Select(group => group.First())
+                .Where(IsExternalDependencySymbol)
+                .Select(type => createExternalDependency(type, context))
+                .ToImmutableList();
         }
 
         private static bool IsExternalDependencySymbol(ITypeSymbol symbol) {
             if (symbol.TypeKind != TypeKind.Interface) {
                 throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        $"External Dependency type {symbol.Name} must be an interface.",
-                        symbol.Locations.First());
+                    Diagnostics.InvalidSpecification,
+                    $"External Dependency type {symbol.Name} must be an interface.",
+                    symbol.Locations.First());
             }
 
             return true;

@@ -7,7 +7,6 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Common {
-    using System;
     using Microsoft.CodeAnalysis;
 
     internal static class Logger {

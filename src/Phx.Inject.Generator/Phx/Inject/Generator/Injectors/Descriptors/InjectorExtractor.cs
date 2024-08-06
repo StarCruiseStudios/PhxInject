@@ -7,9 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Injectors.Descriptors {
-    using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Phx.Inject.Generator.Common;
@@ -23,19 +21,19 @@ namespace Phx.Inject.Generator.Injectors.Descriptors {
         }
 
         public InjectorExtractor() : this(
-                new InjectorDescriptor.Builder(
-                        new InjectorProviderDescriptor.Builder().Build,
-                        new InjectorBuilderDescriptor.Builder().Build,
-                        new InjectorChildFactoryDescriptor.Builder().Build).Build) { }
+            new InjectorDescriptor.Builder(
+                new InjectorProviderDescriptor.Builder().Build,
+                new InjectorBuilderDescriptor.Builder().Build,
+                new InjectorChildFactoryDescriptor.Builder().Build).Build) { }
 
         public IReadOnlyList<InjectorDescriptor> Extract(
-                IEnumerable<TypeDeclarationSyntax> syntaxNodes,
-                DescriptorGenerationContext context
+            IEnumerable<TypeDeclarationSyntax> syntaxNodes,
+            DescriptorGenerationContext context
         ) {
             return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
-                    .Where(IsInjectorSymbol)
-                    .Select(symbol => createInjectorDescriptor(symbol, context))
-                    .ToImmutableList();
+                .Where(IsInjectorSymbol)
+                .Select(symbol => createInjectorDescriptor(symbol, context))
+                .ToImmutableList();
         }
 
         private static bool IsInjectorSymbol(ITypeSymbol symbol) {
@@ -46,9 +44,9 @@ namespace Phx.Inject.Generator.Injectors.Descriptors {
 
             if (symbol.TypeKind != TypeKind.Interface) {
                 throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        $"Injector type {symbol.Name} must be an interface.",
-                        symbol.Locations.First());
+                    Diagnostics.InvalidSpecification,
+                    $"Injector type {symbol.Name} must be an interface.",
+                    symbol.Locations.First());
             }
 
             return true;

@@ -7,7 +7,6 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Injectors.Definitions {
-    using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Common.Definitions;
@@ -16,9 +15,9 @@ namespace Phx.Inject.Generator.Injectors.Definitions {
     //         InjectorDescriptor injectorDescriptor);
 
     internal record InjectorSpecContainerCollectionDefinition(
-            TypeModel SpecContainerCollectionType,
-            IEnumerable<TypeModel> SpecContainers,
-            Location Location
+        TypeModel SpecContainerCollectionType,
+        IEnumerable<TypeModel> SpecContainers,
+        Location Location
     ) : IDefinition {
         // public class Builder {
         //     private readonly CreateSpecContainerCollectionType createSpecContainerCollectionType;

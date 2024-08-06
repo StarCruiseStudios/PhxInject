@@ -8,15 +8,15 @@
 
 namespace Phx.Inject.Generator.Common {
     internal record QualifiedTypeModel(
-            TypeModel TypeModel,
-            string Qualifier
+        TypeModel TypeModel,
+        string Qualifier
     ) {
         public const string NoQualifier = "";
 
         public override string ToString() {
             return string.IsNullOrEmpty(Qualifier)
-                    ? TypeModel.ToString()
-                    : $"[{Qualifier}] {TypeModel}";
+                ? TypeModel.ToString()
+                : $"[{Qualifier}] {TypeModel}";
         }
     }
 }

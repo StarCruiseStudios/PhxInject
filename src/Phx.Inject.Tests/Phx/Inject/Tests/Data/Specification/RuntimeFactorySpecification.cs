@@ -15,21 +15,21 @@ namespace Phx.Inject.Tests.Data.Specification {
         internal static ILeaf GetLeaf() {
             return new IntLeaf(10);
         }
-        
+
         [Factory]
         [Label("LabeledLeaf")]
         internal static ILeaf GetLabeledLeaf() {
             return new IntLeaf(42);
         }
-        
+
         [Factory]
         internal static LeafFactory GetLeafFactory(Factory<ILeaf> factory) {
             return new LeafFactory(factory.Create);
         }
-        
+
         [Factory]
         [Label("LabeledLeaf")]
-        internal static LeafFactory GetLabeledLeafFactory([Label("LabeledLeaf")]Factory<ILeaf> factory) {
+        internal static LeafFactory GetLabeledLeafFactory([Label("LabeledLeaf")] Factory<ILeaf> factory) {
             return new LeafFactory(factory.Create);
         }
     }

@@ -12,19 +12,19 @@ namespace Phx.Inject.Generator.Injectors.Templates {
     using Phx.Inject.Generator.Specifications.Templates;
 
     internal record InjectorBuilderTemplate(
-            string BuiltTypeQualifiedName,
-            string MethodName,
-            string BuilderTargetName,
-            SpecContainerBuilderInvocationTemplate SpecContainerBuilderInvocation,
-            Location Location
+        string BuiltTypeQualifiedName,
+        string MethodName,
+        string BuilderTargetName,
+        SpecContainerBuilderInvocationTemplate SpecContainerBuilderInvocation,
+        Location Location
     ) : IInjectorMemberTemplate {
         public void Render(IRenderWriter writer) {
             writer.AppendLine($"public void {MethodName}({BuiltTypeQualifiedName} {BuilderTargetName}) {{")
-                    .IncreaseIndent(1);
+                .IncreaseIndent(1);
             SpecContainerBuilderInvocation.Render(writer);
             writer.AppendLine(";")
-                    .DecreaseIndent(1)
-                    .AppendLine("}");
+                .DecreaseIndent(1)
+                .AppendLine("}");
         }
     }
 }

@@ -7,8 +7,6 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Tests.Data.Specification {
-    using System;
-
     [Qualifier]
     [AttributeUsage(QualifierAttribute.Usage)]
     internal class NamedLeafAAttribute : Attribute { }

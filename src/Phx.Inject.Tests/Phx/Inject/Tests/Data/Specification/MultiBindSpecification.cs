@@ -8,46 +8,58 @@
 
 namespace Phx.Inject.Tests.Data.Specification {
     using Phx.Inject.Tests.Data.Model;
-    
+
     [Specification]
     public static class MultiBindSpecification {
         [Factory]
         [Partial]
         internal static List<ILeaf> GetListLeaf1() {
-            return new List<ILeaf> { new IntLeaf(10) };
+            return new List<ILeaf> {
+                new IntLeaf(10)
+            };
         }
-        
+
         [Factory]
         [Partial]
         internal static List<ILeaf> GetListLeaf2() {
-            return new List<ILeaf> { new IntLeaf(20) };
+            return new List<ILeaf> {
+                new IntLeaf(20)
+            };
         }
-        
+
         [Factory]
         [Partial]
         internal static HashSet<ILeaf> GetSetLeaf1() {
-            return new HashSet<ILeaf> { new IntLeaf(30) };
+            return new HashSet<ILeaf> {
+                new IntLeaf(30)
+            };
         }
-        
+
         [Factory]
         [Partial]
         internal static HashSet<ILeaf> GetSetLeaf2() {
-            return new HashSet<ILeaf> { new IntLeaf(40) };
+            return new HashSet<ILeaf> {
+                new IntLeaf(40)
+            };
         }
-        
+
         [Factory]
         [Partial]
         internal static Dictionary<string, ILeaf> GetDictLeaf1() {
             return new Dictionary<string, ILeaf> {
-                { "key1", new IntLeaf(50) }
+                {
+                    "key1", new IntLeaf(50)
+                }
             };
         }
-        
+
         [Factory]
         [Partial]
         internal static Dictionary<string, ILeaf> GetDictLeaf2() {
             return new Dictionary<string, ILeaf> {
-                { "key2", new IntLeaf(60) }
+                {
+                    "key2", new IntLeaf(60)
+                }
             };
         }
     }

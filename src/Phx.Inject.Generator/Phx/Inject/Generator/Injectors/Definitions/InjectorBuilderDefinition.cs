@@ -13,9 +13,9 @@ namespace Phx.Inject.Generator.Injectors.Definitions {
     using Phx.Inject.Generator.Specifications.Definitions;
 
     internal record InjectorBuilderDefinition(
-            QualifiedTypeModel BuiltType,
-            string InjectorBuilderMethodName,
-            SpecContainerBuilderInvocationDefinition SpecContainerBuilderInvocation,
-            Location Location
+        QualifiedTypeModel BuiltType,
+        string InjectorBuilderMethodName,
+        SpecContainerBuilderInvocationDefinition SpecContainerBuilderInvocation,
+        Location Location
     ) : IDefinition;
 }

@@ -11,14 +11,14 @@ namespace Phx.Inject.Generator.Injectors.Templates {
     using Phx.Inject.Generator.Common.Templates;
 
     internal record InjectorChildExternalDependencyConstructorArgumentTemplate(
-            string ArgumentName,
-            string ExternalDependencyImplementationTypeQualifiedName,
-            string SpecContainerCollectionReferenceName,
-            Location Location
+        string ArgumentName,
+        string ExternalDependencyImplementationTypeQualifiedName,
+        string SpecContainerCollectionReferenceName,
+        Location Location
     ) : IInjectorChildConstructorArgumentTemplate {
         public void Render(IRenderWriter writer) {
             writer.Append(
-                    $"{ArgumentName}: new {ExternalDependencyImplementationTypeQualifiedName}({SpecContainerCollectionReferenceName})");
+                $"{ArgumentName}: new {ExternalDependencyImplementationTypeQualifiedName}({SpecContainerCollectionReferenceName})");
         }
     }
 }

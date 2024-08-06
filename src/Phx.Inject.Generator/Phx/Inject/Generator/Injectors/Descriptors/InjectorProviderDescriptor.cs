@@ -7,25 +7,24 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Injectors.Descriptors {
-    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Common.Descriptors;
 
     internal delegate InjectorProviderDescriptor? CreateInjectorProviderDescriptor(
-            IMethodSymbol providerMethod,
-            DescriptorGenerationContext context
+        IMethodSymbol providerMethod,
+        DescriptorGenerationContext context
     );
 
     internal record InjectorProviderDescriptor(
-            QualifiedTypeModel ProvidedType,
-            string ProviderMethodName,
-            Location Location
+        QualifiedTypeModel ProvidedType,
+        string ProviderMethodName,
+        Location Location
     ) : IDescriptor {
         public class Builder {
             public InjectorProviderDescriptor? Build(
-                    IMethodSymbol providerMethod,
-                    DescriptorGenerationContext context
+                IMethodSymbol providerMethod,
+                DescriptorGenerationContext context
             ) {
                 var providerLocation = providerMethod.Locations.First();
 
@@ -41,17 +40,17 @@ namespace Phx.Inject.Generator.Injectors.Descriptors {
 
                 if (providerMethod.Parameters.Length > 0) {
                     throw new InjectionException(
-                            Diagnostics.InvalidSpecification,
-                            $"Injector provider {providerMethod.Name} must not have any parameters.",
-                            providerLocation);
+                        Diagnostics.InvalidSpecification,
+                        $"Injector provider {providerMethod.Name} must not have any parameters.",
+                        providerLocation);
                 }
 
                 var returnType = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
                 var qualifier = MetadataHelpers.GetQualifier(providerMethod);
                 return new InjectorProviderDescriptor(
-                        new QualifiedTypeModel(returnType, qualifier),
-                        providerMethod.Name,
-                        providerLocation);
+                    new QualifiedTypeModel(returnType, qualifier),
+                    providerMethod.Name,
+                    providerLocation);
             }
         }
     }

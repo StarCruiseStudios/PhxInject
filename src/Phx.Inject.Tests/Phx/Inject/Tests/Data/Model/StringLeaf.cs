@@ -17,7 +17,7 @@ namespace Phx.Inject.Tests.Data.Model {
         public static StringLeaf Construct(string value) {
             return new StringLeaf(value);
         }
-        
+
         public override string ToString() {
             return $"StringLeaf({Value})";
         }

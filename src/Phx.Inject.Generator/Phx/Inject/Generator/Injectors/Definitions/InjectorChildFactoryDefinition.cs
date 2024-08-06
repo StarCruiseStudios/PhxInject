@@ -7,15 +7,14 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Injectors.Definitions {
-    using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Common.Definitions;
 
     internal record InjectorChildFactoryDefinition(
-            TypeModel InjectorChildInterfaceType,
-            string InjectorChildFactoryMethodName,
-            IList<TypeModel> Parameters,
-            Location Location
+        TypeModel InjectorChildInterfaceType,
+        string InjectorChildFactoryMethodName,
+        IList<TypeModel> Parameters,
+        Location Location
     ) : IDefinition;
 }

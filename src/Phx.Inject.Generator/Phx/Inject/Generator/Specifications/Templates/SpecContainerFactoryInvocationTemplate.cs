@@ -12,10 +12,10 @@ namespace Phx.Inject.Generator.Specifications.Templates {
     using Phx.Inject.Generator.Common.Templates;
 
     internal record SpecContainerFactoryInvocationTemplate(
-            List<SpecContainerFactorySingleInvocationTemplate> FactoryInvocationTemplates,
-            string? multiBindQualifiedTypeArgs,
-            string? runtimeFactoryProvidedTypeQualifiedName,
-            Location Location
+        List<SpecContainerFactorySingleInvocationTemplate> FactoryInvocationTemplates,
+        string? multiBindQualifiedTypeArgs,
+        string? runtimeFactoryProvidedTypeQualifiedName,
+        Location Location
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
             if (runtimeFactoryProvidedTypeQualifiedName != null) {
@@ -38,11 +38,12 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                     isFirst = false;
                     factoryInvocationTemplate.Render(writer);
                 }
+
                 writer.DecreaseIndent(1);
                 writer.AppendLine();
                 writer.Append(")");
             }
-            
+
             if (runtimeFactoryProvidedTypeQualifiedName != null) {
                 writer.Append(")");
             }

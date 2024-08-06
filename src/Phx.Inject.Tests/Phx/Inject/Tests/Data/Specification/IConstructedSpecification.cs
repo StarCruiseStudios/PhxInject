@@ -22,7 +22,7 @@ namespace Phx.Inject.Tests.Data.Specification {
         public static IntLeaf GetIntLeaf(int intValue) {
             return new IntLeaf(intValue);
         }
-        
+
         [Factory]
         public static OuterType GetOuterType(AutoType auto) {
             return new OuterType(auto);

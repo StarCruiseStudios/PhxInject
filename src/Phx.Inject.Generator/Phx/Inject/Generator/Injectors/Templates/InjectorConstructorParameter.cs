@@ -8,7 +8,7 @@
 
 namespace Phx.Inject.Generator.Injectors.Templates {
     internal record InjectorConstructorParameter(
-            string ParameterTypeQualifiedName,
-            string ParameterName
+        string ParameterTypeQualifiedName,
+        string ParameterName
     );
 }

@@ -44,8 +44,8 @@ namespace Phx.Inject.Generator.Common.Render {
             }
 
             var stringToAppend = autoIndent
-                    ? str.Replace("\n", $"\n{indentString}")
-                    : str;
+                ? str.Replace("\n", $"\n{indentString}")
+                : str;
             sourceBuilder.Append(stringToAppend);
             isBeginningOfLine = false;
             return this;
@@ -57,8 +57,8 @@ namespace Phx.Inject.Generator.Common.Render {
             }
 
             var stringToAppend = autoIndent
-                    ? str.Replace("\n", $"\n{indentString}")
-                    : str;
+                ? str.Replace("\n", $"\n{indentString}")
+                : str;
             sourceBuilder.AppendLine(stringToAppend);
             isBeginningOfLine = true;
             return this;

@@ -9,7 +9,7 @@
 namespace Phx.Inject.Tests.Data.Model {
     internal class AutoType {
         public ILeaf Value { get; }
-        
+
         public AutoTypeWithFabricationMode AutoTypeWithFabricationMode { get; }
         public AutoType(ILeaf value, AutoTypeWithFabricationMode autoTypeWithFabricationMode) {
             Value = value;
@@ -24,7 +24,7 @@ namespace Phx.Inject.Tests.Data.Model {
 
     public class OuterType {
         internal AutoType AutoType { get; }
-        
+
         internal OuterType(AutoType autoType) {
             AutoType = autoType;
         }

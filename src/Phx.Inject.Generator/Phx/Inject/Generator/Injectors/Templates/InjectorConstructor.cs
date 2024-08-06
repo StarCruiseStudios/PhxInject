@@ -21,9 +21,9 @@ namespace Phx.Inject.Generator.Injectors.Templates {
 
         public IRenderTemplate Construct(InjectorDefinition injectorDefinition, TemplateGenerationContext context) {
             return new GeneratedFileTemplate(
-                    injectorDefinition.InjectorType.NamespaceName,
-                    createInjectorTemplate(injectorDefinition, context),
-                    injectorDefinition.Location);
+                injectorDefinition.InjectorType.NamespaceName,
+                createInjectorTemplate(injectorDefinition, context),
+                injectorDefinition.Location);
         }
     }
 }

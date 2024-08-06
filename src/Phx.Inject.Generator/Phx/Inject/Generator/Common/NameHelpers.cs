@@ -19,8 +19,8 @@ namespace Phx.Inject.Generator.Common {
 
         public static string GetInjectorClassName(this TypeModel injectorInterfaceType) {
             var baseName = injectorInterfaceType.AsVariableName()
-                    .RemoveLeadingI()
-                    .StartUppercase();
+                .RemoveLeadingI()
+                .StartUppercase();
             return $"{GeneratedInjectorClassPrefix}{baseName}";
         }
 
@@ -35,9 +35,9 @@ namespace Phx.Inject.Generator.Common {
                 SpecFactoryMemberType.Reference => $"GetReference{factory.FactoryMemberName}",
                 SpecFactoryMemberType.Constructor => $"GetConstructor{factory.FactoryMemberName}",
                 _ => throw new InjectionException(
-                        Diagnostics.InternalError,
-                        $"Unhandled SpecFactoryMemberType {factory.SpecFactoryMemberType}.",
-                        factory.Location)
+                    Diagnostics.InternalError,
+                    $"Unhandled SpecFactoryMemberType {factory.SpecFactoryMemberType}.",
+                    factory.Location)
             };
         }
 
@@ -46,21 +46,20 @@ namespace Phx.Inject.Generator.Common {
                 SpecBuilderMemberType.Method => builder.BuilderMemberName,
                 SpecBuilderMemberType.Reference => $"GetReference{builder.BuilderMemberName}",
                 _ => throw new InjectionException(
-                        Diagnostics.InternalError,
-                        $"Unhandled SpecBuilderMemberType {builder.SpecBuilderMemberType}.",
-                        builder.Location)
+                    Diagnostics.InternalError,
+                    $"Unhandled SpecBuilderMemberType {builder.SpecBuilderMemberType}.",
+                    builder.Location)
             };
         }
 
         public static string GetCombinedClassName(TypeModel prefixType, TypeModel suffixType) {
             return GetAppendedClassName(prefixType, suffixType.BaseTypeName);
-
         }
 
         public static string GetAppendedClassName(TypeModel prefixType, string suffix) {
             return $"{prefixType.BaseTypeName}_{suffix}"
-                    .AsValidIdentifier()
-                    .StartUppercase();
+                .AsValidIdentifier()
+                .StartUppercase();
         }
 
         public static string GetVariableName(this TypeModel type) {
@@ -90,8 +89,8 @@ namespace Phx.Inject.Generator.Common {
 
         public static string RemoveLeadingI(this string input) {
             return input.StartsWith("I")
-                    ? input.Substring(1)
-                    : input;
+                ? input.Substring(1)
+                : input;
         }
 
         private static string AsVariableName(this TypeModel type) {
@@ -100,8 +99,8 @@ namespace Phx.Inject.Generator.Common {
 
         private static string AsVariableName(this QualifiedTypeModel type) {
             var referenceName = string.IsNullOrEmpty(type.Qualifier)
-                    ? type.TypeModel.BaseTypeName
-                    : $"{type.Qualifier}_{type.TypeModel.BaseTypeName}";
+                ? type.TypeModel.BaseTypeName
+                : $"{type.Qualifier}_{type.TypeModel.BaseTypeName}";
             return referenceName.AsValidIdentifier();
         }
     }

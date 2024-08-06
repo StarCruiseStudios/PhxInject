@@ -13,9 +13,9 @@ namespace Phx.Inject.Generator.Injectors.Definitions {
     using Phx.Inject.Generator.Specifications.Definitions;
 
     internal record InjectorProviderDefinition(
-            QualifiedTypeModel ProvidedType,
-            string InjectorProviderMethodName,
-            SpecContainerFactoryInvocationDefinition SpecContainerFactoryInvocation,
-            Location Location
+        QualifiedTypeModel ProvidedType,
+        string InjectorProviderMethodName,
+        SpecContainerFactoryInvocationDefinition SpecContainerFactoryInvocation,
+        Location Location
     ) : IDefinition;
 }

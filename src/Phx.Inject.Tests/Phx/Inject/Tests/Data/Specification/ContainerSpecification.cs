@@ -12,13 +12,12 @@ namespace Phx.Inject.Tests.Data.Specification {
     [Specification]
     internal static class ContainerSpecification {
         private static int currentInt = 0;
-        
-        
+
         [Factory(FabricationMode.ContainerScoped)]
         internal static int GetInt() {
             return currentInt++;
         }
-        
+
         [Factory(FabricationMode.Scoped)]
         internal static StringLeaf GetStringLeaf(int value) {
             return new StringLeaf(value.ToString());
@@ -27,13 +26,17 @@ namespace Phx.Inject.Tests.Data.Specification {
         [Factory]
         [Partial]
         internal static List<IntLeaf> GetIntLeaf1(IntLeaf leaf) {
-            return new List<IntLeaf> { leaf };
+            return new List<IntLeaf> {
+                leaf
+            };
         }
-        
+
         [Factory]
         [Partial]
         internal static List<IntLeaf> GetIntLeaf2(IntLeaf leaf) {
-            return new List<IntLeaf> { leaf };
+            return new List<IntLeaf> {
+                leaf
+            };
         }
 
         [Factory(FabricationMode.Container)]
@@ -42,7 +45,7 @@ namespace Phx.Inject.Tests.Data.Specification {
             var right = leaves[1];
             return new Node(left, right);
         }
-        
+
         [Factory(FabricationMode.Container)]
         [Label("WithScoped")]
         internal static Node GetNode2(IntLeaf intLeaf, StringLeaf stringLeaf) {

@@ -7,9 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.External.Descriptors {
-    using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Common.Descriptors;
@@ -17,34 +15,34 @@ namespace Phx.Inject.Generator.External.Descriptors {
     using Phx.Inject.Generator.Specifications.Descriptors;
 
     internal delegate ExternalDependencyDescriptor CreateExternalDependencyDescriptor(
-            ITypeSymbol externalDependencyInterfaceSymbol,
-            DescriptorGenerationContext context
+        ITypeSymbol externalDependencyInterfaceSymbol,
+        DescriptorGenerationContext context
     );
 
     internal record ExternalDependencyDescriptor(
-            TypeModel ExternalDependencyInterfaceType,
-            IEnumerable<ExternalDependencyProviderDescriptor> Providers,
-            Location Location
+        TypeModel ExternalDependencyInterfaceType,
+        IEnumerable<ExternalDependencyProviderDescriptor> Providers,
+        Location Location
     ) : IDescriptor {
         public SpecDescriptor GetSpecDescriptor() {
             var factories = Providers.Select(
-                            provider => new SpecFactoryDescriptor(
-                                    provider.ProvidedType,
-                                    provider.ProviderMethodName,
-                                    SpecFactoryMemberType.Method,
-                                    ImmutableList<QualifiedTypeModel>.Empty,
-                                    SpecFactoryMethodFabricationMode.Recurrent,
-                                    provider.isPartial,
-                                    provider.Location))
-                    .ToImmutableList();
+                    provider => new SpecFactoryDescriptor(
+                        provider.ProvidedType,
+                        provider.ProviderMethodName,
+                        SpecFactoryMemberType.Method,
+                        ImmutableList<QualifiedTypeModel>.Empty,
+                        SpecFactoryMethodFabricationMode.Recurrent,
+                        provider.isPartial,
+                        provider.Location))
+                .ToImmutableList();
 
             return new SpecDescriptor(
-                    ExternalDependencyInterfaceType,
-                    SpecInstantiationMode.Instantiated,
-                    factories,
-                    ImmutableList<SpecBuilderDescriptor>.Empty,
-                    ImmutableList<SpecLinkDescriptor>.Empty,
-                    Location);
+                ExternalDependencyInterfaceType,
+                SpecInstantiationMode.Instantiated,
+                factories,
+                ImmutableList<SpecBuilderDescriptor>.Empty,
+                ImmutableList<SpecLinkDescriptor>.Empty,
+                Location);
         }
 
         public class Builder {
@@ -55,22 +53,22 @@ namespace Phx.Inject.Generator.External.Descriptors {
             }
 
             public ExternalDependencyDescriptor Build(
-                    ITypeSymbol externalDependencyInterfaceSymbol,
-                    DescriptorGenerationContext context
+                ITypeSymbol externalDependencyInterfaceSymbol,
+                DescriptorGenerationContext context
             ) {
                 var externalDependencyInterfaceLocation = externalDependencyInterfaceSymbol.Locations.First();
                 var externalDependencyInterfaceType = TypeModel.FromTypeSymbol(externalDependencyInterfaceSymbol);
 
                 var providers = externalDependencyInterfaceSymbol
-                        .GetMembers()
-                        .OfType<IMethodSymbol>()
-                        .Select(method => createExternalDependencyProvider(method, context))
-                        .ToImmutableList();
+                    .GetMembers()
+                    .OfType<IMethodSymbol>()
+                    .Select(method => createExternalDependencyProvider(method, context))
+                    .ToImmutableList();
 
                 return new ExternalDependencyDescriptor(
-                        externalDependencyInterfaceType,
-                        providers,
-                        externalDependencyInterfaceLocation);
+                    externalDependencyInterfaceType,
+                    providers,
+                    externalDependencyInterfaceLocation);
             }
         }
     }

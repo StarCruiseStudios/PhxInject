@@ -8,27 +8,23 @@
 
 namespace Phx.Inject {
     /// <summary>
-    ///     A type that can be used to inject a dependency on the factory
-    ///     method for a class instead of the class itself.
+    ///     A type that can be used to inject a dependency on the factory method for a class instead of the
+    ///     class itself.
     /// </summary>
-    /// <typeparam name="T">The type of the dependency.</typeparam>
+    /// <typeparam name="T"> The type of the dependency. </typeparam>
     public sealed class Factory<T> {
         private Func<T> factory;
-        
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Factory"/> class.
-        /// </summary>
-        /// <param name="factory">The factory method used to construct a new instance of the dependency class.</param>
+
+        /// <summary> Initializes a new instance of the <see cref="Factory"/> class. </summary>
+        /// <param name="factory"> The factory method used to construct a new instance of the dependency class. </param>
         public Factory(Func<T> factory) {
             this.factory = factory;
         }
 
-        /// <summary>
-        ///     Creates a new instance of the dependency.
-        /// </summary>
-        /// <returns>A new instance of type <see cref="T"/>.</returns>
+        /// <summary> Creates a new instance of the dependency. </summary>
+        /// <returns> A new instance of type <see cref="T"/>. </returns>
         public T Create() {
-            return this.factory();
+            return factory();
         }
     }
 }

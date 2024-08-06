@@ -62,8 +62,8 @@ namespace Phx.Inject.Tests.Data.Specification {
 
         [Factory]
         internal static Node GetNode(
-                [Label("NonDefaultLeafA")] ILeaf left,
-                [NamedLeafA] ILeaf right
+            [Label("NonDefaultLeafA")] ILeaf left,
+            [NamedLeafA] ILeaf right
         ) {
             return new Node(left, right);
         }

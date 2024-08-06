@@ -9,13 +9,13 @@
 namespace Phx.Inject.Tests.Data.Inject {
     using Phx.Inject.Tests.Data.Model;
     using Phx.Inject.Tests.Data.Specification;
-    
+
     [Injector(typeof(MultiBindSpecification))]
     public interface IMultiBindInjector {
         List<ILeaf> GetLeafList();
         HashSet<ILeaf> GetLeafSet();
         Dictionary<string, ILeaf> GetLeafDict();
-        
+
         Factory<List<ILeaf>> GetLeafListRuntimeFactory();
         Factory<HashSet<ILeaf>> GetLeafSetRuntimeFactory();
         Factory<Dictionary<string, ILeaf>> GetLeafDictRuntimeFactory();

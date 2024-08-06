@@ -11,8 +11,8 @@ namespace Phx.Inject.Tests.Data.Inject {
     using Phx.Inject.Tests.Data.Specification;
 
     [Injector(
-            typeof(OuterNestedSpecification),
-            typeof(OuterNestedSpecification.Inner))]
+        typeof(OuterNestedSpecification),
+        typeof(OuterNestedSpecification.Inner))]
     internal interface INestedSpecInjector {
         public IntLeaf GetIntLeaf();
     }

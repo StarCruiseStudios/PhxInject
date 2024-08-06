@@ -12,8 +12,8 @@ namespace Phx.Inject.Generator.Specifications.Definitions {
     using Phx.Inject.Generator.Common.Definitions;
 
     internal record SpecContainerBuilderInvocationDefinition(
-            TypeModel SpecContainerType,
-            string BuilderMethodName,
-            Location Location
+        TypeModel SpecContainerType,
+        string BuilderMethodName,
+        Location Location
     ) : IDefinition;
 }

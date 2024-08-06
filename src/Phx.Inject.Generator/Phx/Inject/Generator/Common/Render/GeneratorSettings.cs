@@ -8,9 +8,9 @@
 
 namespace Phx.Inject.Generator.Common.Render {
     internal record GeneratorSettings(
-            int TabSize = 4,
-            string GeneratedFileExtension = "generated.cs",
-            bool NullableEnabled = true,
-            bool AllowConstructorFactories = true
+        int TabSize = 4,
+        string GeneratedFileExtension = "generated.cs",
+        bool NullableEnabled = true,
+        bool AllowConstructorFactories = true
     );
 }

@@ -7,16 +7,15 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Tests.Helpers {
-    using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
 
     internal static class TypeSymbolExtractor {
         public static IEnumerable<TSymbol> Extract<TSyntax, TSymbol>(
-                IEnumerable<TSyntax> syntaxNodes,
-                Compilation compilation
+            IEnumerable<TSyntax> syntaxNodes,
+            Compilation compilation
         )
-                where TSyntax : SyntaxNode
-                where TSymbol : ISymbol {
+            where TSyntax : SyntaxNode
+            where TSymbol : ISymbol {
             foreach (var syntaxNode in syntaxNodes) {
                 var syntaxTree = syntaxNode.SyntaxTree;
                 var semanticModel = compilation.GetSemanticModel(syntaxTree);

@@ -7,7 +7,6 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Tests.Data.Specification {
-    using System;
     using Phx.Inject.Tests.Data.Model;
 
     [Specification]

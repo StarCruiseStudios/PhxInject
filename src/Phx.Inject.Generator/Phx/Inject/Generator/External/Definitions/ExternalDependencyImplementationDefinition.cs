@@ -7,53 +7,51 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.External.Definitions {
-    using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Common.Definitions;
     using Phx.Inject.Generator.External.Descriptors;
 
     internal delegate ExternalDependencyImplementationDefinition CreateExternalDependencyImplementationDefinition(
-            ExternalDependencyDescriptor externalDependencyDescriptor,
-            DefinitionGenerationContext context
+        ExternalDependencyDescriptor externalDependencyDescriptor,
+        DefinitionGenerationContext context
     );
 
     internal record ExternalDependencyImplementationDefinition(
-            TypeModel ExternalDependencyImplementationType,
-            TypeModel ExternalDependencyInterfaceType,
-            IEnumerable<ExternalDependencyProviderMethodDefinition> ProviderMethodDefinitions,
-            Location Location
+        TypeModel ExternalDependencyImplementationType,
+        TypeModel ExternalDependencyInterfaceType,
+        IEnumerable<ExternalDependencyProviderMethodDefinition> ProviderMethodDefinitions,
+        Location Location
     ) : IDefinition {
         public class Builder {
             public ExternalDependencyImplementationDefinition Build(
-                    ExternalDependencyDescriptor externalDependencyDescriptor,
-                    DefinitionGenerationContext context
+                ExternalDependencyDescriptor externalDependencyDescriptor,
+                DefinitionGenerationContext context
             ) {
                 var implementationType = TypeHelpers.CreateExternalDependencyImplementationType(
-                        context.Injector.InjectorType,
-                        externalDependencyDescriptor.ExternalDependencyInterfaceType);
+                    context.Injector.InjectorType,
+                    externalDependencyDescriptor.ExternalDependencyInterfaceType);
 
                 var providers = externalDependencyDescriptor.Providers.Select(
-                                provider => {
-                                    var specContainerFactoryInvocation = context.GetSpecContainerFactoryInvocation(
-                                            provider.ProvidedType,
-                                            provider.Location);
+                        provider => {
+                            var specContainerFactoryInvocation = context.GetSpecContainerFactoryInvocation(
+                                provider.ProvidedType,
+                                provider.Location);
 
-                                    return new ExternalDependencyProviderMethodDefinition(
-                                            provider.ProvidedType.TypeModel,
-                                            provider.ProviderMethodName,
-                                            specContainerFactoryInvocation,
-                                            provider.Location);
-                                })
-                        .ToImmutableList();
+                            return new ExternalDependencyProviderMethodDefinition(
+                                provider.ProvidedType.TypeModel,
+                                provider.ProviderMethodName,
+                                specContainerFactoryInvocation,
+                                provider.Location);
+                        })
+                    .ToImmutableList();
 
                 return new ExternalDependencyImplementationDefinition(
-                        implementationType,
-                        externalDependencyDescriptor.ExternalDependencyInterfaceType,
-                        providers,
-                        externalDependencyDescriptor.Location);
+                    implementationType,
+                    externalDependencyDescriptor.ExternalDependencyInterfaceType,
+                    providers,
+                    externalDependencyDescriptor.Location);
             }
         }
     }

@@ -8,8 +8,8 @@
 
 namespace Phx.Inject.Generator.Injectors.Templates {
     internal record InjectorSpecContainerCollectionProperty(
-            string PropertyTypeQualifiedName,
-            string PropertyName,
-            string? ConstructorArgumentName
+        string PropertyTypeQualifiedName,
+        string PropertyName,
+        string? ConstructorArgumentName
     );
 }

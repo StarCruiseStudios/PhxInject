@@ -7,25 +7,24 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Injectors.Descriptors {
-    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Common.Descriptors;
 
     internal delegate InjectorBuilderDescriptor? CreateInjectorBuilderDescriptor(
-            IMethodSymbol builderMethod,
-            DescriptorGenerationContext context
+        IMethodSymbol builderMethod,
+        DescriptorGenerationContext context
     );
 
     internal record InjectorBuilderDescriptor(
-            QualifiedTypeModel BuiltType,
-            string BuilderMethodName,
-            Location Location
+        QualifiedTypeModel BuiltType,
+        string BuilderMethodName,
+        Location Location
     ) : IDescriptor {
         public class Builder {
             public InjectorBuilderDescriptor? Build(
-                    IMethodSymbol builderMethod,
-                    DescriptorGenerationContext context
+                IMethodSymbol builderMethod,
+                DescriptorGenerationContext context
             ) {
                 var builderLocation = builderMethod.Locations.First();
 
@@ -36,17 +35,17 @@ namespace Phx.Inject.Generator.Injectors.Descriptors {
 
                 if (builderMethod.Parameters.Length != 1) {
                     throw new InjectionException(
-                            Diagnostics.InvalidSpecification,
-                            $"Injector builder {builderMethod.Name} must have exactly 1 parameter.",
-                            builderLocation);
+                        Diagnostics.InvalidSpecification,
+                        $"Injector builder {builderMethod.Name} must have exactly 1 parameter.",
+                        builderLocation);
                 }
 
                 var builtType = TypeModel.FromTypeSymbol(builderMethod.Parameters[0].Type);
                 var qualifier = MetadataHelpers.GetQualifier(builderMethod);
                 return new InjectorBuilderDescriptor(
-                        new QualifiedTypeModel(builtType, qualifier),
-                        builderMethod.Name,
-                        builderLocation);
+                    new QualifiedTypeModel(builtType, qualifier),
+                    builderMethod.Name,
+                    builderLocation);
             }
         }
     }

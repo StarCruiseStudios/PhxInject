@@ -21,8 +21,8 @@ namespace Phx.Inject.Tests.Data.Inject {
     internal static class ChildSpecification {
         [Factory]
         internal static Node GetNode(
-                [Label(ParentSpecification.LeftLeaf)] ILeaf left,
-                [Label(ParentSpecification.RightLeaf)] ILeaf right) {
+            [Label(ParentSpecification.LeftLeaf)] ILeaf left,
+            [Label(ParentSpecification.RightLeaf)] ILeaf right) {
             return new Node(left, right);
         }
     }

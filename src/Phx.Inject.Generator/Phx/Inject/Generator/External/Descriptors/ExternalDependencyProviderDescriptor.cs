@@ -7,61 +7,60 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.External.Descriptors {
-    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Common.Descriptors;
 
     internal delegate ExternalDependencyProviderDescriptor CreateExternalDependencyProviderDescriptor(
-            IMethodSymbol providerMethod,
-            DescriptorGenerationContext context
+        IMethodSymbol providerMethod,
+        DescriptorGenerationContext context
     );
 
     internal record ExternalDependencyProviderDescriptor(
-            QualifiedTypeModel ProvidedType,
-            string ProviderMethodName,
-            bool isPartial,
-            Location Location
+        QualifiedTypeModel ProvidedType,
+        string ProviderMethodName,
+        bool isPartial,
+        Location Location
     ) : IDescriptor {
         public class Builder {
             public ExternalDependencyProviderDescriptor Build(
-                    IMethodSymbol providerMethod,
-                    DescriptorGenerationContext context
+                IMethodSymbol providerMethod,
+                DescriptorGenerationContext context
             ) {
                 var providerLocation = providerMethod.Locations.First();
 
                 if (providerMethod.ReturnsVoid) {
                     throw new InjectionException(
-                            Diagnostics.InvalidSpecification,
-                            $"External dependency provider {providerMethod.Name} must have a return type.",
-                            providerLocation);
+                        Diagnostics.InvalidSpecification,
+                        $"External dependency provider {providerMethod.Name} must have a return type.",
+                        providerLocation);
                 }
 
                 if (providerMethod.Parameters.Length > 0) {
                     throw new InjectionException(
-                            Diagnostics.InvalidSpecification,
-                            $"External dependency provider {providerMethod.Name} must not have any parameters.",
-                            providerLocation);
+                        Diagnostics.InvalidSpecification,
+                        $"External dependency provider {providerMethod.Name} must not have any parameters.",
+                        providerLocation);
                 }
-                
+
                 var partialAttributes = AttributeHelpers.GetPartialAttributes(providerMethod);
-                
+
                 var qualifier = MetadataHelpers.GetQualifier(providerMethod);
                 var returnTypeModel = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
                 var returnType = new QualifiedTypeModel(
                     returnTypeModel,
                     qualifier);
-                
+
                 var isPartial = partialAttributes.Any();
                 TypeHelpers.ValidatePartialType(returnType, isPartial, providerLocation);
-                
+
                 return new ExternalDependencyProviderDescriptor(
-                        returnType,
-                        providerMethod.Name,
-                        isPartial,
-                        providerLocation);
+                    returnType,
+                    providerMethod.Name,
+                    isPartial,
+                    providerLocation);
             }
-        
+
             private static bool GetIsPartial(ISymbol factorySymbol) {
                 var partialAttributes = AttributeHelpers.GetPartialAttributes(factorySymbol);
                 return partialAttributes.Any();

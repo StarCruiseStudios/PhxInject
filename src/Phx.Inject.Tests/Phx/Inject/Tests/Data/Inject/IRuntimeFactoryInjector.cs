@@ -14,10 +14,10 @@ namespace Phx.Inject.Tests.Data.Inject {
     public interface IRuntimeFactoryInjector {
         LeafFactory GetLeafFactory();
         Factory<ILeaf> GetLeafRuntimeFactory();
-        
+
         [Label("LabeledLeaf")]
         LeafFactory GetLabeledLeafFactory();
-        
+
         [Label("LabeledLeaf")]
         Factory<ILeaf> GetLabeledLeafRuntimeFactory();
     }

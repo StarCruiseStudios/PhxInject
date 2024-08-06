@@ -8,8 +8,8 @@
 
 namespace Phx.Inject.Generator.Common.Definitions {
     internal record RegistrationIdentifier(
-            TypeModel RegistrationType,
-            string Qualifier
+        TypeModel RegistrationType,
+        string Qualifier
     ) {
         public static RegistrationIdentifier FromQualifiedTypeDescriptor(QualifiedTypeModel type) {
             return new RegistrationIdentifier(type.TypeModel, type.Qualifier);

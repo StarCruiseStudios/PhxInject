@@ -7,8 +7,6 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator {
-    using System.Collections.Generic;
-    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -39,24 +37,24 @@ namespace Phx.Inject.Generator {
 
         private static bool HasInjectorAttribute(MemberDeclarationSyntax memberDeclaration) {
             return memberDeclaration.AttributeLists
-                    .Any(
-                            attributeList => attributeList.Attributes
-                                    .Any(
-                                            attribute => {
-                                                var name = attribute.Name.ToString();
-                                                return name is "Injector" or "InjectorAttribute";
-                                            }));
+                .Any(
+                    attributeList => attributeList.Attributes
+                        .Any(
+                            attribute => {
+                                var name = attribute.Name.ToString();
+                                return name is "Injector" or "InjectorAttribute";
+                            }));
         }
 
         private static bool HasSpecificationAttribute(MemberDeclarationSyntax memberDeclaration) {
             return memberDeclaration.AttributeLists
-                    .Any(
-                            attributeList => attributeList.Attributes
-                                    .Any(
-                                            attribute => {
-                                                var name = attribute.Name.ToString();
-                                                return name is "Specification" or "SpecificationAttribute";
-                                            }));
+                .Any(
+                    attributeList => attributeList.Attributes
+                        .Any(
+                            attribute => {
+                                var name = attribute.Name.ToString();
+                                return name is "Specification" or "SpecificationAttribute";
+                            }));
         }
     }
 }

@@ -12,10 +12,10 @@ namespace Phx.Inject.Tests.Data.Inject {
     using Phx.Inject.Tests.Data.Specification;
 
     [Injector(
-            typeof(RootSpecification),
-            typeof(LazySpecification),
-            typeof(LeafSpecification),
-            typeof(LeafLinks))]
+        typeof(RootSpecification),
+        typeof(LazySpecification),
+        typeof(LeafSpecification),
+        typeof(LeafLinks))]
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     internal interface IRawInjector {
         public Root GetRoot();

@@ -17,28 +17,28 @@ namespace Phx.Inject.Tests {
     public class ChildInjectorTests : LoggingTestClass {
         [Test] public void ChildInjectorsAreCreatedCorrectly() {
             IParentInjector parentInjector = Given(
-                    "A parent injector.",
-                    () => new GeneratedParentInjector());
+                "A parent injector.",
+                () => new GeneratedParentInjector());
             IChildInjector childInjector = Given(
-                    "A child injector retrieved from the parent.",
-                    () => parentInjector.GetChildInjector());
+                "A child injector retrieved from the parent.",
+                () => parentInjector.GetChildInjector());
             IGrandchildInjector grandchildInjector = Given(
-                    "A grandchild injector retrieved from the child.",
-                    () => childInjector.GetGrandchildInjector());
+                "A grandchild injector retrieved from the child.",
+                () => childInjector.GetGrandchildInjector());
 
             var root = When(
-                    "A factory method is invoked on the grandchild injector.",
-                    () => grandchildInjector.GetRoot());
+                "A factory method is invoked on the grandchild injector.",
+                () => grandchildInjector.GetRoot());
 
             Then(
-                    "The values from the parent are returned",
-                    ParentSpecification.LeftLeaf,
-                    (expected) => Verify.That((root.Node.Left as StringLeaf)!.Value.IsEqualTo(expected)));
+                "The values from the parent are returned",
+                ParentSpecification.LeftLeaf,
+                (expected) => Verify.That((root.Node.Left as StringLeaf)!.Value.IsEqualTo(expected)));
 
             Then(
-                    "The values from the parent are returned",
-                    ParentSpecification.RightLeaf,
-                    (expected) => Verify.That((root.Node.Right as StringLeaf)!.Value.IsEqualTo(expected)));
+                "The values from the parent are returned",
+                ParentSpecification.RightLeaf,
+                (expected) => Verify.That((root.Node.Right as StringLeaf)!.Value.IsEqualTo(expected)));
         }
     }
 }

@@ -7,9 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Common {
-    using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Linq;
     using Microsoft.CodeAnalysis;
 
     internal static class AttributeHelpers {
@@ -32,9 +30,9 @@ namespace Phx.Inject.Generator.Common {
                 0 => null,
                 1 => injectorAttributes.Single(),
                 _ => throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        $"Injector type {injectorInterfaceSymbol.Name} can only have one Injector attribute. Found {injectorAttributes.Count}.",
-                        injectorInterfaceSymbol.Locations.First())
+                    Diagnostics.InvalidSpecification,
+                    $"Injector type {injectorInterfaceSymbol.Name} can only have one Injector attribute. Found {injectorAttributes.Count}.",
+                    injectorInterfaceSymbol.Locations.First())
             };
         }
 
@@ -56,9 +54,9 @@ namespace Phx.Inject.Generator.Common {
                 0 => null,
                 1 => specificationAttributes.Single(),
                 _ => throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        $"Specification type {specificationSymbol.Name} can only have one Specification attribute. Found {specificationAttributes.Count}.",
-                        specificationSymbol.Locations.First())
+                    Diagnostics.InvalidSpecification,
+                    $"Specification type {specificationSymbol.Name} can only have one Specification attribute. Found {specificationAttributes.Count}.",
+                    specificationSymbol.Locations.First())
             };
         }
 
@@ -84,29 +82,29 @@ namespace Phx.Inject.Generator.Common {
         public static IList<AttributeData> GetChildInjectorAttributes(this ISymbol childInjectorMethodSymbol) {
             return GetAttributes(childInjectorMethodSymbol, ChildInjectorAttributeClassName);
         }
-        
+
         public static IList<AttributeData> GetPartialAttributes(this ISymbol partialMethodSymbol) {
             return GetAttributes(partialMethodSymbol, PartialAttributeClassName);
         }
 
         private static IList<AttributeData> GetAttributes(ISymbol symbol, string attributeClassName) {
             return symbol.GetAttributes()
-                    .Where(attributeData => attributeData.AttributeClass!.ToString() == attributeClassName)
-                    .ToImmutableList();
+                .Where(attributeData => attributeData.AttributeClass!.ToString() == attributeClassName)
+                .ToImmutableList();
         }
 
         private static IList<AttributeData> GetAttributedAttributes(
-                ISymbol symbol,
-                string attributeAttributeClassName) {
+            ISymbol symbol,
+            string attributeAttributeClassName) {
             return symbol.GetAttributes()
-                    .Where(
-                            attributeData => {
-                                var attributeAttributes = GetAttributes(
-                                        attributeData.AttributeClass!,
-                                        attributeAttributeClassName);
-                                return attributeAttributes.Count > 0;
-                            })
-                    .ToImmutableList();
+                .Where(
+                    attributeData => {
+                        var attributeAttributes = GetAttributes(
+                            attributeData.AttributeClass!,
+                            attributeAttributeClassName);
+                        return attributeAttributes.Count > 0;
+                    })
+                .ToImmutableList();
         }
     }
 }

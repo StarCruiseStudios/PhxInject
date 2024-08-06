@@ -7,8 +7,6 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject {
-    using System;
-
     /// <summary> Models a link between one dependency key and another. </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true)]
     public class LinkAttribute : Attribute {
@@ -18,7 +16,7 @@ namespace Phx.Inject {
         /// <summary> The dependency key for the type exposed by the link. </summary>
         public Type Output { get; }
 
-        /// <summary> Initializes a new instance of the <see cref="LinkAttribute" /> class. </summary>
+        /// <summary> Initializes a new instance of the <see cref="LinkAttribute"/> class. </summary>
         /// <param name="input"> The dependency key for the type consumed by the link. </param>
         /// <param name="output"> The dependency key for the type exposed by the link. </param>
         public LinkAttribute(Type input, Type output) {

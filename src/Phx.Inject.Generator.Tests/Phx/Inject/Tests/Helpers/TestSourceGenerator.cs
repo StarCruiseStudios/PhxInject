@@ -7,8 +7,6 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Tests.Helpers {
-    using System;
-    using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
 
     public class TestSourceGenerator : ISourceGenerator {
@@ -26,28 +24,28 @@ namespace Phx.Inject.Tests.Helpers {
 
         public void Execute(GeneratorExecutionContext context) {
             var syntaxReceiver = context.SyntaxReceiver as TestSyntaxReceiver
-                    ?? throw new InvalidOperationException("Incorrect Syntax Receiver."); // This should never happen.
+                ?? throw new InvalidOperationException("Incorrect Syntax Receiver."); // This should never happen.
 
             callback(syntaxReceiver.CapturedNodes);
         }
 
         public static IEnumerable<TSymbol> ExtractSymbols<TSyntax, TSymbol>(
-                string code,
-                Predicate<SyntaxNode> shouldCapture,
-                string[]? additionalFiles = null
+            string code,
+            Predicate<SyntaxNode> shouldCapture,
+            string[]? additionalFiles = null
         )
-                where TSyntax : SyntaxNode
-                where TSymbol : ISymbol {
+            where TSyntax : SyntaxNode
+            where TSymbol : ISymbol {
             var syntaxNodes = new List<TSyntax>();
             var sourceGenerator = new TestSourceGenerator(
-                    shouldCapture,
-                    capturedNodes => {
-                        foreach (var node in capturedNodes) {
-                            if (node is TSyntax syntaxNode) {
-                                syntaxNodes.Add(syntaxNode);
-                            }
+                shouldCapture,
+                capturedNodes => {
+                    foreach (var node in capturedNodes) {
+                        if (node is TSyntax syntaxNode) {
+                            syntaxNodes.Add(syntaxNode);
                         }
-                    });
+                    }
+                });
             var compilation = TestCompiler.CompileText(code, additionalFiles, sourceGenerator);
             return TypeSymbolExtractor.Extract<TSyntax, TSymbol>(syntaxNodes, compilation);
         }

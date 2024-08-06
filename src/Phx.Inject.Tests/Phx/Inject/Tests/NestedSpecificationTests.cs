@@ -17,16 +17,16 @@ namespace Phx.Inject.Tests {
         [Test]
         public void NestedSpecificationsAreReferencedCorrectly() {
             INestedSpecInjector injector = Given(
-                    "A test injector that references a nested spec.",
-                    () => new GeneratedNestedSpecInjector());
+                "A test injector that references a nested spec.",
+                () => new GeneratedNestedSpecInjector());
 
             var leaf = When(
-                    "A factory method is invoked on the injector.",
-                    () => injector.GetIntLeaf());
+                "A factory method is invoked on the injector.",
+                () => injector.GetIntLeaf());
 
             Then(
-                    "The value from the nested spec was returned",
-                    () => Verify.That(leaf.Value.IsEqualTo(OuterNestedSpecification.Inner.IntValue)));
+                "The value from the nested spec was returned",
+                () => Verify.That(leaf.Value.IsEqualTo(OuterNestedSpecification.Inner.IntValue)));
         }
     }
 }

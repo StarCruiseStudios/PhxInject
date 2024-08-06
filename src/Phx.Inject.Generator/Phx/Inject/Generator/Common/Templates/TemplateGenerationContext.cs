@@ -7,19 +7,18 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Common.Templates {
-    using System.Collections.Generic;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.External.Definitions;
     using Phx.Inject.Generator.Injectors.Definitions;
     using Phx.Inject.Generator.Specifications.Definitions;
 
     internal record TemplateGenerationContext(
-            InjectorDefinition Injector,
-            IReadOnlyDictionary<TypeModel, InjectorDefinition> Injectors,
-            IReadOnlyDictionary<TypeModel, SpecContainerDefinition> SpecContainers,
-            IReadOnlyDictionary<TypeModel, ExternalDependencyImplementationDefinition>
-                    ExternalDependencyImplementations,
-            GeneratorExecutionContext GenerationContext
+        InjectorDefinition Injector,
+        IReadOnlyDictionary<TypeModel, InjectorDefinition> Injectors,
+        IReadOnlyDictionary<TypeModel, SpecContainerDefinition> SpecContainers,
+        IReadOnlyDictionary<TypeModel, ExternalDependencyImplementationDefinition>
+            ExternalDependencyImplementations,
+        GeneratorExecutionContext GenerationContext
     ) {
         public InjectorDefinition GetInjector(TypeModel type, Location location) {
             if (Injectors.TryGetValue(type, out var injector)) {
@@ -27,9 +26,9 @@ namespace Phx.Inject.Generator.Common.Templates {
             }
 
             throw new InjectionException(
-                    Diagnostics.IncompleteSpecification,
-                    $"Cannot find required injector type {type}.",
-                    location);
+                Diagnostics.IncompleteSpecification,
+                $"Cannot find required injector type {type}.",
+                location);
         }
 
         public SpecContainerDefinition GetSpecContainer(TypeModel type, Location location) {
@@ -38,9 +37,9 @@ namespace Phx.Inject.Generator.Common.Templates {
             }
 
             throw new InjectionException(
-                    Diagnostics.IncompleteSpecification,
-                    $"Cannot find required specification container type {type}.",
-                    location);
+                Diagnostics.IncompleteSpecification,
+                $"Cannot find required specification container type {type}.",
+                location);
         }
 
         public ExternalDependencyImplementationDefinition GetExternalDependency(TypeModel type, Location location) {
@@ -49,9 +48,9 @@ namespace Phx.Inject.Generator.Common.Templates {
             }
 
             throw new InjectionException(
-                    Diagnostics.IncompleteSpecification,
-                    $"Cannot find required external dependency type {type}.",
-                    location);
+                Diagnostics.IncompleteSpecification,
+                $"Cannot find required external dependency type {type}.",
+                location);
         }
     }
 }

@@ -7,28 +7,26 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Injectors.Descriptors {
-    using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Common.Descriptors;
 
     internal delegate InjectorChildFactoryDescriptor? CreateInjectorChildFactoryDescriptor(
-            IMethodSymbol childInjectorMethod,
-            DescriptorGenerationContext context
+        IMethodSymbol childInjectorMethod,
+        DescriptorGenerationContext context
     );
 
     internal record InjectorChildFactoryDescriptor(
-            TypeModel ChildInjectorType,
-            string InjectorChildFactoryMethodName,
-            IList<TypeModel> Parameters,
-            Location Location
+        TypeModel ChildInjectorType,
+        string InjectorChildFactoryMethodName,
+        IList<TypeModel> Parameters,
+        Location Location
     ) : IDescriptor {
         public class Builder {
             public InjectorChildFactoryDescriptor? Build(
-                    IMethodSymbol childInjectorMethod,
-                    DescriptorGenerationContext context
+                IMethodSymbol childInjectorMethod,
+                DescriptorGenerationContext context
             ) {
                 var childInjectorLocation = childInjectorMethod.Locations.First();
 
@@ -39,21 +37,21 @@ namespace Phx.Inject.Generator.Injectors.Descriptors {
 
                 if (childInjectorMethod.ReturnsVoid) {
                     throw new InjectionException(
-                            Diagnostics.InvalidSpecification,
-                            $"Injector child factory {childInjectorMethod.Name} must return a type.",
-                            childInjectorLocation);
+                        Diagnostics.InvalidSpecification,
+                        $"Injector child factory {childInjectorMethod.Name} must return a type.",
+                        childInjectorLocation);
                 }
 
                 var parameters = childInjectorMethod.Parameters
-                        .Select(parameter => TypeModel.FromTypeSymbol(parameter.Type))
-                        .ToImmutableList();
+                    .Select(parameter => TypeModel.FromTypeSymbol(parameter.Type))
+                    .ToImmutableList();
 
                 var returnType = TypeModel.FromTypeSymbol(childInjectorMethod.ReturnType);
                 return new InjectorChildFactoryDescriptor(
-                        returnType,
-                        childInjectorMethod.Name,
-                        parameters,
-                        childInjectorLocation);
+                    returnType,
+                    childInjectorMethod.Name,
+                    parameters,
+                    childInjectorLocation);
             }
         }
     }

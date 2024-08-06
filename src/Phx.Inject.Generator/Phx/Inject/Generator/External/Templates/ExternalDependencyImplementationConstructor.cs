@@ -14,22 +14,22 @@ namespace Phx.Inject.Generator.External.Templates {
         private readonly CreateExternalDependencyImplementationTemplate createExternalDependencyImplementationTemplate;
 
         public ExternalDependencyImplementationConstructor(
-                CreateExternalDependencyImplementationTemplate createExternalDependencyImplementationTemplate
+            CreateExternalDependencyImplementationTemplate createExternalDependencyImplementationTemplate
         ) {
             this.createExternalDependencyImplementationTemplate = createExternalDependencyImplementationTemplate;
         }
 
         public ExternalDependencyImplementationConstructor() : this(
-                new ExternalDependencyImplementationTemplate.Builder().Build) { }
+            new ExternalDependencyImplementationTemplate.Builder().Build) { }
 
         public IRenderTemplate Construct(
-                ExternalDependencyImplementationDefinition externalDependencyImplementationDefinition,
-                TemplateGenerationContext context
+            ExternalDependencyImplementationDefinition externalDependencyImplementationDefinition,
+            TemplateGenerationContext context
         ) {
             return new GeneratedFileTemplate(
-                    externalDependencyImplementationDefinition.ExternalDependencyImplementationType.NamespaceName,
-                    createExternalDependencyImplementationTemplate(externalDependencyImplementationDefinition, context),
-                    externalDependencyImplementationDefinition.Location);
+                externalDependencyImplementationDefinition.ExternalDependencyImplementationType.NamespaceName,
+                createExternalDependencyImplementationTemplate(externalDependencyImplementationDefinition, context),
+                externalDependencyImplementationDefinition.Location);
         }
     }
 }

@@ -7,7 +7,6 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Common {
-    using System;
     using Microsoft.CodeAnalysis;
 
     internal class InjectionException : Exception {
@@ -15,19 +14,19 @@ namespace Phx.Inject.Generator.Common {
         public Location Location { get; }
 
         public InjectionException(
-                Diagnostics.DiagnosticData diagnosticData,
-                string message,
-                Location location
+            Diagnostics.DiagnosticData diagnosticData,
+            string message,
+            Location location
         ) : base(message) {
             DiagnosticData = diagnosticData;
             Location = location;
         }
 
         public InjectionException(
-                Diagnostics.DiagnosticData diagnosticData,
-                string message,
-                Location location,
-                Exception inner
+            Diagnostics.DiagnosticData diagnosticData,
+            string message,
+            Location location,
+            Exception inner
         ) : base(message, inner) {
             DiagnosticData = diagnosticData;
             Location = location;

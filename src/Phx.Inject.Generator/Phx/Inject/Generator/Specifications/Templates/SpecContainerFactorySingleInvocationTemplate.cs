@@ -11,14 +11,14 @@ namespace Phx.Inject.Generator.Specifications.Templates {
     using Phx.Inject.Generator.Common.Templates;
 
     internal record SpecContainerFactorySingleInvocationTemplate(
-            string SpecContainerCollectionReferenceName,
-            string SpecContainerReferenceName,
-            string SpecContainerFactoryMethodName,
-            Location Location
+        string SpecContainerCollectionReferenceName,
+        string SpecContainerReferenceName,
+        string SpecContainerFactoryMethodName,
+        Location Location
     ) : IRenderTemplate {
         public void Render(IRenderWriter writer) {
             writer.Append(
-                    $"{SpecContainerCollectionReferenceName}.{SpecContainerReferenceName}.{SpecContainerFactoryMethodName}({SpecContainerCollectionReferenceName})");
+                $"{SpecContainerCollectionReferenceName}.{SpecContainerReferenceName}.{SpecContainerFactoryMethodName}({SpecContainerCollectionReferenceName})");
         }
     }
 }

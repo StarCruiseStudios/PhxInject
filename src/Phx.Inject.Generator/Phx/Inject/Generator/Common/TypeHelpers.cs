@@ -16,13 +16,13 @@ namespace Phx.Inject.Generator.Common {
         public const string ListTypeName = "System.Collections.Generic.List";
         public const string HashSetTypeName = "System.Collections.Generic.HashSet";
         public const string DictionaryTypeName = "System.Collections.Generic.Dictionary";
-        
+
         private static readonly HashSet<string> MultiBindTypes = new() {
             ListTypeName,
             HashSetTypeName,
             DictionaryTypeName
         };
-        
+
         public static void ValidatePartialType(QualifiedTypeModel returnType, bool isPartial, Location location) {
             if (isPartial) {
                 if (!MultiBindTypes.Contains(returnType.TypeModel.QualifiedBaseTypeName)) {
@@ -39,7 +39,7 @@ namespace Phx.Inject.Generator.Common {
                 ", ",
                 type.TypeModel.TypeArguments.Select(arg => arg.QualifiedName));
         }
-        
+
         public static TypeModel CreateSpecContainerType(TypeModel injectorType, TypeModel specType) {
             var specContainerTypeName = NameHelpers.GetCombinedClassName(injectorType, specType);
             return specType with {
@@ -47,7 +47,7 @@ namespace Phx.Inject.Generator.Common {
                 TypeArguments = ImmutableList<TypeModel>.Empty
             };
         }
-        
+
         public static TypeModel CreateConstructorSpecContainerType(TypeModel injectorType) {
             var specContainerTypeName = NameHelpers.GetAppendedClassName(injectorType, "ConstructorFactories");
             return injectorType with {
@@ -65,8 +65,8 @@ namespace Phx.Inject.Generator.Common {
         }
 
         public static TypeModel CreateExternalDependencyImplementationType(
-                TypeModel injectorType,
-                TypeModel dependencyInterfaceType
+            TypeModel injectorType,
+            TypeModel dependencyInterfaceType
         ) {
             var implementationTypeName = NameHelpers.GetCombinedClassName(injectorType, dependencyInterfaceType);
             return injectorType with {

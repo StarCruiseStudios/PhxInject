@@ -20,17 +20,17 @@ namespace Phx.Inject.Tests {
             ILabelInjector injector = Given("A test injector.", () => new GeneratedLabelInjector());
 
             var (defaultLeaf, nonDefaultLeaf) = When(
-                    "An unlabeled and labeled dependency are retrieved.",
-                    () => (injector.GetDefaultLeaf(), injector.GetNonDefaultLeafA()));
+                "An unlabeled and labeled dependency are retrieved.",
+                () => (injector.GetDefaultLeaf(), injector.GetNonDefaultLeafA()));
 
             Then(
-                    "The correct default dependency was returned.",
-                    LabeledLeafSpecification.DefaultLeafData,
-                    expected => Verify.That((defaultLeaf as StringLeaf)!.Value.IsEqualTo(expected)));
+                "The correct default dependency was returned.",
+                LabeledLeafSpecification.DefaultLeafData,
+                expected => Verify.That((defaultLeaf as StringLeaf)!.Value.IsEqualTo(expected)));
             Then(
-                    "The correct nondefault dependency was returned.",
-                    LabeledLeafSpecification.NonDefaultLeafAData,
-                    expected => Verify.That((nonDefaultLeaf as StringLeaf)!.Value.IsEqualTo(expected)));
+                "The correct nondefault dependency was returned.",
+                LabeledLeafSpecification.NonDefaultLeafAData,
+                expected => Verify.That((nonDefaultLeaf as StringLeaf)!.Value.IsEqualTo(expected)));
         }
 
         [Test]
@@ -38,17 +38,17 @@ namespace Phx.Inject.Tests {
             ILabelInjector injector = Given("A test injector.", () => new GeneratedLabelInjector());
 
             var (leafA, leafB) = When(
-                    "Two different labeled dependencies are retrieved.",
-                    () => (injector.GetNonDefaultLeafA(), injector.GetNonDefaultLeafB()));
+                "Two different labeled dependencies are retrieved.",
+                () => (injector.GetNonDefaultLeafA(), injector.GetNonDefaultLeafB()));
 
             Then(
-                    "The correct first dependency was returned.",
-                    LabeledLeafSpecification.NonDefaultLeafAData,
-                    expected => Verify.That((leafA as StringLeaf)!.Value.IsEqualTo(expected)));
+                "The correct first dependency was returned.",
+                LabeledLeafSpecification.NonDefaultLeafAData,
+                expected => Verify.That((leafA as StringLeaf)!.Value.IsEqualTo(expected)));
             Then(
-                    "The correct second dependency was returned.",
-                    LabeledLeafSpecification.NonDefaultLeafBData,
-                    expected => Verify.That((leafB as StringLeaf)!.Value.IsEqualTo(expected)));
+                "The correct second dependency was returned.",
+                LabeledLeafSpecification.NonDefaultLeafBData,
+                expected => Verify.That((leafB as StringLeaf)!.Value.IsEqualTo(expected)));
         }
 
         [Test]
@@ -56,17 +56,17 @@ namespace Phx.Inject.Tests {
             ILabelInjector injector = Given("A test injector.", () => new GeneratedLabelInjector());
 
             var (leafA, leafB) = When(
-                    "Two different attribute qualified dependencies are retrieved.",
-                    () => (injector.GetAttributeNamedLeafA(), injector.GetAttributeNamedLeafB()));
+                "Two different attribute qualified dependencies are retrieved.",
+                () => (injector.GetAttributeNamedLeafA(), injector.GetAttributeNamedLeafB()));
 
             Then(
-                    "The correct first dependency was returned.",
-                    LabeledLeafSpecification.AttributeNamedLeafAData,
-                    expected => Verify.That((leafA as StringLeaf)!.Value.IsEqualTo(expected)));
+                "The correct first dependency was returned.",
+                LabeledLeafSpecification.AttributeNamedLeafAData,
+                expected => Verify.That((leafA as StringLeaf)!.Value.IsEqualTo(expected)));
             Then(
-                    "The correct second dependency was returned.",
-                    LabeledLeafSpecification.AttributeNamedLeafBData,
-                    expected => Verify.That((leafB as StringLeaf)!.Value.IsEqualTo(expected)));
+                "The correct second dependency was returned.",
+                LabeledLeafSpecification.AttributeNamedLeafBData,
+                expected => Verify.That((leafB as StringLeaf)!.Value.IsEqualTo(expected)));
         }
 
         [Test]
@@ -74,17 +74,17 @@ namespace Phx.Inject.Tests {
             ILabelInjector injector = Given("A test injector.", () => new GeneratedLabelInjector());
 
             var (leafA, leafB) = When(
-                    "Two different attribute qualified dependencies are retrieved.",
-                    () => (injector.GetStringNamedLeafA(), injector.GetNamedStringLeaf()));
+                "Two different attribute qualified dependencies are retrieved.",
+                () => (injector.GetStringNamedLeafA(), injector.GetNamedStringLeaf()));
 
             Then(
-                    "The correct first dependency was returned.",
-                    LabeledLeafSpecification.StringNamedLeafAData,
-                    expected => Verify.That((leafA as StringLeaf)!.Value.IsEqualTo(expected)));
+                "The correct first dependency was returned.",
+                LabeledLeafSpecification.StringNamedLeafAData,
+                expected => Verify.That((leafA as StringLeaf)!.Value.IsEqualTo(expected)));
             Then(
-                    "The correct second dependency was returned.",
-                    LabeledLeafSpecification.NamedStringLeafData,
-                    expected => Verify.That(leafB.Value.IsEqualTo(expected)));
+                "The correct second dependency was returned.",
+                LabeledLeafSpecification.NamedStringLeafData,
+                expected => Verify.That(leafB.Value.IsEqualTo(expected)));
         }
 
         [Test]
@@ -92,17 +92,17 @@ namespace Phx.Inject.Tests {
             ILabelInjector injector = Given("A test injector.", () => new GeneratedLabelInjector());
 
             var node = When(
-                    "A dependency is retrieved that was injected with two different qualified dependencies.",
-                    () => injector.GetNode());
+                "A dependency is retrieved that was injected with two different qualified dependencies.",
+                () => injector.GetNode());
 
             Then(
-                    "The correct left dependency was returned.",
-                    LabeledLeafSpecification.NonDefaultLeafAData,
-                    expected => Verify.That((node.Left as StringLeaf)!.Value.IsEqualTo(expected)));
+                "The correct left dependency was returned.",
+                LabeledLeafSpecification.NonDefaultLeafAData,
+                expected => Verify.That((node.Left as StringLeaf)!.Value.IsEqualTo(expected)));
             Then(
-                    "The correct right dependency was returned.",
-                    LabeledLeafSpecification.AttributeNamedLeafAData,
-                    expected => Verify.That((node.Right as StringLeaf)!.Value.IsEqualTo(expected)));
+                "The correct right dependency was returned.",
+                LabeledLeafSpecification.AttributeNamedLeafAData,
+                expected => Verify.That((node.Right as StringLeaf)!.Value.IsEqualTo(expected)));
         }
 
         [Test]
@@ -110,29 +110,29 @@ namespace Phx.Inject.Tests {
             ILabelInjector injector = Given("A test injector.", () => new GeneratedLabelInjector());
 
             var unlabeledLazyType = When(
-                    "An unlabeled dependency is built.",
-                    () => {
-                        var lazyType = new LazyType();
-                        injector.BuildUnlabeledLazyType(lazyType);
-                        return lazyType;
-                    });
+                "An unlabeled dependency is built.",
+                () => {
+                    var lazyType = new LazyType();
+                    injector.BuildUnlabeledLazyType(lazyType);
+                    return lazyType;
+                });
 
             var labeledLazyType = When(
-                    "A labeled dependency is built.",
-                    () => {
-                        var lazyType = new LazyType();
-                        injector.BuildLabeledLazyType(lazyType);
-                        return lazyType;
-                    });
+                "A labeled dependency is built.",
+                () => {
+                    var lazyType = new LazyType();
+                    injector.BuildLabeledLazyType(lazyType);
+                    return lazyType;
+                });
 
             Then(
-                    "The correct unlabeled dependency was returned.",
-                    LabeledLeafSpecification.DefaultLeafData,
-                    expected => Verify.That((unlabeledLazyType.Value as StringLeaf)!.Value.IsEqualTo(expected)));
+                "The correct unlabeled dependency was returned.",
+                LabeledLeafSpecification.DefaultLeafData,
+                expected => Verify.That((unlabeledLazyType.Value as StringLeaf)!.Value.IsEqualTo(expected)));
             Then(
-                    "The correct labeled dependency was returned.",
-                    LabeledLeafSpecification.NonDefaultLeafAData,
-                    expected => Verify.That((labeledLazyType.Value as StringLeaf)!.Value.IsEqualTo(expected)));
+                "The correct labeled dependency was returned.",
+                LabeledLeafSpecification.NonDefaultLeafAData,
+                expected => Verify.That((labeledLazyType.Value as StringLeaf)!.Value.IsEqualTo(expected)));
         }
     }
 }

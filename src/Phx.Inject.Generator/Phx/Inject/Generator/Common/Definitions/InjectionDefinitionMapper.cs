@@ -19,10 +19,10 @@ namespace Phx.Inject.Generator.Common.Definitions {
         }
 
         public InjectionDefinitionMapper() : this(
-                new InjectionContextDefinition.Builder(
-                        new InjectorDefinition.Builder().Build,
-                        new SpecContainerDefinition.Builder().Build,
-                        new ExternalDependencyImplementationDefinition.Builder().Build).Build) { }
+            new InjectionContextDefinition.Builder(
+                new InjectorDefinition.Builder().Build,
+                new SpecContainerDefinition.Builder().Build,
+                new ExternalDependencyImplementationDefinition.Builder().Build).Build) { }
 
         public InjectionContextDefinition Map(DefinitionGenerationContext context) {
             return createInjectionContextDefinition(context.Injector, context);

@@ -7,78 +7,76 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Common {
-    using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Phx.Inject.Generator.Specifications;
 
     internal static class MetadataHelpers {
         public static IEnumerable<ITypeSymbol> GetTypeSymbolsFromDeclarations(
-                IEnumerable<TypeDeclarationSyntax> syntaxNodes,
-                GeneratorExecutionContext context
+            IEnumerable<TypeDeclarationSyntax> syntaxNodes,
+            GeneratorExecutionContext context
         ) {
             return syntaxNodes.Select(
-                            syntaxNode => {
-                                var semanticModel = context.Compilation.GetSemanticModel(syntaxNode.SyntaxTree);
-                                return semanticModel.GetDeclaredSymbol(syntaxNode) as ITypeSymbol;
-                            })
-                    .Where(symbol => symbol != null)
-                    .Select(symbol => symbol!)
-                    .ToImmutableList();
+                    syntaxNode => {
+                        var semanticModel = context.Compilation.GetSemanticModel(syntaxNode.SyntaxTree);
+                        return semanticModel.GetDeclaredSymbol(syntaxNode) as ITypeSymbol;
+                    })
+                .Where(symbol => symbol != null)
+                .Select(symbol => symbol!)
+                .ToImmutableList();
         }
 
         public static IEnumerable<ITypeSymbol> GetExternalDependencyTypes(ISymbol injectorSymbol) {
             var externalDependencyAttributes = injectorSymbol.GetExternalDependencyAttributes();
             return externalDependencyAttributes.SelectMany(
-                            attributeData => {
-                                return attributeData.ConstructorArguments
-                                        .Where(argument => argument.Kind == TypedConstantKind.Type)
-                                        .Select(argument => argument.Value)
-                                        .OfType<ITypeSymbol>()
-                                        .ToImmutableList();
-                            })
-                    .ToImmutableList();
+                    attributeData => {
+                        return attributeData.ConstructorArguments
+                            .Where(argument => argument.Kind == TypedConstantKind.Type)
+                            .Select(argument => argument.Value)
+                            .OfType<ITypeSymbol>()
+                            .ToImmutableList();
+                    })
+                .ToImmutableList();
         }
 
         public static ImmutableList<QualifiedTypeModel> GetMethodParametersQualifiedTypes(IMethodSymbol methodSymbol) {
             return methodSymbol.Parameters.Select(
-                            parameter => {
-                                var qualifier = GetQualifier(parameter);
-                                return new QualifiedTypeModel(
-                                        TypeModel.FromTypeSymbol(parameter.Type),
-                                        qualifier);
-                            })
-                    .ToImmutableList();
+                    parameter => {
+                        var qualifier = GetQualifier(parameter);
+                        return new QualifiedTypeModel(
+                            TypeModel.FromTypeSymbol(parameter.Type),
+                            qualifier);
+                    })
+                .ToImmutableList();
         }
 
         public static ImmutableList<QualifiedTypeModel> GetConstructorParameterQualifiedTypes(ITypeSymbol type) {
             var typeLocation = type.Locations.First();
 
             var isVisible = type.DeclaredAccessibility == Accessibility.Public
-                    || type.DeclaredAccessibility == Accessibility.Internal;
+                || type.DeclaredAccessibility == Accessibility.Internal;
             if (!isVisible || type.IsStatic || type.IsAbstract) {
                 throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        $"Auto injected type '{type.Name}' must be public or internal, non-static, and non-abstract.",
-                        typeLocation);
+                    Diagnostics.InvalidSpecification,
+                    $"Auto injected type '{type.Name}' must be public or internal, non-static, and non-abstract.",
+                    typeLocation);
             }
-                
+
             var constructors = type
-                    .GetMembers()
-                    .OfType<IMethodSymbol>()
-                    .Where(m => m.MethodKind == MethodKind.Constructor && m.DeclaredAccessibility == Accessibility.Public)
-                    .ToList();
+                .GetMembers()
+                .OfType<IMethodSymbol>()
+                .Where(m => m.MethodKind == MethodKind.Constructor && m.DeclaredAccessibility == Accessibility.Public)
+                .ToList();
             if (constructors.Count != 1) {
                 throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        $"Auto injected type '{type.Name}' must contain exactly one public constructor",
-                        typeLocation);
+                    Diagnostics.InvalidSpecification,
+                    $"Auto injected type '{type.Name}' must contain exactly one public constructor",
+                    typeLocation);
             }
 
             var constructorMethod = constructors.Single();
-                
+
             return GetMethodParametersQualifiedTypes(constructorMethod);
         }
 
@@ -86,14 +84,14 @@ namespace Phx.Inject.Generator.Common {
             var injectorAttribute = injectorInterfaceSymbol.GetInjectorAttribute();
             if (injectorAttribute == null) {
                 throw new InjectionException(
-                        Diagnostics.InternalError,
-                        $"Injector type {injectorInterfaceSymbol.Name} must have one Injector attribute.",
-                        injectorInterfaceSymbol.Locations.First());
+                    Diagnostics.InternalError,
+                    $"Injector type {injectorInterfaceSymbol.Name} must have one Injector attribute.",
+                    injectorInterfaceSymbol.Locations.First());
             }
 
             var generatedClassName = injectorAttribute.ConstructorArguments
-                    .FirstOrDefault(argument => argument.Kind != TypedConstantKind.Array)
-                    .Value as string;
+                .FirstOrDefault(argument => argument.Kind != TypedConstantKind.Array)
+                .Value as string;
 
             if (generatedClassName == null) {
                 generatedClassName = TypeModel.FromTypeSymbol(injectorInterfaceSymbol).GetInjectorClassName();
@@ -108,35 +106,35 @@ namespace Phx.Inject.Generator.Common {
             var injectorAttribute = injectorInterfaceSymbol.GetInjectorAttribute();
             if (injectorAttribute == null) {
                 throw new InjectionException(
-                        Diagnostics.InternalError,
-                        $"Injector type {injectorInterfaceSymbol.Name} must have one Injector attribute.",
-                        injectorInterfaceSymbol.Locations.First());
+                    Diagnostics.InternalError,
+                    $"Injector type {injectorInterfaceSymbol.Name} must have one Injector attribute.",
+                    injectorInterfaceSymbol.Locations.First());
             }
 
             return injectorAttribute.ConstructorArguments
-                    .Where(argument => argument.Kind == TypedConstantKind.Array)
-                    .SelectMany(argument => argument.Values)
-                    .Where(type => type.Value is ITypeSymbol)
-                    .Select(type => (type.Value as ITypeSymbol)!)
-                    .ToImmutableList();
+                .Where(argument => argument.Kind == TypedConstantKind.Array)
+                .SelectMany(argument => argument.Values)
+                .Where(type => type.Value is ITypeSymbol)
+                .Select(type => (type.Value as ITypeSymbol)!)
+                .ToImmutableList();
         }
 
         public static SpecFactoryMethodFabricationMode GetFactoryFabricationMode(
-                AttributeData factoryAttribute,
-                Location location
+            AttributeData factoryAttribute,
+            Location location
         ) {
             var fabricationModes = factoryAttribute.ConstructorArguments
-                    .Where(argument => argument.Type!.Name == "FabricationMode")
-                    .Select(argument => (SpecFactoryMethodFabricationMode)argument.Value!)
-                    .ToImmutableList();
+                .Where(argument => argument.Type!.Name == "FabricationMode")
+                .Select(argument => (SpecFactoryMethodFabricationMode)argument.Value!)
+                .ToImmutableList();
 
             return fabricationModes.Count switch {
                 0 => SpecFactoryMethodFabricationMode.Recurrent, // The default
                 1 => fabricationModes.Single(),
                 _ => throw new InjectionException(
-                        Diagnostics.InternalError,
-                        "Factories can only have a single fabrication mode.",
-                        location)
+                    Diagnostics.InternalError,
+                    "Factories can only have a single fabrication mode.",
+                    location)
             };
         }
 
@@ -148,27 +146,27 @@ namespace Phx.Inject.Generator.Common {
 
             if (numLabels + numQualifiers > 1) {
                 throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        $"Symbol {symbol.Name} can only have one Label or Qualifier attribute. Found {numLabels + numQualifiers}.",
-                        symbol.Locations.First());
+                    Diagnostics.InvalidSpecification,
+                    $"Symbol {symbol.Name} can only have one Label or Qualifier attribute. Found {numLabels + numQualifiers}.",
+                    symbol.Locations.First());
             }
 
             if (numLabels > 0) {
                 var labels = labelAttributes.Single()
-                        .ConstructorArguments.Where(argument => argument.Type!.Name == "String")
-                        .Select(argument => (string)argument.Value!);
+                    .ConstructorArguments.Where(argument => argument.Type!.Name == "String")
+                    .Select(argument => (string)argument.Value!);
                 return labels.Count() switch {
                     1 => labels.Single(),
                     _ => throw new InjectionException(
-                            Diagnostics.InternalError,
-                            $"Label for symbol {symbol.Name} must have exactly one label value.",
-                            symbol.Locations.First()) // This should never happen
+                        Diagnostics.InternalError,
+                        $"Label for symbol {symbol.Name} must have exactly one label value.",
+                        symbol.Locations.First()) // This should never happen
                 };
             }
 
             if (numQualifiers > 0) {
                 return qualifierAttributes.Single()
-                        .AttributeClass!.ToString();
+                    .AttributeClass!.ToString();
             }
 
             return QualifiedTypeModel.NoQualifier;

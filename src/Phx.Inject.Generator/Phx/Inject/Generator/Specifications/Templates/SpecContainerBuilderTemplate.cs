@@ -7,24 +7,22 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Specifications.Templates {
-    using System.Collections.Generic;
-    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Common.Templates;
 
     internal record SpecContainerBuilderTemplate(
-            string BuiltTypeQualifiedName,
-            string SpecContainerBuilderMethodName,
-            string SpecBuilderMemberName,
-            SpecBuilderMemberType SpecBuilderMemberType,
-            string BuiltInstanceReferenceName,
-            string SpecContainerCollectionQualifiedType,
-            string SpecContainerCollectionReferenceName,
-            string? ConstructedSpecificationReference,
-            string SpecificationQualifiedType,
-            IEnumerable<SpecContainerFactoryInvocationTemplate> Arguments,
-            Location Location
+        string BuiltTypeQualifiedName,
+        string SpecContainerBuilderMethodName,
+        string SpecBuilderMemberName,
+        SpecBuilderMemberType SpecBuilderMemberType,
+        string BuiltInstanceReferenceName,
+        string SpecContainerCollectionQualifiedType,
+        string SpecContainerCollectionReferenceName,
+        string? ConstructedSpecificationReference,
+        string SpecificationQualifiedType,
+        IEnumerable<SpecContainerFactoryInvocationTemplate> Arguments,
+        Location Location
     ) : ISpecContainerMemberTemplate {
         public void Render(IRenderWriter writer) {
             writer.AppendLine($"internal void {SpecContainerBuilderMethodName}(")
@@ -43,8 +41,8 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                 case SpecBuilderMemberType.Method:
                 case SpecBuilderMemberType.Reference:
                     writer.AppendLine($"{referenceName}.{SpecBuilderMemberName}(")
-                            .IncreaseIndent(1)
-                            .Append($"{BuiltInstanceReferenceName}");
+                        .IncreaseIndent(1)
+                        .Append($"{BuiltInstanceReferenceName}");
 
                     var numArguments = Arguments.Count();
                     if (numArguments > 0) {
@@ -55,18 +53,18 @@ namespace Phx.Inject.Generator.Specifications.Templates {
                     }
 
                     writer.AppendLine(");")
-                            .DecreaseIndent(1);
+                        .DecreaseIndent(1);
                     break;
 
                 default:
                     throw new InjectionException(
-                            Diagnostics.InternalError,
-                            $"Unhandled Spec Builder Member Type {SpecBuilderMemberType}.",
-                            Location);
+                        Diagnostics.InternalError,
+                        $"Unhandled Spec Builder Member Type {SpecBuilderMemberType}.",
+                        Location);
             }
 
             writer.DecreaseIndent(1)
-                    .AppendLine("}");
+                .AppendLine("}");
         }
     }
 }

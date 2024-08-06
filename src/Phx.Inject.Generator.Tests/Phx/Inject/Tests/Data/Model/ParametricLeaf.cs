@@ -16,7 +16,7 @@ namespace Phx.Inject.Tests.Data.Model {
         public static ParametricLeaf<T> Construct(T value) {
             return new ParametricLeaf<T>(value);
         }
-        
+
         public override string ToString() {
             return $"ParametricLeaf({Value})";
         }

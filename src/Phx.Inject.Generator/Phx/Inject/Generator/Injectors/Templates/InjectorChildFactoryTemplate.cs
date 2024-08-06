@@ -7,18 +7,16 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Injectors.Templates {
-    using System.Collections.Generic;
-    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Common.Templates;
 
     internal record InjectorChildFactoryTemplate(
-            string ChildInterfaceTypeQualifiedName,
-            string MethodName,
-            string ChildTypeQualifiedName,
-            IEnumerable<InjectorConstructorParameter> ConstructorParameters,
-            IEnumerable<IInjectorChildConstructorArgumentTemplate> ChildConstructorArguments,
-            Location Location
+        string ChildInterfaceTypeQualifiedName,
+        string MethodName,
+        string ChildTypeQualifiedName,
+        IEnumerable<InjectorConstructorParameter> ConstructorParameters,
+        IEnumerable<IInjectorChildConstructorArgumentTemplate> ChildConstructorArguments,
+        Location Location
     ) : IInjectorMemberTemplate {
         public void Render(IRenderWriter writer) {
             writer.Append($"public {ChildInterfaceTypeQualifiedName} {MethodName}(");
@@ -33,13 +31,13 @@ namespace Phx.Inject.Generator.Injectors.Templates {
             }
 
             writer.AppendLine(") {")
-                    .IncreaseIndent(1);
+                .IncreaseIndent(1);
 
             using (var collectionWriter = writer.GetCollectionWriter(
-                    new CollectionWriterProperties(
-                            OpeningString: $"return new {ChildTypeQualifiedName}(",
-                            ClosingString: ");",
-                            CloseWithNewline: false))) {
+                new CollectionWriterProperties(
+                    OpeningString: $"return new {ChildTypeQualifiedName}(",
+                    ClosingString: ");",
+                    CloseWithNewline: false))) {
                 foreach (var arg in ChildConstructorArguments) {
                     var elementWriter = collectionWriter.GetElementWriter();
                     arg.Render(elementWriter);
@@ -47,8 +45,8 @@ namespace Phx.Inject.Generator.Injectors.Templates {
             }
 
             writer.AppendLine()
-                    .DecreaseIndent(1)
-                    .AppendLine("}");
+                .DecreaseIndent(1)
+                .AppendLine("}");
         }
     }
 }

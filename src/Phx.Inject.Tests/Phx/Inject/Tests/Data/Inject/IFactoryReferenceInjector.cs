@@ -11,7 +11,7 @@ namespace Phx.Inject.Tests.Data.Inject {
     using Phx.Inject.Tests.Data.Specification;
 
     [Injector(
-            typeof(FactoryReferenceSpec)
+        typeof(FactoryReferenceSpec)
     )]
     internal interface IFactoryReferenceInjector {
         public IntLeaf GetIntLeaf();

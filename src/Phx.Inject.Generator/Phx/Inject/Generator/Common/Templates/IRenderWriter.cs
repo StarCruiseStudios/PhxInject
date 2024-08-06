@@ -7,7 +7,6 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Generator.Common.Templates {
-    using System;
     using Phx.Inject.Generator.Common.Render;
 
     internal delegate IRenderWriter CreateRenderWriter();
@@ -29,13 +28,13 @@ namespace Phx.Inject.Generator.Common.Templates {
     }
 
     internal record CollectionWriterProperties(
-            int Indent = 2,
-            string OpeningString = "",
-            bool OpenWithNewline = true,
-            string ClosingString = "",
-            bool CloseWithNewline = true,
-            string Delimiter = ",",
-            bool DelimitWithNewline = true
+        int Indent = 2,
+        string OpeningString = "",
+        bool OpenWithNewline = true,
+        string ClosingString = "",
+        bool CloseWithNewline = true,
+        string Delimiter = ",",
+        bool DelimitWithNewline = true
     ) {
         public static CollectionWriterProperties Default = new();
     }

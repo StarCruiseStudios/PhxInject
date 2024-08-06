@@ -13,9 +13,9 @@ namespace Phx.Inject.Generator.External.Definitions {
     using Phx.Inject.Generator.Specifications.Definitions;
 
     internal record ExternalDependencyProviderMethodDefinition(
-            TypeModel ProvidedType,
-            string ProviderMethodName,
-            SpecContainerFactoryInvocationDefinition SpecContainerFactoryInvocation,
-            Location Location
+        TypeModel ProvidedType,
+        string ProviderMethodName,
+        SpecContainerFactoryInvocationDefinition SpecContainerFactoryInvocation,
+        Location Location
     ) : IDefinition;
 }
