@@ -10,7 +10,7 @@ namespace Phx.Inject.Generator.Common {
     using System.Collections.Immutable;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Phx.Inject.Generator.Specifications;
+    using Phx.Inject.Generator.Model;
 
     internal static class MetadataHelpers {
         public static IEnumerable<ITypeSymbol> GetTypeSymbolsFromDeclarations(

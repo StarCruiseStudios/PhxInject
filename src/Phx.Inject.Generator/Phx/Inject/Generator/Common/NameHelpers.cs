@@ -8,8 +8,8 @@
 
 namespace Phx.Inject.Generator.Common {
     using System.Text.RegularExpressions;
-    using Phx.Inject.Generator.Specifications;
-    using Phx.Inject.Generator.Specifications.Descriptors;
+    using Phx.Inject.Generator.Descriptors;
+    using Phx.Inject.Generator.Model;
 
     internal static class NameHelpers {
         private const string GeneratedInjectorClassPrefix = "Generated";

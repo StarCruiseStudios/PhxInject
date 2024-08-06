@@ -10,7 +10,7 @@ namespace Phx.Inject.Tests {
     using Microsoft.CodeAnalysis;
     using NUnit.Framework;
     using Phx.Inject.Generator;
-    using Phx.Inject.Generator.Common.Render;
+    using Phx.Inject.Generator.Render;
     using Phx.Inject.Tests.Helpers;
     using Phx.Test;
     using Phx.Validation;

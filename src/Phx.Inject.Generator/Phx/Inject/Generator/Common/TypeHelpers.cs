@@ -9,6 +9,7 @@
 namespace Phx.Inject.Generator.Common {
     using System.Collections.Immutable;
     using Microsoft.CodeAnalysis;
+    using Phx.Inject.Generator.Model;
 
     internal static class TypeHelpers {
         public const string FactoryTypeName = "Phx.Inject.Factory";
