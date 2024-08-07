@@ -17,7 +17,6 @@ namespace Phx.Inject.Tests.Data {
         public const int QualifierAIntValue = 20;
         public const string LabelAStringValue = "LabelAStringValue";
         public const string LabelA = "LabelA";
-        public const string LabelB = "LabelB";
         
         [Factory]
         internal static int GetInt() {
@@ -51,6 +50,16 @@ namespace Phx.Inject.Tests.Data {
         [Label(LabelA)]
         internal static void BuildTestBuilderObjectLabelA(TestBuilderObject target, [Label(LabelA)] int intValue) {
             target.IntValue = intValue;
+        }
+        
+        [Factory]
+        internal static TestGenericObject<int> GetGenericObject(int value) {
+            return new TestGenericObject<int>(value);
+        }
+        
+        [Factory]
+        internal static OuterType GetOuterType(AutoType value) {
+            return new OuterType(value);
         }
     }
 }

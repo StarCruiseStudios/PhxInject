@@ -29,22 +29,22 @@ namespace Phx.Inject.Tests {
                 specContainers.GeneratedBuilderReferenceInjector_BuilderReferenceSpec.GetPropertyIntValue(specContainers));
         }
 
-        internal void GetReferenceBuildLazyType(
-                Phx.Inject.Tests.Data.Model.LazyType target,
+        internal void GetReferenceBuildBuilderReferenceType(
+                Phx.Inject.Tests.Data.Model.TestBuilderReferenceObject target,
                 Phx.Inject.Tests.GeneratedBuilderReferenceInjector.SpecContainerCollection specContainers
         ) {
-            Phx.Inject.Tests.BuilderReferenceSpec.BuildLazyType(
+            Phx.Inject.Tests.BuilderReferenceSpec.BuildBuilderReferenceType(
                 target,
-                specContainers.GeneratedBuilderReferenceInjector_BuilderReferenceSpec.GetReferenceGetIntLeaf(specContainers));
+                specContainers.GeneratedBuilderReferenceInjector_BuilderReferenceSpec.GetPropertyIntValue(specContainers));
         }
 
-        internal void GetReferenceBuildLazyTypeField(
-                Phx.Inject.Tests.Data.Model.LazyType target,
+        internal void GetReferenceBuildBuilderReferenceTypeField(
+                Phx.Inject.Tests.Data.Model.TestBuilderReferenceObject target,
                 Phx.Inject.Tests.GeneratedBuilderReferenceInjector.SpecContainerCollection specContainers
         ) {
-            Phx.Inject.Tests.BuilderReferenceSpec.BuildLazyTypeField(
+            Phx.Inject.Tests.BuilderReferenceSpec.BuildBuilderReferenceTypeField(
                 target,
-                specContainers.GeneratedBuilderReferenceInjector_BuilderReferenceSpec.GetReferenceGetIntLeaf(specContainers));
+                specContainers.GeneratedBuilderReferenceInjector_BuilderReferenceSpec.GetPropertyIntValue(specContainers));
         }
     }
 }

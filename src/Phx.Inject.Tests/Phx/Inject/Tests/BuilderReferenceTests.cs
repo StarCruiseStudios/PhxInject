@@ -15,17 +15,16 @@ namespace Phx.Inject.Tests {
     #region injector
     
     [Specification]
-    [Link(typeof(IntLeaf), typeof(ILeaf))]
     internal static class BuilderReferenceSpec {
         [Factory]
         internal static int IntValue => 10;
 
         [BuilderReference]
-        internal static Action<LazyType, ILeaf> BuildLazyType => LazyType.Inject;
+        internal static Action<TestBuilderReferenceObject, int> BuildBuilderReferenceType => TestBuilderReferenceObject.Inject;
 
         [Label("Field")]
         [BuilderReference]
-        internal static readonly Action<LazyType, ILeaf> BuildLazyTypeField = LazyType.Inject;
+        internal static readonly Action<TestBuilderReferenceObject, int> BuildBuilderReferenceTypeField = TestBuilderReferenceObject.Inject;
 
         [FactoryReference(FabricationMode.Scoped)]
         internal static Func<int, IntLeaf> GetIntLeaf => IntLeaf.Construct;
@@ -35,10 +34,10 @@ namespace Phx.Inject.Tests {
         typeof(BuilderReferenceSpec)
     )]
     internal interface IBuilderReferenceInjector {
-        public void Build(LazyType lazyType);
+        public void Build(TestBuilderReferenceObject testBuilderReferenceObject);
 
         [Label("Field")]
-        public void BuildField(LazyType lazyType);
+        public void BuildField(TestBuilderReferenceObject testBuilderReferenceObject);
     }
     
     #endregion injector
@@ -48,24 +47,24 @@ namespace Phx.Inject.Tests {
         public void AnInjectorBuilderPropertyIsGenerated() {
             IBuilderReferenceInjector injector = Given("A test injector.",
                 () => new GeneratedBuilderReferenceInjector());
-            var lazyType = Given("An uninitialized lazy type.", () => new LazyType());
+            var buidlerReferenceType = Given("An uninitialized builder reference type.", () => new TestBuilderReferenceObject());
 
             When("An injector builder method using a builder reference property is invoked.",
-                () => injector.Build(lazyType));
+                () => injector.Build(buidlerReferenceType));
 
-            Then("The lazy type is initialized.", () => Verify.That(lazyType.Value.IsNotNull()));
+            Then("The builder reference type is initialized.", () => Verify.That(buidlerReferenceType.Value.IsNotNull()));
         }
 
         [Test]
         public void AnInjectorBuilderFieldIsGenerated() {
             IBuilderReferenceInjector injector = Given("A test injector.",
                 () => new GeneratedBuilderReferenceInjector());
-            var lazyType = Given("An uninitialized lazy type.", () => new LazyType());
+            var builderReferenceType = Given("An uninitialized builder reference type.", () => new TestBuilderReferenceObject());
 
             When("An injector builder method using a builder reference field is invoked.",
-                () => injector.BuildField(lazyType));
+                () => injector.BuildField(builderReferenceType));
 
-            Then("The lazy type is initialized.", () => Verify.That(lazyType.Value.IsNotNull()));
+            Then("The builder reference type is initialized.", () => Verify.That(builderReferenceType.Value.IsNotNull()));
         }
     }
 }

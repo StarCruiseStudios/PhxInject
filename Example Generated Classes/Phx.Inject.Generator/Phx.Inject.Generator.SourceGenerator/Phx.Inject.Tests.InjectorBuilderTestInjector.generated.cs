@@ -29,11 +29,11 @@ namespace Phx.Inject.Tests {
                     InjectorBuilderTestInjector_InjectorBuilderTestInjector_ConstructorFactories: new Phx.Inject.Tests.InjectorBuilderTestInjector_InjectorBuilderTestInjector_ConstructorFactories());
         }
 
-        public void BuildTestBuilder(Phx.Inject.Tests.Data.TestBuilderObject target) {
+        public void BuildTestBuilder(Phx.Inject.Tests.Data.Model.TestBuilderObject target) {
             specContainers.InjectorBuilderTestInjector_CommonTestValueSpecification.BuildTestBuilderObject(target, specContainers);
         }
 
-        public void BuildTestBuilderLabelA(Phx.Inject.Tests.Data.TestBuilderObject target) {
+        public void BuildTestBuilderLabelA(Phx.Inject.Tests.Data.Model.TestBuilderObject target) {
             specContainers.InjectorBuilderTestInjector_CommonTestValueSpecification.BuildTestBuilderObjectLabelA(target, specContainers);
         }
     }

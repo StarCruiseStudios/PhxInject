@@ -39,8 +39,22 @@ namespace Phx.Inject.Tests.Data {
             return Phx.Inject.Tests.Data.CommonTestValueSpecification.GetIntQualifierA();
         }
 
+        internal Phx.Inject.Tests.Data.Model.TestGenericObject<System.Int32> GetGenericObject(
+                Phx.Inject.Tests.InjectorProviderTestInjector.SpecContainerCollection specContainers
+        ) {
+            return Phx.Inject.Tests.Data.CommonTestValueSpecification.GetGenericObject(
+                specContainers.InjectorProviderTestInjector_CommonTestValueSpecification.GetInt(specContainers));
+        }
+
+        internal Phx.Inject.Tests.Data.Model.OuterType GetOuterType(
+                Phx.Inject.Tests.InjectorProviderTestInjector.SpecContainerCollection specContainers
+        ) {
+            return Phx.Inject.Tests.Data.CommonTestValueSpecification.GetOuterType(
+                specContainers.InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories.GetConstructorautoType(specContainers));
+        }
+
         internal void BuildTestBuilderObject(
-                Phx.Inject.Tests.Data.TestBuilderObject target,
+                Phx.Inject.Tests.Data.Model.TestBuilderObject target,
                 Phx.Inject.Tests.InjectorProviderTestInjector.SpecContainerCollection specContainers
         ) {
             Phx.Inject.Tests.Data.CommonTestValueSpecification.BuildTestBuilderObject(
@@ -49,7 +63,7 @@ namespace Phx.Inject.Tests.Data {
         }
 
         internal void BuildTestBuilderObjectLabelA(
-                Phx.Inject.Tests.Data.TestBuilderObject target,
+                Phx.Inject.Tests.Data.Model.TestBuilderObject target,
                 Phx.Inject.Tests.InjectorProviderTestInjector.SpecContainerCollection specContainers
         ) {
             Phx.Inject.Tests.Data.CommonTestValueSpecification.BuildTestBuilderObjectLabelA(

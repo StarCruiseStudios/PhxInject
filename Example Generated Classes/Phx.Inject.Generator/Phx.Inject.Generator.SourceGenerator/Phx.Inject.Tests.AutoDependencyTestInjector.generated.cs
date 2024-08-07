@@ -29,8 +29,8 @@ namespace Phx.Inject.Tests {
                     AutoDependencyTestInjector_AutoDependencyTestInjector_ConstructorFactories: new Phx.Inject.Tests.AutoDependencyTestInjector_AutoDependencyTestInjector_ConstructorFactories());
         }
 
-        public Phx.Inject.Tests.Data.Model.IntLeaf GetAutoType() {
-            return specContainers.AutoDependencyTestInjector_AutoDependencyTestInjector_ConstructorFactories.GetConstructorintLeaf(specContainers);
+        public Phx.Inject.Tests.Data.Model.OuterType GetOuterType() {
+            return specContainers.AutoDependencyTestInjector_CommonTestValueSpecification.GetOuterType(specContainers);
         }
     }
 }

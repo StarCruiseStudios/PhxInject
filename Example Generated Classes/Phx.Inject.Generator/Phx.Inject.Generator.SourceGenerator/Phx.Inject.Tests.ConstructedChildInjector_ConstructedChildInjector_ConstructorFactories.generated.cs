@@ -20,14 +20,15 @@ namespace Phx.Inject.Tests {
                 Phx.Inject.Tests.ConstructedChildInjector.SpecContainerCollection specContainers
         ) {
             return new Phx.Inject.Tests.Data.Model.AutoType(
-                specContainers.ConstructedChildInjector_NonConstructedSpecification.GetIntLeaf(specContainers),
+                specContainers.ConstructedChildInjector_IConstructedSpecification.GetIntValue(specContainers),
                 specContainers.ConstructedChildInjector_ConstructedChildInjector_ConstructorFactories.GetConstructorautoTypeWithFabricationMode(specContainers));
         }
 
         internal Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode GetConstructorautoTypeWithFabricationMode(
                 Phx.Inject.Tests.ConstructedChildInjector.SpecContainerCollection specContainers
         ) {
-            return autoTypeWithFabricationMode ??= new Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode();
+            return autoTypeWithFabricationMode ??= new Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode(
+                specContainers.ConstructedChildInjector_IConstructedSpecification.GetIntValue(specContainers));
         }
     }
 }

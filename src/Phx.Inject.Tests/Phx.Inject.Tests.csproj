@@ -21,12 +21,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="Phx\Inject\Tests\Data\Inject\IFactoryReferenceSpec.cs">
-            <Link>Phx\Inject\Tests\Data\Specification\IFactoryReferenceSpec.cs</Link>
-        </Content>
-    </ItemGroup>
-
-    <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)\nlog.config" CopyToOutputDirectory="Always"/>
     </ItemGroup>
 

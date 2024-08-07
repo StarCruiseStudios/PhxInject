@@ -26,12 +26,12 @@ namespace Phx.Inject.Tests {
                     GeneratedBuilderReferenceInjector_BuilderReferenceSpec: new Phx.Inject.Tests.GeneratedBuilderReferenceInjector_BuilderReferenceSpec());
         }
 
-        public void Build(Phx.Inject.Tests.Data.Model.LazyType target) {
-            specContainers.GeneratedBuilderReferenceInjector_BuilderReferenceSpec.GetReferenceBuildLazyType(target, specContainers);
+        public void Build(Phx.Inject.Tests.Data.Model.TestBuilderReferenceObject target) {
+            specContainers.GeneratedBuilderReferenceInjector_BuilderReferenceSpec.GetReferenceBuildBuilderReferenceType(target, specContainers);
         }
 
-        public void BuildField(Phx.Inject.Tests.Data.Model.LazyType target) {
-            specContainers.GeneratedBuilderReferenceInjector_BuilderReferenceSpec.GetReferenceBuildLazyTypeField(target, specContainers);
+        public void BuildField(Phx.Inject.Tests.Data.Model.TestBuilderReferenceObject target) {
+            specContainers.GeneratedBuilderReferenceInjector_BuilderReferenceSpec.GetReferenceBuildBuilderReferenceTypeField(target, specContainers);
         }
     }
 }

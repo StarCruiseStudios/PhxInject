@@ -10,15 +10,31 @@
 #nullable enable
 namespace Phx.Inject.Tests {
     internal class LinkTestInjector_LinkTestInjector_ConstructorFactories {
+        private Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode? autoTypeWithFabricationMode;
 
         internal LinkTestInjector_LinkTestInjector_ConstructorFactories CreateNewFrame() {
             return this;
+        }
+
+        internal Phx.Inject.Tests.Data.Model.AutoType GetConstructorautoType(
+                Phx.Inject.Tests.LinkTestInjector.SpecContainerCollection specContainers
+        ) {
+            return new Phx.Inject.Tests.Data.Model.AutoType(
+                specContainers.LinkTestInjector_CommonTestValueSpecification.GetInt(specContainers),
+                specContainers.LinkTestInjector_LinkTestInjector_ConstructorFactories.GetConstructorautoTypeWithFabricationMode(specContainers));
         }
 
         internal Phx.Inject.Tests.Data.Model.IntLeaf GetConstructorintLeaf(
                 Phx.Inject.Tests.LinkTestInjector.SpecContainerCollection specContainers
         ) {
             return new Phx.Inject.Tests.Data.Model.IntLeaf(
+                specContainers.LinkTestInjector_CommonTestValueSpecification.GetInt(specContainers));
+        }
+
+        internal Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode GetConstructorautoTypeWithFabricationMode(
+                Phx.Inject.Tests.LinkTestInjector.SpecContainerCollection specContainers
+        ) {
+            return autoTypeWithFabricationMode ??= new Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode(
                 specContainers.LinkTestInjector_CommonTestValueSpecification.GetInt(specContainers));
         }
     }

@@ -9,6 +9,7 @@
 namespace Phx.Inject.Tests {
     using NUnit.Framework;
     using Phx.Inject.Tests.Data;
+    using Phx.Inject.Tests.Data.Model;
     using Phx.Test;
     using Phx.Validation;
     using static Data.CommonTestValueSpecification;
@@ -27,6 +28,8 @@ namespace Phx.Inject.Tests {
         
         [QualifierA]
         int GetIntQualifierA();
+        
+        TestGenericObject<int> GetGenericObject();
     }
     
     public class InjectorProviderTests : LoggingTestClass {
@@ -68,6 +71,15 @@ namespace Phx.Inject.Tests {
             var qualified = When("Getting a qualified value", () => injector.GetIntQualifierA());
             
             Then("The values are different", () => Verify.That(unqualified.IsNotEqualTo(qualified)));
+        }
+        
+        [Test]
+        public void ProvidersCanBeUsedToAccessGenericInjectedValues() {
+            IInjectorProviderTestInjector injector = Given("A test injector", () => new InjectorProviderTestInjector());
+
+            var value = When("Getting a generic value", () => injector.GetGenericObject());
+            
+            Then("The expected value was injected", IntValue, (expected) => Verify.That(value.Value.IsEqualTo(expected)));
         }
     }
 }

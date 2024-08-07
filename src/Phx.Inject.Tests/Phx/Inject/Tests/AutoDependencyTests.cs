@@ -18,17 +18,29 @@ namespace Phx.Inject.Tests {
         generatedClassName: "AutoDependencyTestInjector",
         typeof(CommonTestValueSpecification))]
     public interface IAutoDependencyTestInjector {
-        IntLeaf GetAutoType();
+        OuterType GetOuterType();
     }
     
     public class AutoDependencyTests : LoggingTestClass {
         [Test]
-        public void LinksCanBeUsedToAccessInjectedValues() {
+        public void FactoriesCanBeAutomaticallyGenerated() {
             IAutoDependencyTestInjector injector = Given("A test injector", () => new AutoDependencyTestInjector());
 
-            var value = When("Getting a auto dependency value", () => injector.GetAutoType());
+            var outerType = When("Getting a auto dependency value", () => injector.GetOuterType());
+            var value = outerType.AutoType;
 
             Then("The expected value was injected", IntValue, (expected) => Verify.That(value.Value.IsEqualTo(expected)));
+        }
+        
+        [Test]
+        public void ScopedFactoriesCanBeAutomaticallyGenerated() {
+            IAutoDependencyTestInjector injector = Given("A test injector", () => new AutoDependencyTestInjector());
+
+            
+            var outerType = When("Getting a auto dependency value", () => injector.GetOuterType());
+            var value = outerType.AutoType.AutoTypeWithFabricationMode;
+
+            Then("The expected value was injected", 10, (expected) => Verify.That(value.X.IsEqualTo(expected)));
         }
     }
 }

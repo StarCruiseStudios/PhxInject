@@ -44,6 +44,10 @@ namespace Phx.Inject.Tests {
         public System.Int32 GetIntQualifierA() {
             return specContainers.InjectorProviderTestInjector_CommonTestValueSpecification.GetIntQualifierA(specContainers);
         }
+
+        public Phx.Inject.Tests.Data.Model.TestGenericObject<System.Int32> GetGenericObject() {
+            return specContainers.InjectorProviderTestInjector_CommonTestValueSpecification.GetGenericObject(specContainers);
+        }
     }
 }
 #nullable restore
