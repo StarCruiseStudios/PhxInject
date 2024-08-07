@@ -13,6 +13,47 @@ namespace Phx.Inject.Tests {
     using Phx.Test;
     using Phx.Validation;
 
+    #region injector
+    
+    [Specification]
+    internal static class RuntimeFactorySpecification {
+        [Factory]
+        internal static ILeaf GetLeaf() {
+            return new IntLeaf(10);
+        }
+
+        [Factory]
+        [Label("LabeledLeaf")]
+        internal static ILeaf GetLabeledLeaf() {
+            return new IntLeaf(42);
+        }
+
+        [Factory]
+        internal static LeafFactory GetLeafFactory(Factory<ILeaf> factory) {
+            return new LeafFactory(factory.Create);
+        }
+
+        [Factory]
+        [Label("LabeledLeaf")]
+        internal static LeafFactory GetLabeledLeafFactory([Label("LabeledLeaf")] Factory<ILeaf> factory) {
+            return new LeafFactory(factory.Create);
+        }
+    }
+    
+    [Injector(typeof(RuntimeFactorySpecification))]
+    public interface IRuntimeFactoryInjector {
+        LeafFactory GetLeafFactory();
+        Factory<ILeaf> GetLeafRuntimeFactory();
+
+        [Label("LabeledLeaf")]
+        LeafFactory GetLabeledLeafFactory();
+
+        [Label("LabeledLeaf")]
+        Factory<ILeaf> GetLabeledLeafRuntimeFactory();
+    }
+
+    #endregion injector
+
     public class RuntimeFactoryTests : LoggingTestClass {
         [Test]
         public void RuntimeFactoryIsInjected() {

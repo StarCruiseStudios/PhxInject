@@ -11,11 +11,13 @@
 namespace Phx.Inject.Tests {
     internal partial class GeneratedDefaultNamedInjector : Phx.Inject.Tests.IDefaultNamedInjector {
         internal record SpecContainerCollection (
-                Phx.Inject.Tests.Data.GeneratedDefaultNamedInjector_CommonTestValueSpecification GeneratedDefaultNamedInjector_CommonTestValueSpecification
+                Phx.Inject.Tests.Data.GeneratedDefaultNamedInjector_CommonTestValueSpecification GeneratedDefaultNamedInjector_CommonTestValueSpecification,
+                Phx.Inject.Tests.GeneratedDefaultNamedInjector_GeneratedDefaultNamedInjector_ConstructorFactories GeneratedDefaultNamedInjector_GeneratedDefaultNamedInjector_ConstructorFactories
         ) {
             internal SpecContainerCollection CreateNewFrame() {
                 return new SpecContainerCollection(
-                        GeneratedDefaultNamedInjector_CommonTestValueSpecification.CreateNewFrame());
+                        GeneratedDefaultNamedInjector_CommonTestValueSpecification.CreateNewFrame(),
+                        GeneratedDefaultNamedInjector_GeneratedDefaultNamedInjector_ConstructorFactories.CreateNewFrame());
             }
         }
 
@@ -23,7 +25,8 @@ namespace Phx.Inject.Tests {
 
         public GeneratedDefaultNamedInjector() {
             specContainers = new SpecContainerCollection(
-                    GeneratedDefaultNamedInjector_CommonTestValueSpecification: new Phx.Inject.Tests.Data.GeneratedDefaultNamedInjector_CommonTestValueSpecification());
+                    GeneratedDefaultNamedInjector_CommonTestValueSpecification: new Phx.Inject.Tests.Data.GeneratedDefaultNamedInjector_CommonTestValueSpecification(),
+                    GeneratedDefaultNamedInjector_GeneratedDefaultNamedInjector_ConstructorFactories: new Phx.Inject.Tests.GeneratedDefaultNamedInjector_GeneratedDefaultNamedInjector_ConstructorFactories());
         }
 
         public System.Int32 GetInt() {

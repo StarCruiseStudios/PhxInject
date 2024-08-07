@@ -8,10 +8,69 @@
 
 namespace Phx.Inject.Tests {
     using NUnit.Framework;
-    using Phx.Inject.Tests.Data.Inject;
     using Phx.Inject.Tests.Data.Model;
     using Phx.Test;
     using Phx.Validation;
+    
+    #region injector
+
+    [Specification]
+    internal static class ContainerSpecification {
+        private static int currentInt = 0;
+
+        [Factory(FabricationMode.ContainerScoped)]
+        internal static int GetInt() {
+            return currentInt++;
+        }
+
+        [Factory(FabricationMode.Scoped)]
+        internal static StringLeaf GetStringLeaf(int value) {
+            return new StringLeaf(value.ToString());
+        }
+
+        [Factory]
+        [Partial]
+        internal static List<IntLeaf> GetIntLeaf1(IntLeaf leaf) {
+            return new List<IntLeaf> {
+                leaf
+            };
+        }
+
+        [Factory]
+        [Partial]
+        internal static List<IntLeaf> GetIntLeaf2(IntLeaf leaf) {
+            return new List<IntLeaf> {
+                leaf
+            };
+        }
+
+        [Factory(FabricationMode.Container)]
+        internal static Node GetNode(List<IntLeaf> leaves) {
+            var left = leaves[0];
+            var right = leaves[1];
+            return new Node(left, right);
+        }
+
+        [Factory(FabricationMode.Container)]
+        [Label("WithScoped")]
+        internal static Node GetNode2(IntLeaf intLeaf, StringLeaf stringLeaf) {
+            return new Node(intLeaf, stringLeaf);
+        }
+    }
+    
+    [Injector(typeof(ContainerSpecification))]
+    public interface IContainerInjector {
+        Node GetNode();
+
+        [Label("WithScoped")]
+        Node GetNodeWithScoped();
+
+        List<IntLeaf> GetIntLeaves();
+
+        StringLeaf GetStringLeaf();
+    }
+    
+    #endregion injector
 
     public class ContainerTests : LoggingTestClass {
         [Test]

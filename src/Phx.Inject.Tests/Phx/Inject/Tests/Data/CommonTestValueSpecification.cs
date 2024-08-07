@@ -7,15 +7,14 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Tests.Data {
+    using Phx.Inject.Tests.Data.Model;
 
-    public class TestBuilderObject {
-        public int IntValue { get; set; }
-    }
-    
     [Specification]
+    [Link(typeof(IntLeaf), typeof(ILeaf))]
     public static class CommonTestValueSpecification {
         public const int IntValue = 10;
         public const int LabelAIntValue = 20;
+        public const int QualifierAIntValue = 20;
         public const string LabelAStringValue = "LabelAStringValue";
         public const string LabelA = "LabelA";
         public const string LabelB = "LabelB";
@@ -35,6 +34,12 @@ namespace Phx.Inject.Tests.Data {
         [Label(LabelA)]
         internal static string GetStringLabelA() {
             return LabelAStringValue;
+        }
+        
+        [Factory]
+        [QualifierA]
+        internal static int GetIntQualifierA() {
+            return QualifierAIntValue;
         }
         
         [Builder]

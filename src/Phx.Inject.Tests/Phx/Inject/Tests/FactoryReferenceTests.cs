@@ -8,11 +8,38 @@
 
 namespace Phx.Inject.Tests {
     using NUnit.Framework;
-    using Phx.Inject.Tests.Data.Inject;
     using Phx.Inject.Tests.Data.Model;
     using Phx.Test;
     using Phx.Validation;
 
+    #region injector
+    
+    [Specification]
+    [Link(typeof(IntLeaf), typeof(ILeaf))]
+    internal static class FactoryReferenceSpec {
+        [Factory]
+        internal static int IntValue => 10;
+
+        [Factory]
+        internal static string StringValue => "stringvalue";
+
+        [FactoryReference(FabricationMode.Scoped)]
+        internal static Func<int, IntLeaf> GetIntLeaf => IntLeaf.Construct;
+
+        [FactoryReference(FabricationMode.Scoped)]
+        internal static readonly Func<string, StringLeaf> GetStringLeaf = StringLeaf.Construct;
+    }
+    
+    [Injector(
+        typeof(FactoryReferenceSpec)
+    )]
+    internal interface IFactoryReferenceInjector {
+        public IntLeaf GetIntLeaf();
+        public StringLeaf GetStringLeaf();
+    }
+    
+    #endregion injector
+    
     public class FactoryReferenceTests : LoggingTestClass {
         [Test]
         public void AnInjectorFactoryReferencePropertyIsGenerated() {
@@ -34,30 +61,6 @@ namespace Phx.Inject.Tests {
                 () => injector.GetStringLeaf());
 
             Then("A valid value is constructed.", () => Verify.That(result.IsNotNull()));
-        }
-
-        [Test]
-        public void AnInjectorBuilderPropertyIsGenerated() {
-            IFactoryReferenceInjector injector = Given("A test injector.",
-                () => new GeneratedFactoryReferenceInjector());
-            var lazyType = Given("An uninitialized lazy type.", () => new LazyType());
-
-            When("An injector builder method using a builder reference property is invoked.",
-                () => injector.Build(lazyType));
-
-            Then("The lazy type is initialized.", () => Verify.That(lazyType.Value.IsNotNull()));
-        }
-
-        [Test]
-        public void AnInjectorBuilderFieldIsGenerated() {
-            IFactoryReferenceInjector injector = Given("A test injector.",
-                () => new GeneratedFactoryReferenceInjector());
-            var lazyType = Given("An uninitialized lazy type.", () => new LazyType());
-
-            When("An injector builder method using a builder reference field is invoked.",
-                () => injector.BuildField(lazyType));
-
-            Then("The lazy type is initialized.", () => Verify.That(lazyType.Value.IsNotNull()));
         }
     }
 }

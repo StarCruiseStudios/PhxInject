@@ -8,11 +8,80 @@
 
 namespace Phx.Inject.Tests {
     using NUnit.Framework;
-    using Phx.Inject.Tests.Data.Inject;
     using Phx.Inject.Tests.Data.Model;
     using Phx.Test;
     using Phx.Validation;
 
+    #region injector
+    
+    [Specification]
+    public static class MultiBindSpecification {
+        [Factory]
+        [Partial]
+        internal static List<ILeaf> GetListLeaf1() {
+            return new List<ILeaf> {
+                new IntLeaf(10)
+            };
+        }
+
+        [Factory]
+        [Partial]
+        internal static List<ILeaf> GetListLeaf2() {
+            return new List<ILeaf> {
+                new IntLeaf(20)
+            };
+        }
+
+        [Factory]
+        [Partial]
+        internal static HashSet<ILeaf> GetSetLeaf1() {
+            return new HashSet<ILeaf> {
+                new IntLeaf(30)
+            };
+        }
+
+        [Factory]
+        [Partial]
+        internal static HashSet<ILeaf> GetSetLeaf2() {
+            return new HashSet<ILeaf> {
+                new IntLeaf(40)
+            };
+        }
+
+        [Factory]
+        [Partial]
+        internal static Dictionary<string, ILeaf> GetDictLeaf1() {
+            return new Dictionary<string, ILeaf> {
+                {
+                    "key1", new IntLeaf(50)
+                }
+            };
+        }
+
+        [Factory]
+        [Partial]
+        internal static Dictionary<string, ILeaf> GetDictLeaf2() {
+            return new Dictionary<string, ILeaf> {
+                {
+                    "key2", new IntLeaf(60)
+                }
+            };
+        }
+    }
+    
+    [Injector(typeof(MultiBindSpecification))]
+    public interface IMultiBindInjector {
+        List<ILeaf> GetLeafList();
+        HashSet<ILeaf> GetLeafSet();
+        Dictionary<string, ILeaf> GetLeafDict();
+
+        Factory<List<ILeaf>> GetLeafListRuntimeFactory();
+        Factory<HashSet<ILeaf>> GetLeafSetRuntimeFactory();
+        Factory<Dictionary<string, ILeaf>> GetLeafDictRuntimeFactory();
+    }
+    
+    #endregion injector
+    
     public class MultiBindTests : LoggingTestClass {
         [Test]
         public void MultiBindListIsInjected() {

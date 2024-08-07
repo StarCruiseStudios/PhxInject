@@ -9,52 +9,52 @@
 
 #nullable enable
 namespace Phx.Inject.Tests.Data {
-    internal class GeneratedDefaultNamedInjector_CommonTestValueSpecification {
+    internal class AutoDependencyTestInjector_CommonTestValueSpecification {
 
-        internal GeneratedDefaultNamedInjector_CommonTestValueSpecification CreateNewFrame() {
+        internal AutoDependencyTestInjector_CommonTestValueSpecification CreateNewFrame() {
             return this;
         }
 
         internal System.Int32 GetInt(
-                Phx.Inject.Tests.GeneratedDefaultNamedInjector.SpecContainerCollection specContainers
+                Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.Data.CommonTestValueSpecification.GetInt();
         }
 
         internal System.Int32 GetIntLabelA(
-                Phx.Inject.Tests.GeneratedDefaultNamedInjector.SpecContainerCollection specContainers
+                Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.Data.CommonTestValueSpecification.GetIntLabelA();
         }
 
         internal System.String GetStringLabelA(
-                Phx.Inject.Tests.GeneratedDefaultNamedInjector.SpecContainerCollection specContainers
+                Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.Data.CommonTestValueSpecification.GetStringLabelA();
         }
 
         internal System.Int32 GetIntQualifierA(
-                Phx.Inject.Tests.GeneratedDefaultNamedInjector.SpecContainerCollection specContainers
+                Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.Data.CommonTestValueSpecification.GetIntQualifierA();
         }
 
         internal void BuildTestBuilderObject(
                 Phx.Inject.Tests.Data.TestBuilderObject target,
-                Phx.Inject.Tests.GeneratedDefaultNamedInjector.SpecContainerCollection specContainers
+                Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
         ) {
             Phx.Inject.Tests.Data.CommonTestValueSpecification.BuildTestBuilderObject(
                 target,
-                specContainers.GeneratedDefaultNamedInjector_CommonTestValueSpecification.GetInt(specContainers));
+                specContainers.AutoDependencyTestInjector_CommonTestValueSpecification.GetInt(specContainers));
         }
 
         internal void BuildTestBuilderObjectLabelA(
                 Phx.Inject.Tests.Data.TestBuilderObject target,
-                Phx.Inject.Tests.GeneratedDefaultNamedInjector.SpecContainerCollection specContainers
+                Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
         ) {
             Phx.Inject.Tests.Data.CommonTestValueSpecification.BuildTestBuilderObjectLabelA(
                 target,
-                specContainers.GeneratedDefaultNamedInjector_CommonTestValueSpecification.GetIntLabelA(specContainers));
+                specContainers.AutoDependencyTestInjector_CommonTestValueSpecification.GetIntLabelA(specContainers));
         }
     }
 }

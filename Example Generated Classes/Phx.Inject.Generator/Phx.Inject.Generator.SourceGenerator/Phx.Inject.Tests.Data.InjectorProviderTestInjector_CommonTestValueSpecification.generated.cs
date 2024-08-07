@@ -33,6 +33,12 @@ namespace Phx.Inject.Tests.Data {
             return Phx.Inject.Tests.Data.CommonTestValueSpecification.GetStringLabelA();
         }
 
+        internal System.Int32 GetIntQualifierA(
+                Phx.Inject.Tests.InjectorProviderTestInjector.SpecContainerCollection specContainers
+        ) {
+            return Phx.Inject.Tests.Data.CommonTestValueSpecification.GetIntQualifierA();
+        }
+
         internal void BuildTestBuilderObject(
                 Phx.Inject.Tests.Data.TestBuilderObject target,
                 Phx.Inject.Tests.InjectorProviderTestInjector.SpecContainerCollection specContainers

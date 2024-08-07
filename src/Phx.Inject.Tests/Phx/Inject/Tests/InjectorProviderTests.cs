@@ -24,6 +24,9 @@ namespace Phx.Inject.Tests {
         
         [Label(LabelA)]
         string GetlabelAString();
+        
+        [QualifierA]
+        int GetIntQualifierA();
     }
     
     public class InjectorProviderTests : LoggingTestClass {
@@ -55,6 +58,16 @@ namespace Phx.Inject.Tests {
             
             Then("The expected value was injected", LabelAIntValue, (expected) => Verify.That(labeledInt.IsEqualTo(expected)));
             Then("The expected value was injected", LabelAStringValue, (expected) => Verify.That(labeledString.IsEqualTo(expected)));
+        }
+        
+        [Test]
+        public void QualifiedAndUnqualifiedValuesAreDifferent() {
+            IInjectorProviderTestInjector injector = Given("A test injector", () => new InjectorProviderTestInjector());
+
+            var unqualified = When("Getting an unqualified value", () => injector.GetInt());
+            var qualified = When("Getting a qualified value", () => injector.GetIntQualifierA());
+            
+            Then("The values are different", () => Verify.That(unqualified.IsNotEqualTo(qualified)));
         }
     }
 }

@@ -113,7 +113,7 @@ namespace Phx.Inject.Generator.Definitions {
             if (BuilderRegistrations.Count == 0) {
                 throw new InjectionException(
                     Diagnostics.InternalError,
-                    $"Cannot search builder for type {builtType} before builder registrations are created "
+                    $"Cannot search for builder for type {builtType} before builder registrations are created "
                     + $" while generating injection for type {Injector.InjectorInterfaceType}.",
                     location);
             }

@@ -236,12 +236,12 @@ using qualifiers on a new factory method.
 ```csharp
 [Specification]
 internal static class TestSpecification {
-    /// A labelled `int` factory.
+    /// A labeled `int` factory.
     [Factory]
     [Label("MyInt")]
     internal static int IntValue => new Random().Next(100);
     
-    /// An unlabelled `int` factory that passes the value of the labelled `int`.
+    /// An unlabeled `int` factory that passes the value of the labelled `int`.
     [Factory]
     internal static int GetInt([Label("MyInt")] int intValue) {
         return intValue;
