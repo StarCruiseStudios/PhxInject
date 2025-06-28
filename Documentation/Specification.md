@@ -298,7 +298,7 @@ internal static class TestSpecification {
     internal static Func<int, MyClass> GetMyClass = MyClass.Construct;
     
     [BuilderReference]
-    internal static Action<int, MyOtherClass> BuildMyOtherClass = MyOtherClass.Inject;
+    internal static Action<MyOtherClass, int> BuildMyOtherClass = MyOtherClass.Inject;
 }
 ```
 
