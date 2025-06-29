@@ -108,7 +108,7 @@ namespace Phx.Inject.Generator.Templates {
                         writer.Append(" {")
                             .IncreaseIndent(1);
                         var isFirst = true;
-                        foreach (var property in RequiredProperties) {
+                        foreach (var property in RequiredProperties.OrderBy(p => p.PropertyName)) {
                             if (isFirst) {
                                 isFirst = false;
                             } else {
