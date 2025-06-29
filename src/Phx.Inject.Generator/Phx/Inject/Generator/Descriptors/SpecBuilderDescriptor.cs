@@ -13,18 +13,19 @@ namespace Phx.Inject.Generator.Descriptors {
     using Phx.Inject.Generator.Model;
 
     internal delegate SpecBuilderDescriptor? CreateSpecBuilderDescriptor(
-        IMethodSymbol builderMethod,
-        DescriptorGenerationContext context
+        IMethodSymbol builderMethod
+    );
+
+    internal delegate SpecBuilderDescriptor CreateSpecDirectBuilderDescriptor(
+        QualifiedTypeModel builderType
     );
 
     internal delegate SpecBuilderDescriptor? CreateSpecBuilderReferencePropertyDescriptor(
-        IPropertySymbol builderMethod,
-        DescriptorGenerationContext context
+        IPropertySymbol builderMethod
     );
 
     internal delegate SpecBuilderDescriptor? CreateSpecBuilderReferenceFieldDescriptor(
-        IFieldSymbol builderMethod,
-        DescriptorGenerationContext context
+        IFieldSymbol builderMethod
     );
 
     internal record SpecBuilderDescriptor(
@@ -35,12 +36,10 @@ namespace Phx.Inject.Generator.Descriptors {
         Location Location
     ) : IDescriptor {
         public class Builder {
-            public SpecBuilderDescriptor? BuildBuilder(
-                IMethodSymbol builderMethod,
-                DescriptorGenerationContext context) {
+            public SpecBuilderDescriptor? BuildBuilder(IMethodSymbol builderMethod) {
                 var builderLocation = builderMethod.Locations.First();
 
-                if (!ValidateBuilder(builderMethod, builderLocation, context)) {
+                if (!ValidateBuilder(builderMethod, builderLocation)) {
                     // This is not a builder method.
                     return null;
                 }
@@ -70,12 +69,60 @@ namespace Phx.Inject.Generator.Descriptors {
                     builderLocation);
             }
 
-            public SpecBuilderDescriptor? BuildBuilderReference(
-                IPropertySymbol builderProperty,
-                DescriptorGenerationContext context) {
+            public SpecBuilderDescriptor BuildDirectBuilder(QualifiedTypeModel builderType) {
+                var builderLocation = builderType.TypeModel.typeSymbol.Locations.First();
+                var builderMethods = MetadataHelpers.GetDirectBuilderMethods(builderType.TypeModel.typeSymbol)
+                    .Where(b => MetadataHelpers.GetQualifier(b) == builderType.Qualifier)
+                    .Where(b => ValidateBuilder(b, builderLocation))
+                    .ToImmutableList();
+                
+                var numBuilderMethods = builderMethods.Count;
+                if (numBuilderMethods == 0) {
+                    throw new InjectionException(
+                        Diagnostics.InvalidSpecification,
+                        "No direct builder method found for required builder type: " + builderType,
+                        builderLocation);
+                }
+
+                if (numBuilderMethods > 1) {
+                    throw new InjectionException(
+                        Diagnostics.InvalidSpecification,
+                        "More than one direct builder method found for type: " + builderType,
+                        builderLocation);
+                }
+                
+                var builderMethod = builderMethods.First();
+                var methodParameterTypes = MetadataHelpers.GetMethodParametersQualifiedTypes(builderMethod);
+                if (methodParameterTypes.Count == 0) {
+                    throw new InjectionException(
+                        Diagnostics.InvalidSpecification,
+                        "Builder method must have at least one parameter.",
+                        builderLocation);
+                }
+
+                if (methodParameterTypes[0].TypeModel != builderType.TypeModel) {
+                    throw new InjectionException(
+                        Diagnostics.InvalidSpecification,
+                        "Direct builder method must accept a first parameter of the built type.",
+                        builderLocation);
+                }
+
+                var builderArguments = methodParameterTypes.Count > 1
+                    ? methodParameterTypes.GetRange(index: 1, methodParameterTypes.Count - 1)
+                    : ImmutableList.Create<QualifiedTypeModel>();
+
+                return new SpecBuilderDescriptor(
+                    builderType,
+                    builderMethod.Name,
+                    SpecBuilderMemberType.Direct,
+                    builderArguments,
+                    builderLocation);
+            }
+
+            public SpecBuilderDescriptor? BuildBuilderReference(IPropertySymbol builderProperty) {
                 var builderReferenceLocation = builderProperty.Locations.First();
 
-                if (!ValidateBuilderReference(builderProperty, builderReferenceLocation, context)) {
+                if (!ValidateBuilderReference(builderProperty, builderReferenceLocation)) {
                     // This is not a builder reference.
                     return null;
                 }
@@ -94,12 +141,10 @@ namespace Phx.Inject.Generator.Descriptors {
                     builderReferenceLocation);
             }
 
-            public SpecBuilderDescriptor? BuildBuilderReference(
-                IFieldSymbol builderField,
-                DescriptorGenerationContext context) {
+            public SpecBuilderDescriptor? BuildBuilderReference(IFieldSymbol builderField) {
                 var builderReferenceLocation = builderField.Locations.First();
 
-                if (!ValidateBuilderReference(builderField, builderReferenceLocation, context)) {
+                if (!ValidateBuilderReference(builderField, builderReferenceLocation)) {
                     // This is not a builder reference.
                     return null;
                 }
@@ -120,25 +165,16 @@ namespace Phx.Inject.Generator.Descriptors {
 
             private static bool ValidateBuilder(
                 ISymbol builderSymbol,
-                Location builderLocation,
-                DescriptorGenerationContext context
+                Location builderLocation
             ) {
-                var builderAttributes = builderSymbol.GetBuilderAttributes();
-                var numBuilderAttributes = builderAttributes.Count;
-                if (numBuilderAttributes == 0) {
+                var builderAttribute = builderSymbol.GetBuilderAttribute();
+                if (builderAttribute == null) {
                     // This is not a builder method.
                     return false;
                 }
 
-                if (numBuilderAttributes > 1) {
-                    throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        "Method can only have a single builder attribute.",
-                        builderLocation);
-                }
-
-                var builderReferenceAttributes = builderSymbol.GetBuilderReferenceAttributes();
-                if (builderReferenceAttributes.Count > 0) {
+                var builderReferenceAttribute = builderSymbol.GetBuilderReferenceAttributes();
+                if (builderReferenceAttribute != null) {
                     // Cannot be a builder and a builder reference.
                     throw new InjectionException(
                         Diagnostics.InvalidSpecification,
@@ -151,25 +187,16 @@ namespace Phx.Inject.Generator.Descriptors {
 
             private static bool ValidateBuilderReference(
                 ISymbol builderReferenceSymbol,
-                Location builderReferenceLocation,
-                DescriptorGenerationContext context
+                Location builderReferenceLocation
             ) {
-                var builderReferenceAttributes = builderReferenceSymbol.GetBuilderReferenceAttributes();
-                var numBuilderReferenceAttributes = builderReferenceAttributes.Count;
-                if (numBuilderReferenceAttributes == 0) {
+                var builderReferenceAttribute = builderReferenceSymbol.GetBuilderReferenceAttributes();
+                if (builderReferenceAttribute == null) {
                     // This is not a builder reference.
                     return false;
                 }
 
-                if (numBuilderReferenceAttributes > 1) {
-                    throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        "Method can only have a single builder reference attribute.",
-                        builderReferenceLocation);
-                }
-
-                var builderAttributes = builderReferenceSymbol.GetBuilderAttributes();
-                if (builderAttributes.Count > 0) {
+                var builderAttribute = builderReferenceSymbol.GetBuilderAttribute();
+                if (builderAttribute != null) {
                     // Cannot be a builder and a builder reference.
                     throw new InjectionException(
                         Diagnostics.InvalidSpecification,

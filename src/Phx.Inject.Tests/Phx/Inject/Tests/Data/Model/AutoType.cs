@@ -7,6 +7,22 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Tests.Data.Model {
+
+    public class AutoBuilderType {
+        public int Value { get; private set; }
+        
+        [Builder]
+        public static void Build(AutoBuilderType builder, int value) {
+            builder.Value = value;
+        }
+        
+        [Builder]
+        [Label(nameof(AutoBuilderType))]
+        public static void BuildCustomLabel(AutoBuilderType builder, int value) {
+            builder.Value = value + value;
+        }
+    }
+    
     public class AutoType {
         public int Value { get; }
 

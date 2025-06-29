@@ -72,11 +72,56 @@ namespace Phx.Inject.Generator.Common {
             return GetAttributes(factoryMethodSymbol, FactoryReferenceAttributeClassName);
         }
 
-        public static IList<AttributeData> GetBuilderAttributes(this ISymbol builderMethodSymbol) {
-            return GetAttributes(builderMethodSymbol, BuilderAttributeClassName);
+        public static AttributeData? GetBuilderAttribute(this ISymbol builderSymbol) {
+            var builderAttributes = GetAttributes(builderSymbol, BuilderAttributeClassName);
+            var numBuilderAttributes = builderAttributes.Count;
+            if (numBuilderAttributes == 0) {
+                return null;
+            }
+
+            if (numBuilderAttributes > 1) {
+                throw new InjectionException(
+                    Diagnostics.InvalidSpecification,
+                    "Builders can only have a single builder attribute.",
+                    builderSymbol.Locations.First());
+            }
+
+            if (!builderSymbol.IsStatic
+                || builderSymbol.DeclaredAccessibility is not (Accessibility.Public or Accessibility.Internal)
+            ) {
+                throw new InjectionException(
+                    Diagnostics.InvalidSpecification,
+                    "Builders must be public or internal static methods.",
+                    builderSymbol.Locations.First());
+            }
+            
+            return builderAttributes.First();
         }
-        public static IList<AttributeData> GetBuilderReferenceAttributes(this ISymbol builderMethodSymbol) {
-            return GetAttributes(builderMethodSymbol, BuilderReferenceAttributeClassName);
+        
+        public static AttributeData? GetBuilderReferenceAttributes(this ISymbol builderReferenceSymbol) {
+            var builderReferenceAttribute = GetAttributes(builderReferenceSymbol, BuilderReferenceAttributeClassName);
+            var numBuilderReferenceAttributes = builderReferenceAttribute.Count;
+            if (numBuilderReferenceAttributes == 0) {
+                return null; 
+            }
+
+            if (numBuilderReferenceAttributes > 1) {
+                throw new InjectionException(
+                    Diagnostics.InvalidSpecification,
+                    "Builder references can only have a single builder reference attribute.",
+                    builderReferenceSymbol.Locations.First());
+            }
+
+            if (!builderReferenceSymbol.IsStatic
+                || builderReferenceSymbol.DeclaredAccessibility is not (Accessibility.Public or Accessibility.Internal)
+            ) {
+                throw new InjectionException(
+                    Diagnostics.InvalidSpecification,
+                    "Builders references must be public or internal static methods.",
+                    builderReferenceSymbol.Locations.First());
+            }
+            
+            return builderReferenceAttribute.First();
         }
 
         public static IList<AttributeData> GetChildInjectorAttributes(this ISymbol childInjectorMethodSymbol) {

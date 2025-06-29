@@ -37,7 +37,8 @@ namespace Phx.Inject.Generator.Descriptors {
                 new SpecBuilderDescriptor.Builder().BuildBuilderReference,
                 new SpecLinkDescriptor.Builder().Build).Build,
             new SpecDescriptor.ConstructorBuilder(
-                new SpecFactoryDescriptor.Builder().BuildConstructorFactory).BuildConstructorSpec
+                new SpecFactoryDescriptor.Builder().BuildConstructorFactory,
+                new SpecBuilderDescriptor.Builder().BuildDirectBuilder).BuildConstructorSpec
         ) { }
 
         private HashSet<QualifiedTypeModel> GetParameterTypes(
@@ -69,6 +70,14 @@ namespace Phx.Inject.Generator.Descriptors {
         ) {
             var providedTypes = new HashSet<QualifiedTypeModel>();
             var neededTypes = new HashSet<QualifiedTypeModel>();
+            
+            var neededBuilders = new HashSet<QualifiedTypeModel>();
+            var providedBuilders = new HashSet<QualifiedTypeModel>();
+
+            foreach (var builder in context.Injector.Builders) {
+                neededBuilders.Add(builder.BuiltType);
+            }
+            
             foreach (var specDescriptor in context.Specifications.Values) {
                 foreach (var factory in specDescriptor.Factories) {
                     providedTypes.Add(factory.ReturnType);
@@ -91,6 +100,8 @@ namespace Phx.Inject.Generator.Descriptors {
                 }
 
                 foreach (var builder in specDescriptor.Builders) {
+                    providedBuilders.Add(builder.BuiltType);
+                    
                     foreach (var parameterType in builder.Parameters) {
                         neededTypes.Add(parameterType);
                     }
@@ -107,11 +118,14 @@ namespace Phx.Inject.Generator.Descriptors {
             neededTypes.UnionWith(transitiveTypes);
 
             var missingTypes = neededTypes.Except(providedTypes).ToImmutableList();
-            return missingTypes.Any()
+            var missingBuilders = neededBuilders.Except(providedBuilders).ToImmutableList();
+            
+            return missingTypes.Any() || missingBuilders.Any()
                 ? new List<SpecDescriptor>() {
                     createConstructorSpecDescriptor(
                         context.Injector.InjectorType,
-                        missingTypes)
+                        missingTypes,
+                        missingBuilders)
                 }
                 : ImmutableList<SpecDescriptor>.Empty;
         }

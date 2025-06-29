@@ -15,11 +15,9 @@ namespace Phx.Inject.Generator.Templates {
         string BuiltTypeQualifiedName,
         string SpecContainerBuilderMethodName,
         string SpecBuilderMemberName,
-        SpecBuilderMemberType SpecBuilderMemberType,
         string BuiltInstanceReferenceName,
         string SpecContainerCollectionQualifiedType,
         string SpecContainerCollectionReferenceName,
-        string? ConstructedSpecificationReference,
         string SpecificationQualifiedType,
         IEnumerable<SpecContainerFactoryInvocationTemplate> Arguments,
         Location Location
@@ -35,33 +33,21 @@ namespace Phx.Inject.Generator.Templates {
                 .AppendLine(") {")
                 .IncreaseIndent(1);
 
-            var referenceName = ConstructedSpecificationReference ?? SpecificationQualifiedType;
+            var referenceName = SpecificationQualifiedType;
+            writer.AppendLine($"{referenceName}.{SpecBuilderMemberName}(")
+                .IncreaseIndent(1)
+                .Append($"{BuiltInstanceReferenceName}");
 
-            switch (SpecBuilderMemberType) {
-                case SpecBuilderMemberType.Method:
-                case SpecBuilderMemberType.Reference:
-                    writer.AppendLine($"{referenceName}.{SpecBuilderMemberName}(")
-                        .IncreaseIndent(1)
-                        .Append($"{BuiltInstanceReferenceName}");
-
-                    var numArguments = Arguments.Count();
-                    if (numArguments > 0) {
-                        foreach (var argument in Arguments) {
-                            writer.AppendLine(",");
-                            argument.Render(writer);
-                        }
-                    }
-
-                    writer.AppendLine(");")
-                        .DecreaseIndent(1);
-                    break;
-
-                default:
-                    throw new InjectionException(
-                        Diagnostics.InternalError,
-                        $"Unhandled Spec Builder Member Type {SpecBuilderMemberType}.",
-                        Location);
+            var numArguments = Arguments.Count();
+            if (numArguments > 0) {
+                foreach (var argument in Arguments) {
+                    writer.AppendLine(",");
+                    argument.Render(writer);
+                }
             }
+
+            writer.AppendLine(");")
+                .DecreaseIndent(1);
 
             writer.DecreaseIndent(1)
                 .AppendLine("}");

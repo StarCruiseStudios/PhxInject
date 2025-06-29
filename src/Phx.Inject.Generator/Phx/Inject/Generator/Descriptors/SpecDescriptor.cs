@@ -16,7 +16,8 @@ namespace Phx.Inject.Generator.Descriptors {
 
     internal delegate SpecDescriptor CreateConstructorSpecDescriptor(
         TypeModel typeModel,
-        IReadOnlyList<QualifiedTypeModel> constructorTypes);
+        IReadOnlyList<QualifiedTypeModel> constructorTypes,
+        IReadOnlyList<QualifiedTypeModel> builderTypes);
 
     internal record SpecDescriptor(
         TypeModel SpecType,
@@ -28,16 +29,21 @@ namespace Phx.Inject.Generator.Descriptors {
     ) : IDescriptor {
         public class ConstructorBuilder {
             private readonly CreateSpecConstructorFactoryDescriptor createSpecConstructorFactoryDescriptor;
+            private readonly CreateSpecDirectBuilderDescriptor createSpecDirectBuilderDescriptor;
 
             public ConstructorBuilder(
-                CreateSpecConstructorFactoryDescriptor createSpecConstructorFactoryDescriptor
+                CreateSpecConstructorFactoryDescriptor createSpecConstructorFactoryDescriptor,
+                CreateSpecDirectBuilderDescriptor createSpecDirectBuilderDescriptor
             ) {
                 this.createSpecConstructorFactoryDescriptor = createSpecConstructorFactoryDescriptor;
+                this.createSpecDirectBuilderDescriptor = createSpecDirectBuilderDescriptor;
             }
 
             public SpecDescriptor BuildConstructorSpec(
                 TypeModel injectorType,
-                IReadOnlyList<QualifiedTypeModel> constructorTypes) {
+                IReadOnlyList<QualifiedTypeModel> constructorTypes,
+                IReadOnlyList<QualifiedTypeModel> builderTypes
+            ) {
                 var specLocation = injectorType.typeSymbol.Locations.First();
                 var specType = TypeHelpers.CreateConstructorSpecContainerType(injectorType);
                 var specInstantiationMode = SpecInstantiationMode.Static;
@@ -46,11 +52,15 @@ namespace Phx.Inject.Generator.Descriptors {
                     .Select(type => createSpecConstructorFactoryDescriptor(type))
                     .ToImmutableList();
 
+                var builders = builderTypes
+                    .Select(type => createSpecDirectBuilderDescriptor(type))
+                    .ToImmutableList();
+
                 return new SpecDescriptor(
                     specType,
                     specInstantiationMode,
                     factories,
-                    ImmutableList<SpecBuilderDescriptor>.Empty,
+                    builders,
                     ImmutableList<SpecLinkDescriptor>.Empty,
                     specLocation);
             }
@@ -124,15 +134,15 @@ namespace Phx.Inject.Generator.Descriptors {
 
                 var builderReferenceFields = specFields
                     .Select(builderReference =>
-                        createSpecBuilderReferenceFieldDescriptor(builderReference, context))
+                        createSpecBuilderReferenceFieldDescriptor(builderReference))
                     .Where(builderReference => builderReference != null)
                     .Select(builderReference => builderReference!);
                 var builderReferenceProperties = specProperties
                     .Select(builderReference =>
-                        createSpecBuilderReferencePropertyDescriptor(builderReference, context))
+                        createSpecBuilderReferencePropertyDescriptor(builderReference))
                     .Where(builderReference => builderReference != null)
                     .Select(builderReference => builderReference!);
-                var builderMethods = specMethods.Select(builder => createSpecBuilderDescriptor(builder, context))
+                var builderMethods = specMethods.Select(builder => createSpecBuilderDescriptor(builder))
                     .Where(builder => builder != null)
                     .Select(builder => builder!);
 

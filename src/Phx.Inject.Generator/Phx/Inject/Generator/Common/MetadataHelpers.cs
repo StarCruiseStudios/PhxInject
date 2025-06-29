@@ -185,5 +185,12 @@ namespace Phx.Inject.Generator.Common {
                     )
                 );
         }
+
+        public static ImmutableList<IMethodSymbol> GetDirectBuilderMethods(ITypeSymbol type) {
+            return type.GetMembers()
+                .OfType<IMethodSymbol>()
+                .Where(m => AttributeHelpers.GetBuilderAttribute(m) != null)
+                .ToImmutableList();
+        }
     }
 }

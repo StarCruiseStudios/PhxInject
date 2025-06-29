@@ -345,10 +345,10 @@ internal static class TestSpecification {
 
 ## Auto Dependencies
 Dependencies that are non-static, non-abstract, and public, and that contain a
-single constructor with parameters that are provided in the dependency graph or
-that also fit this criteria, can be automatically linked by the framework. 
-Simply declare the dependency as a parameter in a factory method and the
-framework will automatically link the dependency.
+single constructor with parameters or required properties that are provided in
+the dependency graph or that also fit this criteria, can be automatically linked
+by the framework. Simply declare the dependency as a parameter in a factory
+method and the framework will automatically link the dependency.
 
 Auto dependencies can also be scoped by applying a `Factory` attribute to the 
 class. This will ensure that they are scoped to the injector that contains them.
@@ -360,12 +360,51 @@ public class AutoTypeWithFabricationMode {
     public int X { get; } = 10;
 }
 
+public record AutoTypeWithRequiredProperty {
+    public required int X { get; init; }
+}
+
 public class AutoType {
     public AutoTypeWithFabricationMode Y { get; }
+    public AutoTypeWithRequiredProperty Z { get; }
     
-    public AutoType(AutoTypeWithFabricationMode y) {
+    public AutoType(AutoTypeWithFabricationMode y, AutoTypeWithRequiredProperty z) {
         Y = y;
+        Z = z;
     }
+}
+
+```
+
+## Auto Builders
+Static methods that are public or internal on a type can be used as a builder
+method if the first parameter is the same type as the containing type and it
+has the `Builder` attribute.
+
+Auto builders can also be labeled by applying a `Qualifer` attribute to the method.
+
+```csharp
+public class AutoBuilderType {
+    public int X { get; private set; }
+    
+    [Builder]
+    public static void Build(AutoBuilderType target, int x) {
+        target.X = x;
+    }
+    
+    [Builder]
+    [Label("DoubleX")]
+    public static void BuildDoubleX(AutoBuilderType target, int x) {
+        target.X = x + x;
+    }
+}
+
+[Injector]
+public interface IAutoBuilderInjector {
+    public AutoBuilderType BuildAutoBuilderType(AutoBuilderType target);
+    
+    [Label("DoubleX")]
+    public AutoBuilderType BuildDoubleXAutoBuilderType(AutoBuilderType target);
 }
 ```
 

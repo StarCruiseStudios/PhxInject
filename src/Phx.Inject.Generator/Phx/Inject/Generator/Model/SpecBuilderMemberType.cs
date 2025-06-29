@@ -9,6 +9,7 @@
 namespace Phx.Inject.Generator.Model {
     internal enum SpecBuilderMemberType {
         Method,
-        Reference
+        Reference,
+        Direct
     }
 }

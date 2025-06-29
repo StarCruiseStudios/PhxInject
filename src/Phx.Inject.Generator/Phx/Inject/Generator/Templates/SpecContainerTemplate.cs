@@ -256,17 +256,22 @@ namespace Phx.Inject.Generator.Templates {
                         })
                         .ToImmutableList();
 
+
+                    var specificationQualifiedType = constructedSpecificationReference ??
+                        (builderMethod.SpecBuilderMemberType == SpecBuilderMemberType.Direct
+                            ? builderMethod.BuiltType.QualifiedName
+                            : specContainerDefinition.SpecificationType.QualifiedName); 
+                    
+                    
                     memberTemplates.Add(
                         new SpecContainerBuilderTemplate(
                             builderMethod.BuiltType.QualifiedName,
                             builderMethod.SpecContainerBuilderMethodName,
                             builderMethod.SpecBuilderMemberName,
-                            builderMethod.SpecBuilderMemberType,
                             BuiltInstanceReferenceName,
                             context.Injector.SpecContainerCollectionType.QualifiedName,
                             SpecContainerCollectionReferenceName,
-                            constructedSpecificationReference,
-                            specContainerDefinition.SpecificationType.QualifiedName,
+                            specificationQualifiedType,
                             arguments,
                             builderMethod.Location));
                 }

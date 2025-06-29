@@ -6,6 +6,8 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
+using System.Text;
+
 namespace Phx.Inject.Generator.Common {
     using System.Text.RegularExpressions;
     using Phx.Inject.Generator.Descriptors;
@@ -29,27 +31,40 @@ namespace Phx.Inject.Generator.Common {
         }
 
         public static string GetSpecContainerFactoryName(this SpecFactoryDescriptor factory) {
-            return factory.SpecFactoryMemberType switch {
-                SpecFactoryMemberType.Method => factory.FactoryMemberName,
-                SpecFactoryMemberType.Property => $"GetProperty{factory.FactoryMemberName}",
-                SpecFactoryMemberType.Reference => $"GetReference{factory.FactoryMemberName}",
-                SpecFactoryMemberType.Constructor => $"GetConstructor{factory.FactoryMemberName}",
+            var sb = factory.SpecFactoryMemberType switch {
+                SpecFactoryMemberType.Method => new StringBuilder("Fac_"),
+                SpecFactoryMemberType.Property => new StringBuilder("PropFac_"),
+                SpecFactoryMemberType.Reference => new StringBuilder("RefFac_"),
+                SpecFactoryMemberType.Constructor => new StringBuilder("CtorFac_"),
                 _ => throw new InjectionException(
                     Diagnostics.InternalError,
-                    $"Unhandled SpecFactoryMemberType {factory.SpecFactoryMemberType}.",
+                    $"Unhandled Spec Factory Member Type {factory.SpecFactoryMemberType}.",
                     factory.Location)
             };
+            
+            sb.Append(factory.ReturnType.AsVariableName().StartUppercase())
+                .Append("_")
+                .Append(factory.FactoryMemberName.AsValidIdentifier().StartUppercase());
+
+            return sb.ToString();
         }
 
         public static string GetSpecContainerBuilderName(this SpecBuilderDescriptor builder) {
-            return builder.SpecBuilderMemberType switch {
-                SpecBuilderMemberType.Method => builder.BuilderMemberName,
-                SpecBuilderMemberType.Reference => $"GetReference{builder.BuilderMemberName}",
+            var sb = builder.SpecBuilderMemberType switch {
+                SpecBuilderMemberType.Method => new StringBuilder("Bld_"),
+                SpecBuilderMemberType.Reference => new StringBuilder("RefBld_"),
+                SpecBuilderMemberType.Direct => new StringBuilder("DirBld_"),
                 _ => throw new InjectionException(
                     Diagnostics.InternalError,
-                    $"Unhandled SpecBuilderMemberType {builder.SpecBuilderMemberType}.",
+                    $"Unhandled Spec Builder Member Type {builder.SpecBuilderMemberType}.",
                     builder.Location)
             };
+            
+            sb.Append(builder.BuiltType.AsVariableName().StartUppercase())
+                .Append("_")
+                .Append(builder.BuilderMemberName.AsValidIdentifier().StartUppercase());
+
+            return sb.ToString();
         }
 
         public static string GetCombinedClassName(TypeModel prefixType, TypeModel suffixType) {
@@ -80,11 +95,11 @@ namespace Phx.Inject.Generator.Common {
         }
 
         public static string StartLowercase(this string input) {
-            return char.ToLower(input[0]) + input.Substring(1);
+            return string.IsNullOrEmpty(input) ? input : char.ToLower(input[0]) + input.Substring(1);
         }
 
         public static string StartUppercase(this string input) {
-            return char.ToUpper(input[0]) + input.Substring(1);
+            return string.IsNullOrEmpty(input) ? input : char.ToUpper(input[0]) + input.Substring(1);
         }
 
         public static string RemoveLeadingI(this string input) {
