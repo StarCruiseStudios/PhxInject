@@ -6,11 +6,13 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
+using static Phx.Inject.Generator.Common.AttributeHelpers;
+
 namespace Phx.Inject.Generator {
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-    internal class InjectorSyntaxReceiver : ISyntaxReceiver {
+    internal class SourceSyntaxReceiver : ISyntaxReceiver {
         public List<TypeDeclarationSyntax> InjectorCandidates { get; } = new();
         public List<TypeDeclarationSyntax> SpecificationCandidates { get; } = new();
 
@@ -42,7 +44,7 @@ namespace Phx.Inject.Generator {
                         .Any(
                             attribute => {
                                 var name = attribute.Name.ToString();
-                                return name is "Injector" or "InjectorAttribute";
+                                return name is InjectorAttributeShortName or InjectorAttributeBaseName;
                             }));
         }
 
@@ -53,7 +55,7 @@ namespace Phx.Inject.Generator {
                         .Any(
                             attribute => {
                                 var name = attribute.Name.ToString();
-                                return name is "Specification" or "SpecificationAttribute";
+                                return name is SpecificationAttributeShortName or SpecificationAttributeBaseName;
                             }));
         }
     }

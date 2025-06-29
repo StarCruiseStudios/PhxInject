@@ -11,18 +11,23 @@ namespace Phx.Inject.Generator.Common {
     using Microsoft.CodeAnalysis;
 
     internal static class AttributeHelpers {
+        public const string InjectorAttributeShortName = "Injector";
+        public const string InjectorAttributeBaseName = $"{InjectorAttributeShortName}Attribute";
+        public const string SpecificationAttributeShortName = "Specification";
+        public const string SpecificationAttributeBaseName = $"{SpecificationAttributeShortName}Attribute";
+        
         private const string BuilderAttributeClassName = "Phx.Inject.BuilderAttribute";
         private const string BuilderReferenceAttributeClassName = "Phx.Inject.BuilderReferenceAttribute";
         private const string ChildInjectorAttributeClassName = "Phx.Inject.ChildInjectorAttribute";
         private const string ExternalDependencyAttributeClassName = "Phx.Inject.ExternalDependencyAttribute";
         private const string FactoryAttributeClassName = "Phx.Inject.FactoryAttribute";
         private const string FactoryReferenceAttributeClassName = "Phx.Inject.FactoryReferenceAttribute";
-        private const string InjectorAttributeClassName = "Phx.Inject.InjectorAttribute";
+        private const string InjectorAttributeClassName = $"Phx.Inject.{InjectorAttributeBaseName}";
         private const string LabelAttributeClassName = "Phx.Inject.LabelAttribute";
         private const string LinkAttributeClassName = "Phx.Inject.LinkAttribute";
         private const string PartialAttributeClassName = "Phx.Inject.PartialAttribute";
         private const string QualifierAttributeClassName = "Phx.Inject.QualifierAttribute";
-        private const string SpecificationAttributeClassName = "Phx.Inject.SpecificationAttribute";
+        private const string SpecificationAttributeClassName = $"Phx.Inject.{SpecificationAttributeBaseName}";
 
         public static AttributeData? GetInjectorAttribute(this ISymbol injectorInterfaceSymbol) {
             var injectorAttributes = GetAttributes(injectorInterfaceSymbol, InjectorAttributeClassName);
