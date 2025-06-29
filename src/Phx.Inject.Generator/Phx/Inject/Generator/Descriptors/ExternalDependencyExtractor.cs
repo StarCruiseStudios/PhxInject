@@ -13,15 +13,14 @@ namespace Phx.Inject.Generator.Descriptors {
     using Phx.Inject.Generator.Common;
 
     internal class ExternalDependencyExtractor {
-        private readonly CreateExternalDependencyDescriptor createExternalDependency;
+        private readonly ExternalDependencyDescriptor.IBuilder externalDependencyDescriptorBuilder;
 
-        public ExternalDependencyExtractor(CreateExternalDependencyDescriptor createExternalDependency) {
-            this.createExternalDependency = createExternalDependency;
+        public ExternalDependencyExtractor(ExternalDependencyDescriptor.IBuilder externalDependencyDescriptorBuilder) {
+            this.externalDependencyDescriptorBuilder = externalDependencyDescriptorBuilder;
         }
 
         public ExternalDependencyExtractor() : this(
-            new ExternalDependencyDescriptor.Builder(new ExternalDependencyProviderDescriptor.Builder().Build)
-                .Build) { }
+            new ExternalDependencyDescriptor.Builder(new ExternalDependencyProviderDescriptor.Builder())) { }
 
         public IReadOnlyList<ExternalDependencyDescriptor> Extract(
             IEnumerable<TypeDeclarationSyntax> syntaxNodes,
@@ -32,7 +31,7 @@ namespace Phx.Inject.Generator.Descriptors {
                 .GroupBy(typeSymbol => typeSymbol, SymbolEqualityComparer.Default)
                 .Select(group => group.First())
                 .Where(IsExternalDependencySymbol)
-                .Select(type => createExternalDependency(type, context))
+                .Select(type => externalDependencyDescriptorBuilder.Build(type, context))
                 .ToImmutableList();
         }
 

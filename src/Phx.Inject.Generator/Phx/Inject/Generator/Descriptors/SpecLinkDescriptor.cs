@@ -11,18 +11,20 @@ namespace Phx.Inject.Generator.Descriptors {
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Model;
 
-    internal delegate SpecLinkDescriptor CreateSpecLinkDescriptor(
-        AttributeData linkAttribute,
-        Location linkLocation,
-        DescriptorGenerationContext context
-    );
-
     internal record SpecLinkDescriptor(
         QualifiedTypeModel InputType,
         QualifiedTypeModel ReturnType,
         Location Location
     ) : IDescriptor {
-        public class Builder {
+        public interface IBuilder {
+            SpecLinkDescriptor Build(
+                AttributeData linkAttribute,
+                Location linkLocation,
+                DescriptorGenerationContext context
+            );
+        }
+        
+        public class Builder : IBuilder {
             public SpecLinkDescriptor Build(
                 AttributeData linkAttribute,
                 Location linkLocation,

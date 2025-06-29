@@ -12,22 +12,6 @@ namespace Phx.Inject.Generator.Descriptors {
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Model;
 
-    internal delegate SpecBuilderDescriptor? CreateSpecBuilderDescriptor(
-        IMethodSymbol builderMethod
-    );
-
-    internal delegate SpecBuilderDescriptor CreateSpecDirectBuilderDescriptor(
-        QualifiedTypeModel builderType
-    );
-
-    internal delegate SpecBuilderDescriptor? CreateSpecBuilderReferencePropertyDescriptor(
-        IPropertySymbol builderMethod
-    );
-
-    internal delegate SpecBuilderDescriptor? CreateSpecBuilderReferenceFieldDescriptor(
-        IFieldSymbol builderMethod
-    );
-
     internal record SpecBuilderDescriptor(
         QualifiedTypeModel BuiltType,
         string BuilderMemberName,
@@ -35,7 +19,13 @@ namespace Phx.Inject.Generator.Descriptors {
         IEnumerable<QualifiedTypeModel> Parameters,
         Location Location
     ) : IDescriptor {
-        public class Builder {
+        public interface IBuilder {
+            SpecBuilderDescriptor? BuildBuilder(IMethodSymbol builderMethod);
+            SpecBuilderDescriptor BuildDirectBuilder(QualifiedTypeModel builderType);
+            SpecBuilderDescriptor? BuildBuilderReference(IPropertySymbol builderProperty);
+            SpecBuilderDescriptor? BuildBuilderReference(IFieldSymbol builderField);
+        }
+        public class Builder : IBuilder {
             public SpecBuilderDescriptor? BuildBuilder(IMethodSymbol builderMethod) {
                 var builderLocation = builderMethod.Locations.First();
 

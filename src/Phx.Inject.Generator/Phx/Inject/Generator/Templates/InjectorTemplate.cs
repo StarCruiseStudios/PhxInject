@@ -13,11 +13,6 @@ namespace Phx.Inject.Generator.Templates {
     using Phx.Inject.Generator.Definitions;
     using Phx.Inject.Generator.Model;
 
-    internal delegate InjectorTemplate CreateInjectorTemplate(
-        InjectorDefinition injectorDefinition,
-        TemplateGenerationContext context
-    );
-
     internal record InjectorTemplate(
         string InjectorClassName,
         string InjectorInterfaceQualifiedName,
@@ -152,7 +147,14 @@ namespace Phx.Inject.Generator.Templates {
                 .AppendLine("}");
         }
 
-        public class Builder {
+        public interface IBuilder {
+            InjectorTemplate Build(
+                InjectorDefinition injectorDefinition,
+                TemplateGenerationContext context
+            );
+        }
+        
+        public class Builder : IBuilder {
             private const string SpecContainerCollectionReferenceName = "specContainers";
 
             public InjectorTemplate Build(

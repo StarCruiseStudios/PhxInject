@@ -78,6 +78,16 @@ namespace Phx.Inject.Generator.Render {
             return sourceBuilder.ToString();
         }
 
+        public class Factory : IRenderWriterFactory {
+            public GeneratorSettings settings { get; init; }
+            public Factory(GeneratorSettings Settings) {
+                settings = Settings;
+            }
+            public IRenderWriter Build() {
+                return new RenderWriter(settings);
+            }
+        }
+        
         public IRenderWriter.ICollectionWriter GetCollectionWriter(CollectionWriterProperties properties) {
             return new CollectionWriter(this, properties);
         }

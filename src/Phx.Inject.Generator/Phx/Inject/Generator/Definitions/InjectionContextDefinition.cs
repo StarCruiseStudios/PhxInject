@@ -12,31 +12,38 @@ namespace Phx.Inject.Generator.Definitions {
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Descriptors;
 
-    internal delegate InjectionContextDefinition CreateInjectionContextDefinition(
-        InjectorDescriptor injectorDescriptor,
-        DefinitionGenerationContext context
-    );
-
     internal record InjectionContextDefinition(
         InjectorDefinition Injector,
         IEnumerable<SpecContainerDefinition> SpecContainers,
         IEnumerable<ExternalDependencyImplementationDefinition> ExternalDependencyImplementations,
         Location Location
     ) : IDefinition {
-        public class Builder {
-            private readonly CreateExternalDependencyImplementationDefinition createExternalDependencyImplementation;
-            private readonly CreateInjectorDefinition createInjector;
-            private readonly CreateSpecContainerDefinition createSpecContainer;
+        public interface IBuilder {
+            InjectionContextDefinition Build(
+                InjectorDescriptor injectorDescriptor,
+                DefinitionGenerationContext context
+            );
+        }
+
+        public class Builder : IBuilder {
+            private readonly ExternalDependencyImplementationDefinition.IBuilder externalDependencyImplementationDefinitionBuilder;
+            private readonly InjectorDefinition.IBuilder injectorDefinitionBuilder;
+            private readonly SpecContainerDefinition.IBuilder specContainerDefinitionBuilder;
 
             public Builder(
-                CreateInjectorDefinition createInjector,
-                CreateSpecContainerDefinition createSpecContainer,
-                CreateExternalDependencyImplementationDefinition createExternalDependencyImplementation
+                InjectorDefinition.IBuilder injectorDefinitionBuilder,
+                SpecContainerDefinition.IBuilder specContainerDefinitionBuilder,
+                ExternalDependencyImplementationDefinition.IBuilder externalDependencyImplementationDefinitionBuilder
             ) {
-                this.createInjector = createInjector;
-                this.createSpecContainer = createSpecContainer;
-                this.createExternalDependencyImplementation = createExternalDependencyImplementation;
+                this.injectorDefinitionBuilder = injectorDefinitionBuilder;
+                this.specContainerDefinitionBuilder = specContainerDefinitionBuilder;
+                this.externalDependencyImplementationDefinitionBuilder = externalDependencyImplementationDefinitionBuilder;
             }
+
+            public Builder() : this(
+                new InjectorDefinition.Builder(),
+                new SpecContainerDefinition.Builder(),
+                new ExternalDependencyImplementationDefinition.Builder()) { }
 
             public InjectionContextDefinition Build(
                 InjectorDescriptor injectorDescriptor,
@@ -98,10 +105,10 @@ namespace Phx.Inject.Generator.Definitions {
                     BuilderRegistrations = builderRegistrations
                 };
 
-                var injectorDefinition = createInjector(generationContext);
+                var injectorDefinition = injectorDefinitionBuilder.Build(generationContext);
 
                 var specContainerDefinitions = specDescriptors.Select(
-                        specDescriptor => createSpecContainer(specDescriptor, generationContext))
+                        specDescriptor => specContainerDefinitionBuilder.Build(specDescriptor, generationContext))
                     .ToImmutableList();
 
                 var externalDependencyImplementationDefinitions = injectorDescriptor.ChildFactories
@@ -117,7 +124,7 @@ namespace Phx.Inject.Generator.Definitions {
                             externalDependencyType,
                             injectorDescriptor.Location))
                     .Select(
-                        externalDependency => createExternalDependencyImplementation(
+                        externalDependency => externalDependencyImplementationDefinitionBuilder.Build(
                             externalDependency,
                             generationContext))
                     .ToImmutableList();

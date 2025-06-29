@@ -11,18 +11,19 @@ namespace Phx.Inject.Generator.Descriptors {
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Model;
 
-    internal delegate ExternalDependencyProviderDescriptor CreateExternalDependencyProviderDescriptor(
-        IMethodSymbol providerMethod,
-        DescriptorGenerationContext context
-    );
-
     internal record ExternalDependencyProviderDescriptor(
         QualifiedTypeModel ProvidedType,
         string ProviderMethodName,
         bool isPartial,
         Location Location
     ) : IDescriptor {
-        public class Builder {
+        public interface IBuilder {
+            ExternalDependencyProviderDescriptor Build(
+                IMethodSymbol providerMethod,
+                DescriptorGenerationContext context
+            );
+        }
+        public class Builder : IBuilder {
             public ExternalDependencyProviderDescriptor Build(
                 IMethodSymbol providerMethod,
                 DescriptorGenerationContext context

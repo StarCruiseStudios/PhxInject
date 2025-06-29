@@ -13,14 +13,14 @@ namespace Phx.Inject.Generator.Render {
     using Phx.Inject.Generator.Templates;
 
     internal class TemplateRenderer {
-        private readonly CreateRenderWriter createRenderWriter;
+        private readonly IRenderWriterFactory renderWriterFactory;
 
-        public TemplateRenderer(CreateRenderWriter createRenderWriter) {
-            this.createRenderWriter = createRenderWriter;
+        public TemplateRenderer(IRenderWriterFactory renderWriterFactory) {
+            this.renderWriterFactory = renderWriterFactory;
         }
 
         public void RenderTemplate(string fileName, IRenderTemplate template, GeneratorExecutionContext context) {
-            var renderWriter = createRenderWriter();
+            var renderWriter = renderWriterFactory.Build();
             template.Render(renderWriter);
 
             var classSource = renderWriter.GetRenderedString();

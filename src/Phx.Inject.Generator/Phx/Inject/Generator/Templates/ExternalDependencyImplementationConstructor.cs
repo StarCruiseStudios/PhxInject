@@ -10,16 +10,16 @@ namespace Phx.Inject.Generator.Templates {
     using Phx.Inject.Generator.Definitions;
 
     internal class ExternalDependencyImplementationConstructor {
-        private readonly CreateExternalDependencyImplementationTemplate createExternalDependencyImplementationTemplate;
+        private readonly ExternalDependencyImplementationTemplate.IBuilder externalDependencyImplementationTemplateBuilder;
 
         public ExternalDependencyImplementationConstructor(
-            CreateExternalDependencyImplementationTemplate createExternalDependencyImplementationTemplate
+            ExternalDependencyImplementationTemplate.IBuilder externalDependencyImplementationTemplateBuilder
         ) {
-            this.createExternalDependencyImplementationTemplate = createExternalDependencyImplementationTemplate;
+            this.externalDependencyImplementationTemplateBuilder = externalDependencyImplementationTemplateBuilder;
         }
 
         public ExternalDependencyImplementationConstructor() : this(
-            new ExternalDependencyImplementationTemplate.Builder().Build) { }
+            new ExternalDependencyImplementationTemplate.Builder()) { }
 
         public IRenderTemplate Construct(
             ExternalDependencyImplementationDefinition externalDependencyImplementationDefinition,
@@ -27,7 +27,7 @@ namespace Phx.Inject.Generator.Templates {
         ) {
             return new GeneratedFileTemplate(
                 externalDependencyImplementationDefinition.ExternalDependencyImplementationType.NamespaceName,
-                createExternalDependencyImplementationTemplate(externalDependencyImplementationDefinition, context),
+                externalDependencyImplementationTemplateBuilder.Build(externalDependencyImplementationDefinition, context),
                 externalDependencyImplementationDefinition.Location);
         }
     }

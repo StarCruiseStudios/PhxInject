@@ -11,11 +11,6 @@ namespace Phx.Inject.Generator.Templates {
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Definitions;
 
-    internal delegate ExternalDependencyImplementationTemplate CreateExternalDependencyImplementationTemplate(
-        ExternalDependencyImplementationDefinition externalDependencyImplementationDefinition,
-        TemplateGenerationContext context
-    );
-
     internal record ExternalDependencyImplementationTemplate(
         string ExternalDependencyImplementationClassName,
         string ExternalDependencyInterfaceQualifiedName,
@@ -59,7 +54,15 @@ namespace Phx.Inject.Generator.Templates {
                 .AppendLine("}");
         }
 
-        public class Builder {
+        
+        internal interface IBuilder {
+            ExternalDependencyImplementationTemplate Build(
+                ExternalDependencyImplementationDefinition externalDependencyImplementationDefinition,
+                TemplateGenerationContext context
+            );
+        }
+        
+        public class Builder : IBuilder {
             public ExternalDependencyImplementationTemplate Build(
                 ExternalDependencyImplementationDefinition externalDependencyImplementationDefinition,
                 TemplateGenerationContext context

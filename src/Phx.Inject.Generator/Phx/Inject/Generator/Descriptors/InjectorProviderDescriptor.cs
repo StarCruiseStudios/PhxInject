@@ -11,17 +11,20 @@ namespace Phx.Inject.Generator.Descriptors {
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Model;
 
-    internal delegate InjectorProviderDescriptor? CreateInjectorProviderDescriptor(
-        IMethodSymbol providerMethod,
-        DescriptorGenerationContext context
-    );
-
     internal record InjectorProviderDescriptor(
         QualifiedTypeModel ProvidedType,
         string ProviderMethodName,
         Location Location
     ) : IDescriptor {
-        public class Builder {
+
+        public interface IBuilder {
+            InjectorProviderDescriptor? Build(
+                IMethodSymbol providerMethod,
+                DescriptorGenerationContext context
+            );
+        }
+        
+        public class Builder : IBuilder {
             public InjectorProviderDescriptor? Build(
                 IMethodSymbol providerMethod,
                 DescriptorGenerationContext context

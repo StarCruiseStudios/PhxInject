@@ -13,18 +13,19 @@ namespace Phx.Inject.Generator.Definitions {
     using Phx.Inject.Generator.Descriptors;
     using Phx.Inject.Generator.Model;
 
-    internal delegate ExternalDependencyImplementationDefinition CreateExternalDependencyImplementationDefinition(
-        ExternalDependencyDescriptor externalDependencyDescriptor,
-        DefinitionGenerationContext context
-    );
-
     internal record ExternalDependencyImplementationDefinition(
         TypeModel ExternalDependencyImplementationType,
         TypeModel ExternalDependencyInterfaceType,
         IEnumerable<ExternalDependencyProviderMethodDefinition> ProviderMethodDefinitions,
         Location Location
     ) : IDefinition {
-        public class Builder {
+        public interface IBuilder {
+            ExternalDependencyImplementationDefinition Build(
+                ExternalDependencyDescriptor externalDependencyDescriptor,
+                DefinitionGenerationContext context
+            );
+        }
+        public class Builder : IBuilder {
             public ExternalDependencyImplementationDefinition Build(
                 ExternalDependencyDescriptor externalDependencyDescriptor,
                 DefinitionGenerationContext context

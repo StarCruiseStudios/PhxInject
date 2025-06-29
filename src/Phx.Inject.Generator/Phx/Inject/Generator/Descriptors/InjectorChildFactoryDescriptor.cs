@@ -12,18 +12,20 @@ namespace Phx.Inject.Generator.Descriptors {
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Model;
 
-    internal delegate InjectorChildFactoryDescriptor? CreateInjectorChildFactoryDescriptor(
-        IMethodSymbol childInjectorMethod,
-        DescriptorGenerationContext context
-    );
-
     internal record InjectorChildFactoryDescriptor(
         TypeModel ChildInjectorType,
         string InjectorChildFactoryMethodName,
         IList<TypeModel> Parameters,
         Location Location
     ) : IDescriptor {
-        public class Builder {
+        public interface IBuilder {
+            InjectorChildFactoryDescriptor? Build(
+                IMethodSymbol childInjectorMethod,
+                DescriptorGenerationContext context
+            );
+        }
+        
+        public class Builder : IBuilder {
             public InjectorChildFactoryDescriptor? Build(
                 IMethodSymbol childInjectorMethod,
                 DescriptorGenerationContext context

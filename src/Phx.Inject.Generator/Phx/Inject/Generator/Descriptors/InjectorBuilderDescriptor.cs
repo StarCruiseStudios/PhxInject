@@ -11,17 +11,19 @@ namespace Phx.Inject.Generator.Descriptors {
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Model;
 
-    internal delegate InjectorBuilderDescriptor? CreateInjectorBuilderDescriptor(
-        IMethodSymbol builderMethod,
-        DescriptorGenerationContext context
-    );
-
     internal record InjectorBuilderDescriptor(
         QualifiedTypeModel BuiltType,
         string BuilderMethodName,
         Location Location
     ) : IDescriptor {
-        public class Builder {
+        public interface IBuilder {
+            InjectorBuilderDescriptor? Build(
+                IMethodSymbol builderMethod,
+                DescriptorGenerationContext context
+            );
+        }
+        
+        public class Builder : IBuilder {
             public InjectorBuilderDescriptor? Build(
                 IMethodSymbol builderMethod,
                 DescriptorGenerationContext context

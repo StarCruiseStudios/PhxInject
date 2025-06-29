@@ -10,18 +10,18 @@ namespace Phx.Inject.Generator.Templates {
     using Phx.Inject.Generator.Definitions;
 
     internal class InjectorConstructor {
-        private readonly CreateInjectorTemplate createInjectorTemplate;
+        private readonly InjectorTemplate.IBuilder injectorTemplateBuilder;
 
-        public InjectorConstructor(CreateInjectorTemplate createInjectorTemplate) {
-            this.createInjectorTemplate = createInjectorTemplate;
+        public InjectorConstructor(InjectorTemplate.IBuilder injectorTemplateBuilder) {
+            this.injectorTemplateBuilder = injectorTemplateBuilder;
         }
 
-        public InjectorConstructor() : this(new InjectorTemplate.Builder().Build) { }
+        public InjectorConstructor() : this(new InjectorTemplate.Builder()) { }
 
         public IRenderTemplate Construct(InjectorDefinition injectorDefinition, TemplateGenerationContext context) {
             return new GeneratedFileTemplate(
                 injectorDefinition.InjectorType.NamespaceName,
-                createInjectorTemplate(injectorDefinition, context),
+                injectorTemplateBuilder.Build(injectorDefinition, context),
                 injectorDefinition.Location);
         }
     }

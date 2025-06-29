@@ -12,13 +12,6 @@ namespace Phx.Inject.Generator.Descriptors {
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Model;
 
-    internal delegate SpecDescriptor CreateSpecDescriptor(ITypeSymbol specSymbol, DescriptorGenerationContext context);
-
-    internal delegate SpecDescriptor CreateConstructorSpecDescriptor(
-        TypeModel typeModel,
-        IReadOnlyList<QualifiedTypeModel> constructorTypes,
-        IReadOnlyList<QualifiedTypeModel> builderTypes);
-
     internal record SpecDescriptor(
         TypeModel SpecType,
         SpecInstantiationMode InstantiationMode,
@@ -27,74 +20,33 @@ namespace Phx.Inject.Generator.Descriptors {
         IEnumerable<SpecLinkDescriptor> Links,
         Location Location
     ) : IDescriptor {
-        public class ConstructorBuilder {
-            private readonly CreateSpecConstructorFactoryDescriptor createSpecConstructorFactoryDescriptor;
-            private readonly CreateSpecDirectBuilderDescriptor createSpecDirectBuilderDescriptor;
-
-            public ConstructorBuilder(
-                CreateSpecConstructorFactoryDescriptor createSpecConstructorFactoryDescriptor,
-                CreateSpecDirectBuilderDescriptor createSpecDirectBuilderDescriptor
-            ) {
-                this.createSpecConstructorFactoryDescriptor = createSpecConstructorFactoryDescriptor;
-                this.createSpecDirectBuilderDescriptor = createSpecDirectBuilderDescriptor;
-            }
-
-            public SpecDescriptor BuildConstructorSpec(
+        public interface IBuilder {
+            SpecDescriptor Build(ITypeSymbol specSymbol, DescriptorGenerationContext context);
+            
+            SpecDescriptor BuildConstructorSpec(
                 TypeModel injectorType,
                 IReadOnlyList<QualifiedTypeModel> constructorTypes,
-                IReadOnlyList<QualifiedTypeModel> builderTypes
-            ) {
-                var specLocation = injectorType.typeSymbol.Locations.First();
-                var specType = TypeHelpers.CreateConstructorSpecContainerType(injectorType);
-                var specInstantiationMode = SpecInstantiationMode.Static;
-
-                var factories = constructorTypes
-                    .Select(type => createSpecConstructorFactoryDescriptor(type))
-                    .ToImmutableList();
-
-                var builders = builderTypes
-                    .Select(type => createSpecDirectBuilderDescriptor(type))
-                    .ToImmutableList();
-
-                return new SpecDescriptor(
-                    specType,
-                    specInstantiationMode,
-                    factories,
-                    builders,
-                    ImmutableList<SpecLinkDescriptor>.Empty,
-                    specLocation);
-            }
+                IReadOnlyList<QualifiedTypeModel> builderTypes);
         }
-
-        public class Builder {
-            private readonly CreateSpecFactoryMethodDescriptor createSpecFactoryMethodDescriptor;
-            private readonly CreateSpecFactoryPropertyDescriptor createSpecFactoryPropertyDescriptor;
-            private readonly CreateSpecFactoryReferencePropertyDescriptor createSpecFactoryReferencePropertyDescriptor;
-            private readonly CreateSpecFactoryReferenceFieldDescriptor createSpecFactoryReferenceFieldDescriptor;
-            private readonly CreateSpecBuilderDescriptor createSpecBuilderDescriptor;
-            private readonly CreateSpecBuilderReferencePropertyDescriptor createSpecBuilderReferencePropertyDescriptor;
-            private readonly CreateSpecBuilderReferenceFieldDescriptor createSpecBuilderReferenceFieldDescriptor;
-            private readonly CreateSpecLinkDescriptor createSpecLinkDescriptor;
+        public class Builder : IBuilder {
+            private readonly SpecFactoryDescriptor.IBuilder SpecFactoryDescriptorBuilder;
+            private readonly SpecBuilderDescriptor.IBuilder specBuilderDescriptorBuilder;
+            private readonly SpecLinkDescriptor.IBuilder SpecLinkDescriptorBuilder;
 
             public Builder(
-                CreateSpecFactoryMethodDescriptor createSpecFactoryMethodDescriptor,
-                CreateSpecFactoryPropertyDescriptor createSpecFactoryPropertyDescriptor,
-                CreateSpecFactoryReferencePropertyDescriptor createSpecFactoryReferencePropertyDescriptor,
-                CreateSpecFactoryReferenceFieldDescriptor createSpecFactoryReferenceFieldDescriptor,
-                CreateSpecBuilderDescriptor createSpecBuilderDescriptor,
-                CreateSpecBuilderReferencePropertyDescriptor createSpecBuilderReferencePropertyDescriptor,
-                CreateSpecBuilderReferenceFieldDescriptor createSpecBuilderReferenceFieldDescriptor,
-                CreateSpecLinkDescriptor createSpecLinkDescriptor
+                SpecFactoryDescriptor.IBuilder specFactoryDescriptorBuilder,
+                SpecBuilderDescriptor.IBuilder specBuilderDescriptorBuilder,
+                SpecLinkDescriptor.IBuilder specLinkDescriptorBuilder
             ) {
-                this.createSpecFactoryMethodDescriptor = createSpecFactoryMethodDescriptor;
-                this.createSpecFactoryPropertyDescriptor = createSpecFactoryPropertyDescriptor;
-                this.createSpecFactoryReferencePropertyDescriptor = createSpecFactoryReferencePropertyDescriptor;
-                this.createSpecFactoryReferenceFieldDescriptor = createSpecFactoryReferenceFieldDescriptor;
-                this.createSpecBuilderDescriptor = createSpecBuilderDescriptor;
-                this.createSpecBuilderReferencePropertyDescriptor = createSpecBuilderReferencePropertyDescriptor;
-                this.createSpecBuilderReferenceFieldDescriptor = createSpecBuilderReferenceFieldDescriptor;
-                this.createSpecLinkDescriptor = createSpecLinkDescriptor;
+                this.SpecFactoryDescriptorBuilder = specFactoryDescriptorBuilder;
+                this.specBuilderDescriptorBuilder = specBuilderDescriptorBuilder;
+                this.SpecLinkDescriptorBuilder = specLinkDescriptorBuilder;
             }
+
+            public Builder() : this(
+                new SpecFactoryDescriptor.Builder(),
+                new SpecBuilderDescriptor.Builder(),
+                new SpecLinkDescriptor.Builder()) { }
 
             public SpecDescriptor Build(ITypeSymbol specSymbol, DescriptorGenerationContext context) {
                 var specLocation = specSymbol.Locations.First();
@@ -111,18 +63,18 @@ namespace Phx.Inject.Generator.Descriptors {
                     .ToImmutableArray();
 
                 var factoryReferenceFields = specFields
-                    .Select(prop => createSpecFactoryReferenceFieldDescriptor(prop, context))
+                    .Select(prop => SpecFactoryDescriptorBuilder.BuildFactoryReference(prop, context))
                     .Where(factoryReference => factoryReference != null)
                     .Select(factoryReference => factoryReference!);
                 var factoryReferenceProperties = specProperties
-                    .Select(prop => createSpecFactoryReferencePropertyDescriptor(prop, context))
+                    .Select(prop => SpecFactoryDescriptorBuilder.BuildFactoryReference(prop, context))
                     .Where(factoryReference => factoryReference != null)
                     .Select(factoryReference => factoryReference!);
                 var factoryProperties = specProperties
-                    .Select(prop => createSpecFactoryPropertyDescriptor(prop, context))
+                    .Select(prop => SpecFactoryDescriptorBuilder.BuildFactory(prop, context))
                     .Where(factory => factory != null)
                     .Select(factory => factory!);
-                var factoryMethods = specMethods.Select(method => createSpecFactoryMethodDescriptor(method, context))
+                var factoryMethods = specMethods.Select(method => SpecFactoryDescriptorBuilder.BuildFactory(method, context))
                     .Where(factory => factory != null)
                     .Select(factory => factory!);
 
@@ -134,15 +86,15 @@ namespace Phx.Inject.Generator.Descriptors {
 
                 var builderReferenceFields = specFields
                     .Select(builderReference =>
-                        createSpecBuilderReferenceFieldDescriptor(builderReference))
+                        specBuilderDescriptorBuilder.BuildBuilderReference(builderReference))
                     .Where(builderReference => builderReference != null)
                     .Select(builderReference => builderReference!);
                 var builderReferenceProperties = specProperties
                     .Select(builderReference =>
-                        createSpecBuilderReferencePropertyDescriptor(builderReference))
+                        specBuilderDescriptorBuilder.BuildBuilderReference(builderReference))
                     .Where(builderReference => builderReference != null)
                     .Select(builderReference => builderReference!);
-                var builderMethods = specMethods.Select(builder => createSpecBuilderDescriptor(builder))
+                var builderMethods = specMethods.Select(builder => specBuilderDescriptorBuilder.BuildBuilder(builder))
                     .Where(builder => builder != null)
                     .Select(builder => builder!);
 
@@ -152,13 +104,39 @@ namespace Phx.Inject.Generator.Descriptors {
                     .ToImmutableList();
 
                 var linkAttributes = specSymbol.GetLinkAttributes();
-                var links = linkAttributes.Select(link => createSpecLinkDescriptor(link, specLocation, context));
+                var links = linkAttributes.Select(link => SpecLinkDescriptorBuilder.Build(link, specLocation, context));
                 return new SpecDescriptor(
                     specType,
                     specInstantiationMode,
                     factories,
                     builders,
                     links,
+                    specLocation);
+            }
+            
+            public SpecDescriptor BuildConstructorSpec(
+                TypeModel injectorType,
+                IReadOnlyList<QualifiedTypeModel> constructorTypes,
+                IReadOnlyList<QualifiedTypeModel> builderTypes
+            ) {
+                var specLocation = injectorType.typeSymbol.Locations.First();
+                var specType = TypeHelpers.CreateConstructorSpecContainerType(injectorType);
+                var specInstantiationMode = SpecInstantiationMode.Static;
+
+                var factories = constructorTypes
+                    .Select(type => SpecFactoryDescriptorBuilder.BuildConstructorFactory(type))
+                    .ToImmutableList();
+
+                var builders = builderTypes
+                    .Select(type => specBuilderDescriptorBuilder.BuildDirectBuilder(type))
+                    .ToImmutableList();
+
+                return new SpecDescriptor(
+                    specType,
+                    specInstantiationMode,
+                    factories,
+                    builders,
+                    ImmutableList<SpecLinkDescriptor>.Empty,
                     specLocation);
             }
         }

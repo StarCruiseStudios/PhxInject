@@ -193,7 +193,7 @@ namespace Phx.Inject.Generator {
                 //
                 // Render: Templates to Source.
                 //
-                var templateRenderer = new TemplateRenderer(() => new RenderWriter(generatorSettings));
+                var templateRenderer = new TemplateRenderer(new RenderWriter.Factory(generatorSettings));
                 foreach (var (classType, template) in templates) {
                     var fileName = $"{classType.QualifiedName}.{generatorSettings.GeneratedFileExtension}";
                     Logger.Info($"Rendering source for {fileName}");

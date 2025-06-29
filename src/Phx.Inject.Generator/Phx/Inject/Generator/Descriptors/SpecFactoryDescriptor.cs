@@ -12,30 +12,6 @@ namespace Phx.Inject.Generator.Descriptors {
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Model;
 
-    internal delegate SpecFactoryDescriptor CreateSpecConstructorFactoryDescriptor(
-        QualifiedTypeModel factoryType
-    );
-
-    internal delegate SpecFactoryDescriptor? CreateSpecFactoryMethodDescriptor(
-        IMethodSymbol factoryMethod,
-        DescriptorGenerationContext context
-    );
-
-    internal delegate SpecFactoryDescriptor? CreateSpecFactoryPropertyDescriptor(
-        IPropertySymbol factoryProperty,
-        DescriptorGenerationContext context
-    );
-
-    internal delegate SpecFactoryDescriptor? CreateSpecFactoryReferencePropertyDescriptor(
-        IPropertySymbol factoryReferenceProperty,
-        DescriptorGenerationContext context
-    );
-
-    internal delegate SpecFactoryDescriptor? CreateSpecFactoryReferenceFieldDescriptor(
-        IFieldSymbol factoryReferenceField,
-        DescriptorGenerationContext context
-    );
-
     internal record SpecFactoryDescriptor(
         QualifiedTypeModel ReturnType,
         string FactoryMemberName,
@@ -46,7 +22,28 @@ namespace Phx.Inject.Generator.Descriptors {
         bool isPartial,
         Location Location
     ) : IDescriptor {
-        public class Builder {
+        public interface IBuilder {
+            SpecFactoryDescriptor BuildConstructorFactory(
+                QualifiedTypeModel factoryType
+            );
+            SpecFactoryDescriptor? BuildFactory(
+                IMethodSymbol factoryMethod,
+                DescriptorGenerationContext context
+            );
+            SpecFactoryDescriptor? BuildFactory(
+                IPropertySymbol factoryProperty,
+                DescriptorGenerationContext context
+            );
+            SpecFactoryDescriptor? BuildFactoryReference(
+                IPropertySymbol factoryReferenceProperty,
+                DescriptorGenerationContext context
+            );
+            SpecFactoryDescriptor? BuildFactoryReference(
+                IFieldSymbol factoryReferenceField,
+                DescriptorGenerationContext context
+            );
+        }
+        public class Builder : IBuilder {
             public SpecFactoryDescriptor BuildConstructorFactory(
                 QualifiedTypeModel factoryType
             ) {

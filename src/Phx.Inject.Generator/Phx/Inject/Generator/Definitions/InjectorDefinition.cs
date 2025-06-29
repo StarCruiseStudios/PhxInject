@@ -12,8 +12,6 @@ namespace Phx.Inject.Generator.Definitions {
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Model;
 
-    internal delegate InjectorDefinition CreateInjectorDefinition(DefinitionGenerationContext context);
-
     internal record InjectorDefinition(
         TypeModel InjectorType,
         TypeModel InjectorInterfaceType,
@@ -28,7 +26,10 @@ namespace Phx.Inject.Generator.Definitions {
         public TypeModel SpecContainerCollectionType { get; }
             = TypeHelpers.CreateSpecContainerCollectionType(InjectorType);
 
-        public class Builder {
+        public interface IBuilder {
+            InjectorDefinition Build(DefinitionGenerationContext context);
+        }
+        public class Builder : IBuilder {
             public InjectorDefinition Build(DefinitionGenerationContext context) {
                 var constructedSpecifications = context.Injector.SpecificationsTypes
                     .Where(spec => {

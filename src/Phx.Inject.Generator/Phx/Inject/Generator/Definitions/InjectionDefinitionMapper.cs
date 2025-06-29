@@ -8,20 +8,16 @@
 
 namespace Phx.Inject.Generator.Definitions {
     internal class InjectionDefinitionMapper {
-        private readonly CreateInjectionContextDefinition createInjectionContextDefinition;
+        private readonly InjectionContextDefinition.IBuilder injectionContextDefinitionBuilder;
 
-        public InjectionDefinitionMapper(CreateInjectionContextDefinition createInjectionContextDefinition) {
-            this.createInjectionContextDefinition = createInjectionContextDefinition;
+        public InjectionDefinitionMapper(InjectionContextDefinition.IBuilder injectionContextDefinitionBuilder) {
+            this.injectionContextDefinitionBuilder = injectionContextDefinitionBuilder;
         }
 
-        public InjectionDefinitionMapper() : this(
-            new InjectionContextDefinition.Builder(
-                new InjectorDefinition.Builder().Build,
-                new SpecContainerDefinition.Builder().Build,
-                new ExternalDependencyImplementationDefinition.Builder().Build).Build) { }
+        public InjectionDefinitionMapper() : this(new InjectionContextDefinition.Builder()) { }
 
         public InjectionContextDefinition Map(DefinitionGenerationContext context) {
-            return createInjectionContextDefinition(context.Injector, context);
+            return injectionContextDefinitionBuilder.Build(context.Injector, context);
         }
     }
 }

@@ -10,13 +10,13 @@ namespace Phx.Inject.Generator.Templates {
     using Phx.Inject.Generator.Definitions;
 
     internal class SpecContainerConstructor {
-        private readonly CreateSpecContainerTemplate createSpecContainerTemplate;
+        private readonly SpecContainerTemplate.IBuilder specContainerTemplateBuilder;
 
-        public SpecContainerConstructor(CreateSpecContainerTemplate createSpecContainerTemplate) {
-            this.createSpecContainerTemplate = createSpecContainerTemplate;
+        public SpecContainerConstructor(SpecContainerTemplate.IBuilder specContainerTemplateBuilder) {
+            this.specContainerTemplateBuilder = specContainerTemplateBuilder;
         }
 
-        public SpecContainerConstructor() : this(new SpecContainerTemplate.Builder().Build) { }
+        public SpecContainerConstructor() : this(new SpecContainerTemplate.Builder()) { }
 
         public IRenderTemplate Construct(
             SpecContainerDefinition specContainerDefinition,
@@ -24,7 +24,7 @@ namespace Phx.Inject.Generator.Templates {
         ) {
             return new GeneratedFileTemplate(
                 specContainerDefinition.SpecContainerType.NamespaceName,
-                createSpecContainerTemplate(specContainerDefinition, context),
+                specContainerTemplateBuilder.Build(specContainerDefinition, context),
                 specContainerDefinition.Location);
         }
     }

@@ -12,11 +12,6 @@ namespace Phx.Inject.Generator.Descriptors {
     using Phx.Inject.Generator.Common;
     using Phx.Inject.Generator.Model;
 
-    internal delegate InjectorDescriptor CreateInjectorDescriptor(
-        ITypeSymbol injectorInterfaceSymbol,
-        DescriptorGenerationContext context
-    );
-
     internal record InjectorDescriptor(
         TypeModel InjectorInterfaceType,
         string GeneratedInjectorTypeName,
@@ -31,21 +26,33 @@ namespace Phx.Inject.Generator.Descriptors {
             BaseTypeName = GeneratedInjectorTypeName,
             TypeArguments = ImmutableList<TypeModel>.Empty
         };
+        
+        public interface IBuilder {
+            InjectorDescriptor Build(
+                ITypeSymbol injectorInterfaceSymbol,
+                DescriptorGenerationContext context
+            );
+        }
 
-        public class Builder {
-            private readonly CreateInjectorBuilderDescriptor createInjectorBuilder;
-            private readonly CreateInjectorChildFactoryDescriptor createInjectorChildFactory;
-            private readonly CreateInjectorProviderDescriptor createInjectorProvider;
+        public class Builder : IBuilder {
+            private readonly InjectorBuilderDescriptor.IBuilder injectorBuilderDescriptorBuilder;
+            private readonly InjectorChildFactoryDescriptor.IBuilder injectorChildFactoryDescriptorBuilder;
+            private readonly InjectorProviderDescriptor.IBuilder injectorProviderDescriptionBuilder;
 
             public Builder(
-                CreateInjectorProviderDescriptor createInjectorProvider,
-                CreateInjectorBuilderDescriptor createInjectorBuilder,
-                CreateInjectorChildFactoryDescriptor createInjectorChildFactory
+                InjectorProviderDescriptor.IBuilder injectorProviderDescriptionBuilder,
+                InjectorBuilderDescriptor.IBuilder injectorBuilderDescriptorBuilder,
+                InjectorChildFactoryDescriptor.IBuilder injectorChildFactoryDescriptorBuilder
             ) {
-                this.createInjectorProvider = createInjectorProvider;
-                this.createInjectorBuilder = createInjectorBuilder;
-                this.createInjectorChildFactory = createInjectorChildFactory;
+                this.injectorProviderDescriptionBuilder = injectorProviderDescriptionBuilder;
+                this.injectorBuilderDescriptorBuilder = injectorBuilderDescriptorBuilder;
+                this.injectorChildFactoryDescriptorBuilder = injectorChildFactoryDescriptorBuilder;
             }
+            
+            public Builder() : this(
+                new InjectorProviderDescriptor.Builder(),
+                new InjectorBuilderDescriptor.Builder(),
+                new InjectorChildFactoryDescriptor.Builder()) { }
 
             public InjectorDescriptor Build(
                 ITypeSymbol injectorInterfaceSymbol,
@@ -70,19 +77,19 @@ namespace Phx.Inject.Generator.Descriptors {
                     .ToImmutableList();
                 
                 var providers = injectorMethods
-                    .Select(method => createInjectorProvider(method, context))
+                    .Select(method => injectorProviderDescriptionBuilder.Build(method, context))
                     .Where(provider => provider != null)
                     .Select(provider => provider!)
                     .ToImmutableList();
 
                 var builders = injectorMethods
-                    .Select(method => createInjectorBuilder(method, context))
+                    .Select(method => injectorBuilderDescriptorBuilder.Build(method, context))
                     .Where(builder => builder != null)
                     .Select(builder => builder!)
                     .ToImmutableList();
 
                 var childFactories = injectorMethods
-                    .Select(method => createInjectorChildFactory(method, context))
+                    .Select(method => injectorChildFactoryDescriptorBuilder.Build(method, context))
                     .Where(childFactory => childFactory != null)
                     .Select(childFactory => childFactory!)
                     .ToImmutableList();

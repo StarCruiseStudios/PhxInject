@@ -9,8 +9,10 @@
 namespace Phx.Inject.Generator.Templates {
     using Phx.Inject.Generator.Render;
 
-    internal delegate IRenderWriter CreateRenderWriter();
-
+    internal interface IRenderWriterFactory {
+        IRenderWriter Build();
+    }
+    
     internal interface IRenderWriter {
         public GeneratorSettings Settings { get; }
         public IRenderWriter IncreaseIndent(int tabs);

@@ -13,11 +13,6 @@ namespace Phx.Inject.Generator.Definitions {
     using Phx.Inject.Generator.Descriptors;
     using Phx.Inject.Generator.Model;
 
-    internal delegate SpecContainerDefinition CreateSpecContainerDefinition(
-        SpecDescriptor specDescriptor,
-        DefinitionGenerationContext context
-    );
-
     internal record SpecContainerDefinition(
         TypeModel SpecContainerType,
         TypeModel SpecificationType,
@@ -26,7 +21,10 @@ namespace Phx.Inject.Generator.Definitions {
         IEnumerable<SpecContainerBuilderDefinition> BuilderMethodDefinitions,
         Location Location
     ) : IDefinition {
-        public class Builder {
+        public interface IBuilder {
+            SpecContainerDefinition Build(SpecDescriptor specDescriptor, DefinitionGenerationContext context);
+        }
+        public class Builder : IBuilder {
             public SpecContainerDefinition Build(SpecDescriptor specDescriptor, DefinitionGenerationContext context) {
                 var specContainerType = TypeHelpers.CreateSpecContainerType(
                     context.Injector.InjectorType,

@@ -11,11 +11,6 @@ namespace Phx.Inject.Generator.Descriptors {
     using Microsoft.CodeAnalysis;
     using Phx.Inject.Generator.Model;
 
-    internal delegate ExternalDependencyDescriptor CreateExternalDependencyDescriptor(
-        ITypeSymbol externalDependencyInterfaceSymbol,
-        DescriptorGenerationContext context
-    );
-
     internal record ExternalDependencyDescriptor(
         TypeModel ExternalDependencyInterfaceType,
         IEnumerable<ExternalDependencyProviderDescriptor> Providers,
@@ -43,11 +38,17 @@ namespace Phx.Inject.Generator.Descriptors {
                 Location);
         }
 
-        public class Builder {
-            private readonly CreateExternalDependencyProviderDescriptor createExternalDependencyProvider;
+        public interface IBuilder {
+            ExternalDependencyDescriptor Build(
+                ITypeSymbol externalDependencyInterfaceSymbol,
+                DescriptorGenerationContext context
+            );
+        }
+        public class Builder : IBuilder {
+            private readonly ExternalDependencyProviderDescriptor.IBuilder externalDependencyProviderDescriptorBuilder;
 
-            public Builder(CreateExternalDependencyProviderDescriptor createExternalDependencyProvider) {
-                this.createExternalDependencyProvider = createExternalDependencyProvider;
+            public Builder(ExternalDependencyProviderDescriptor.IBuilder externalDependencyProviderDescriptorBuilder) {
+                this.externalDependencyProviderDescriptorBuilder = externalDependencyProviderDescriptorBuilder;
             }
 
             public ExternalDependencyDescriptor Build(
@@ -60,7 +61,7 @@ namespace Phx.Inject.Generator.Descriptors {
                 var providers = externalDependencyInterfaceSymbol
                     .GetMembers()
                     .OfType<IMethodSymbol>()
-                    .Select(method => createExternalDependencyProvider(method, context))
+                    .Select(method => externalDependencyProviderDescriptorBuilder.Build(method, context))
                     .ToImmutableList();
 
                 return new ExternalDependencyDescriptor(

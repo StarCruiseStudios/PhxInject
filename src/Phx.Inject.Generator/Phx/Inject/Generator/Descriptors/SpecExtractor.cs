@@ -15,30 +15,16 @@ namespace Phx.Inject.Generator.Descriptors {
     using Phx.Inject.Generator.Model;
 
     internal class SpecExtractor {
-        private readonly CreateSpecDescriptor createSpecDescriptor;
-        private readonly CreateConstructorSpecDescriptor createConstructorSpecDescriptor;
+        private readonly SpecDescriptor.IBuilder specDescriptorBuilder;
 
         public SpecExtractor(
-            CreateSpecDescriptor createSpecDescriptor,
-            CreateConstructorSpecDescriptor createConstructorSpecDescriptor
+            SpecDescriptor.IBuilder specDescriptorBuilder
         ) {
-            this.createSpecDescriptor = createSpecDescriptor;
-            this.createConstructorSpecDescriptor = createConstructorSpecDescriptor;
+            this.specDescriptorBuilder = specDescriptorBuilder;
         }
 
         public SpecExtractor() : this(
-            new SpecDescriptor.Builder(
-                new SpecFactoryDescriptor.Builder().BuildFactory,
-                new SpecFactoryDescriptor.Builder().BuildFactory,
-                new SpecFactoryDescriptor.Builder().BuildFactoryReference,
-                new SpecFactoryDescriptor.Builder().BuildFactoryReference,
-                new SpecBuilderDescriptor.Builder().BuildBuilder,
-                new SpecBuilderDescriptor.Builder().BuildBuilderReference,
-                new SpecBuilderDescriptor.Builder().BuildBuilderReference,
-                new SpecLinkDescriptor.Builder().Build).Build,
-            new SpecDescriptor.ConstructorBuilder(
-                new SpecFactoryDescriptor.Builder().BuildConstructorFactory,
-                new SpecBuilderDescriptor.Builder().BuildDirectBuilder).BuildConstructorSpec
+            new SpecDescriptor.Builder()
         ) { }
 
         private HashSet<QualifiedTypeModel> GetAutoConstructorParameterTypes(QualifiedTypeModel type) {
@@ -122,7 +108,7 @@ namespace Phx.Inject.Generator.Descriptors {
             
             var needsConstructorSpec = missingTypes.Any() || missingBuilders.Any();
             return needsConstructorSpec
-                    ? createConstructorSpecDescriptor(
+                    ? specDescriptorBuilder.BuildConstructorSpec(
                         context.Injector.InjectorType,
                         missingTypes,
                         missingBuilders)
@@ -135,7 +121,7 @@ namespace Phx.Inject.Generator.Descriptors {
         ) {
             return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
                 .Where(IsSpecSymbol)
-                .Select(symbol => createSpecDescriptor(symbol, context))
+                .Select(symbol => specDescriptorBuilder.Build(symbol, context))
                 .ToImmutableList();
         }
 
