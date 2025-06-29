@@ -18,11 +18,11 @@ namespace Phx.Inject.Generator.Common {
         public const string HashSetTypeName = "System.Collections.Generic.HashSet";
         public const string DictionaryTypeName = "System.Collections.Generic.Dictionary";
 
-        private static readonly HashSet<string> MultiBindTypes = new() {
+        public static readonly IImmutableSet<string> MultiBindTypes = ImmutableHashSet.CreateRange(new[]{
             ListTypeName,
             HashSetTypeName,
             DictionaryTypeName
-        };
+        });
 
         public static void ValidatePartialType(QualifiedTypeModel returnType, bool isPartial, Location location) {
             if (isPartial) {

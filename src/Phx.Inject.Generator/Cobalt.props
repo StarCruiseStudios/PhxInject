@@ -3,7 +3,7 @@
   <!-- Project Information -->
   <PropertyGroup>
     <PackageId>Phx.Inject.Generator</PackageId>
-    <Version>0.8.1</Version>
+    <Version>0.8.2</Version>
     <Description>Roslyn based Dependency Injection Generator.</Description>
     <Authors>Star Cruise Studios LLC</Authors>
     <Company>Star Cruise Studios LLC</Company>

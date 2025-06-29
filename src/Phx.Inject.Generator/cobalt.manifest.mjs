@@ -26,7 +26,7 @@ export default {
   },
   configure: async (cobalt, context) => {
     cobalt.config.set('project', {
-      artifact: {artifact: 'Phx.Inject.Generator', version: '0.8.1'},
+      artifact: {artifact: 'Phx.Inject.Generator', version: '0.8.2'},
       description: 'Roslyn based Dependency Injection Generator.',
       packageProjectUrl: 'https://github.com/StarCruiseStudios/PhxInject',
       tags: 'phxlib,starcruisestudios',

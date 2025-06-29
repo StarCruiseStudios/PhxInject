@@ -24,6 +24,8 @@ namespace Phx.Inject.Tests {
         
         [Label(nameof(AutoBuilderType))] 
         void BuildLabeledAutoBuilderType(AutoBuilderType autoBuilderType);
+        
+        AutoBuilderType GetAutoBuilderType();
     }
     
     public class AutoDependencyTests : LoggingTestClass {
@@ -62,6 +64,15 @@ namespace Phx.Inject.Tests {
             
             When("Getting a injecting the labeled auto builder value", () => injector.BuildLabeledAutoBuilderType(labeledAutoBuilderType));
             Then("The expected value was injected", IntValue + IntValue, (expected) => Verify.That(labeledAutoBuilderType.Value.IsEqualTo(expected)));
+        }
+        
+        [Test]
+        public void BuildersCanBeAutomaticallyGeneratedForAutoConstructedTypes() {
+            IAutoDependencyTestInjector injector = Given("A test injector", () => new AutoDependencyTestInjector());
+            AutoBuilderType autoBuilderType = When("Getting a auto builder type from injector", () => injector.GetAutoBuilderType());
+
+            When("Getting a injecting the auto builder value", () => injector.BuildAutoBuilderType(autoBuilderType));
+            Then("The expected value was injected", IntValue, (expected) => Verify.That(autoBuilderType.Value.IsEqualTo(expected)));
         }
     }
 }

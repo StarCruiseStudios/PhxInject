@@ -9,6 +9,9 @@
 namespace Phx.Inject.Tests.Data.Model {
 
     public class AutoBuilderType {
+        
+        public AutoBuilderType() {}
+        
         public int Value { get; private set; }
         
         [Builder]

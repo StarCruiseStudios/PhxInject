@@ -41,31 +41,14 @@ namespace Phx.Inject.Generator.Descriptors {
                 new SpecBuilderDescriptor.Builder().BuildDirectBuilder).BuildConstructorSpec
         ) { }
 
-        private HashSet<QualifiedTypeModel> GetParameterTypes(
-            ITypeSymbol type,
-            HashSet<QualifiedTypeModel> providedTypes) {
-            var neededTypes = new HashSet<QualifiedTypeModel>();
-            
-            // Add constructor parameters
-            MetadataHelpers.GetConstructorParameterQualifiedTypes(type).ForEach(parameter => {
-                if (!providedTypes.Contains(parameter)) {
-                    neededTypes.Add(parameter);
-                    neededTypes.UnionWith(GetParameterTypes(parameter.TypeModel.typeSymbol, providedTypes));
-                }
-            });
-            
-            // Add required properties
-            foreach (var property in MetadataHelpers.GetRequiredPropertyQualifiedTypes(type).Values) {
-                if (!providedTypes.Contains(property)) {
-                    neededTypes.Add(property);
-                    neededTypes.UnionWith(GetParameterTypes(property.TypeModel.typeSymbol, providedTypes));
-                }
-            }
-            
-            return neededTypes;
+        private HashSet<QualifiedTypeModel> GetAutoConstructorParameterTypes(QualifiedTypeModel type) {
+            var results = new HashSet<QualifiedTypeModel>();
+            results.UnionWith(MetadataHelpers.GetConstructorParameterQualifiedTypes(type.TypeModel.typeSymbol));
+            results.UnionWith(MetadataHelpers.GetRequiredPropertyQualifiedTypes(type.TypeModel.typeSymbol).Values);
+            return results;
         }
 
-        public IReadOnlyList<SpecDescriptor> ExtractConstructorSpecForContext(
+        public SpecDescriptor? ExtractConstructorSpecForContext(
             DefinitionGenerationContext context
         ) {
             var providedTypes = new HashSet<QualifiedTypeModel>();
@@ -74,6 +57,16 @@ namespace Phx.Inject.Generator.Descriptors {
             var neededBuilders = new HashSet<QualifiedTypeModel>();
             var providedBuilders = new HashSet<QualifiedTypeModel>();
 
+            foreach (var provider in context.Injector.Providers) {
+                if (provider.ProvidedType.TypeModel.QualifiedBaseTypeName == TypeHelpers.FactoryTypeName) {
+                    neededTypes.Add(new QualifiedTypeModel(
+                        provider.ProvidedType.TypeModel.TypeArguments[0],
+                        provider.ProvidedType.Qualifier));
+                } else {
+                    neededTypes.Add(provider.ProvidedType);
+                }
+            }
+            
             foreach (var builder in context.Injector.Builders) {
                 neededBuilders.Add(builder.BuiltType);
             }
@@ -108,26 +101,32 @@ namespace Phx.Inject.Generator.Descriptors {
                 }
             }
 
-            var transitiveTypes = new HashSet<QualifiedTypeModel>();
-            foreach (var neededType in neededTypes) {
-                if (!providedTypes.Contains(neededType)) {
-                    transitiveTypes.UnionWith(GetParameterTypes(neededType.TypeModel.typeSymbol, providedTypes));
-                }
+            var typeSearchQueue = new Queue<QualifiedTypeModel>();
+            foreach (var qualifiedTypeModel in neededTypes) {
+                typeSearchQueue.Enqueue(qualifiedTypeModel);
             }
 
-            neededTypes.UnionWith(transitiveTypes);
+            while (typeSearchQueue.Count > 0) {
+                var type = typeSearchQueue.Dequeue();
+                if (!providedTypes.Contains(type)) {
+                    foreach (var parameterType in GetAutoConstructorParameterTypes(type)) {
+                        if (neededTypes.Add(parameterType)) {
+                            typeSearchQueue.Enqueue(parameterType);
+                        }
+                    }
+                }
+            }
 
             var missingTypes = neededTypes.Except(providedTypes).ToImmutableList();
             var missingBuilders = neededBuilders.Except(providedBuilders).ToImmutableList();
             
-            return missingTypes.Any() || missingBuilders.Any()
-                ? new List<SpecDescriptor>() {
-                    createConstructorSpecDescriptor(
+            var needsConstructorSpec = missingTypes.Any() || missingBuilders.Any();
+            return needsConstructorSpec
+                    ? createConstructorSpecDescriptor(
                         context.Injector.InjectorType,
                         missingTypes,
                         missingBuilders)
-                }
-                : ImmutableList<SpecDescriptor>.Empty;
+                    : null;
         }
 
         public IReadOnlyList<SpecDescriptor> Extract(

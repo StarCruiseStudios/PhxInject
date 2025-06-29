@@ -66,8 +66,9 @@ namespace Phx.Inject.Generator.Descriptors {
 
                 var injectorMethods = injectorInterfaceSymbol
                     .GetMembers()
-                    .OfType<IMethodSymbol>();
-
+                    .OfType<IMethodSymbol>()
+                    .ToImmutableList();
+                
                 var providers = injectorMethods
                     .Select(method => createInjectorProvider(method, context))
                     .Where(provider => provider != null)

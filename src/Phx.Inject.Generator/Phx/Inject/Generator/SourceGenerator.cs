@@ -93,7 +93,7 @@ namespace Phx.Inject.Generator {
                             }
 
                             if (generatorSettings.AllowConstructorFactories) {
-                                var constructorSpecs = new SpecExtractor()
+                                var constructorSpec = new SpecExtractor()
                                     .ExtractConstructorSpecForContext(new DefinitionGenerationContext(
                                         injectorDescriptor,
                                         injectorDescriptorMap,
@@ -103,7 +103,7 @@ namespace Phx.Inject.Generator {
                                         ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
                                         context));
 
-                                foreach (var constructorSpec in constructorSpecs) {
+                                if (constructorSpec != null) {
                                     injectorSpecDescriptorMap.Add(constructorSpec.SpecType, constructorSpec);
                                 }
                             }
