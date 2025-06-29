@@ -31,5 +31,25 @@ namespace Phx.Inject.Generator.Common {
             DiagnosticData = diagnosticData;
             Location = location;
         }
+        
+        public virtual IList<Diagnostic> ToDiagnostics() {
+            var diagnostics = new List<Diagnostic>();
+            if (InnerException is InjectionException innerInjectionException) {
+                diagnostics.AddRange(innerInjectionException.ToDiagnostics());
+            } else if (InnerException is not null) {
+                diagnostics.Add(Diagnostics.CreateUnexpectedErrorDiagnostic(InnerException.ToString()));
+            }
+            
+            diagnostics.Add(Diagnostic.Create(
+                new DiagnosticDescriptor(
+                    DiagnosticData.Id,
+                    DiagnosticData.Title,
+                    Message,
+                    DiagnosticData.Category,
+                    DiagnosticSeverity.Error,
+                    isEnabledByDefault: true),
+                Location));
+            return diagnostics;
+        }
     }
 }

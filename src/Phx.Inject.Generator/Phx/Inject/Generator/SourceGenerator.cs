@@ -35,7 +35,7 @@ namespace Phx.Inject.Generator {
             try {
                 var syntaxReceiver = context.SyntaxReceiver as InjectorSyntaxReceiver
                     ?? throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
+                        Diagnostics.UnexpectedError,
                         $"Incorrect Syntax Receiver {context.SyntaxReceiver}.",
                         Location.None);
 
@@ -200,29 +200,12 @@ namespace Phx.Inject.Generator {
                     templateRenderer.RenderTemplate(fileName, template, context);
                 }
             } catch (InjectionException ex) {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(
-                        new DiagnosticDescriptor(
-                            ex.DiagnosticData.Id,
-                            ex.DiagnosticData.Title,
-                            ex.Message,
-                            ex.DiagnosticData.Category,
-                            DiagnosticSeverity.Error,
-                            isEnabledByDefault: true),
-                        ex.Location));
+                foreach (var diagnostic in ex.ToDiagnostics()) {
+                    context.ReportDiagnostic(diagnostic);
+                }
             } catch (Exception ex) {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(
-                        new DiagnosticDescriptor(
-                            Diagnostics.UnexpectedError.Id,
-                            Diagnostics.UnexpectedError.Title,
-                            ex.ToString(),
-                            Diagnostics.UnexpectedError.Category,
-                            DiagnosticSeverity.Error,
-                            isEnabledByDefault: true),
-                        Location.None));
+                context.ReportDiagnostic(Diagnostics.CreateUnexpectedErrorDiagnostic(ex.ToString()));
                 Logger.Error("An unexpected error occurred while generating source.", ex);
-                throw;
             }
         }
 

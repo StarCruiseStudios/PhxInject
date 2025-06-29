@@ -39,7 +39,18 @@ namespace Phx.Inject.Generator.Common {
 
         public static GeneratorExecutionContext? GeneratorExecutionContext = null;
 
-        public static void Log(string message, Location? location) {
+        public static Diagnostic CreateUnexpectedErrorDiagnostic(string message) =>
+            Diagnostic.Create(
+                new DiagnosticDescriptor(
+                    UnexpectedError.Id,
+                    UnexpectedError.Title,
+                    message,
+                    UnexpectedError.Category,
+                    DiagnosticSeverity.Error,
+                    isEnabledByDefault: true),
+                Location.None);
+
+        public static void Log(string message, Location? location) =>
             GeneratorExecutionContext?.ReportDiagnostic(Diagnostic.Create(new DiagnosticDescriptor(
                     id: DebugMessageId,
                     title: "Debug message",
@@ -49,6 +60,5 @@ namespace Phx.Inject.Generator.Common {
                     isEnabledByDefault: true
                 ),
                 location));
-        }
     }
 }
