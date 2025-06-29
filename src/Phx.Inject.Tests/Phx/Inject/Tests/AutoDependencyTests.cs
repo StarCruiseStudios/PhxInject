@@ -28,8 +28,10 @@ namespace Phx.Inject.Tests {
 
             var outerType = When("Getting a auto dependency value", () => injector.GetOuterType());
             var value = outerType.AutoType;
+            var value2 = outerType.AutoTypeWithRequiredProperties;
 
             Then("The expected value was injected", IntValue, (expected) => Verify.That(value.Value.IsEqualTo(expected)));
+            Then("The expected value was injected", IntValue, (expected) => Verify.That(value2.X.IsEqualTo(expected)));
         }
         
         [Test]
@@ -39,6 +41,7 @@ namespace Phx.Inject.Tests {
             
             var outerType = When("Getting a auto dependency value", () => injector.GetOuterType());
             var value = outerType.AutoType.AutoTypeWithFabricationMode;
+            var value2 = outerType.AutoTypeWithRequiredProperties;
 
             Then("The expected value was injected", 10, (expected) => Verify.That(value.X.IsEqualTo(expected)));
         }

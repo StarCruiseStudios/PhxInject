@@ -41,8 +41,8 @@ namespace Phx.Inject.Tests {
         }
     
         [Factory]
-        public static OuterType GetOuterType(AutoType auto) {
-            return new OuterType(auto);
+        public static OuterType GetOuterType(AutoType auto, AutoTypeWithRequiredProperties autoTypeWithRequiredProperties) {
+            return new OuterType(auto, autoTypeWithRequiredProperties);
         }
     }
     

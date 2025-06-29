@@ -17,6 +17,7 @@ namespace Phx.Inject.Generator.Definitions {
         SpecFactoryMemberType SpecFactoryMemberType,
         SpecFactoryMethodFabricationMode FabricationMode,
         IEnumerable<SpecContainerFactoryInvocationDefinition> Arguments,
+        IEnumerable<SpecContainerFactoryRequiredPropertyDefinition> RequiredProperties,
         Location Location
     ) : IDefinition;
 }

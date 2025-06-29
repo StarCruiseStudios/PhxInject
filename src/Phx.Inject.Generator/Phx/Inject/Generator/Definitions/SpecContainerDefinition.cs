@@ -40,6 +40,15 @@ namespace Phx.Inject.Generator.Definitions {
                                         parameter,
                                         factory.Location))
                             .ToImmutableList();
+                        var requiredProperties = factory.RequiredProperties.Select(
+                                property => 
+                                    new SpecContainerFactoryRequiredPropertyDefinition(
+                                            property.PropertyName,
+                                            context.GetSpecContainerFactoryInvocation(
+                                                property.PropertyType,
+                                                factory.Location),
+                                            factory.Location))
+                            .ToImmutableList();
                         var specContainerFactoryMethodName = factory.GetSpecContainerFactoryName();
 
                         return new SpecContainerFactoryDefinition(
@@ -49,6 +58,7 @@ namespace Phx.Inject.Generator.Definitions {
                             factory.SpecFactoryMemberType,
                             factory.FabricationMode,
                             arguments,
+                            requiredProperties,
                             factory.Location);
                     });
 

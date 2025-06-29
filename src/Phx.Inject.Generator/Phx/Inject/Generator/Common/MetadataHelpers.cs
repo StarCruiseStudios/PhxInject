@@ -171,5 +171,19 @@ namespace Phx.Inject.Generator.Common {
 
             return QualifiedTypeModel.NoQualifier;
         }
+
+        public static ImmutableDictionary<string, QualifiedTypeModel> GetRequiredPropertyQualifiedTypes(ITypeSymbol type) {
+            return type.GetMembers()
+                .OfType<IPropertySymbol>()
+                .Where(p => p.SetMethod != null && p.SetMethod.DeclaredAccessibility == Accessibility.Public)
+                .Where(p => p.IsRequired)
+                .ToImmutableDictionary(
+                    property => property.Name,
+                    property => new QualifiedTypeModel(
+                        TypeModel.FromTypeSymbol(property.Type),
+                        GetQualifier(property)
+                    )
+                );
+        }
     }
 }

@@ -58,8 +58,8 @@ namespace Phx.Inject.Tests.Data {
         }
         
         [Factory]
-        internal static OuterType GetOuterType(AutoType value) {
-            return new OuterType(value);
+        internal static OuterType GetOuterType(AutoType value, AutoTypeWithRequiredProperties autoTypeWithRequiredProperties) {
+            return new OuterType(value, autoTypeWithRequiredProperties);
         }
     }
 }

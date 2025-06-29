@@ -41,6 +41,7 @@ namespace Phx.Inject.Generator.Descriptors {
         string FactoryMemberName,
         SpecFactoryMemberType SpecFactoryMemberType,
         IEnumerable<QualifiedTypeModel> Parameters,
+        IEnumerable<SpecFactoryRequiredPropertyDescriptor> RequiredProperties,
         SpecFactoryMethodFabricationMode FabricationMode,
         bool isPartial,
         Location Location
@@ -54,6 +55,8 @@ namespace Phx.Inject.Generator.Descriptors {
                 TryGetConstructorFactoryFabricationMode(factorySymbol, factoryLocation, out var fabricationMode);
 
                 var constructorParameterTypes = MetadataHelpers.GetConstructorParameterQualifiedTypes(factorySymbol);
+                var requiredProperties = MetadataHelpers.GetRequiredPropertyQualifiedTypes(factorySymbol)
+                    .Select((property) => new SpecFactoryRequiredPropertyDescriptor(property.Value, property.Key, factoryLocation));
                 var qualifier = MetadataHelpers.GetQualifier(factorySymbol);
                 var returnType = factoryType with {
                     Qualifier = qualifier
@@ -64,6 +67,7 @@ namespace Phx.Inject.Generator.Descriptors {
                     factoryType.TypeModel.GetVariableName(),
                     SpecFactoryMemberType.Constructor,
                     constructorParameterTypes,
+                    requiredProperties,
                     fabricationMode,
                     false, // Constructor factories cannot be partial
                     factoryLocation);
@@ -95,6 +99,7 @@ namespace Phx.Inject.Generator.Descriptors {
                     factoryMethod.Name,
                     SpecFactoryMemberType.Method,
                     methodParameterTypes,
+                    ImmutableList<SpecFactoryRequiredPropertyDescriptor>.Empty,
                     fabricationMode,
                     isPartial,
                     factoryLocation);
@@ -126,6 +131,7 @@ namespace Phx.Inject.Generator.Descriptors {
                     factoryProperty.Name,
                     SpecFactoryMemberType.Property,
                     methodParameterTypes,
+                    ImmutableList<SpecFactoryRequiredPropertyDescriptor>.Empty,
                     fabricationMode,
                     isPartial,
                     factoryLocation);
@@ -157,6 +163,7 @@ namespace Phx.Inject.Generator.Descriptors {
                     factoryReferenceProperty.Name,
                     SpecFactoryMemberType.Reference,
                     parameterTypes,
+                    ImmutableList<SpecFactoryRequiredPropertyDescriptor>.Empty,
                     fabricationMode,
                     isPartial,
                     factoryReferenceLocation);
@@ -188,6 +195,7 @@ namespace Phx.Inject.Generator.Descriptors {
                     factoryReferenceField.Name,
                     SpecFactoryMemberType.Reference,
                     parameterTypes,
+                    ImmutableList<SpecFactoryRequiredPropertyDescriptor>.Empty,
                     fabricationMode,
                     isPartial,
                     factoryReferenceLocation);

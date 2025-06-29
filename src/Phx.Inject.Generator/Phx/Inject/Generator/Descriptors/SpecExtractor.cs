@@ -44,13 +44,23 @@ namespace Phx.Inject.Generator.Descriptors {
             ITypeSymbol type,
             HashSet<QualifiedTypeModel> providedTypes) {
             var neededTypes = new HashSet<QualifiedTypeModel>();
+            
+            // Add constructor parameters
             MetadataHelpers.GetConstructorParameterQualifiedTypes(type).ForEach(parameter => {
                 if (!providedTypes.Contains(parameter)) {
                     neededTypes.Add(parameter);
                     neededTypes.UnionWith(GetParameterTypes(parameter.TypeModel.typeSymbol, providedTypes));
                 }
             });
-
+            
+            // Add required properties
+            foreach (var property in MetadataHelpers.GetRequiredPropertyQualifiedTypes(type).Values) {
+                if (!providedTypes.Contains(property)) {
+                    neededTypes.Add(property);
+                    neededTypes.UnionWith(GetParameterTypes(property.TypeModel.typeSymbol, providedTypes));
+                }
+            }
+            
             return neededTypes;
         }
 

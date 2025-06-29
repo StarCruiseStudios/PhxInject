@@ -28,9 +28,17 @@ namespace Phx.Inject.Tests.Data.Model {
 
     public class OuterType {
         internal AutoType AutoType { get; }
+        internal AutoTypeWithRequiredProperties AutoTypeWithRequiredProperties { get; }
 
-        internal OuterType(AutoType autoType) {
+        internal OuterType(AutoType autoType, AutoTypeWithRequiredProperties autoTypeWithRequiredProperties) {
             AutoType = autoType;
+            AutoTypeWithRequiredProperties = autoTypeWithRequiredProperties;
         }
+    }
+
+    public record class AutoTypeWithRequiredProperties(AutoType autoType) {
+        public AutoType AutoType { get; } = autoType;
+        public required int X { get; init; }
+        public required AutoTypeWithFabricationMode Y { get; init; } 
     }
 }

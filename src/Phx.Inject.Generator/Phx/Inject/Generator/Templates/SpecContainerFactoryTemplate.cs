@@ -23,6 +23,7 @@ namespace Phx.Inject.Generator.Templates {
         string? ConstructedSpecificationReference,
         string SpecificationQualifiedType,
         IEnumerable<SpecContainerFactoryInvocationTemplate> Arguments,
+        IEnumerable<RequiredPropertyTemplate> RequiredProperties,
         Location Location
     ) : ISpecContainerMemberTemplate {
         public void Render(IRenderWriter writer) {
@@ -76,8 +77,10 @@ namespace Phx.Inject.Generator.Templates {
 
                 case SpecFactoryMemberType.Constructor:
                     writer.Append($"new {ReturnTypeQualifiedName}");
+                    var numRequiredProperties = RequiredProperties.Count();
+                    
                     if (numArguments == 0) {
-                        writer.AppendLine("();");
+                        writer.Append("()");
                     } else {
                         writer.AppendLine("(")
                             .IncreaseIndent(1);
@@ -91,9 +94,39 @@ namespace Phx.Inject.Generator.Templates {
                             argument.Render(writer);
                         }
 
-                        writer.AppendLine(");")
-                            .DecreaseIndent(1);
+                        if (numRequiredProperties > 0) {
+                            writer.DecreaseIndent(1)
+                                .AppendLine()
+                                .Append(")");
+                        } else {
+                            writer.Append(")")
+                                .DecreaseIndent(1);                            
+                        }
                     }
+                    
+                    if (numRequiredProperties > 0) {
+                        writer.Append(" {")
+                            .IncreaseIndent(1);
+                        var isFirst = true;
+                        foreach (var property in RequiredProperties) {
+                            if (isFirst) {
+                                isFirst = false;
+                            } else {
+                                writer.Append(",");
+                            }
+                            
+                            writer.AppendLine();
+                            
+                            writer.Append(property.PropertyName)
+                                .Append(" = ");
+                            property.PropertyValue.Render(writer);
+                        }
+                        writer.DecreaseIndent(1)
+                            .AppendLine()
+                            .Append("}");
+                    }
+
+                    writer.AppendLine(";");
 
                     break;
 

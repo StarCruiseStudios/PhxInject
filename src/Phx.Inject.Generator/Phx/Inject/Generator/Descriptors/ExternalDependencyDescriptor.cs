@@ -28,6 +28,7 @@ namespace Phx.Inject.Generator.Descriptors {
                         provider.ProviderMethodName,
                         SpecFactoryMemberType.Method,
                         ImmutableList<QualifiedTypeModel>.Empty,
+                        ImmutableList<SpecFactoryRequiredPropertyDescriptor>.Empty,
                         SpecFactoryMethodFabricationMode.Recurrent,
                         provider.isPartial,
                         provider.Location))
