@@ -6,60 +6,62 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data {
-    using Phx.Inject.Tests.Data.Model;
+using Phx.Inject.Tests.Data.Model;
 
-    [Specification]
-    [Link(typeof(IntLeaf), typeof(ILeaf))]
-    public static class CommonTestValueSpecification {
-        public const int IntValue = 10;
-        public const int LabelAIntValue = 20;
-        public const int QualifierAIntValue = 20;
-        public const string LabelAStringValue = "LabelAStringValue";
-        public const string LabelA = "LabelA";
-        
-        [Factory]
-        internal static int GetInt() {
-            return IntValue;
-        }
-        
-        [Factory]
-        [Label(LabelA)]
-        internal static int GetIntLabelA() {
-            return LabelAIntValue;
-        }
-        
-        [Factory]
-        [Label(LabelA)]
-        internal static string GetStringLabelA() {
-            return LabelAStringValue;
-        }
-        
-        [Factory]
-        [QualifierA]
-        internal static int GetIntQualifierA() {
-            return QualifierAIntValue;
-        }
-        
-        [Builder]
-        internal static void BuildTestBuilderObject(TestBuilderObject target, int intValue) {
-            target.IntValue = intValue;
-        }
-        
-        [Builder]
-        [Label(LabelA)]
-        internal static void BuildTestBuilderObjectLabelA(TestBuilderObject target, [Label(LabelA)] int intValue) {
-            target.IntValue = intValue;
-        }
-        
-        [Factory]
-        internal static TestGenericObject<int> GetGenericObject(int value) {
-            return new TestGenericObject<int>(value);
-        }
-        
-        [Factory]
-        internal static OuterType GetOuterType(AutoType value, AutoTypeWithRequiredProperties autoTypeWithRequiredProperties) {
-            return new OuterType(value, autoTypeWithRequiredProperties);
-        }
+namespace Phx.Inject.Tests.Data;
+
+[Specification]
+[Link(typeof(IntLeaf), typeof(ILeaf))]
+public static class CommonTestValueSpecification {
+    public const int IntValue = 10;
+    public const int LabelAIntValue = 20;
+    public const int QualifierAIntValue = 20;
+    public const string LabelAStringValue = "LabelAStringValue";
+    public const string LabelA = "LabelA";
+
+    [Factory]
+    internal static int GetInt() {
+        return IntValue;
+    }
+
+    [Factory]
+    [Label(LabelA)]
+    internal static int GetIntLabelA() {
+        return LabelAIntValue;
+    }
+
+    [Factory]
+    [Label(LabelA)]
+    internal static string GetStringLabelA() {
+        return LabelAStringValue;
+    }
+
+    [Factory]
+    [QualifierA]
+    internal static int GetIntQualifierA() {
+        return QualifierAIntValue;
+    }
+
+    [Builder]
+    internal static void BuildTestBuilderObject(TestBuilderObject target, int intValue) {
+        target.IntValue = intValue;
+    }
+
+    [Builder]
+    [Label(LabelA)]
+    internal static void BuildTestBuilderObjectLabelA(TestBuilderObject target, [Label(LabelA)] int intValue) {
+        target.IntValue = intValue;
+    }
+
+    [Factory]
+    internal static TestGenericObject<int> GetGenericObject(int value) {
+        return new TestGenericObject<int>(value);
+    }
+
+    [Factory]
+    internal static OuterType GetOuterType(
+        AutoType value,
+        AutoTypeWithRequiredProperties autoTypeWithRequiredProperties) {
+        return new OuterType(value, autoTypeWithRequiredProperties);
     }
 }

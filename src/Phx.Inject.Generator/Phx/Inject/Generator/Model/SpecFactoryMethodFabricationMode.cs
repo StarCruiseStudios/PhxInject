@@ -6,12 +6,12 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model {
-    // These values must match Phx.Inject.FabricationMode to parse correctly.
-    internal enum SpecFactoryMethodFabricationMode {
-        Scoped = 0,
-        Recurrent = 1,
-        Container = 2,
-        ContainerScoped = 3
-    }
+namespace Phx.Inject.Generator.Model;
+
+// These values must match Phx.Inject.FabricationMode to parse correctly.
+internal enum SpecFactoryMethodFabricationMode {
+    Scoped = 0,
+    Recurrent = 1,
+    Container = 2,
+    ContainerScoped = 3
 }

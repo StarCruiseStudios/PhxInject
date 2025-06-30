@@ -17,34 +17,34 @@ internal class SourceExtractor {
         try {
             var descGenerationContext = new DescGenerationContext(context);
 
-            var injectorDescs = new InjectorExtractor().Extract(
+            IReadOnlyList<InjectorDesc> injectorDescs = new InjectorExtractor().Extract(
                 syntaxReceiver.InjectorCandidates,
                 descGenerationContext);
             Logger.Info($"Discovered {injectorDescs.Count} injector types.");
 
-            var specDescs = new SpecExtractor().Extract(
+            IReadOnlyList<SpecDesc> specDescs = new SpecExtractor().Extract(
                 syntaxReceiver.SpecificationCandidates,
                 descGenerationContext);
             Logger.Info($"Discovered {specDescs.Count} specification types.");
 
-            var dependencyDescs = new DependencyExtractor().Extract(
+            IReadOnlyList<DependencyDesc> dependencyDescs = new DependencyExtractor().Extract(
                 syntaxReceiver.InjectorCandidates,
                 descGenerationContext);
             Logger.Info($"Discovered {dependencyDescs.Count} dependency types.");
 
             return new SourceDesc(
-                injectorDescs: injectorDescs,
-                specDescs: specDescs,
-                dependencyDescs: dependencyDescs
+                injectorDescs,
+                specDescs,
+                dependencyDescs
             );
         } catch (Exception e) {
-            var diagnosticData = (e is InjectionException ie)
+            var diagnosticData = e is InjectionException ie
                 ? ie.DiagnosticData
                 : Diagnostics.UnexpectedError;
-            
+
             throw new InjectionException(
                 diagnosticData,
-                $"An error occurred while extracting source descriptors.",
+                "An error occurred while extracting source descriptors.",
                 Location.None,
                 e);
         }

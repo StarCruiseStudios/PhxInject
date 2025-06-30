@@ -6,30 +6,33 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests {
-    using NUnit.Framework;
-    using Phx.Inject.Tests.Data;
-    using Phx.Inject.Tests.Data.Model;
-    using Phx.Test;
-    using Phx.Validation;
-    using static Data.CommonTestValueSpecification;
+using NUnit.Framework;
+using Phx.Inject.Tests.Data;
+using Phx.Inject.Tests.Data.Model;
+using Phx.Test;
+using Phx.Validation;
 
-    [Injector(
-        generatedClassName: "LinkTestInjector",
-        typeof(CommonTestValueSpecification))]
-    public interface ILinkTestInjector {
-        ILeaf GetLinkedType();
-    }
-    
-    public class LinkTests : LoggingTestClass {
-        [Test]
-        public void LinksCanBeUsedToAccessInjectedValues() {
-            ILinkTestInjector injector = Given("A test injector", () => new LinkTestInjector());
+namespace Phx.Inject.Tests;
 
-            var value = When("Getting a linked value", () => injector.GetLinkedType());
+using static CommonTestValueSpecification;
 
-            Then("The expected type was injected", () => Verify.That(value.IsType<IntLeaf>()));
-            Then("The expected value was injected", IntValue, (expected) => Verify.That((value as IntLeaf)!.Value.IsEqualTo(expected)));
-        }
+[Injector(
+    "LinkTestInjector",
+    typeof(CommonTestValueSpecification))]
+public interface ILinkTestInjector {
+    ILeaf GetLinkedType();
+}
+
+public class LinkTests : LoggingTestClass {
+    [Test]
+    public void LinksCanBeUsedToAccessInjectedValues() {
+        ILinkTestInjector injector = Given("A test injector", () => new LinkTestInjector());
+
+        var value = When("Getting a linked value", () => injector.GetLinkedType());
+
+        Then("The expected type was injected", () => Verify.That(value.IsType<IntLeaf>()));
+        Then("The expected value was injected",
+            IntValue,
+            expected => Verify.That((value as IntLeaf)!.Value.IsEqualTo(expected)));
     }
 }

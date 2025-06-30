@@ -6,131 +6,131 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Render {
-    using System.Text;
-    using Phx.Inject.Generator.Templates;
+using System.Text;
+using Phx.Inject.Generator.Templates;
 
-    internal class RenderWriter : IRenderWriter {
-        private readonly StringBuilder sourceBuilder = new();
-        private int currentIndent;
-        private string indentString = "";
-        private bool isBeginningOfLine = true;
+namespace Phx.Inject.Generator.Render;
 
-        public RenderWriter(GeneratorSettings settings) {
-            Settings = settings;
+internal class RenderWriter : IRenderWriter {
+    private readonly StringBuilder sourceBuilder = new();
+    private int currentIndent;
+    private string indentString = "";
+    private bool isBeginningOfLine = true;
+
+    public RenderWriter(GeneratorSettings settings) {
+        Settings = settings;
+    }
+
+    public GeneratorSettings Settings { get; }
+
+    public IRenderWriter IncreaseIndent(int tabs) {
+        currentIndent += tabs * Settings.TabSize;
+        indentString = "".PadRight(currentIndent);
+        return this;
+    }
+
+    public IRenderWriter DecreaseIndent(int tabs) {
+        currentIndent -= tabs * Settings.TabSize;
+        if (currentIndent < 0) {
+            currentIndent = 0;
         }
 
-        public GeneratorSettings Settings { get; }
+        indentString = "".PadRight(currentIndent);
+        return this;
+    }
 
-        public IRenderWriter IncreaseIndent(int tabs) {
-            currentIndent += tabs * Settings.TabSize;
-            indentString = "".PadRight(currentIndent);
-            return this;
+    public IRenderWriter Append(string str, bool autoIndent = true) {
+        if (isBeginningOfLine && autoIndent) {
+            sourceBuilder.Append(indentString);
         }
 
-        public IRenderWriter DecreaseIndent(int tabs) {
-            currentIndent -= tabs * Settings.TabSize;
-            if (currentIndent < 0) {
-                currentIndent = 0;
-            }
+        var stringToAppend = autoIndent
+            ? str.Replace("\n", $"\n{indentString}")
+            : str;
+        sourceBuilder.Append(stringToAppend);
+        isBeginningOfLine = false;
+        return this;
+    }
 
-            indentString = "".PadRight(currentIndent);
-            return this;
+    public IRenderWriter AppendLine(string str = "", bool autoIndent = true) {
+        if (isBeginningOfLine && autoIndent) {
+            sourceBuilder.Append(indentString);
         }
 
-        public IRenderWriter Append(string str, bool autoIndent = true) {
-            if (isBeginningOfLine && autoIndent) {
-                sourceBuilder.Append(indentString);
-            }
+        var stringToAppend = autoIndent
+            ? str.Replace("\n", $"\n{indentString}")
+            : str;
+        sourceBuilder.AppendLine(stringToAppend);
+        isBeginningOfLine = true;
+        return this;
+    }
 
-            var stringToAppend = autoIndent
-                ? str.Replace("\n", $"\n{indentString}")
-                : str;
-            sourceBuilder.Append(stringToAppend);
-            isBeginningOfLine = false;
-            return this;
-        }
-
-        public IRenderWriter AppendLine(string str = "", bool autoIndent = true) {
-            if (isBeginningOfLine && autoIndent) {
-                sourceBuilder.Append(indentString);
-            }
-
-            var stringToAppend = autoIndent
-                ? str.Replace("\n", $"\n{indentString}")
-                : str;
-            sourceBuilder.AppendLine(stringToAppend);
-            isBeginningOfLine = true;
-            return this;
-        }
-
-        public IRenderWriter AppendBlankLine() {
-            if (!isBeginningOfLine) {
-                sourceBuilder.AppendLine();
-                isBeginningOfLine = true;
-            }
-
+    public IRenderWriter AppendBlankLine() {
+        if (!isBeginningOfLine) {
             sourceBuilder.AppendLine();
-            return this;
+            isBeginningOfLine = true;
         }
 
-        public string GetRenderedString() {
-            return sourceBuilder.ToString();
-        }
+        sourceBuilder.AppendLine();
+        return this;
+    }
 
-        public class Factory : IRenderWriterFactory {
-            public GeneratorSettings settings { get; init; }
-            public Factory(GeneratorSettings Settings) {
-                settings = Settings;
+    public string GetRenderedString() {
+        return sourceBuilder.ToString();
+    }
+
+    public IRenderWriter.ICollectionWriter GetCollectionWriter(CollectionWriterProperties properties) {
+        return new CollectionWriter(this, properties);
+    }
+
+    public class Factory : IRenderWriterFactory {
+        public GeneratorSettings settings { get; init; }
+        public Factory(GeneratorSettings Settings) {
+            settings = Settings;
+        }
+        public IRenderWriter Build() {
+            return new RenderWriter(settings);
+        }
+    }
+
+    private class CollectionWriter : IRenderWriter.ICollectionWriter {
+        private readonly CollectionWriterProperties properties;
+        private readonly IRenderWriter renderWriter;
+        private bool isFirst = true;
+
+        public CollectionWriter(IRenderWriter renderWriter, CollectionWriterProperties properties) {
+            this.renderWriter = renderWriter;
+            this.properties = properties;
+
+            if (properties.OpenWithNewline) {
+                renderWriter.AppendLine(properties.OpeningString);
+            } else {
+                renderWriter.Append(properties.OpeningString);
             }
-            public IRenderWriter Build() {
-                return new RenderWriter(settings);
-            }
-        }
-        
-        public IRenderWriter.ICollectionWriter GetCollectionWriter(CollectionWriterProperties properties) {
-            return new CollectionWriter(this, properties);
+
+            renderWriter.IncreaseIndent(properties.Indent);
         }
 
-        private class CollectionWriter : IRenderWriter.ICollectionWriter {
-            private readonly CollectionWriterProperties properties;
-            private readonly IRenderWriter renderWriter;
-            private bool isFirst = true;
-
-            public CollectionWriter(IRenderWriter renderWriter, CollectionWriterProperties properties) {
-                this.renderWriter = renderWriter;
-                this.properties = properties;
-
-                if (properties.OpenWithNewline) {
-                    renderWriter.AppendLine(properties.OpeningString);
+        public IRenderWriter GetElementWriter() {
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                if (properties.DelimitWithNewline) {
+                    renderWriter.AppendLine(properties.Delimiter);
                 } else {
-                    renderWriter.Append(properties.OpeningString);
+                    renderWriter.Append(properties.Delimiter);
                 }
-
-                renderWriter.IncreaseIndent(properties.Indent);
             }
 
-            public IRenderWriter GetElementWriter() {
-                if (isFirst) {
-                    isFirst = false;
-                } else {
-                    if (properties.DelimitWithNewline) {
-                        renderWriter.AppendLine(properties.Delimiter);
-                    } else {
-                        renderWriter.Append(properties.Delimiter);
-                    }
-                }
+            return renderWriter;
+        }
 
-                return renderWriter;
-            }
-
-            public void Dispose() {
-                renderWriter.DecreaseIndent(properties.Indent);
-                if (properties.CloseWithNewline) {
-                    renderWriter.AppendLine(properties.ClosingString);
-                } else {
-                    renderWriter.Append(properties.ClosingString);
-                }
+        public void Dispose() {
+            renderWriter.DecreaseIndent(properties.Indent);
+            if (properties.CloseWithNewline) {
+                renderWriter.AppendLine(properties.ClosingString);
+            } else {
+                renderWriter.Append(properties.ClosingString);
             }
         }
     }

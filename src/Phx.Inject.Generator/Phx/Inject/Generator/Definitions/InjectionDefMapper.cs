@@ -6,18 +6,18 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Definitions {
-    internal class InjectionDefMapper {
-        private readonly InjectionContextDef.IBuilder injectionContextDefBuilder;
+namespace Phx.Inject.Generator.Definitions;
 
-        public InjectionDefMapper(InjectionContextDef.IBuilder injectionContextDefBuilder) {
-            this.injectionContextDefBuilder = injectionContextDefBuilder;
-        }
+internal class InjectionDefMapper {
+    private readonly InjectionContextDef.IBuilder injectionContextDefBuilder;
 
-        public InjectionDefMapper() : this(new InjectionContextDef.Builder()) { }
+    public InjectionDefMapper(InjectionContextDef.IBuilder injectionContextDefBuilder) {
+        this.injectionContextDefBuilder = injectionContextDefBuilder;
+    }
 
-        public InjectionContextDef Map(DefGenerationContext context) {
-            return injectionContextDefBuilder.Build(context.Injector, context);
-        }
+    public InjectionDefMapper() : this(new InjectionContextDef.Builder()) { }
+
+    public InjectionContextDef Map(DefGenerationContext context) {
+        return injectionContextDefBuilder.Build(context.Injector, context);
     }
 }

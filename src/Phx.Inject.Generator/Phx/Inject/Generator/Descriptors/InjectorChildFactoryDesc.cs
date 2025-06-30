@@ -6,55 +6,55 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Descriptors {
-    using System.Collections.Immutable;
-    using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Common;
-    using Phx.Inject.Generator.Model;
+using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Common;
+using Phx.Inject.Generator.Model;
 
-    internal record InjectorChildFactoryDesc(
-        TypeModel ChildInjectorType,
-        string InjectorChildFactoryMethodName,
-        IList<TypeModel> Parameters,
-        Location Location
-    ) : IDescriptor {
-        public interface IBuilder {
-            InjectorChildFactoryDesc? Build(
-                IMethodSymbol childInjectorMethod,
-                DescGenerationContext context
-            );
-        }
-        
-        public class Builder : IBuilder {
-            public InjectorChildFactoryDesc? Build(
-                IMethodSymbol childInjectorMethod,
-                DescGenerationContext context
-            ) {
-                var childInjectorLocation = childInjectorMethod.Locations.First();
+namespace Phx.Inject.Generator.Descriptors;
 
-                if (!childInjectorMethod.GetChildInjectorAttributes().Any()) {
-                    // This is not an injector child factory.
-                    return null;
-                }
+internal record InjectorChildFactoryDesc(
+    TypeModel ChildInjectorType,
+    string InjectorChildFactoryMethodName,
+    IReadOnlyList<TypeModel> Parameters,
+    Location Location
+) : IDescriptor {
+    public interface IBuilder {
+        InjectorChildFactoryDesc? Build(
+            IMethodSymbol childInjectorMethod,
+            DescGenerationContext context
+        );
+    }
 
-                if (childInjectorMethod.ReturnsVoid) {
-                    throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        $"Injector child factory {childInjectorMethod.Name} must return a type.",
-                        childInjectorLocation);
-                }
+    public class Builder : IBuilder {
+        public InjectorChildFactoryDesc? Build(
+            IMethodSymbol childInjectorMethod,
+            DescGenerationContext context
+        ) {
+            var childInjectorLocation = childInjectorMethod.Locations.First();
 
-                var parameters = childInjectorMethod.Parameters
-                    .Select(parameter => TypeModel.FromTypeSymbol(parameter.Type))
-                    .ToImmutableList();
+            if (!childInjectorMethod.GetChildInjectorAttributes().Any()) {
+                // This is not an injector child factory.
+                return null;
+            }
 
-                var returnType = TypeModel.FromTypeSymbol(childInjectorMethod.ReturnType);
-                return new InjectorChildFactoryDesc(
-                    returnType,
-                    childInjectorMethod.Name,
-                    parameters,
+            if (childInjectorMethod.ReturnsVoid) {
+                throw new InjectionException(
+                    Diagnostics.InvalidSpecification,
+                    $"Injector child factory {childInjectorMethod.Name} must return a type.",
                     childInjectorLocation);
             }
+
+            IReadOnlyList<TypeModel> parameters = childInjectorMethod.Parameters
+                .Select(parameter => TypeModel.FromTypeSymbol(parameter.Type))
+                .ToImmutableList();
+
+            var returnType = TypeModel.FromTypeSymbol(childInjectorMethod.ReturnType);
+            return new InjectorChildFactoryDesc(
+                returnType,
+                childInjectorMethod.Name,
+                parameters,
+                childInjectorLocation);
         }
     }
 }

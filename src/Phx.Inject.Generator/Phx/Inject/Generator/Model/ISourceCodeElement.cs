@@ -6,10 +6,10 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model {
-    using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 
-    internal interface ISourceCodeElement {
-        Location Location { get; }
-    }
+namespace Phx.Inject.Generator.Model;
+
+internal interface ISourceCodeElement {
+    Location Location { get; }
 }

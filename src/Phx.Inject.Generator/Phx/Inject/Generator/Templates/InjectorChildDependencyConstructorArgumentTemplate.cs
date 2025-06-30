@@ -6,18 +6,18 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Templates {
-    using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 
-    internal record InjectorChildDependencyConstructorArgumentTemplate(
-        string ArgumentName,
-        string DependencyImplementationTypeQualifiedName,
-        string SpecContainerCollectionReferenceName,
-        Location Location
-    ) : IInjectorChildConstructorArgumentTemplate {
-        public void Render(IRenderWriter writer) {
-            writer.Append(
-                $"{ArgumentName}: new {DependencyImplementationTypeQualifiedName}({SpecContainerCollectionReferenceName})");
-        }
+namespace Phx.Inject.Generator.Templates;
+
+internal record InjectorChildDependencyConstructorArgumentTemplate(
+    string ArgumentName,
+    string DependencyImplementationTypeQualifiedName,
+    string SpecContainerCollectionReferenceName,
+    Location Location
+) : IInjectorChildConstructorArgumentTemplate {
+    public void Render(IRenderWriter writer) {
+        writer.Append(
+            $"{ArgumentName}: new {DependencyImplementationTypeQualifiedName}({SpecContainerCollectionReferenceName})");
     }
 }

@@ -6,6 +6,6 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Templates {
-    internal interface IInjectorMemberTemplate : IRenderTemplate { }
-}
+namespace Phx.Inject.Generator.Templates;
+
+internal interface IInjectorMemberTemplate : IRenderTemplate { }

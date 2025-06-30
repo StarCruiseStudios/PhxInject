@@ -6,14 +6,14 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Inject {
-    using Phx.Inject.Tests.Data.Model;
+using Phx.Inject.Tests.Data.Model;
 
-    [Specification]
-    internal static class LazySpecification {
-        [Builder]
-        internal static void BuildLazyType(LazyType type, ILeaf leaf) {
-            type.Value = leaf;
-        }
+namespace Phx.Inject.Tests.Data.Inject;
+
+[Specification]
+internal static class LazySpecification {
+    [Builder]
+    internal static void BuildLazyType(LazyType type, ILeaf leaf) {
+        type.Value = leaf;
     }
 }

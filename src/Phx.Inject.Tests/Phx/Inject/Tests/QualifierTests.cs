@@ -6,62 +6,60 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests {
-    using NUnit.Framework;
-    using Phx.Inject.Tests.Data;
-    using Phx.Inject.Tests.Data.Model;
-    using Phx.Test;
-    using Phx.Validation;
+using NUnit.Framework;
+using Phx.Inject.Tests.Data.Model;
+using Phx.Test;
+using Phx.Validation;
 
-    #region
-    
-    [Specification]
-    internal static class QualifierSpecification {
-        public const string AttributeNamedLeafAData = "AttributeNamedLeafA";
-        public const string AttributeNamedLeafBData = "AttributeNamedLeafB";
-        
-        [Factory]
-        [QualifierA]
-        internal static ILeaf GetAttributeNamedLeafA() {
-            return new StringLeaf(AttributeNamedLeafAData);
-        }
+namespace Phx.Inject.Tests;
 
-        [Factory]
-        [QualifierB]
-        internal static ILeaf GetAttributeNamedLeafB() {
-            return new StringLeaf(AttributeNamedLeafBData);
-        }
+#region
+
+[Specification]
+internal static class QualifierSpecification {
+    public const string AttributeNamedLeafAData = "AttributeNamedLeafA";
+    public const string AttributeNamedLeafBData = "AttributeNamedLeafB";
+
+    [Factory]
+    [QualifierA]
+    internal static ILeaf GetAttributeNamedLeafA() {
+        return new StringLeaf(AttributeNamedLeafAData);
     }
-    
-    [Injector(typeof(QualifierSpecification))]
-    internal interface IQualifierTestInjector {
-        [QualifierA]
-        public ILeaf GetAttributeNamedLeafA();
 
-        [QualifierB]
-        public ILeaf GetAttributeNamedLeafB();
+    [Factory]
+    [QualifierB]
+    internal static ILeaf GetAttributeNamedLeafB() {
+        return new StringLeaf(AttributeNamedLeafBData);
     }
-    
-    #endregion injector
-    
-    public class QualifierTests : LoggingTestClass {
+}
 
-        [Test]
-        public void AnAttributeQualifiedFactoryIsDifferentThanAnotherAttributeQualifiedFactory() {
-            IQualifierTestInjector injector = Given("A test injector.", () => new GeneratedQualifierTestInjector());
+[Injector(typeof(QualifierSpecification))]
+internal interface IQualifierTestInjector {
+    [QualifierA]
+    public ILeaf GetAttributeNamedLeafA();
 
-            var (leafA, leafB) = When(
-                "Two different attribute qualified dependencies are retrieved.",
-                () => (injector.GetAttributeNamedLeafA(), injector.GetAttributeNamedLeafB()));
+    [QualifierB]
+    public ILeaf GetAttributeNamedLeafB();
+}
 
-            Then(
-                "The correct first dependency was returned.",
-                QualifierSpecification.AttributeNamedLeafAData,
-                expected => Verify.That((leafA as StringLeaf)!.Value.IsEqualTo(expected)));
-            Then(
-                "The correct second dependency was returned.",
-                QualifierSpecification.AttributeNamedLeafBData,
-                expected => Verify.That((leafB as StringLeaf)!.Value.IsEqualTo(expected)));
-        }
+#endregion injector
+
+public class QualifierTests : LoggingTestClass {
+    [Test]
+    public void AnAttributeQualifiedFactoryIsDifferentThanAnotherAttributeQualifiedFactory() {
+        IQualifierTestInjector injector = Given("A test injector.", () => new GeneratedQualifierTestInjector());
+
+        var (leafA, leafB) = When(
+            "Two different attribute qualified dependencies are retrieved.",
+            () => (injector.GetAttributeNamedLeafA(), injector.GetAttributeNamedLeafB()));
+
+        Then(
+            "The correct first dependency was returned.",
+            QualifierSpecification.AttributeNamedLeafAData,
+            expected => Verify.That((leafA as StringLeaf)!.Value.IsEqualTo(expected)));
+        Then(
+            "The correct second dependency was returned.",
+            QualifierSpecification.AttributeNamedLeafBData,
+            expected => Verify.That((leafB as StringLeaf)!.Value.IsEqualTo(expected)));
     }
 }

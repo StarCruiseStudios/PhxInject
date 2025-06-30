@@ -6,57 +6,52 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Phx.Inject.Generator.Common.AttributeHelpers;
 
-namespace Phx.Inject.Generator {
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
+namespace Phx.Inject.Generator;
 
-    internal class SourceSyntaxReceiver : ISyntaxReceiver {
-        public List<TypeDeclarationSyntax> InjectorCandidates { get; } = new();
-        public List<TypeDeclarationSyntax> SpecificationCandidates { get; } = new();
+internal class SourceSyntaxReceiver : ISyntaxReceiver {
+    public List<TypeDeclarationSyntax> InjectorCandidates { get; } = new();
+    public List<TypeDeclarationSyntax> SpecificationCandidates { get; } = new();
 
-        public void OnVisitSyntaxNode(SyntaxNode syntaxNode) {
-            switch (syntaxNode) {
-                case InterfaceDeclarationSyntax interfaceDeclaration:
-                    if (HasInjectorAttribute(interfaceDeclaration)) {
-                        InjectorCandidates.Add(interfaceDeclaration);
-                    }
+    public void OnVisitSyntaxNode(SyntaxNode syntaxNode) {
+        switch (syntaxNode) {
+            case InterfaceDeclarationSyntax interfaceDeclaration:
+                if (HasInjectorAttribute(interfaceDeclaration)) {
+                    InjectorCandidates.Add(interfaceDeclaration);
+                }
 
-                    if (HasSpecificationAttribute(interfaceDeclaration)) {
-                        SpecificationCandidates.Add(interfaceDeclaration);
-                    }
+                if (HasSpecificationAttribute(interfaceDeclaration)) {
+                    SpecificationCandidates.Add(interfaceDeclaration);
+                }
 
-                    break;
-                case ClassDeclarationSyntax classDeclaration:
-                    if (HasSpecificationAttribute(classDeclaration)) {
-                        SpecificationCandidates.Add(classDeclaration);
-                    }
+                break;
+            case ClassDeclarationSyntax classDeclaration:
+                if (HasSpecificationAttribute(classDeclaration)) {
+                    SpecificationCandidates.Add(classDeclaration);
+                }
 
-                    break;
-            }
+                break;
         }
+    }
 
-        private static bool HasInjectorAttribute(MemberDeclarationSyntax memberDeclaration) {
-            return memberDeclaration.AttributeLists
-                .Any(
-                    attributeList => attributeList.Attributes
-                        .Any(
-                            attribute => {
-                                var name = attribute.Name.ToString();
-                                return name is InjectorAttributeShortName or InjectorAttributeBaseName;
-                            }));
-        }
+    private static bool HasInjectorAttribute(MemberDeclarationSyntax memberDeclaration) {
+        return memberDeclaration.AttributeLists
+            .Any(attributeList => attributeList.Attributes
+                .Any(attribute => {
+                    var name = attribute.Name.ToString();
+                    return name is InjectorAttributeShortName or InjectorAttributeBaseName;
+                }));
+    }
 
-        private static bool HasSpecificationAttribute(MemberDeclarationSyntax memberDeclaration) {
-            return memberDeclaration.AttributeLists
-                .Any(
-                    attributeList => attributeList.Attributes
-                        .Any(
-                            attribute => {
-                                var name = attribute.Name.ToString();
-                                return name is SpecificationAttributeShortName or SpecificationAttributeBaseName;
-                            }));
-        }
+    private static bool HasSpecificationAttribute(MemberDeclarationSyntax memberDeclaration) {
+        return memberDeclaration.AttributeLists
+            .Any(attributeList => attributeList.Attributes
+                .Any(attribute => {
+                    var name = attribute.Name.ToString();
+                    return name is SpecificationAttributeShortName or SpecificationAttributeBaseName;
+                }));
     }
 }

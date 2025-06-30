@@ -6,20 +6,20 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Model {
-    public class StringLeaf : ILeaf {
-        public string Value { get; }
+namespace Phx.Inject.Tests.Data.Model;
 
-        public StringLeaf(string value) {
-            Value = value;
-        }
+public class StringLeaf : ILeaf {
+    public string Value { get; }
 
-        public static StringLeaf Construct(string value) {
-            return new StringLeaf(value);
-        }
+    public StringLeaf(string value) {
+        Value = value;
+    }
 
-        public override string ToString() {
-            return $"StringLeaf({Value})";
-        }
+    public static StringLeaf Construct(string value) {
+        return new StringLeaf(value);
+    }
+
+    public override string ToString() {
+        return $"StringLeaf({Value})";
     }
 }

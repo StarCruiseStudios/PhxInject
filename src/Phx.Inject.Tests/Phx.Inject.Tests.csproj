@@ -7,10 +7,10 @@
 -->
 
 <Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="Cobalt.props" Condition="Exists('Cobalt.props')"/>
+    <Import Project="Cobalt.props" Condition="Exists('Cobalt.props')" />
     <ItemGroup>
-        <ProjectReference Include="..\Phx.Inject\Phx.Inject.csproj"/>
-        <ProjectReference Include="..\Phx.Inject.Generator\Phx.Inject.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+        <ProjectReference Include="..\Phx.Inject\Phx.Inject.csproj" />
+        <ProjectReference Include="..\Phx.Inject.Generator\Phx.Inject.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
     <ItemGroup>
@@ -21,13 +21,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="$(MSBuildThisFileDirectory)\nlog.config" CopyToOutputDirectory="Always"/>
+        <None Include="$(MSBuildThisFileDirectory)\nlog.config" CopyToOutputDirectory="Always" />
     </ItemGroup>
 
     <Target Name="EnsureBuildFileImports" BeforeTargets="PrepareForBuild">
         <PropertyGroup>
             <ErrorText>This package relies on imported build files that are not found. Missing: {0}</ErrorText>
         </PropertyGroup>
-        <Error Condition="!Exists('Cobalt.props')" Text="$([System.String]::Format('$(ErrorText)', 'Cobalt.props'))"/>
+        <Error Condition="!Exists('Cobalt.props')" Text="$([System.String]::Format('$(ErrorText)', 'Cobalt.props'))" />
     </Target>
 </Project>

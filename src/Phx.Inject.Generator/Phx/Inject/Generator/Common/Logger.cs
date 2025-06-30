@@ -6,12 +6,12 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Common {
-    using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 
-    internal static class Logger {
-        public static void Info(string message, Location? location = null) {
-            Diagnostics.Log(message, null);
-        }
+namespace Phx.Inject.Generator.Common;
+
+internal static class Logger {
+    public static void Info(string message, Location? location = null) {
+        Diagnostics.Log(message, null);
     }
 }

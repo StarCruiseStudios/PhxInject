@@ -6,46 +6,46 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Templates {
-    using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Common;
+using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Common;
 
-    internal record SpecContainerFactoryInvocationTemplate(
-        List<SpecContainerFactorySingleInvocationTemplate> FactoryInvocationTemplates,
-        string? multiBindQualifiedTypeArgs,
-        string? runtimeFactoryProvidedTypeQualifiedName,
-        Location Location
-    ) : IRenderTemplate {
-        public void Render(IRenderWriter writer) {
-            if (runtimeFactoryProvidedTypeQualifiedName != null) {
-                writer.Append($"new {TypeHelpers.FactoryTypeName}<{runtimeFactoryProvidedTypeQualifiedName}>(() => ");
-            }
+namespace Phx.Inject.Generator.Templates;
 
-            if (FactoryInvocationTemplates.Count == 1) {
-                FactoryInvocationTemplates[0].Render(writer);
-            } else {
-                writer.Append($"{TypeHelpers.InjectionUtilTypeName}.Combine<{multiBindQualifiedTypeArgs}> (");
-                writer.IncreaseIndent(1);
-                writer.AppendLine();
-                var isFirst = true;
-                foreach (var factoryInvocationTemplate in FactoryInvocationTemplates) {
-                    if (!isFirst) {
-                        writer.Append(",");
-                        writer.AppendLine();
-                    }
+internal record SpecContainerFactoryInvocationTemplate(
+    IReadOnlyList<SpecContainerFactorySingleInvocationTemplate> FactoryInvocationTemplates,
+    string? multiBindQualifiedTypeArgs,
+    string? runtimeFactoryProvidedTypeQualifiedName,
+    Location Location
+) : IRenderTemplate {
+    public void Render(IRenderWriter writer) {
+        if (runtimeFactoryProvidedTypeQualifiedName != null) {
+            writer.Append($"new {TypeHelpers.FactoryTypeName}<{runtimeFactoryProvidedTypeQualifiedName}>(() => ");
+        }
 
-                    isFirst = false;
-                    factoryInvocationTemplate.Render(writer);
+        if (FactoryInvocationTemplates.Count == 1) {
+            FactoryInvocationTemplates[0].Render(writer);
+        } else {
+            writer.Append($"{TypeHelpers.InjectionUtilTypeName}.Combine<{multiBindQualifiedTypeArgs}> (");
+            writer.IncreaseIndent(1);
+            writer.AppendLine();
+            var isFirst = true;
+            foreach (var factoryInvocationTemplate in FactoryInvocationTemplates) {
+                if (!isFirst) {
+                    writer.Append(",");
+                    writer.AppendLine();
                 }
 
-                writer.DecreaseIndent(1);
-                writer.AppendLine();
-                writer.Append(")");
+                isFirst = false;
+                factoryInvocationTemplate.Render(writer);
             }
 
-            if (runtimeFactoryProvidedTypeQualifiedName != null) {
-                writer.Append(")");
-            }
+            writer.DecreaseIndent(1);
+            writer.AppendLine();
+            writer.Append(")");
+        }
+
+        if (runtimeFactoryProvidedTypeQualifiedName != null) {
+            writer.Append(")");
         }
     }
 }

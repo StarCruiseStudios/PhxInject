@@ -6,29 +6,29 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Templates {
-    using Phx.Inject.Generator.Definitions;
+using Phx.Inject.Generator.Definitions;
 
-    internal class DependencyImplementationConstructor {
-        private readonly DependencyImplementationTemplate.IBuilder dependencyImplementationTemplateBuilder;
+namespace Phx.Inject.Generator.Templates;
 
-        public DependencyImplementationConstructor(
-            DependencyImplementationTemplate.IBuilder dependencyImplementationTemplateBuilder
-        ) {
-            this.dependencyImplementationTemplateBuilder = dependencyImplementationTemplateBuilder;
-        }
+internal class DependencyImplementationConstructor {
+    private readonly DependencyImplementationTemplate.IBuilder dependencyImplementationTemplateBuilder;
 
-        public DependencyImplementationConstructor() : this(
-            new DependencyImplementationTemplate.Builder()) { }
+    public DependencyImplementationConstructor(
+        DependencyImplementationTemplate.IBuilder dependencyImplementationTemplateBuilder
+    ) {
+        this.dependencyImplementationTemplateBuilder = dependencyImplementationTemplateBuilder;
+    }
 
-        public IRenderTemplate Construct(
-            DependencyImplementationDef dependencyImplementationDef,
-            TemplateGenerationContext context
-        ) {
-            return new GeneratedFileTemplate(
-                dependencyImplementationDef.DependencyImplementationType.NamespaceName,
-                dependencyImplementationTemplateBuilder.Build(dependencyImplementationDef, context),
-                dependencyImplementationDef.Location);
-        }
+    public DependencyImplementationConstructor() : this(
+        new DependencyImplementationTemplate.Builder()) { }
+
+    public IRenderTemplate Construct(
+        DependencyImplementationDef dependencyImplementationDef,
+        TemplateGenerationContext context
+    ) {
+        return new GeneratedFileTemplate(
+            dependencyImplementationDef.DependencyImplementationType.NamespaceName,
+            dependencyImplementationTemplateBuilder.Build(dependencyImplementationDef, context),
+            dependencyImplementationDef.Location);
     }
 }

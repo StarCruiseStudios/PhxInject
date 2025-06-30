@@ -6,11 +6,11 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Definitions {
-    using Phx.Inject.Generator.Descriptors;
+using Phx.Inject.Generator.Descriptors;
 
-    internal record BuilderRegistration(
-        SpecDesc Specification,
-        SpecBuilderDesc BuilderDesc
-    );
-}
+namespace Phx.Inject.Generator.Definitions;
+
+internal record BuilderRegistration(
+    SpecDesc Specification,
+    SpecBuilderDesc BuilderDesc
+);

@@ -6,9 +6,9 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model {
-    internal enum SpecInstantiationMode {
-        Static = 0,
-        Instantiated = 1
-    }
+namespace Phx.Inject.Generator.Model;
+
+internal enum SpecInstantiationMode {
+    Static = 0,
+    Instantiated = 1
 }

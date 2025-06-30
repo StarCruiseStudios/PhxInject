@@ -6,49 +6,49 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Descriptors {
-    using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Common;
-    using Phx.Inject.Generator.Model;
+using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Common;
+using Phx.Inject.Generator.Model;
 
-    internal record ActivatorDesc(
-        QualifiedTypeModel BuiltType,
-        string BuilderMethodName,
-        Location Location
-    ) : IDescriptor {
-        public interface IBuilder {
-            ActivatorDesc? Build(
-                IMethodSymbol builderMethod,
-                DescGenerationContext context
-            );
-        }
-        
-        public class Builder : IBuilder {
-            public ActivatorDesc? Build(
-                IMethodSymbol builderMethod,
-                DescGenerationContext context
-            ) {
-                var builderLocation = builderMethod.Locations.First();
+namespace Phx.Inject.Generator.Descriptors;
 
-                if (!builderMethod.ReturnsVoid) {
-                    // This is a provider, not a builder.
-                    return null;
-                }
+internal record ActivatorDesc(
+    QualifiedTypeModel BuiltType,
+    string BuilderMethodName,
+    Location Location
+) : IDescriptor {
+    public interface IBuilder {
+        ActivatorDesc? Build(
+            IMethodSymbol builderMethod,
+            DescGenerationContext context
+        );
+    }
 
-                if (builderMethod.Parameters.Length != 1) {
-                    throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        $"Injector builder {builderMethod.Name} must have exactly 1 parameter.",
-                        builderLocation);
-                }
+    public class Builder : IBuilder {
+        public ActivatorDesc? Build(
+            IMethodSymbol builderMethod,
+            DescGenerationContext context
+        ) {
+            var builderLocation = builderMethod.Locations.First();
 
-                var builtType = TypeModel.FromTypeSymbol(builderMethod.Parameters[0].Type);
-                var qualifier = MetadataHelpers.GetQualifier(builderMethod);
-                return new ActivatorDesc(
-                    new QualifiedTypeModel(builtType, qualifier),
-                    builderMethod.Name,
+            if (!builderMethod.ReturnsVoid) {
+                // This is a provider, not a builder.
+                return null;
+            }
+
+            if (builderMethod.Parameters.Length != 1) {
+                throw new InjectionException(
+                    Diagnostics.InvalidSpecification,
+                    $"Injector builder {builderMethod.Name} must have exactly 1 parameter.",
                     builderLocation);
             }
+
+            var builtType = TypeModel.FromTypeSymbol(builderMethod.Parameters[0].Type);
+            var qualifier = MetadataHelpers.GetQualifier(builderMethod);
+            return new ActivatorDesc(
+                new QualifiedTypeModel(builtType, qualifier),
+                builderMethod.Name,
+                builderLocation);
         }
     }
 }

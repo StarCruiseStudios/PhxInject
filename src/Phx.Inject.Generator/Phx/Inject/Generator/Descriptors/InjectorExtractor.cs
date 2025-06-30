@@ -6,45 +6,45 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Descriptors {
-    using System.Collections.Immutable;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Phx.Inject.Generator.Common;
+using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Phx.Inject.Generator.Common;
 
-    internal class InjectorExtractor {
-        private readonly InjectorDesc.IBuilder injectorDescBuilder;
+namespace Phx.Inject.Generator.Descriptors;
 
-        public InjectorExtractor(InjectorDesc.IBuilder injectorDescBuilder) {
-            this.injectorDescBuilder = injectorDescBuilder;
+internal class InjectorExtractor {
+    private readonly InjectorDesc.IBuilder injectorDescBuilder;
+
+    public InjectorExtractor(InjectorDesc.IBuilder injectorDescBuilder) {
+        this.injectorDescBuilder = injectorDescBuilder;
+    }
+
+    public InjectorExtractor() : this(new InjectorDesc.Builder()) { }
+
+    public IReadOnlyList<InjectorDesc> Extract(
+        IEnumerable<TypeDeclarationSyntax> syntaxNodes,
+        DescGenerationContext context
+    ) {
+        return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
+            .Where(IsInjectorSymbol)
+            .Select(symbol => injectorDescBuilder.Build(symbol, context))
+            .ToImmutableList();
+    }
+
+    private static bool IsInjectorSymbol(ITypeSymbol symbol) {
+        var injectorAttribute = symbol.GetInjectorAttribute();
+        if (injectorAttribute == null) {
+            return false;
         }
 
-        public InjectorExtractor() : this(new InjectorDesc.Builder()) { }
-
-        public IReadOnlyList<InjectorDesc> Extract(
-            IEnumerable<TypeDeclarationSyntax> syntaxNodes,
-            DescGenerationContext context
-        ) {
-            return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
-                .Where(IsInjectorSymbol)
-                .Select(symbol => injectorDescBuilder.Build(symbol, context))
-                .ToImmutableList();
+        if (symbol.TypeKind != TypeKind.Interface) {
+            throw new InjectionException(
+                Diagnostics.InvalidSpecification,
+                $"Injector type {symbol.Name} must be an interface.",
+                symbol.Locations.First());
         }
 
-        private static bool IsInjectorSymbol(ITypeSymbol symbol) {
-            var injectorAttribute = symbol.GetInjectorAttribute();
-            if (injectorAttribute == null) {
-                return false;
-            }
-
-            if (symbol.TypeKind != TypeKind.Interface) {
-                throw new InjectionException(
-                    Diagnostics.InvalidSpecification,
-                    $"Injector type {symbol.Name} must be an interface.",
-                    symbol.Locations.First());
-            }
-
-            return true;
-        }
+        return true;
     }
 }

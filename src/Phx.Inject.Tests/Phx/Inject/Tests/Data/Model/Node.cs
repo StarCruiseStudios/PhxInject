@@ -6,18 +6,18 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Model {
-    public class Node {
-        public ILeaf Left { get; }
-        public ILeaf Right { get; }
+namespace Phx.Inject.Tests.Data.Model;
 
-        public Node(ILeaf left, ILeaf right) {
-            Left = left;
-            Right = right;
-        }
+public class Node {
+    public ILeaf Left { get; }
+    public ILeaf Right { get; }
 
-        public override string ToString() {
-            return $"Node({Left}, {Right})";
-        }
+    public Node(ILeaf left, ILeaf right) {
+        Left = left;
+        Right = right;
+    }
+
+    public override string ToString() {
+        return $"Node({Left}, {Right})";
     }
 }

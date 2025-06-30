@@ -6,13 +6,13 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Definitions {
-    using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Model;
+using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Model;
 
-    internal record SpecContainerBuilderInvocationDef(
-        TypeModel SpecContainerType,
-        string BuilderMethodName,
-        Location Location
-    ) : IDefinition;
-}
+namespace Phx.Inject.Generator.Definitions;
+
+internal record SpecContainerBuilderInvocationDef(
+    TypeModel SpecContainerType,
+    string BuilderMethodName,
+    Location Location
+) : IDefinition;

@@ -6,12 +6,12 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Model {
-    public class TestGenericObject<T> {
-        public T Value { get; }
-        
-        public TestGenericObject(T value) {
-            Value = value;
-        }
+namespace Phx.Inject.Tests.Data.Model;
+
+public class TestGenericObject<T> {
+    public T Value { get; }
+
+    public TestGenericObject(T value) {
+        Value = value;
     }
 }

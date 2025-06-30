@@ -6,8 +6,8 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Model {
-    [Qualifier]
-    [AttributeUsage(QualifierAttribute.Usage)]
-    internal class QualifierBAttribute : Attribute { }
-}
+namespace Phx.Inject.Tests.Data.Model;
+
+[Qualifier]
+[AttributeUsage(QualifierAttribute.Usage)]
+internal class QualifierBAttribute : Attribute { }

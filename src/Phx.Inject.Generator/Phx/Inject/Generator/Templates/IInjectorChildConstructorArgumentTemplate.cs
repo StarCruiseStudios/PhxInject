@@ -6,6 +6,6 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Templates {
-    internal interface IInjectorChildConstructorArgumentTemplate : IInjectorMemberTemplate { }
-}
+namespace Phx.Inject.Generator.Templates;
+
+internal interface IInjectorChildConstructorArgumentTemplate : IInjectorMemberTemplate { }

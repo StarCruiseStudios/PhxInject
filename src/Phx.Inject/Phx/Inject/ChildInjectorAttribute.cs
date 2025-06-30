@@ -6,8 +6,8 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject {
-    /// <summary> Annotates a method used to retrieve a child injector instance. </summary>
-    [AttributeUsage(AttributeTargets.Method)]
-    public class ChildInjectorAttribute : Attribute { }
-}
+namespace Phx.Inject;
+
+/// <summary> Annotates a method used to retrieve a child injector instance. </summary>
+[AttributeUsage(AttributeTargets.Method)]
+public class ChildInjectorAttribute : Attribute { }

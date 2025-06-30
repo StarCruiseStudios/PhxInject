@@ -6,10 +6,10 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model {
-    internal enum SpecBuilderMemberType {
-        Method,
-        Reference,
-        Direct
-    }
+namespace Phx.Inject.Generator.Model;
+
+internal enum SpecBuilderMemberType {
+    Method,
+    Reference,
+    Direct
 }

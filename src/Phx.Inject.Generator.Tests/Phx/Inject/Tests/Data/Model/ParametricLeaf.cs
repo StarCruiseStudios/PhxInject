@@ -6,19 +6,19 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Model {
-    internal class ParametricLeaf<T> : ILeaf {
-        public T Value { get; }
-        public ParametricLeaf(T value) {
-            Value = value;
-        }
+namespace Phx.Inject.Tests.Data.Model;
 
-        public static ParametricLeaf<T> Construct(T value) {
-            return new ParametricLeaf<T>(value);
-        }
+internal class ParametricLeaf<T> : ILeaf {
+    public T Value { get; }
+    public ParametricLeaf(T value) {
+        Value = value;
+    }
 
-        public override string ToString() {
-            return $"ParametricLeaf({Value})";
-        }
+    public static ParametricLeaf<T> Construct(T value) {
+        return new ParametricLeaf<T>(value);
+    }
+
+    public override string ToString() {
+        return $"ParametricLeaf({Value})";
     }
 }

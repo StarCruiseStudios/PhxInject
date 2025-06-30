@@ -6,42 +6,42 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Inject {
-    using Phx.Inject.Tests.Data.Model;
+using Phx.Inject.Tests.Data.Model;
 
-    [Specification]
-    internal static class GrandchildSpecification {
-        [Factory]
-        internal static Root GetRoot(Node node, Node secondaryNode) {
-            return new Root(node, secondaryNode);
-        }
+namespace Phx.Inject.Tests.Data.Inject;
+
+[Specification]
+internal static class GrandchildSpecification {
+    [Factory]
+    internal static Root GetRoot(Node node, Node secondaryNode) {
+        return new Root(node, secondaryNode);
+    }
+}
+
+[Specification]
+internal static class ChildSpecification {
+    [Factory]
+    internal static Node GetNode(
+        [Label(ParentSpecification.LeftLeaf)] ILeaf left,
+        [Label(ParentSpecification.RightLeaf)] ILeaf right) {
+        return new Node(left, right);
+    }
+}
+
+[Specification]
+internal static class ParentSpecification {
+    public const string LeftLeaf = "Left";
+    public const string RightLeaf = "Right";
+
+    [Label(LeftLeaf)]
+    [Factory]
+    internal static ILeaf GetLeftLeaf() {
+        return new StringLeaf(LeftLeaf);
     }
 
-    [Specification]
-    internal static class ChildSpecification {
-        [Factory]
-        internal static Node GetNode(
-            [Label(ParentSpecification.LeftLeaf)] ILeaf left,
-            [Label(ParentSpecification.RightLeaf)] ILeaf right) {
-            return new Node(left, right);
-        }
-    }
-
-    [Specification]
-    internal static class ParentSpecification {
-        public const string LeftLeaf = "Left";
-        public const string RightLeaf = "Right";
-
-        [Label(LeftLeaf)]
-        [Factory]
-        internal static ILeaf GetLeftLeaf() {
-            return new StringLeaf(LeftLeaf);
-        }
-
-        [Label(RightLeaf)]
-        [Factory]
-        internal static ILeaf GetRightLeaf() {
-            return new StringLeaf(RightLeaf);
-        }
+    [Label(RightLeaf)]
+    [Factory]
+    internal static ILeaf GetRightLeaf() {
+        return new StringLeaf(RightLeaf);
     }
 }

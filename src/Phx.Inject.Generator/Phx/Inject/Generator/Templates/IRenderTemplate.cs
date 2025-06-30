@@ -6,10 +6,10 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Templates {
-    using Phx.Inject.Generator.Model;
+using Phx.Inject.Generator.Model;
 
-    internal interface IRenderTemplate : ISourceCodeElement {
-        void Render(IRenderWriter writer);
-    }
+namespace Phx.Inject.Generator.Templates;
+
+internal interface IRenderTemplate : ISourceCodeElement {
+    void Render(IRenderWriter writer);
 }

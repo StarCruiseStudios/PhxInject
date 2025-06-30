@@ -6,55 +6,54 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Descriptors {
-    using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Common;
-    using Phx.Inject.Generator.Model;
+using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Common;
+using Phx.Inject.Generator.Model;
 
-    internal record InjectorProviderDesc(
-        QualifiedTypeModel ProvidedType,
-        string ProviderMethodName,
-        Location Location
-    ) : IDescriptor {
+namespace Phx.Inject.Generator.Descriptors;
 
-        public interface IBuilder {
-            InjectorProviderDesc? Build(
-                IMethodSymbol providerMethod,
-                DescGenerationContext context
-            );
-        }
-        
-        public class Builder : IBuilder {
-            public InjectorProviderDesc? Build(
-                IMethodSymbol providerMethod,
-                DescGenerationContext context
-            ) {
-                var providerLocation = providerMethod.Locations.First();
+internal record InjectorProviderDesc(
+    QualifiedTypeModel ProvidedType,
+    string ProviderMethodName,
+    Location Location
+) : IDescriptor {
+    public interface IBuilder {
+        InjectorProviderDesc? Build(
+            IMethodSymbol providerMethod,
+            DescGenerationContext context
+        );
+    }
 
-                if (providerMethod.ReturnsVoid) {
-                    // This is a builder, not a provider.
-                    return null;
-                }
+    public class Builder : IBuilder {
+        public InjectorProviderDesc? Build(
+            IMethodSymbol providerMethod,
+            DescGenerationContext context
+        ) {
+            var providerLocation = providerMethod.Locations.First();
 
-                if (providerMethod.GetChildInjectorAttributes().Any()) {
-                    // This is an injector child factory, not a provider.
-                    return null;
-                }
+            if (providerMethod.ReturnsVoid) {
+                // This is a builder, not a provider.
+                return null;
+            }
 
-                if (providerMethod.Parameters.Length > 0) {
-                    throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        $"Injector provider {providerMethod.Name} must not have any parameters.",
-                        providerLocation);
-                }
+            if (providerMethod.GetChildInjectorAttributes().Any()) {
+                // This is an injector child factory, not a provider.
+                return null;
+            }
 
-                var returnType = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
-                var qualifier = MetadataHelpers.GetQualifier(providerMethod);
-                return new InjectorProviderDesc(
-                    new QualifiedTypeModel(returnType, qualifier),
-                    providerMethod.Name,
+            if (providerMethod.Parameters.Length > 0) {
+                throw new InjectionException(
+                    Diagnostics.InvalidSpecification,
+                    $"Injector provider {providerMethod.Name} must not have any parameters.",
                     providerLocation);
             }
+
+            var returnType = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
+            var qualifier = MetadataHelpers.GetQualifier(providerMethod);
+            return new InjectorProviderDesc(
+                new QualifiedTypeModel(returnType, qualifier),
+                providerMethod.Name,
+                providerLocation);
         }
     }
 }

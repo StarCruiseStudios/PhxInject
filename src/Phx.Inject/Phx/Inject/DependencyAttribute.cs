@@ -6,19 +6,17 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject {
-    /// <summary> Defines an dependency that is required by an injector interface. </summary>
-    [AttributeUsage(AttributeTargets.Interface)]
-    public class DependencyAttribute : Attribute {
-        /// <summary> Gets the type of the dependency. </summary>
-        public Type DependencyType { get; }
+namespace Phx.Inject;
 
-        /// <summary>
-        ///     Initialzes a new instance of the <see cref="DependencyAttribute"/> class.
-        /// </summary>
-        /// <param name="dependencyType"> The type of the dependency. </param>
-        public DependencyAttribute(Type dependencyType) {
-            DependencyType = dependencyType;
-        }
+/// <summary> Defines an dependency that is required by an injector interface. </summary>
+[AttributeUsage(AttributeTargets.Interface)]
+public class DependencyAttribute : Attribute {
+    /// <summary> Gets the type of the dependency. </summary>
+    public Type DependencyType { get; }
+
+    /// <summary> Initialzes a new instance of the <see cref="DependencyAttribute"/> class. </summary>
+    /// <param name="dependencyType"> The type of the dependency. </param>
+    public DependencyAttribute(Type dependencyType) {
+        DependencyType = dependencyType;
     }
 }

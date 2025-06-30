@@ -6,12 +6,12 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Model {
-    public class LazyType {
-        public ILeaf Value { get; set; } = null!;
+namespace Phx.Inject.Tests.Data.Model;
 
-        public static void Inject(LazyType target, ILeaf value) {
-            target.Value = value;
-        }
+public class LazyType {
+    public ILeaf Value { get; set; } = null!;
+
+    public static void Inject(LazyType target, ILeaf value) {
+        target.Value = value;
     }
 }

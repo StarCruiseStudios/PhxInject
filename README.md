@@ -2,19 +2,23 @@
 
 Compile time dependency injection for .NET.
 
-Written as a Roslyn Source Generator, PHX.Inject will analyze dependency 
+Written as a Roslyn Source Generator, PHX.Inject will analyze dependency
 specifications defined in your code and generate the source code that performs
 the injection and linking at build time. This results in blazing fast injection
 at runtime, and quick identification of dependency issues at compile time.
 
 ## Set up
+
 PHX.Inject can be installed as a Nuget package using the .NET CLI.
+
 ```shell
 dotnet add package Phx.Inject.Generator
 ```
 
 ## Getting Started
+
 The simplest set up consists of a `Specification` and an `Injector`.
+
 ```csharp
 using Phx.Inject;
 
@@ -36,6 +40,7 @@ public interface ITestInjector {
 
 The dependencies can be retrieved in code by instantiating the generated
 injector.
+
 ```csharp
 ITestInjector injector = new GeneratedTestInjector();
 int myInt = injector.GetInt();
@@ -44,9 +49,8 @@ Verify.That(myInt.IsEqualTo(10));
 ```
 
 Specifications contain Factories and Builders that define how dependencies
-should be linked and constructed. The Injector is the interface used to 
+should be linked and constructed. The Injector is the interface used to
 construct and access those dependencies.
-
 
 The example above will generate a new class `GeneratedTestInjector` that
 implements the `ITestInjector` interface. The `GetInt()` method will be linked
@@ -54,9 +58,11 @@ to the `TestSpecification.GetIntValue()` method based on the return type of the
 methods.
 
 ## Something More Complicated
+
 The power of a Dependency Injection Framework comes from it's ability to define
 a graph of dependencies, one node at a time, and automatically resolve the links
 between each of those nodes.
+
 ```csharp
 using Phx.Inject;
 
@@ -87,8 +93,8 @@ public interface ITestInjector {
 }
 ```
 
-In this example, the `GetMyClass` factory in the specification accepts an 
-argument. This argument will be invoked with the linked int value dependency in 
+In this example, the `GetMyClass` factory in the specification accepts an
+argument. This argument will be invoked with the linked int value dependency in
 the generated injector.
 
 This example also contains a builder. A builder is similar to a factory, except

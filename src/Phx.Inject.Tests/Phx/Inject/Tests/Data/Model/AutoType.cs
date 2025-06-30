@@ -6,58 +6,54 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Model {
+namespace Phx.Inject.Tests.Data.Model;
 
-    public class AutoBuilderType {
-        
-        public AutoBuilderType() {}
-        
-        public int Value { get; private set; }
-        
-        [Builder]
-        public static void Build(AutoBuilderType builder, int value) {
-            builder.Value = value;
-        }
-        
-        [Builder]
-        [Label(nameof(AutoBuilderType))]
-        public static void BuildCustomLabel(AutoBuilderType builder, int value) {
-            builder.Value = value + value;
-        }
-    }
-    
-    public class AutoType {
-        public int Value { get; }
+public class AutoBuilderType {
+    public int Value { get; private set; }
 
-        public AutoTypeWithFabricationMode AutoTypeWithFabricationMode { get; }
-        public AutoType(int value, AutoTypeWithFabricationMode autoTypeWithFabricationMode) {
-            Value = value;
-            AutoTypeWithFabricationMode = autoTypeWithFabricationMode;
-        }
+    [Builder]
+    public static void Build(AutoBuilderType builder, int value) {
+        builder.Value = value;
     }
 
-    [Factory(FabricationMode.Scoped)]
-    public class AutoTypeWithFabricationMode {
-        public int X { get; }
-        
-        public AutoTypeWithFabricationMode(int x) {
-            X = x;
-        }
+    [Builder]
+    [Label(nameof(AutoBuilderType))]
+    public static void BuildCustomLabel(AutoBuilderType builder, int value) {
+        builder.Value = value + value;
     }
+}
 
-    public class OuterType {
-        internal AutoType AutoType { get; }
-        internal AutoTypeWithRequiredProperties AutoTypeWithRequiredProperties { get; }
+public class AutoType {
+    public int Value { get; }
 
-        internal OuterType(AutoType autoType, AutoTypeWithRequiredProperties autoTypeWithRequiredProperties) {
-            AutoType = autoType;
-            AutoTypeWithRequiredProperties = autoTypeWithRequiredProperties;
-        }
+    public AutoTypeWithFabricationMode AutoTypeWithFabricationMode { get; }
+    public AutoType(int value, AutoTypeWithFabricationMode autoTypeWithFabricationMode) {
+        Value = value;
+        AutoTypeWithFabricationMode = autoTypeWithFabricationMode;
     }
+}
 
-    public record class AutoTypeWithRequiredProperties(AutoType autoType) {
-        public AutoType AutoType { get; } = autoType;
-        public required int X { get; init; }
-        public required AutoTypeWithFabricationMode Y { get; init; } 
+[Factory(FabricationMode.Scoped)]
+public class AutoTypeWithFabricationMode {
+    public int X { get; }
+
+    public AutoTypeWithFabricationMode(int x) {
+        X = x;
     }
+}
+
+public class OuterType {
+    internal AutoType AutoType { get; }
+    internal AutoTypeWithRequiredProperties AutoTypeWithRequiredProperties { get; }
+
+    internal OuterType(AutoType autoType, AutoTypeWithRequiredProperties autoTypeWithRequiredProperties) {
+        AutoType = autoType;
+        AutoTypeWithRequiredProperties = autoTypeWithRequiredProperties;
+    }
+}
+
+public record class AutoTypeWithRequiredProperties(AutoType autoType) {
+    public AutoType AutoType { get; } = autoType;
+    public required int X { get; init; }
+    public required AutoTypeWithFabricationMode Y { get; init; }
 }

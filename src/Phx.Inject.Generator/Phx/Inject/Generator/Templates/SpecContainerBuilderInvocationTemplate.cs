@@ -6,19 +6,19 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Templates {
-    using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 
-    internal record SpecContainerBuilderInvocationTemplate(
-        string SpecContainerCollectionReferenceName,
-        string SpecContainerReferenceName,
-        string SpecContainerBuilderMethodName,
-        string BuilderTargetReferenceName,
-        Location Location
-    ) : IRenderTemplate {
-        public void Render(IRenderWriter writer) {
-            writer.Append(
-                $"{SpecContainerCollectionReferenceName}.{SpecContainerReferenceName}.{SpecContainerBuilderMethodName}({BuilderTargetReferenceName}, {SpecContainerCollectionReferenceName})");
-        }
+namespace Phx.Inject.Generator.Templates;
+
+internal record SpecContainerBuilderInvocationTemplate(
+    string SpecContainerCollectionReferenceName,
+    string SpecContainerReferenceName,
+    string SpecContainerBuilderMethodName,
+    string BuilderTargetReferenceName,
+    Location Location
+) : IRenderTemplate {
+    public void Render(IRenderWriter writer) {
+        writer.Append(
+            $"{SpecContainerCollectionReferenceName}.{SpecContainerReferenceName}.{SpecContainerBuilderMethodName}({BuilderTargetReferenceName}, {SpecContainerCollectionReferenceName})");
     }
 }

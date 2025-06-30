@@ -7,19 +7,19 @@
  */
 
 export const versionSet = {
-    name: 'starcruisestudios.phx',
-    version: '0.0.x'
+  name: 'starcruisestudios.phx',
+  version: '0.0.x'
 };
 
 export default {
-    properties: {
-        cobaltVersion: '1.0.x',
-        versionSet: versionSet,
-        multiProject: true,
-    },
-    configure: async (cobalt, context) => {
-        cobalt.config.multiProject = {
-            projectDirs: await context.io.findDirectoriesContaining('.', 'cobalt.manifest.mjs', ['obj', 'build', 'test'])
-        };
-    }
+  properties: {
+    cobaltVersion: '1.0.x',
+    versionSet: versionSet,
+    multiProject: true,
+  },
+  configure: async (cobalt, context) => {
+    cobalt.config.multiProject = {
+      projectDirs: await context.io.findDirectoriesContaining('.', 'cobalt.manifest.mjs', ['obj', 'build', 'test'])
+    };
+  }
 }

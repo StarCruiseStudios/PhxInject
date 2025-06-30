@@ -6,131 +6,131 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests {
-    using NUnit.Framework;
-    using Phx.Inject.Tests.Data.Model;
-    using Phx.Test;
-    using Phx.Validation;
+using NUnit.Framework;
+using Phx.Inject.Tests.Data.Model;
+using Phx.Test;
+using Phx.Validation;
 
-    #region injector
-    
-    [Specification]
-    internal static class RuntimeFactorySpecification {
-        [Factory]
-        internal static ILeaf GetLeaf() {
-            return new IntLeaf(10);
-        }
+namespace Phx.Inject.Tests;
 
-        [Factory]
-        [Label("LabeledLeaf")]
-        internal static ILeaf GetLabeledLeaf() {
-            return new IntLeaf(42);
-        }
+#region injector
 
-        [Factory]
-        internal static LeafFactory GetLeafFactory(Factory<ILeaf> factory) {
-            return new LeafFactory(factory.Create);
-        }
-
-        [Factory]
-        [Label("LabeledLeaf")]
-        internal static LeafFactory GetLabeledLeafFactory([Label("LabeledLeaf")] Factory<ILeaf> factory) {
-            return new LeafFactory(factory.Create);
-        }
-    }
-    
-    [Injector(typeof(RuntimeFactorySpecification))]
-    public interface IRuntimeFactoryInjector {
-        LeafFactory GetLeafFactory();
-        Factory<ILeaf> GetLeafRuntimeFactory();
-
-        [Label("LabeledLeaf")]
-        LeafFactory GetLabeledLeafFactory();
-
-        [Label("LabeledLeaf")]
-        Factory<ILeaf> GetLabeledLeafRuntimeFactory();
+[Specification]
+internal static class RuntimeFactorySpecification {
+    [Factory]
+    internal static ILeaf GetLeaf() {
+        return new IntLeaf(10);
     }
 
-    #endregion injector
+    [Factory]
+    [Label("LabeledLeaf")]
+    internal static ILeaf GetLabeledLeaf() {
+        return new IntLeaf(42);
+    }
 
-    public class RuntimeFactoryTests : LoggingTestClass {
-        [Test]
-        public void RuntimeFactoryIsInjected() {
-            IRuntimeFactoryInjector injector = Given("A test injector.", () => new GeneratedRuntimeFactoryInjector());
+    [Factory]
+    internal static LeafFactory GetLeafFactory(Factory<ILeaf> factory) {
+        return new LeafFactory(factory.Create);
+    }
 
-            var leafFactory = When("Getting a type injected with a runtime factory", () => injector.GetLeafFactory());
+    [Factory]
+    [Label("LabeledLeaf")]
+    internal static LeafFactory GetLabeledLeafFactory([Label("LabeledLeaf")] Factory<ILeaf> factory) {
+        return new LeafFactory(factory.Create);
+    }
+}
 
-            var leaf = Then("The runtime factory can be used to create an instance",
-                () => {
-                    var leaf = leafFactory.CreateLeaf();
-                    Verify.That(leaf.IsNotNull());
-                    return leaf;
-                });
-            Then("The correct value was returned",
-                () => {
-                    Verify.That(leaf.IsType<IntLeaf>());
-                    Verify.That((leaf as IntLeaf)!.Value.IsEqualTo(10));
-                });
-        }
+[Injector(typeof(RuntimeFactorySpecification))]
+public interface IRuntimeFactoryInjector {
+    LeafFactory GetLeafFactory();
+    Factory<ILeaf> GetLeafRuntimeFactory();
 
-        [Test]
-        public void LabeledRuntimeFactoryIsInjected() {
-            IRuntimeFactoryInjector injector = Given("A test injector.", () => new GeneratedRuntimeFactoryInjector());
+    [Label("LabeledLeaf")]
+    LeafFactory GetLabeledLeafFactory();
 
-            var leafFactory = When("Getting a type injected with a runtime factory",
-                () => injector.GetLabeledLeafFactory());
+    [Label("LabeledLeaf")]
+    Factory<ILeaf> GetLabeledLeafRuntimeFactory();
+}
 
-            var leaf = Then("The runtime factory can be used to create an instance",
-                () => {
-                    var leaf = leafFactory.CreateLeaf();
-                    Verify.That(leaf.IsNotNull());
-                    return leaf;
-                });
-            Then("The correct value was returned",
-                () => {
-                    Verify.That(leaf.IsType<IntLeaf>());
-                    Verify.That((leaf as IntLeaf)!.Value.IsEqualTo(42));
-                });
-        }
+#endregion injector
 
-        [Test]
-        public void RuntimeFactoryIsProvidedOnInjector() {
-            IRuntimeFactoryInjector injector = Given("A test injector.", () => new GeneratedRuntimeFactoryInjector());
+public class RuntimeFactoryTests : LoggingTestClass {
+    [Test]
+    public void RuntimeFactoryIsInjected() {
+        IRuntimeFactoryInjector injector = Given("A test injector.", () => new GeneratedRuntimeFactoryInjector());
 
-            var leafFactory = When("Getting a type injected with a runtime factory",
-                () => injector.GetLeafRuntimeFactory());
+        var leafFactory = When("Getting a type injected with a runtime factory", () => injector.GetLeafFactory());
 
-            var leaf = Then("The runtime factory can be used to create an instance",
-                () => {
-                    var leaf = leafFactory.Create();
-                    Verify.That(leaf.IsNotNull());
-                    return leaf;
-                });
-            Then("The correct value was returned",
-                () => {
-                    Verify.That(leaf.IsType<IntLeaf>());
-                    Verify.That((leaf as IntLeaf)!.Value.IsEqualTo(10));
-                });
-        }
+        var leaf = Then("The runtime factory can be used to create an instance",
+            () => {
+                var leaf = leafFactory.CreateLeaf();
+                Verify.That(leaf.IsNotNull());
+                return leaf;
+            });
+        Then("The correct value was returned",
+            () => {
+                Verify.That(leaf.IsType<IntLeaf>());
+                Verify.That((leaf as IntLeaf)!.Value.IsEqualTo(10));
+            });
+    }
 
-        [Test]
-        public void LabeledRuntimeFactoryIsProvidedOnInjector() {
-            IRuntimeFactoryInjector injector = Given("A test injector.", () => new GeneratedRuntimeFactoryInjector());
+    [Test]
+    public void LabeledRuntimeFactoryIsInjected() {
+        IRuntimeFactoryInjector injector = Given("A test injector.", () => new GeneratedRuntimeFactoryInjector());
 
-            var leafFactory = When("Getting a type injected with a runtime factory",
-                () => injector.GetLabeledLeafRuntimeFactory());
+        var leafFactory = When("Getting a type injected with a runtime factory",
+            () => injector.GetLabeledLeafFactory());
 
-            var leaf = Then("The runtime factory can be used to create an instance",
-                () => {
-                    var leaf = leafFactory.Create();
-                    Verify.That(leaf.IsNotNull());
-                    return leaf;
-                });
-            Then("The correct value was returned",
-                () => {
-                    Verify.That(leaf.IsType<IntLeaf>());
-                    Verify.That((leaf as IntLeaf)!.Value.IsEqualTo(42));
-                });
-        }
+        var leaf = Then("The runtime factory can be used to create an instance",
+            () => {
+                var leaf = leafFactory.CreateLeaf();
+                Verify.That(leaf.IsNotNull());
+                return leaf;
+            });
+        Then("The correct value was returned",
+            () => {
+                Verify.That(leaf.IsType<IntLeaf>());
+                Verify.That((leaf as IntLeaf)!.Value.IsEqualTo(42));
+            });
+    }
+
+    [Test]
+    public void RuntimeFactoryIsProvidedOnInjector() {
+        IRuntimeFactoryInjector injector = Given("A test injector.", () => new GeneratedRuntimeFactoryInjector());
+
+        Factory<ILeaf> leafFactory = When("Getting a type injected with a runtime factory",
+            () => injector.GetLeafRuntimeFactory());
+
+        var leaf = Then("The runtime factory can be used to create an instance",
+            () => {
+                var leaf = leafFactory.Create();
+                Verify.That(leaf.IsNotNull());
+                return leaf;
+            });
+        Then("The correct value was returned",
+            () => {
+                Verify.That(leaf.IsType<IntLeaf>());
+                Verify.That((leaf as IntLeaf)!.Value.IsEqualTo(10));
+            });
+    }
+
+    [Test]
+    public void LabeledRuntimeFactoryIsProvidedOnInjector() {
+        IRuntimeFactoryInjector injector = Given("A test injector.", () => new GeneratedRuntimeFactoryInjector());
+
+        Factory<ILeaf> leafFactory = When("Getting a type injected with a runtime factory",
+            () => injector.GetLabeledLeafRuntimeFactory());
+
+        var leaf = Then("The runtime factory can be used to create an instance",
+            () => {
+                var leaf = leafFactory.Create();
+                Verify.That(leaf.IsNotNull());
+                return leaf;
+            });
+        Then("The correct value was returned",
+            () => {
+                Verify.That(leaf.IsType<IntLeaf>());
+                Verify.That((leaf as IntLeaf)!.Value.IsEqualTo(42));
+            });
     }
 }

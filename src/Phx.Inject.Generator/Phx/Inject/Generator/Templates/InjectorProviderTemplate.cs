@@ -6,23 +6,23 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Templates {
-    using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 
-    internal record InjectorProviderTemplate(
-        string ReturnTypeQualifiedName,
-        string MethodName,
-        SpecContainerFactoryInvocationTemplate FactoryInvocationTemplate,
-        Location Location
-    ) : IInjectorMemberTemplate {
-        public void Render(IRenderWriter writer) {
-            writer.AppendLine($"public {ReturnTypeQualifiedName} {MethodName}() {{")
-                .IncreaseIndent(1)
-                .Append("return ");
-            FactoryInvocationTemplate.Render(writer);
-            writer.AppendLine(";")
-                .DecreaseIndent(1)
-                .AppendLine("}");
-        }
+namespace Phx.Inject.Generator.Templates;
+
+internal record InjectorProviderTemplate(
+    string ReturnTypeQualifiedName,
+    string MethodName,
+    SpecContainerFactoryInvocationTemplate FactoryInvocationTemplate,
+    Location Location
+) : IInjectorMemberTemplate {
+    public void Render(IRenderWriter writer) {
+        writer.AppendLine($"public {ReturnTypeQualifiedName} {MethodName}() {{")
+            .IncreaseIndent(1)
+            .Append("return ");
+        FactoryInvocationTemplate.Render(writer);
+        writer.AppendLine(";")
+            .DecreaseIndent(1)
+            .AppendLine("}");
     }
 }

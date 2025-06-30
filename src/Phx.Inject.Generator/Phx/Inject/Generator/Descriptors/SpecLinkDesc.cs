@@ -6,55 +6,55 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Descriptors {
-    using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Common;
-    using Phx.Inject.Generator.Model;
+using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Common;
+using Phx.Inject.Generator.Model;
 
-    internal record SpecLinkDesc(
-        QualifiedTypeModel InputType,
-        QualifiedTypeModel ReturnType,
-        Location Location
-    ) : IDescriptor {
-        public interface IBuilder {
-            SpecLinkDesc Build(
-                AttributeData linkAttribute,
-                Location linkLocation,
-                DescGenerationContext context
-            );
-        }
-        
-        public class Builder : IBuilder {
-            public SpecLinkDesc Build(
-                AttributeData linkAttribute,
-                Location linkLocation,
-                DescGenerationContext context
-            ) {
-                if (linkAttribute.ConstructorArguments.Length != 2) {
-                    throw new InjectionException(
-                        Diagnostics.InternalError,
-                        "Link attribute must have only an input and return type specified.",
-                        linkLocation);
-                }
+namespace Phx.Inject.Generator.Descriptors;
 
-                var inputTypeArgument = linkAttribute.ConstructorArguments[0].Value as ITypeSymbol;
-                var returnTypeArgument = linkAttribute.ConstructorArguments[1].Value as ITypeSymbol;
+internal record SpecLinkDesc(
+    QualifiedTypeModel InputType,
+    QualifiedTypeModel ReturnType,
+    Location Location
+) : IDescriptor {
+    public interface IBuilder {
+        SpecLinkDesc Build(
+            AttributeData linkAttribute,
+            Location linkLocation,
+            DescGenerationContext context
+        );
+    }
 
-                if (inputTypeArgument == null || returnTypeArgument == null) {
-                    throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        "Link attribute must specify non-null types.",
-                        linkLocation);
-                }
-
-                var inputType = TypeModel.FromTypeSymbol(inputTypeArgument);
-                var returnType = TypeModel.FromTypeSymbol(returnTypeArgument);
-
-                return new SpecLinkDesc(
-                    new QualifiedTypeModel(inputType, QualifiedTypeModel.NoQualifier),
-                    new QualifiedTypeModel(returnType, QualifiedTypeModel.NoQualifier),
+    public class Builder : IBuilder {
+        public SpecLinkDesc Build(
+            AttributeData linkAttribute,
+            Location linkLocation,
+            DescGenerationContext context
+        ) {
+            if (linkAttribute.ConstructorArguments.Length != 2) {
+                throw new InjectionException(
+                    Diagnostics.InternalError,
+                    "Link attribute must have only an input and return type specified.",
                     linkLocation);
             }
+
+            var inputTypeArgument = linkAttribute.ConstructorArguments[0].Value as ITypeSymbol;
+            var returnTypeArgument = linkAttribute.ConstructorArguments[1].Value as ITypeSymbol;
+
+            if (inputTypeArgument == null || returnTypeArgument == null) {
+                throw new InjectionException(
+                    Diagnostics.InvalidSpecification,
+                    "Link attribute must specify non-null types.",
+                    linkLocation);
+            }
+
+            var inputType = TypeModel.FromTypeSymbol(inputTypeArgument);
+            var returnType = TypeModel.FromTypeSymbol(returnTypeArgument);
+
+            return new SpecLinkDesc(
+                new QualifiedTypeModel(inputType, QualifiedTypeModel.NoQualifier),
+                new QualifiedTypeModel(returnType, QualifiedTypeModel.NoQualifier),
+                linkLocation);
         }
     }
 }

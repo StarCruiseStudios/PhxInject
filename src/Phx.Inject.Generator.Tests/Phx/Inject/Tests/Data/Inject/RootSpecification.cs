@@ -6,19 +6,19 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Inject {
-    using Phx.Inject.Tests.Data.Model;
+using Phx.Inject.Tests.Data.Model;
 
-    [Specification]
-    internal static class RootSpecification {
-        [Factory(FabricationMode.Scoped)]
-        internal static Root GetRoot(Node node, Node secondaryNode) {
-            return new Root(node, secondaryNode);
-        }
+namespace Phx.Inject.Tests.Data.Inject;
 
-        [Factory]
-        internal static Node GetNode(IntLeaf left, ILeaf right) {
-            return new Node(left, right);
-        }
+[Specification]
+internal static class RootSpecification {
+    [Factory(FabricationMode.Scoped)]
+    internal static Root GetRoot(Node node, Node secondaryNode) {
+        return new Root(node, secondaryNode);
+    }
+
+    [Factory]
+    internal static Node GetNode(IntLeaf left, ILeaf right) {
+        return new Node(left, right);
     }
 }

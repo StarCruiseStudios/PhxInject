@@ -6,80 +6,81 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Templates {
-    using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Common;
-    using Phx.Inject.Generator.Definitions;
+using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Common;
+using Phx.Inject.Generator.Definitions;
 
-    internal record DependencyImplementationTemplate(
-        string DependencyImplementationClassName,
-        string DependencyInterfaceQualifiedName,
-        string InjectorSpecContainerCollectionQualifiedType,
-        string SpecContainerCollectionReferenceName,
-        IEnumerable<DependencyProviderMethodTemplate> DependencyProviderMethods,
-        Location Location
-    ) : IRenderTemplate {
-        public void Render(IRenderWriter writer) {
-            //  internal class DependencyImplementationClassName : DependencyInterfaceQualifiedType {
-            writer.AppendLine(
-                    $"internal class {DependencyImplementationClassName} : {DependencyInterfaceQualifiedName} {{")
-                .IncreaseIndent(1);
+namespace Phx.Inject.Generator.Templates;
 
-            //      private readonly InjectorSpecContainerCollectionQualifiedType specContainers;
-            writer.AppendLine(
-                $"private readonly {InjectorSpecContainerCollectionQualifiedType} {SpecContainerCollectionReferenceName};");
+internal record DependencyImplementationTemplate(
+    string DependencyImplementationClassName,
+    string DependencyInterfaceQualifiedName,
+    string InjectorSpecContainerCollectionQualifiedType,
+    string SpecContainerCollectionReferenceName,
+    IEnumerable<DependencyProviderMethodTemplate> DependencyProviderMethods,
+    Location Location
+) : IRenderTemplate {
+    public void Render(IRenderWriter writer) {
+        //  internal class DependencyImplementationClassName : DependencyInterfaceQualifiedType {
+        writer.AppendLine(
+                $"internal class {DependencyImplementationClassName} : {DependencyInterfaceQualifiedName} {{")
+            .IncreaseIndent(1);
 
-            //      public DependencyImplementationClassName(InjectorSpecContainerCollectionQualifiedType specContainers) {
-            //          this.specContainers = specContainers;
-            //      }
-            writer.AppendBlankLine()
-                .AppendLine(
-                    $"public {DependencyImplementationClassName}({InjectorSpecContainerCollectionQualifiedType} {SpecContainerCollectionReferenceName}) {{")
-                .IncreaseIndent(1)
-                .AppendLine(
-                    $"this.{SpecContainerCollectionReferenceName} = {SpecContainerCollectionReferenceName};")
-                .DecreaseIndent(1)
-                .AppendLine("}");
+        //      private readonly InjectorSpecContainerCollectionQualifiedType specContainers;
+        writer.AppendLine(
+            $"private readonly {InjectorSpecContainerCollectionQualifiedType} {SpecContainerCollectionReferenceName};");
 
-            //      public DependencyType GetDependency() {
-            //          return specContainers.SpecContainerReference.GetDependency(specContainers);
-            //      }
-            foreach (var method in DependencyProviderMethods) {
-                writer.AppendBlankLine();
-                method.Render(writer);
-            }
+        //      public DependencyImplementationClassName(InjectorSpecContainerCollectionQualifiedType specContainers) {
+        //          this.specContainers = specContainers;
+        //      }
+        writer.AppendBlankLine()
+            .AppendLine(
+                $"public {DependencyImplementationClassName}({InjectorSpecContainerCollectionQualifiedType} {SpecContainerCollectionReferenceName}) {{")
+            .IncreaseIndent(1)
+            .AppendLine(
+                $"this.{SpecContainerCollectionReferenceName} = {SpecContainerCollectionReferenceName};")
+            .DecreaseIndent(1)
+            .AppendLine("}");
 
-            //  }
-            writer.DecreaseIndent(1)
-                .AppendLine("}");
+        //      public DependencyType GetDependency() {
+        //          return specContainers.SpecContainerReference.GetDependency(specContainers);
+        //      }
+        foreach (var method in DependencyProviderMethods) {
+            writer.AppendBlankLine();
+            method.Render(writer);
         }
 
-        
-        internal interface IBuilder {
-            DependencyImplementationTemplate Build(
-                DependencyImplementationDef dependencyImplementationDef,
-                TemplateGenerationContext context
-            );
-        }
-        
-        public class Builder : IBuilder {
-            public DependencyImplementationTemplate Build(
-                DependencyImplementationDef dependencyImplementationDef,
-                TemplateGenerationContext context
-            ) {
-                var specContainerCollectionReferenceName = "specContainers";
-                var providerMethods = dependencyImplementationDef.ProviderMethodDefs.Select(
-                    provider => {
-                        var singleInvocationTemplates =
-                            provider.SpecContainerFactoryInvocation.FactoryInvocationDefs.Select(
-                                def => {
+        //  }
+        writer.DecreaseIndent(1)
+            .AppendLine("}");
+    }
+
+    internal interface IBuilder {
+        DependencyImplementationTemplate Build(
+            DependencyImplementationDef dependencyImplementationDef,
+            TemplateGenerationContext context
+        );
+    }
+
+    public class Builder : IBuilder {
+        public DependencyImplementationTemplate Build(
+            DependencyImplementationDef dependencyImplementationDef,
+            TemplateGenerationContext context
+        ) {
+            var specContainerCollectionReferenceName = "specContainers";
+            IReadOnlyList<DependencyProviderMethodTemplate> providerMethods =
+                dependencyImplementationDef.ProviderMethodDefs.Select(provider => {
+                        IReadOnlyList<SpecContainerFactorySingleInvocationTemplate> singleInvocationTemplates =
+                            provider.SpecContainerFactoryInvocation.FactoryInvocationDefs.Select(def => {
                                     return new SpecContainerFactorySingleInvocationTemplate(
                                         specContainerCollectionReferenceName,
                                         def.SpecContainerType.GetPropertyName(),
                                         def.FactoryMethodName,
                                         def.Location
                                     );
-                                }).ToList();
+                                })
+                                .ToImmutableList();
 
                         string? multiBindQualifiedTypeArgs = null;
                         if (provider.SpecContainerFactoryInvocation.FactoryInvocationDefs.Count > 1) {
@@ -99,16 +100,16 @@ namespace Phx.Inject.Generator.Templates {
                             provider.ProviderMethodName,
                             factoryInvocation,
                             provider.Location);
-                    });
+                    })
+                    .ToImmutableList();
 
-                return new DependencyImplementationTemplate(
-                    dependencyImplementationDef.DependencyImplementationType.TypeName,
-                    dependencyImplementationDef.DependencyInterfaceType.QualifiedName,
-                    context.Injector.SpecContainerCollectionType.QualifiedName,
-                    specContainerCollectionReferenceName,
-                    providerMethods,
-                    dependencyImplementationDef.Location);
-            }
+            return new DependencyImplementationTemplate(
+                dependencyImplementationDef.DependencyImplementationType.TypeName,
+                dependencyImplementationDef.DependencyInterfaceType.QualifiedName,
+                context.Injector.SpecContainerCollectionType.QualifiedName,
+                specContainerCollectionReferenceName,
+                providerMethods,
+                dependencyImplementationDef.Location);
         }
     }
 }

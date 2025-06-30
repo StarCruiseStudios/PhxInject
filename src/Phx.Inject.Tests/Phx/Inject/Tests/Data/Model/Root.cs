@@ -6,15 +6,15 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Model {
-    public class Root {
-        public Node Node { get; }
+namespace Phx.Inject.Tests.Data.Model;
 
-        public Node SecondaryNode { get; }
+public class Root {
+    public Node Node { get; }
 
-        public Root(Node node, Node secondaryNode) {
-            Node = node;
-            SecondaryNode = secondaryNode;
-        }
+    public Node SecondaryNode { get; }
+
+    public Root(Node node, Node secondaryNode) {
+        Node = node;
+        SecondaryNode = secondaryNode;
     }
 }

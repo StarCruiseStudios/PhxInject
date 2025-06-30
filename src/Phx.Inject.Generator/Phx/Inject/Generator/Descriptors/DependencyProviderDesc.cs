@@ -6,66 +6,67 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Descriptors {
-    using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Common;
-    using Phx.Inject.Generator.Model;
+using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Common;
+using Phx.Inject.Generator.Model;
 
-    internal record DependencyProviderDesc(
-        QualifiedTypeModel ProvidedType,
-        string ProviderMethodName,
-        bool isPartial,
-        Location Location
-    ) : IDescriptor {
-        public interface IBuilder {
-            DependencyProviderDesc Build(
-                IMethodSymbol providerMethod,
-                DescGenerationContext context
-            );
-        }
-        public class Builder : IBuilder {
-            public DependencyProviderDesc Build(
-                IMethodSymbol providerMethod,
-                DescGenerationContext context
-            ) {
-                var providerLocation = providerMethod.Locations.First();
+namespace Phx.Inject.Generator.Descriptors;
 
-                if (providerMethod.ReturnsVoid) {
-                    throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        $"Dependency provider {providerMethod.Name} must have a return type.",
-                        providerLocation);
-                }
+internal record DependencyProviderDesc(
+    QualifiedTypeModel ProvidedType,
+    string ProviderMethodName,
+    bool isPartial,
+    Location Location
+) : IDescriptor {
+    public interface IBuilder {
+        DependencyProviderDesc Build(
+            IMethodSymbol providerMethod,
+            DescGenerationContext context
+        );
+    }
 
-                if (providerMethod.Parameters.Length > 0) {
-                    throw new InjectionException(
-                        Diagnostics.InvalidSpecification,
-                        $"Dependency provider {providerMethod.Name} must not have any parameters.",
-                        providerLocation);
-                }
+    public class Builder : IBuilder {
+        public DependencyProviderDesc Build(
+            IMethodSymbol providerMethod,
+            DescGenerationContext context
+        ) {
+            var providerLocation = providerMethod.Locations.First();
 
-                var partialAttributes = AttributeHelpers.GetPartialAttributes(providerMethod);
-
-                var qualifier = MetadataHelpers.GetQualifier(providerMethod);
-                var returnTypeModel = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
-                var returnType = new QualifiedTypeModel(
-                    returnTypeModel,
-                    qualifier);
-
-                var isPartial = partialAttributes.Any();
-                TypeHelpers.ValidatePartialType(returnType, isPartial, providerLocation);
-
-                return new DependencyProviderDesc(
-                    returnType,
-                    providerMethod.Name,
-                    isPartial,
+            if (providerMethod.ReturnsVoid) {
+                throw new InjectionException(
+                    Diagnostics.InvalidSpecification,
+                    $"Dependency provider {providerMethod.Name} must have a return type.",
                     providerLocation);
             }
 
-            private static bool GetIsPartial(ISymbol factorySymbol) {
-                var partialAttributes = AttributeHelpers.GetPartialAttributes(factorySymbol);
-                return partialAttributes.Any();
+            if (providerMethod.Parameters.Length > 0) {
+                throw new InjectionException(
+                    Diagnostics.InvalidSpecification,
+                    $"Dependency provider {providerMethod.Name} must not have any parameters.",
+                    providerLocation);
             }
+
+            IReadOnlyList<AttributeData> partialAttributes = providerMethod.GetPartialAttributes();
+
+            var qualifier = MetadataHelpers.GetQualifier(providerMethod);
+            var returnTypeModel = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
+            var returnType = new QualifiedTypeModel(
+                returnTypeModel,
+                qualifier);
+
+            var isPartial = partialAttributes.Any();
+            TypeHelpers.ValidatePartialType(returnType, isPartial, providerLocation);
+
+            return new DependencyProviderDesc(
+                returnType,
+                providerMethod.Name,
+                isPartial,
+                providerLocation);
+        }
+
+        private static bool GetIsPartial(ISymbol factorySymbol) {
+            IReadOnlyList<AttributeData> partialAttributes = factorySymbol.GetPartialAttributes();
+            return partialAttributes.Any();
         }
     }
 }

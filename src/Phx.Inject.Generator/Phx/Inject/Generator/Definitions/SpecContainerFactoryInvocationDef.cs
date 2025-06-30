@@ -6,14 +6,14 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Definitions {
-    using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Model;
+using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Model;
 
-    internal record SpecContainerFactoryInvocationDef(
-        List<SpecContainerFactorySingleInvocationDef> FactoryInvocationDefs,
-        QualifiedTypeModel FactoryReturnType,
-        TypeModel? RuntimeFactoryProvidedType,
-        Location Location
-    ) : IDefinition;
-}
+namespace Phx.Inject.Generator.Definitions;
+
+internal record SpecContainerFactoryInvocationDef(
+    IReadOnlyList<SpecContainerFactorySingleInvocationDef> FactoryInvocationDefs,
+    QualifiedTypeModel FactoryReturnType,
+    TypeModel? RuntimeFactoryProvidedType,
+    Location Location
+) : IDefinition;

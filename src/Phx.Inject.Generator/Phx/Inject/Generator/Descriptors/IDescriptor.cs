@@ -6,8 +6,8 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Descriptors {
-    using Phx.Inject.Generator.Model;
+using Phx.Inject.Generator.Model;
 
-    internal interface IDescriptor : ISourceCodeElement { }
-}
+namespace Phx.Inject.Generator.Descriptors;
+
+internal interface IDescriptor : ISourceCodeElement { }

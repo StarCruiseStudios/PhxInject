@@ -6,27 +6,27 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Render {
-    using System.Text;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.Text;
-    using Phx.Inject.Generator.Templates;
+using System.Text;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
+using Phx.Inject.Generator.Templates;
 
-    internal class TemplateRenderer {
-        private readonly IRenderWriterFactory renderWriterFactory;
+namespace Phx.Inject.Generator.Render;
 
-        public TemplateRenderer(IRenderWriterFactory renderWriterFactory) {
-            this.renderWriterFactory = renderWriterFactory;
-        }
+internal class TemplateRenderer {
+    private readonly IRenderWriterFactory renderWriterFactory;
 
-        public void RenderTemplate(string fileName, IRenderTemplate template, GeneratorExecutionContext context) {
-            var renderWriter = renderWriterFactory.Build();
-            template.Render(renderWriter);
+    public TemplateRenderer(IRenderWriterFactory renderWriterFactory) {
+        this.renderWriterFactory = renderWriterFactory;
+    }
 
-            var classSource = renderWriter.GetRenderedString();
-            var classSourceText = SourceText.From(classSource, Encoding.UTF8);
+    public void RenderTemplate(string fileName, IRenderTemplate template, GeneratorExecutionContext context) {
+        var renderWriter = renderWriterFactory.Build();
+        template.Render(renderWriter);
 
-            context.AddSource(fileName, classSourceText);
-        }
+        var classSource = renderWriter.GetRenderedString();
+        var classSourceText = SourceText.From(classSource, Encoding.UTF8);
+
+        context.AddSource(fileName, classSourceText);
     }
 }

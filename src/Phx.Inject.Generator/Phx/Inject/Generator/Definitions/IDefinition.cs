@@ -6,8 +6,8 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Definitions {
-    using Phx.Inject.Generator.Model;
+using Phx.Inject.Generator.Model;
 
-    internal interface IDefinition : ISourceCodeElement { }
-}
+namespace Phx.Inject.Generator.Definitions;
+
+internal interface IDefinition : ISourceCodeElement { }

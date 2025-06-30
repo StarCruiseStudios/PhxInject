@@ -6,39 +6,39 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject {
-    public static class InjectionUtil {
-        public static List<T> Combine<T>(params List<T>[] lists) {
-            return lists.SelectMany(list => list).ToList();
-        }
+namespace Phx.Inject;
 
-        public static HashSet<T> Combine<T>(params HashSet<T>[] sets) {
-            return sets.Aggregate(new HashSet<T>(),
-                (acc, set) => {
-                    if (acc.Overlaps(set)) {
-                        throw new InvalidOperationException(
-                            $"Injected set values must be unique. Found duplicate values {string.Join(", ", acc.Intersect(set))}");
-                    }
+public static class InjectionUtil {
+    public static List<T> Combine<T>(params List<T>[] lists) {
+        return lists.SelectMany(list => list).ToList();
+    }
 
-                    acc.UnionWith(set);
-                    return acc;
-                });
-        }
-
-        public static Dictionary<K, V> Combine<K, V>(params Dictionary<K, V>[] dicts) {
-            var combinedDictionary = new Dictionary<K, V>();
-            foreach (var dict in dicts) {
-                foreach (var kvp in dict) {
-                    if (combinedDictionary.ContainsKey(kvp.Key)) {
-                        throw new InvalidOperationException(
-                            $"Injected map keys must be unique. Found duplicate key {kvp.Key}.");
-                    }
-
-                    combinedDictionary.Add(kvp.Key, kvp.Value);
+    public static HashSet<T> Combine<T>(params HashSet<T>[] sets) {
+        return sets.Aggregate(new HashSet<T>(),
+            (acc, set) => {
+                if (acc.Overlaps(set)) {
+                    throw new InvalidOperationException(
+                        $"Injected set values must be unique. Found duplicate values {string.Join(", ", acc.Intersect(set))}");
                 }
-            }
 
-            return combinedDictionary;
+                acc.UnionWith(set);
+                return acc;
+            });
+    }
+
+    public static Dictionary<K, V> Combine<K, V>(params Dictionary<K, V>[] dicts) {
+        var combinedDictionary = new Dictionary<K, V>();
+        foreach (Dictionary<K, V> dict in dicts) {
+            foreach (KeyValuePair<K, V> kvp in dict) {
+                if (combinedDictionary.ContainsKey(kvp.Key)) {
+                    throw new InvalidOperationException(
+                        $"Injected map keys must be unique. Found duplicate key {kvp.Key}.");
+                }
+
+                combinedDictionary.Add(kvp.Key, kvp.Value);
+            }
         }
+
+        return combinedDictionary;
     }
 }

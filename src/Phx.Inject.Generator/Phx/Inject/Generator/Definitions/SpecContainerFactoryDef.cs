@@ -6,18 +6,18 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Definitions {
-    using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Model;
+using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Model;
 
-    internal record SpecContainerFactoryDef(
-        QualifiedTypeModel ReturnType,
-        string SpecContainerFactoryMethodName,
-        string SpecFactoryMemberName,
-        SpecFactoryMemberType SpecFactoryMemberType,
-        SpecFactoryMethodFabricationMode FabricationMode,
-        IEnumerable<SpecContainerFactoryInvocationDef> Arguments,
-        IEnumerable<SpecContainerFactoryRequiredPropertyDef> RequiredProperties,
-        Location Location
-    ) : IDefinition;
-}
+namespace Phx.Inject.Generator.Definitions;
+
+internal record SpecContainerFactoryDef(
+    QualifiedTypeModel ReturnType,
+    string SpecContainerFactoryMethodName,
+    string SpecFactoryMemberName,
+    SpecFactoryMemberType SpecFactoryMemberType,
+    SpecFactoryMethodFabricationMode FabricationMode,
+    IEnumerable<SpecContainerFactoryInvocationDef> Arguments,
+    IEnumerable<SpecContainerFactoryRequiredPropertyDef> RequiredProperties,
+    Location Location
+) : IDefinition;

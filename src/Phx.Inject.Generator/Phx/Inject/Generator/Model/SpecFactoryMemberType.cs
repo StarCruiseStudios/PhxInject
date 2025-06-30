@@ -6,11 +6,11 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model {
-    internal enum SpecFactoryMemberType {
-        Method,
-        Property,
-        Reference,
-        Constructor
-    }
+namespace Phx.Inject.Generator.Model;
+
+internal enum SpecFactoryMemberType {
+    Method,
+    Property,
+    Reference,
+    Constructor
 }

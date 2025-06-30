@@ -6,126 +6,127 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests {
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
-    using Phx.Inject.Generator;
-    using Phx.Inject.Generator.Render;
-    using Phx.Inject.Tests.Helpers;
-    using Phx.Test;
-    using Phx.Validation;
+using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+using Phx.Inject.Generator;
+using Phx.Inject.Generator.Render;
+using Phx.Inject.Tests.Helpers;
+using Phx.Test;
+using Phx.Validation;
 
-    public class GeneratorTests : LoggingTestClass {
-        [Test]
-        public void InjectorTypesAreGenerated() {
-            var compilation = CompileCode();
-            var injectorNamespace = ThenTheExpectedNamespaceExists(compilation.GlobalNamespace,
-                "Phx",
-                "Inject",
-                "Tests",
-                "Data",
-                "Inject");
+namespace Phx.Inject.Tests;
 
-            ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "CustomInjector");
-            ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedParentInjector");
-            ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedChildInjector");
-            ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedGrandchildInjector");
-        }
+public class GeneratorTests : LoggingTestClass {
+    [Test]
+    public void InjectorTypesAreGenerated() {
+        var compilation = CompileCode();
+        var injectorNamespace = ThenTheExpectedNamespaceExists(compilation.GlobalNamespace,
+            "Phx",
+            "Inject",
+            "Tests",
+            "Data",
+            "Inject");
 
-        [Test]
-        public void SpecTypesAreGenerated() {
-            var compilation = CompileCode();
-            var specNamespace = ThenTheExpectedNamespaceExists(compilation.GlobalNamespace,
-                "Phx",
-                "Inject",
-                "Tests",
-                "Data",
-                "Inject");
+        ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "CustomInjector");
+        ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedParentInjector");
+        ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedChildInjector");
+        ThenTheNamespaceContainsTheExpectedType(injectorNamespace, "GeneratedGrandchildInjector");
+    }
 
-            ThenTheNamespaceContainsTheExpectedType(specNamespace, "CustomInjector_LazySpecification");
-            ThenTheNamespaceContainsTheExpectedType(specNamespace, "CustomInjector_LeafLinks");
-            ThenTheNamespaceContainsTheExpectedType(specNamespace, "CustomInjector_LeafSpecification");
-            ThenTheNamespaceContainsTheExpectedType(specNamespace, "CustomInjector_RootSpecification");
+    [Test]
+    public void SpecTypesAreGenerated() {
+        var compilation = CompileCode();
+        var specNamespace = ThenTheExpectedNamespaceExists(compilation.GlobalNamespace,
+            "Phx",
+            "Inject",
+            "Tests",
+            "Data",
+            "Inject");
 
-            ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedParentInjector_ParentSpecification");
-            ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedChildInjector_ChildSpecification");
-            ThenTheNamespaceContainsTheExpectedType(specNamespace,
-                "GeneratedGrandchildInjector_GrandchildSpecification");
-        }
+        ThenTheNamespaceContainsTheExpectedType(specNamespace, "CustomInjector_LazySpecification");
+        ThenTheNamespaceContainsTheExpectedType(specNamespace, "CustomInjector_LeafLinks");
+        ThenTheNamespaceContainsTheExpectedType(specNamespace, "CustomInjector_LeafSpecification");
+        ThenTheNamespaceContainsTheExpectedType(specNamespace, "CustomInjector_RootSpecification");
 
-        [Test]
-        public void DependencyTypesAreGenerated() {
-            var compilation = CompileCode();
-            var dataNamespace =
-                ThenTheExpectedNamespaceExists(compilation.GlobalNamespace, "Phx", "Inject", "Tests", "Data");
+        ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedParentInjector_ParentSpecification");
+        ThenTheNamespaceContainsTheExpectedType(specNamespace, "GeneratedChildInjector_ChildSpecification");
+        ThenTheNamespaceContainsTheExpectedType(specNamespace,
+            "GeneratedGrandchildInjector_GrandchildSpecification");
+    }
 
-            var externalNamespace = ThenTheExpectedNamespaceExists(dataNamespace, "Inject");
+    [Test]
+    public void DependencyTypesAreGenerated() {
+        var compilation = CompileCode();
+        var dataNamespace =
+            ThenTheExpectedNamespaceExists(compilation.GlobalNamespace, "Phx", "Inject", "Tests", "Data");
 
-            ThenTheNamespaceContainsTheExpectedType(externalNamespace,
-                "GeneratedParentInjector_IChildDependencies");
-            ThenTheNamespaceContainsTheExpectedType(externalNamespace,
-                "GeneratedChildInjector_IGrandchildDependencies");
+        var externalNamespace = ThenTheExpectedNamespaceExists(dataNamespace, "Inject");
 
-            ThenTheNamespaceContainsTheExpectedType(externalNamespace,
-                "GeneratedChildInjector_IChildDependencies");
-            ThenTheNamespaceContainsTheExpectedType(externalNamespace,
-                "GeneratedGrandchildInjector_IGrandchildDependencies");
-        }
+        ThenTheNamespaceContainsTheExpectedType(externalNamespace,
+            "GeneratedParentInjector_IChildDependencies");
+        ThenTheNamespaceContainsTheExpectedType(externalNamespace,
+            "GeneratedChildInjector_IGrandchildDependencies");
 
-        private Compilation CompileCode() {
-            var renderSettings = new GeneratorSettings();
-            var generator = Given("A source generator.", () => new SourceGenerator(renderSettings));
-            var rootDirectory = Given("A directory with source files.", () => TestFiles.RootDirectory);
+        ThenTheNamespaceContainsTheExpectedType(externalNamespace,
+            "GeneratedChildInjector_IChildDependencies");
+        ThenTheNamespaceContainsTheExpectedType(externalNamespace,
+            "GeneratedGrandchildInjector_IGrandchildDependencies");
+    }
 
-            var compilation = When(
-                "The source is compiled with the generator.",
-                () => TestCompiler.CompileDirectory(rootDirectory, generator));
+    private Compilation CompileCode() {
+        var renderSettings = new GeneratorSettings();
+        var generator = Given("A source generator.", () => new SourceGenerator(renderSettings));
+        var rootDirectory = Given("A directory with source files.", () => TestFiles.RootDirectory);
 
-            var diagnostics = compilation.GetDiagnostics();
-            foreach (Diagnostic diagnostic in diagnostics) {
-                if (diagnostic.Severity >= DiagnosticSeverity.Warning) {
-                    Log(diagnostic.ToString());
-                }
+        var compilation = When(
+            "The source is compiled with the generator.",
+            () => TestCompiler.CompileDirectory(rootDirectory, generator));
+
+        IReadOnlyList<Diagnostic> diagnostics = compilation.GetDiagnostics();
+        foreach (var diagnostic in diagnostics) {
+            if (diagnostic.Severity >= DiagnosticSeverity.Warning) {
+                Log(diagnostic.ToString());
             }
-
-            // Then("No errors were found during compilation.",
-            //     () =>
-            //         Verify.That(diagnostics.Where(it => it.Severity == DiagnosticSeverity.Error).Count().IsEqualTo(0)));
-
-            return compilation;
         }
 
-        private INamespaceSymbol ThenTheExpectedNamespaceExists(INamespaceSymbol root, params string[] ns) {
-            return Then(
-                "The expected namespace exists",
-                string.Join(".", ns),
-                (_) => {
-                    var currentNamespace = root;
-                    foreach (var namespaceName in ns) {
-                        currentNamespace = currentNamespace!.GetMembers(namespaceName)
-                            .First() as INamespaceSymbol;
-                        Verify.That(currentNamespace.IsNotNull(),
-                            $"Could not find namespace member '{namespaceName}'.");
-                    }
+        // Then("No errors were found during compilation.",
+        //     () =>
+        //         Verify.That(diagnostics.Where(it => it.Severity == DiagnosticSeverity.Error).Count().IsEqualTo(0)));
 
-                    return currentNamespace!;
-                });
-        }
+        return compilation;
+    }
 
-        private void ThenTheNamespaceContainsTheExpectedType(
-            INamespaceSymbol namespaceSymbol,
-            string expectedTypeName) {
-            Then(
-                "The namespace contains the expected type.",
-                expectedTypeName,
-                expected => {
-                    var typeSymbol = namespaceSymbol.GetTypeMembers(expected)
-                        .FirstOrDefault();
-                    Verify.That(typeSymbol.IsNotNull());
-                    Verify.That(
-                        typeSymbol!.Locations.Single()
-                            .IsInSource.IsTrue());
-                });
-        }
+    private INamespaceSymbol ThenTheExpectedNamespaceExists(INamespaceSymbol root, params string[] ns) {
+        return Then(
+            "The expected namespace exists",
+            string.Join(".", ns),
+            _ => {
+                var currentNamespace = root;
+                foreach (var namespaceName in ns) {
+                    currentNamespace = currentNamespace!.GetMembers(namespaceName)
+                        .First() as INamespaceSymbol;
+                    Verify.That(currentNamespace.IsNotNull(),
+                        $"Could not find namespace member '{namespaceName}'.");
+                }
+
+                return currentNamespace!;
+            });
+    }
+
+    private void ThenTheNamespaceContainsTheExpectedType(
+        INamespaceSymbol namespaceSymbol,
+        string expectedTypeName) {
+        Then(
+            "The namespace contains the expected type.",
+            expectedTypeName,
+            expected => {
+                var typeSymbol = namespaceSymbol.GetTypeMembers(expected)
+                    .FirstOrDefault();
+                Verify.That(typeSymbol.IsNotNull());
+                Verify.That(
+                    typeSymbol!.Locations.Single()
+                        .IsInSource.IsTrue());
+            });
     }
 }

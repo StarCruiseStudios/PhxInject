@@ -6,31 +6,31 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject {
-    /// <summary> Annotates an injector interface as the entry point to a DAG. </summary>
-    [AttributeUsage(AttributeTargets.Interface)]
-    public class InjectorAttribute : Attribute {
-        /// <summary> The name to use for the generated injector class. </summary>
-        /// <remarks>
-        ///     This value may be null if no custom class name is specified. If no custom name is specified a
-        ///     default value of "GeneratedXyz" will be used, where Xyz is the annotated interface's name with
-        ///     the leading "I" removed, if there is one.
-        /// </remarks>
-        public string? GeneratedClassName { get; }
+namespace Phx.Inject;
 
-        /// <summary> A collection of specification types used by this injector. </summary>
-        public IEnumerable<Type> Specifications { get; }
+/// <summary> Annotates an injector interface as the entry point to a DAG. </summary>
+[AttributeUsage(AttributeTargets.Interface)]
+public class InjectorAttribute : Attribute {
+    /// <summary> The name to use for the generated injector class. </summary>
+    /// <remarks>
+    ///     This value may be null if no custom class name is specified. If no custom name is specified a
+    ///     default value of "GeneratedXyz" will be used, where Xyz is the annotated interface's name with
+    ///     the leading "I" removed, if there is one.
+    /// </remarks>
+    public string? GeneratedClassName { get; }
 
-        /// <summary> Initializes a new instance of the <see cref="InjectorAttribute"/> class. </summary>
-        /// <param name="specifications"> A collection of specification types used by this injector. </param>
-        public InjectorAttribute(params Type[] specifications) : this(generatedClassName: null, specifications) { }
+    /// <summary> A collection of specification types used by this injector. </summary>
+    public IEnumerable<Type> Specifications { get; }
 
-        /// <summary> Initializes a new instance of the <see cref="InjectorAttribute"/> class. </summary>
-        /// <param name="generatedClassName"> The name to use for the generated injector class. </param>
-        /// <param name="specifications"> A collection of specification types used by this injector. </param>
-        public InjectorAttribute(string? generatedClassName, params Type[] specifications) {
-            GeneratedClassName = generatedClassName;
-            Specifications = specifications;
-        }
+    /// <summary> Initializes a new instance of the <see cref="InjectorAttribute"/> class. </summary>
+    /// <param name="specifications"> A collection of specification types used by this injector. </param>
+    public InjectorAttribute(params Type[] specifications) : this(null, specifications) { }
+
+    /// <summary> Initializes a new instance of the <see cref="InjectorAttribute"/> class. </summary>
+    /// <param name="generatedClassName"> The name to use for the generated injector class. </param>
+    /// <param name="specifications"> A collection of specification types used by this injector. </param>
+    public InjectorAttribute(string? generatedClassName, params Type[] specifications) {
+        GeneratedClassName = generatedClassName;
+        Specifications = specifications;
     }
 }

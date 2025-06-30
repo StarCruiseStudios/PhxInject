@@ -6,23 +6,23 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Templates {
-    using Phx.Inject.Generator.Definitions;
+using Phx.Inject.Generator.Definitions;
 
-    internal class InjectorConstructor {
-        private readonly InjectorTemplate.IBuilder injectorTemplateBuilder;
+namespace Phx.Inject.Generator.Templates;
 
-        public InjectorConstructor(InjectorTemplate.IBuilder injectorTemplateBuilder) {
-            this.injectorTemplateBuilder = injectorTemplateBuilder;
-        }
+internal class InjectorConstructor {
+    private readonly InjectorTemplate.IBuilder injectorTemplateBuilder;
 
-        public InjectorConstructor() : this(new InjectorTemplate.Builder()) { }
+    public InjectorConstructor(InjectorTemplate.IBuilder injectorTemplateBuilder) {
+        this.injectorTemplateBuilder = injectorTemplateBuilder;
+    }
 
-        public IRenderTemplate Construct(InjectorDef injectorDef, TemplateGenerationContext context) {
-            return new GeneratedFileTemplate(
-                injectorDef.InjectorType.NamespaceName,
-                injectorTemplateBuilder.Build(injectorDef, context),
-                injectorDef.Location);
-        }
+    public InjectorConstructor() : this(new InjectorTemplate.Builder()) { }
+
+    public IRenderTemplate Construct(InjectorDef injectorDef, TemplateGenerationContext context) {
+        return new GeneratedFileTemplate(
+            injectorDef.InjectorType.NamespaceName,
+            injectorTemplateBuilder.Build(injectorDef, context),
+            injectorDef.Location);
     }
 }

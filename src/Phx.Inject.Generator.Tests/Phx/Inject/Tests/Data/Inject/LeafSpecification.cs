@@ -6,28 +6,28 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Inject {
-    using Phx.Inject.Tests.Data.Model;
+using Phx.Inject.Tests.Data.Model;
 
-    [Specification]
-    internal static class LeafSpecification {
-        [Factory(FabricationMode.Scoped)]
-        internal static IntLeaf GetIntLeaf() {
-            return new IntLeaf(10);
-        }
+namespace Phx.Inject.Tests.Data.Inject;
 
-        [Factory]
-        internal static StringLeaf GetStringLeaf() {
-            return new StringLeaf("Hello");
-        }
-
-        [Factory]
-        internal static ParametricLeaf<int> GetParametricLeaf() {
-            return new ParametricLeaf<int>(15);
-        }
+[Specification]
+internal static class LeafSpecification {
+    [Factory(FabricationMode.Scoped)]
+    internal static IntLeaf GetIntLeaf() {
+        return new IntLeaf(10);
     }
 
-    [Specification]
-    [Link(typeof(StringLeaf), typeof(ILeaf))]
-    internal static class LeafLinks { }
+    [Factory]
+    internal static StringLeaf GetStringLeaf() {
+        return new StringLeaf("Hello");
+    }
+
+    [Factory]
+    internal static ParametricLeaf<int> GetParametricLeaf() {
+        return new ParametricLeaf<int>(15);
+    }
 }
+
+[Specification]
+[Link(typeof(StringLeaf), typeof(ILeaf))]
+internal static class LeafLinks { }

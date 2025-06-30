@@ -6,18 +6,18 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Inject {
-    using Phx.Inject.Tests.Data.Model;
+using Phx.Inject.Tests.Data.Model;
 
-    [Injector(
-        "CustomInjector",
-        typeof(RootSpecification),
-        typeof(LazySpecification),
-        typeof(LeafSpecification),
-        typeof(LeafLinks))]
-    internal interface ITestInjector {
-        public Root GetRoot();
+namespace Phx.Inject.Tests.Data.Inject;
 
-        public void Build(LazyType lazyType);
-    }
+[Injector(
+    "CustomInjector",
+    typeof(RootSpecification),
+    typeof(LazySpecification),
+    typeof(LeafSpecification),
+    typeof(LeafLinks))]
+internal interface ITestInjector {
+    public Root GetRoot();
+
+    public void Build(LazyType lazyType);
 }

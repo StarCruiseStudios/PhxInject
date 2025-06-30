@@ -6,118 +6,118 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests {
-    using NUnit.Framework;
-    using Phx.Inject.Tests.Data.Model;
-    using Phx.Test;
-    using Phx.Validation;
+using NUnit.Framework;
+using Phx.Inject.Tests.Data.Model;
+using Phx.Test;
+using Phx.Validation;
 
-    #region Parent
-    
-    [Specification]
-    internal static class ParentSpecification {
-        public const string LeftLeaf = "Left";
-        public const string RightLeaf = "Right";
+namespace Phx.Inject.Tests;
 
-        [Factory]
-        [Label(LeftLeaf)]
-        internal static ILeaf GetLeftLeaf() {
-            return new StringLeaf(LeftLeaf);
-        }
+#region Parent
 
-        [Factory]
-        [Label(RightLeaf)]
-        internal static ILeaf GetRightLeaf() {
-            return new StringLeaf(RightLeaf);
-        }
-    }
-    
-    [Injector(typeof(ParentSpecification))]
-    internal interface IParentInjector {
-        [ChildInjector]
-        public IChildInjector GetChildInjector();
-    }
-    
-    #endregion Parent
-    
-    #region Child
-    
-    [Specification]
-    internal static class ChildSpecification {
-        [Factory]
-        internal static Node GetNode(
-            [Label(ParentSpecification.LeftLeaf)] ILeaf left,
-            [Label(ParentSpecification.RightLeaf)] ILeaf right) {
-            return new Node(left, right);
-        }
-    }
-    
-    internal interface IChildDependencies {
-        [Label(ParentSpecification.LeftLeaf)]
-        public ILeaf GetLeftLeaf();
+[Specification]
+internal static class ParentSpecification {
+    public const string LeftLeaf = "Left";
+    public const string RightLeaf = "Right";
 
-        [Label(ParentSpecification.RightLeaf)]
-        public ILeaf GetRightLeaf();
-    }
-    
-    [Injector(typeof(ChildSpecification))]
-    [Dependency(typeof(IChildDependencies))]
-    internal interface IChildInjector {
-        [ChildInjector]
-        public IGrandchildInjector GetGrandchildInjector();
-    }
-    
-    #endregion Child
-    
-    #region Grandchild
-    
-    [Specification]
-    internal static class GrandchildSpecification {
-        [Factory]
-        internal static Root GetRoot(Node node, Node secondaryNode) {
-            return new Root(node, secondaryNode);
-        }
+    [Factory]
+    [Label(LeftLeaf)]
+    internal static ILeaf GetLeftLeaf() {
+        return new StringLeaf(LeftLeaf);
     }
 
-    internal interface IGrandchildDependencies {
-        public Node GetNode();
+    [Factory]
+    [Label(RightLeaf)]
+    internal static ILeaf GetRightLeaf() {
+        return new StringLeaf(RightLeaf);
     }
-    
-    [Injector(typeof(GrandchildSpecification))]
-    [Dependency(typeof(IGrandchildDependencies))]
-    internal interface IGrandchildInjector {
-        public Root GetRoot();
+}
+
+[Injector(typeof(ParentSpecification))]
+internal interface IParentInjector {
+    [ChildInjector]
+    public IChildInjector GetChildInjector();
+}
+
+#endregion Parent
+
+#region Child
+
+[Specification]
+internal static class ChildSpecification {
+    [Factory]
+    internal static Node GetNode(
+        [Label(ParentSpecification.LeftLeaf)] ILeaf left,
+        [Label(ParentSpecification.RightLeaf)] ILeaf right) {
+        return new Node(left, right);
     }
-    
-    #endregion Grandchild
-    
-    public class ChildInjectorTests : LoggingTestClass {
-        [Test] public void ChildInjectorsHaveAccessToParentDependencies() {
-            var parentInjector = Given("A parent injector", () => new GeneratedParentInjector());
-            var childInjector = Given("A child injector", () => parentInjector.GetChildInjector());
-            var grandchildInjector = Given("A grandchild injector", () => childInjector.GetGrandchildInjector());
+}
 
-            var root = When(
-                "A factory method is invoked on the grandchild injector.",
-                () => grandchildInjector.GetRoot());
-            
-            var node = Then(
-                "The values from the child are returned",
-                () => {
-                    var node = root.Node;
-                    Verify.That(node.IsNotNull());
-                    return node;
-                });
+internal interface IChildDependencies {
+    [Label(ParentSpecification.LeftLeaf)]
+    public ILeaf GetLeftLeaf();
 
-            Then(
-                "The values from the parent are returned",
-                ParentSpecification.LeftLeaf,
-                (expected) => Verify.That((node.Left as StringLeaf)!.Value.IsEqualTo(expected)));
+    [Label(ParentSpecification.RightLeaf)]
+    public ILeaf GetRightLeaf();
+}
 
-            Then(
-                "The values from the parent are returned",
-                ParentSpecification.RightLeaf,
-                (expected) => Verify.That((node.Right as StringLeaf)!.Value.IsEqualTo(expected)));
-        }
+[Injector(typeof(ChildSpecification))]
+[Dependency(typeof(IChildDependencies))]
+internal interface IChildInjector {
+    [ChildInjector]
+    public IGrandchildInjector GetGrandchildInjector();
+}
+
+#endregion Child
+
+#region Grandchild
+
+[Specification]
+internal static class GrandchildSpecification {
+    [Factory]
+    internal static Root GetRoot(Node node, Node secondaryNode) {
+        return new Root(node, secondaryNode);
+    }
+}
+
+internal interface IGrandchildDependencies {
+    public Node GetNode();
+}
+
+[Injector(typeof(GrandchildSpecification))]
+[Dependency(typeof(IGrandchildDependencies))]
+internal interface IGrandchildInjector {
+    public Root GetRoot();
+}
+
+#endregion Grandchild
+
+public class ChildInjectorTests : LoggingTestClass {
+    [Test] public void ChildInjectorsHaveAccessToParentDependencies() {
+        var parentInjector = Given("A parent injector", () => new GeneratedParentInjector());
+        var childInjector = Given("A child injector", () => parentInjector.GetChildInjector());
+        var grandchildInjector = Given("A grandchild injector", () => childInjector.GetGrandchildInjector());
+
+        var root = When(
+            "A factory method is invoked on the grandchild injector.",
+            () => grandchildInjector.GetRoot());
+
+        var node = Then(
+            "The values from the child are returned",
+            () => {
+                var node = root.Node;
+                Verify.That(node.IsNotNull());
+                return node;
+            });
+
+        Then(
+            "The values from the parent are returned",
+            ParentSpecification.LeftLeaf,
+            expected => Verify.That((node.Left as StringLeaf)!.Value.IsEqualTo(expected)));
+
+        Then(
+            "The values from the parent are returned",
+            ParentSpecification.RightLeaf,
+            expected => Verify.That((node.Right as StringLeaf)!.Value.IsEqualTo(expected)));
     }
 }

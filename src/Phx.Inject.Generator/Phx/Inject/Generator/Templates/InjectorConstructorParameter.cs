@@ -6,9 +6,9 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Templates {
-    internal record InjectorConstructorParameter(
-        string ParameterTypeQualifiedName,
-        string ParameterName
-    );
-}
+namespace Phx.Inject.Generator.Templates;
+
+internal record InjectorConstructorParameter(
+    string ParameterTypeQualifiedName,
+    string ParameterName
+);

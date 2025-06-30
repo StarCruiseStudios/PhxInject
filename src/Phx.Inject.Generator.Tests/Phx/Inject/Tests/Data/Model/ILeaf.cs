@@ -6,6 +6,6 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Model {
-    public interface ILeaf { }
-}
+namespace Phx.Inject.Tests.Data.Model;
+
+public interface ILeaf { }

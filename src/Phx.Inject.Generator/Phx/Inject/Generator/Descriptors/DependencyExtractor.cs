@@ -6,44 +6,44 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Descriptors {
-    using System.Collections.Immutable;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Phx.Inject.Generator.Common;
+using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Phx.Inject.Generator.Common;
 
-    internal class DependencyExtractor {
-        private readonly DependencyDesc.IBuilder dependencyDescBuilder;
+namespace Phx.Inject.Generator.Descriptors;
 
-        public DependencyExtractor(DependencyDesc.IBuilder dependencyDescBuilder) {
-            this.dependencyDescBuilder = dependencyDescBuilder;
+internal class DependencyExtractor {
+    private readonly DependencyDesc.IBuilder dependencyDescBuilder;
+
+    public DependencyExtractor(DependencyDesc.IBuilder dependencyDescBuilder) {
+        this.dependencyDescBuilder = dependencyDescBuilder;
+    }
+
+    public DependencyExtractor() : this(
+        new DependencyDesc.Builder(new DependencyProviderDesc.Builder())) { }
+
+    public IReadOnlyList<DependencyDesc> Extract(
+        IEnumerable<TypeDeclarationSyntax> syntaxNodes,
+        DescGenerationContext context
+    ) {
+        return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
+            .SelectMany(MetadataHelpers.GetDependencyTypes)
+            .GroupBy(typeSymbol => typeSymbol, SymbolEqualityComparer.Default)
+            .Select(group => group.First())
+            .Where(IsDependencySymbol)
+            .Select(type => dependencyDescBuilder.Build(type, context))
+            .ToImmutableList();
+    }
+
+    private static bool IsDependencySymbol(ITypeSymbol symbol) {
+        if (symbol.TypeKind != TypeKind.Interface) {
+            throw new InjectionException(
+                Diagnostics.InvalidSpecification,
+                $"Dependency type {symbol.Name} must be an interface.",
+                symbol.Locations.First());
         }
 
-        public DependencyExtractor() : this(
-            new DependencyDesc.Builder(new DependencyProviderDesc.Builder())) { }
-
-        public IReadOnlyList<DependencyDesc> Extract(
-            IEnumerable<TypeDeclarationSyntax> syntaxNodes,
-            DescGenerationContext context
-        ) {
-            return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
-                .SelectMany(MetadataHelpers.GetDependencyTypes)
-                .GroupBy(typeSymbol => typeSymbol, SymbolEqualityComparer.Default)
-                .Select(group => group.First())
-                .Where(IsDependencySymbol)
-                .Select(type => dependencyDescBuilder.Build(type, context))
-                .ToImmutableList();
-        }
-
-        private static bool IsDependencySymbol(ITypeSymbol symbol) {
-            if (symbol.TypeKind != TypeKind.Interface) {
-                throw new InjectionException(
-                    Diagnostics.InvalidSpecification,
-                    $"Dependency type {symbol.Name} must be an interface.",
-                    symbol.Locations.First());
-            }
-
-            return true;
-        }
+        return true;
     }
 }

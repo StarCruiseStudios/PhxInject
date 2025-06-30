@@ -6,8 +6,8 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Model {
-    public class TestBuilderObject {
-        public int IntValue { get; set; }
-    }
+namespace Phx.Inject.Tests.Data.Model;
+
+public class TestBuilderObject {
+    public int IntValue { get; set; }
 }

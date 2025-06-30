@@ -6,27 +6,27 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Model {
-    internal class AutoType {
-        public ILeaf Value { get; }
+namespace Phx.Inject.Tests.Data.Model;
 
-        public AutoTypeWithFabricationMode AutoTypeWithFabricationMode { get; }
-        public AutoType(ILeaf value, AutoTypeWithFabricationMode autoTypeWithFabricationMode) {
-            Value = value;
-            AutoTypeWithFabricationMode = autoTypeWithFabricationMode;
-        }
+internal class AutoType {
+    public ILeaf Value { get; }
+
+    public AutoTypeWithFabricationMode AutoTypeWithFabricationMode { get; }
+    public AutoType(ILeaf value, AutoTypeWithFabricationMode autoTypeWithFabricationMode) {
+        Value = value;
+        AutoTypeWithFabricationMode = autoTypeWithFabricationMode;
     }
+}
 
-    [Factory(FabricationMode.Scoped)]
-    public class AutoTypeWithFabricationMode {
-        public int X { get; } = 10;
-    }
+[Factory(FabricationMode.Scoped)]
+public class AutoTypeWithFabricationMode {
+    public int X { get; } = 10;
+}
 
-    public class OuterType {
-        internal AutoType AutoType { get; }
+public class OuterType {
+    internal AutoType AutoType { get; }
 
-        internal OuterType(AutoType autoType) {
-            AutoType = autoType;
-        }
+    internal OuterType(AutoType autoType) {
+        AutoType = autoType;
     }
 }

@@ -6,161 +6,161 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests {
-    using NUnit.Framework;
-    using Phx.Inject.Tests.Data.Model;
-    using Phx.Test;
-    using Phx.Validation;
-    
-    #region injector
+using NUnit.Framework;
+using Phx.Inject.Tests.Data.Model;
+using Phx.Test;
+using Phx.Validation;
 
-    [Specification]
-    internal static class ContainerSpecification {
-        private static int currentInt = 0;
+namespace Phx.Inject.Tests;
 
-        [Factory(FabricationMode.ContainerScoped)]
-        internal static int GetInt() {
-            return currentInt++;
-        }
+#region injector
 
-        [Factory(FabricationMode.Scoped)]
-        internal static StringLeaf GetStringLeaf(int value) {
-            return new StringLeaf(value.ToString());
-        }
+[Specification]
+internal static class ContainerSpecification {
+    private static int currentInt;
 
-        [Factory]
-        [Partial]
-        internal static List<IntLeaf> GetIntLeaf1(IntLeaf leaf) {
-            return new List<IntLeaf> {
-                leaf
-            };
-        }
-
-        [Factory]
-        [Partial]
-        internal static List<IntLeaf> GetIntLeaf2(IntLeaf leaf) {
-            return new List<IntLeaf> {
-                leaf
-            };
-        }
-
-        [Factory(FabricationMode.Container)]
-        internal static Node GetNode(List<IntLeaf> leaves) {
-            var left = leaves[0];
-            var right = leaves[1];
-            return new Node(left, right);
-        }
-
-        [Factory(FabricationMode.Container)]
-        [Label("WithScoped")]
-        internal static Node GetNode2(IntLeaf intLeaf, StringLeaf stringLeaf) {
-            return new Node(intLeaf, stringLeaf);
-        }
+    [Factory(FabricationMode.ContainerScoped)]
+    internal static int GetInt() {
+        return currentInt++;
     }
-    
-    [Injector(typeof(ContainerSpecification))]
-    public interface IContainerInjector {
-        Node GetNode();
 
-        [Label("WithScoped")]
-        Node GetNodeWithScoped();
-
-        List<IntLeaf> GetIntLeaves();
-
-        StringLeaf GetStringLeaf();
+    [Factory(FabricationMode.Scoped)]
+    internal static StringLeaf GetStringLeaf(int value) {
+        return new StringLeaf(value.ToString());
     }
-    
-    #endregion injector
 
-    public class ContainerTests : LoggingTestClass {
-        [Test]
-        public void ContainersReuseTypes() {
-            IContainerInjector injector = Given("A test injector.", () => new GeneratedContainerInjector());
+    [Factory]
+    [Partial]
+    internal static List<IntLeaf> GetIntLeaf1(IntLeaf leaf) {
+        return new List<IntLeaf> {
+            leaf
+        };
+    }
 
-            var node = When("Getting a container type", () => injector.GetNode());
+    [Factory]
+    [Partial]
+    internal static List<IntLeaf> GetIntLeaf2(IntLeaf leaf) {
+        return new List<IntLeaf> {
+            leaf
+        };
+    }
 
-            Then("The container reuses the same instance of a type",
-                () => {
-                    Verify.That(node.Left.IsReferenceNotEqualTo(node.Right));
-                    Verify.That((node.Left as IntLeaf)!.Value.IsEqualTo((node.Right as IntLeaf)!.Value));
-                });
-        }
+    [Factory(FabricationMode.Container)]
+    internal static Node GetNode(List<IntLeaf> leaves) {
+        var left = leaves[0];
+        var right = leaves[1];
+        return new Node(left, right);
+    }
 
-        [Test]
-        public void DifferentContainersDontReuseTypes() {
-            IContainerInjector injector = Given("A test injector.", () => new GeneratedContainerInjector());
+    [Factory(FabricationMode.Container)]
+    [Label("WithScoped")]
+    internal static Node GetNode2(IntLeaf intLeaf, StringLeaf stringLeaf) {
+        return new Node(intLeaf, stringLeaf);
+    }
+}
 
-            var node1 = When("Getting a container type", () => injector.GetNode());
-            var node2 = When("Getting another container type", () => injector.GetNode());
+[Injector(typeof(ContainerSpecification))]
+public interface IContainerInjector {
+    Node GetNode();
 
-            Then("The first container reuses the same instance of a type",
-                () => {
-                    Verify.That(node1.Left.IsReferenceNotEqualTo(node1.Right));
-                    Verify.That((node1.Left as IntLeaf)!.Value.IsEqualTo((node1.Right as IntLeaf)!.Value));
-                });
+    [Label("WithScoped")]
+    Node GetNodeWithScoped();
 
-            Then("The second container reuses the same instance of a type",
-                () => {
-                    Verify.That(node2.Left.IsReferenceNotEqualTo(node2.Right));
-                    Verify.That((node2.Left as IntLeaf)!.Value.IsEqualTo((node2.Right as IntLeaf)!.Value));
-                });
+    List<IntLeaf> GetIntLeaves();
 
-            Then("The container have different instances",
-                () => {
-                    Verify.That((node1.Left as IntLeaf)!.Value.IsNotEqualTo((node2.Left as IntLeaf)!.Value));
-                    Verify.That((node1.Right as IntLeaf)!.Value.IsNotEqualTo((node2.Right as IntLeaf)!.Value));
-                });
-        }
+    StringLeaf GetStringLeaf();
+}
 
-        [Test]
-        public void ChildContainersDontReuseTypes() {
-            IContainerInjector injector = Given("A test injector.", () => new GeneratedContainerInjector());
+#endregion injector
 
-            var leafList = When("Getting a container type", () => injector.GetIntLeaves());
-            var node = When("Getting another container type", () => injector.GetNode());
+public class ContainerTests : LoggingTestClass {
+    [Test]
+    public void ContainersReuseTypes() {
+        IContainerInjector injector = Given("A test injector.", () => new GeneratedContainerInjector());
 
-            Then("The first container reuses the same instance of a type",
-                () => {
-                    Verify.That(leafList[0].IsReferenceNotEqualTo(leafList[1]));
-                    Verify.That(leafList[0].Value.IsEqualTo(leafList[1].Value));
-                });
+        var node = When("Getting a container type", () => injector.GetNode());
 
-            Then("The second container reuses the same instance of a type",
-                () => {
-                    Verify.That(node.Left.IsReferenceNotEqualTo(node.Right));
-                    Verify.That((node.Left as IntLeaf)!.Value.IsEqualTo((node.Right as IntLeaf)!.Value));
-                });
+        Then("The container reuses the same instance of a type",
+            () => {
+                Verify.That(node.Left.IsReferenceNotEqualTo(node.Right));
+                Verify.That((node.Left as IntLeaf)!.Value.IsEqualTo((node.Right as IntLeaf)!.Value));
+            });
+    }
 
-            Then("The container have different instances",
-                () => {
-                    Verify.That(leafList[0].Value.IsNotEqualTo((node.Left as IntLeaf)!.Value));
-                    Verify.That(leafList[1].Value.IsNotEqualTo((node.Right as IntLeaf)!.Value));
-                });
-        }
+    [Test]
+    public void DifferentContainersDontReuseTypes() {
+        IContainerInjector injector = Given("A test injector.", () => new GeneratedContainerInjector());
 
-        [Test]
-        public void ChildContainersDoReuseScopedTypes() {
-            IContainerInjector injector = Given("A test injector.", () => new GeneratedContainerInjector());
+        var node1 = When("Getting a container type", () => injector.GetNode());
+        var node2 = When("Getting another container type", () => injector.GetNode());
 
-            var node = When("Getting a container type", () => injector.GetNodeWithScoped());
-            var stringLeaf = When("Getting a scoped type", () => injector.GetStringLeaf());
+        Then("The first container reuses the same instance of a type",
+            () => {
+                Verify.That(node1.Left.IsReferenceNotEqualTo(node1.Right));
+                Verify.That((node1.Left as IntLeaf)!.Value.IsEqualTo((node1.Right as IntLeaf)!.Value));
+            });
 
-            Then("The scoped value was reused",
-                () => { Verify.That(node.Right.IsReferenceEqualTo(stringLeaf)); });
-        }
+        Then("The second container reuses the same instance of a type",
+            () => {
+                Verify.That(node2.Left.IsReferenceNotEqualTo(node2.Right));
+                Verify.That((node2.Left as IntLeaf)!.Value.IsEqualTo((node2.Right as IntLeaf)!.Value));
+            });
 
-        [Test]
-        public void PeerContainersDoReuseScopedTypes() {
-            IContainerInjector injector = Given("A test injector.", () => new GeneratedContainerInjector());
+        Then("The container have different instances",
+            () => {
+                Verify.That((node1.Left as IntLeaf)!.Value.IsNotEqualTo((node2.Left as IntLeaf)!.Value));
+                Verify.That((node1.Right as IntLeaf)!.Value.IsNotEqualTo((node2.Right as IntLeaf)!.Value));
+            });
+    }
 
-            var node1 = When("Getting a container type", () => injector.GetNodeWithScoped());
-            var node2 = When("Getting a container type", () => injector.GetNodeWithScoped());
+    [Test]
+    public void ChildContainersDontReuseTypes() {
+        IContainerInjector injector = Given("A test injector.", () => new GeneratedContainerInjector());
 
-            Then("The scoped value was reused",
-                () => { Verify.That(node1.Right.IsReferenceEqualTo(node2.Right)); });
+        IReadOnlyList<IntLeaf> leafList = When("Getting a container type", () => injector.GetIntLeaves());
+        var node = When("Getting another container type", () => injector.GetNode());
 
-            Then("The unscoped value was not reused",
-                () => { Verify.That((node1.Left as IntLeaf)!.Value.IsNotEqualTo((node2.Left as IntLeaf)!.Value)); });
-        }
+        Then("The first container reuses the same instance of a type",
+            () => {
+                Verify.That(leafList[0].IsReferenceNotEqualTo(leafList[1]));
+                Verify.That(leafList[0].Value.IsEqualTo(leafList[1].Value));
+            });
+
+        Then("The second container reuses the same instance of a type",
+            () => {
+                Verify.That(node.Left.IsReferenceNotEqualTo(node.Right));
+                Verify.That((node.Left as IntLeaf)!.Value.IsEqualTo((node.Right as IntLeaf)!.Value));
+            });
+
+        Then("The container have different instances",
+            () => {
+                Verify.That(leafList[0].Value.IsNotEqualTo((node.Left as IntLeaf)!.Value));
+                Verify.That(leafList[1].Value.IsNotEqualTo((node.Right as IntLeaf)!.Value));
+            });
+    }
+
+    [Test]
+    public void ChildContainersDoReuseScopedTypes() {
+        IContainerInjector injector = Given("A test injector.", () => new GeneratedContainerInjector());
+
+        var node = When("Getting a container type", () => injector.GetNodeWithScoped());
+        var stringLeaf = When("Getting a scoped type", () => injector.GetStringLeaf());
+
+        Then("The scoped value was reused",
+            () => { Verify.That(node.Right.IsReferenceEqualTo(stringLeaf)); });
+    }
+
+    [Test]
+    public void PeerContainersDoReuseScopedTypes() {
+        IContainerInjector injector = Given("A test injector.", () => new GeneratedContainerInjector());
+
+        var node1 = When("Getting a container type", () => injector.GetNodeWithScoped());
+        var node2 = When("Getting a container type", () => injector.GetNodeWithScoped());
+
+        Then("The scoped value was reused",
+            () => { Verify.That(node1.Right.IsReferenceEqualTo(node2.Right)); });
+
+        Then("The unscoped value was not reused",
+            () => { Verify.That((node1.Left as IntLeaf)!.Value.IsNotEqualTo((node2.Left as IntLeaf)!.Value)); });
     }
 }

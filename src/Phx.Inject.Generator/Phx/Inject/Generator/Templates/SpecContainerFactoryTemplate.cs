@@ -6,143 +6,144 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Templates {
-    using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Common;
-    using Phx.Inject.Generator.Model;
+using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Common;
+using Phx.Inject.Generator.Model;
 
-    internal record SpecContainerFactoryTemplate(
-        string ReturnTypeQualifiedName,
-        string SpecContainerFactoryMethodName,
-        string SpecFactoryMemberName,
-        SpecFactoryMemberType SpecFactoryMemberType,
-        string SpecContainerCollectionQualifiedType,
-        string SpecContainerCollectionReferenceName,
-        string? InstanceHolderReference,
-        bool startNewContainer,
-        string? ConstructedSpecificationReference,
-        string SpecificationQualifiedType,
-        IEnumerable<SpecContainerFactoryInvocationTemplate> Arguments,
-        IEnumerable<RequiredPropertyTemplate> RequiredProperties,
-        Location Location
-    ) : ISpecContainerMemberTemplate {
-        public void Render(IRenderWriter writer) {
-            var specContainerCollectionArgName = startNewContainer
-                ? "parentSpecContainer"
-                : SpecContainerCollectionReferenceName;
+namespace Phx.Inject.Generator.Templates;
 
-            writer.AppendLine($"internal {ReturnTypeQualifiedName} {SpecContainerFactoryMethodName}(")
-                .IncreaseIndent(2)
-                .AppendLine($"{SpecContainerCollectionQualifiedType} {specContainerCollectionArgName}")
-                .DecreaseIndent(2)
-                .AppendLine(") {")
-                .IncreaseIndent(1);
+internal record SpecContainerFactoryTemplate(
+    string ReturnTypeQualifiedName,
+    string SpecContainerFactoryMethodName,
+    string SpecFactoryMemberName,
+    SpecFactoryMemberType SpecFactoryMemberType,
+    string SpecContainerCollectionQualifiedType,
+    string SpecContainerCollectionReferenceName,
+    string? InstanceHolderReference,
+    bool startNewContainer,
+    string? ConstructedSpecificationReference,
+    string SpecificationQualifiedType,
+    IEnumerable<SpecContainerFactoryInvocationTemplate> Arguments,
+    IEnumerable<RequiredPropertyTemplate> RequiredProperties,
+    Location Location
+) : ISpecContainerMemberTemplate {
+    public void Render(IRenderWriter writer) {
+        var specContainerCollectionArgName = startNewContainer
+            ? "parentSpecContainer"
+            : SpecContainerCollectionReferenceName;
 
-            if (startNewContainer) {
-                writer.AppendLine(
-                    $"var {SpecContainerCollectionReferenceName} = parentSpecContainer.CreateNewFrame();");
-            }
+        writer.AppendLine($"internal {ReturnTypeQualifiedName} {SpecContainerFactoryMethodName}(")
+            .IncreaseIndent(2)
+            .AppendLine($"{SpecContainerCollectionQualifiedType} {specContainerCollectionArgName}")
+            .DecreaseIndent(2)
+            .AppendLine(") {")
+            .IncreaseIndent(1);
 
-            writer.Append("return ");
-            if (!string.IsNullOrEmpty(InstanceHolderReference)) {
-                writer.Append($"{InstanceHolderReference} ??= ");
-            }
+        if (startNewContainer) {
+            writer.AppendLine(
+                $"var {SpecContainerCollectionReferenceName} = parentSpecContainer.CreateNewFrame();");
+        }
 
-            var referenceName = ConstructedSpecificationReference ?? SpecificationQualifiedType;
-            var numArguments = Arguments.Count();
-            switch (SpecFactoryMemberType) {
-                case SpecFactoryMemberType.Method:
-                case SpecFactoryMemberType.Reference:
-                    writer.Append($"{referenceName}.{SpecFactoryMemberName}");
-                    if (numArguments == 0) {
-                        writer.AppendLine("();");
-                    } else {
-                        writer.AppendLine("(")
-                            .IncreaseIndent(1);
-                        var isFirst = true;
-                        foreach (var argument in Arguments) {
-                            if (!isFirst) {
-                                writer.AppendLine(",");
-                            }
+        writer.Append("return ");
+        if (!string.IsNullOrEmpty(InstanceHolderReference)) {
+            writer.Append($"{InstanceHolderReference} ??= ");
+        }
 
-                            isFirst = false;
-                            argument.Render(writer);
+        var referenceName = ConstructedSpecificationReference ?? SpecificationQualifiedType;
+        var numArguments = Arguments.Count();
+        switch (SpecFactoryMemberType) {
+            case SpecFactoryMemberType.Method:
+            case SpecFactoryMemberType.Reference:
+                writer.Append($"{referenceName}.{SpecFactoryMemberName}");
+                if (numArguments == 0) {
+                    writer.AppendLine("();");
+                } else {
+                    writer.AppendLine("(")
+                        .IncreaseIndent(1);
+                    var isFirst = true;
+                    foreach (var argument in Arguments) {
+                        if (!isFirst) {
+                            writer.AppendLine(",");
                         }
 
-                        writer.AppendLine(");")
-                            .DecreaseIndent(1);
+                        isFirst = false;
+                        argument.Render(writer);
                     }
 
-                    break;
+                    writer.AppendLine(");")
+                        .DecreaseIndent(1);
+                }
 
-                case SpecFactoryMemberType.Constructor:
-                    writer.Append($"new {ReturnTypeQualifiedName}");
-                    var numRequiredProperties = RequiredProperties.Count();
-                    
-                    if (numArguments == 0) {
-                        writer.Append("()");
-                    } else {
-                        writer.AppendLine("(")
-                            .IncreaseIndent(1);
-                        var isFirst = true;
-                        foreach (var argument in Arguments) {
-                            if (!isFirst) {
-                                writer.AppendLine(",");
-                            }
+                break;
 
-                            isFirst = false;
-                            argument.Render(writer);
+            case SpecFactoryMemberType.Constructor:
+                writer.Append($"new {ReturnTypeQualifiedName}");
+                var numRequiredProperties = RequiredProperties.Count();
+
+                if (numArguments == 0) {
+                    writer.Append("()");
+                } else {
+                    writer.AppendLine("(")
+                        .IncreaseIndent(1);
+                    var isFirst = true;
+                    foreach (var argument in Arguments) {
+                        if (!isFirst) {
+                            writer.AppendLine(",");
                         }
 
-                        if (numRequiredProperties > 0) {
-                            writer.DecreaseIndent(1)
-                                .AppendLine()
-                                .Append(")");
-                        } else {
-                            writer.Append(")")
-                                .DecreaseIndent(1);                            
-                        }
+                        isFirst = false;
+                        argument.Render(writer);
                     }
-                    
+
                     if (numRequiredProperties > 0) {
-                        writer.Append(" {")
-                            .IncreaseIndent(1);
-                        var isFirst = true;
-                        foreach (var property in RequiredProperties.OrderBy(p => p.PropertyName)) {
-                            if (isFirst) {
-                                isFirst = false;
-                            } else {
-                                writer.Append(",");
-                            }
-                            
-                            writer.AppendLine();
-                            
-                            writer.Append(property.PropertyName)
-                                .Append(" = ");
-                            property.PropertyValue.Render(writer);
-                        }
                         writer.DecreaseIndent(1)
                             .AppendLine()
-                            .Append("}");
+                            .Append(")");
+                    } else {
+                        writer.Append(")")
+                            .DecreaseIndent(1);
+                    }
+                }
+
+                if (numRequiredProperties > 0) {
+                    writer.Append(" {")
+                        .IncreaseIndent(1);
+                    var isFirst = true;
+                    foreach (var property in RequiredProperties.OrderBy(p => p.PropertyName)) {
+                        if (isFirst) {
+                            isFirst = false;
+                        } else {
+                            writer.Append(",");
+                        }
+
+                        writer.AppendLine();
+
+                        writer.Append(property.PropertyName)
+                            .Append(" = ");
+                        property.PropertyValue.Render(writer);
                     }
 
-                    writer.AppendLine(";");
+                    writer.DecreaseIndent(1)
+                        .AppendLine()
+                        .Append("}");
+                }
 
-                    break;
+                writer.AppendLine(";");
 
-                case SpecFactoryMemberType.Property:
-                    writer.AppendLine($"{referenceName}.{SpecFactoryMemberName};");
-                    break;
+                break;
 
-                default:
-                    throw new InjectionException(
-                        Diagnostics.InternalError,
-                        $"Unhandled Spec Factory Member Type {SpecFactoryMemberType}.",
-                        Location);
-            }
+            case SpecFactoryMemberType.Property:
+                writer.AppendLine($"{referenceName}.{SpecFactoryMemberName};");
+                break;
 
-            writer.DecreaseIndent(1)
-                .AppendLine("}");
+            default:
+                throw new InjectionException(
+                    Diagnostics.InternalError,
+                    $"Unhandled Spec Factory Member Type {SpecFactoryMemberType}.",
+                    Location);
         }
+
+        writer.DecreaseIndent(1)
+            .AppendLine("}");
     }
 }

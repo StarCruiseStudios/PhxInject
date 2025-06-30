@@ -6,59 +6,59 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator {
-    using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Common;
-    using Phx.Inject.Generator.Definitions;
-    using Phx.Inject.Generator.Descriptors;
-    using Phx.Inject.Generator.Render;
-    using Phx.Inject.Generator.Templates;
+using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Common;
+using Phx.Inject.Generator.Definitions;
+using Phx.Inject.Generator.Model;
+using Phx.Inject.Generator.Render;
+using Phx.Inject.Generator.Templates;
 
-    [Generator]
-    internal class SourceGenerator : ISourceGenerator {
-        private readonly GeneratorSettings generatorSettings;
+namespace Phx.Inject.Generator;
 
-        public SourceGenerator() : this(new GeneratorSettings()) { }
+[Generator]
+internal class SourceGenerator : ISourceGenerator {
+    private readonly GeneratorSettings generatorSettings;
 
-        public SourceGenerator(GeneratorSettings generatorSettings) {
-            this.generatorSettings = generatorSettings;
-        }
+    public SourceGenerator() : this(new GeneratorSettings()) { }
 
-        public void Initialize(GeneratorInitializationContext context) {
-            context.RegisterForSyntaxNotifications(() => new SourceSyntaxReceiver());
-        }
+    public SourceGenerator(GeneratorSettings generatorSettings) {
+        this.generatorSettings = generatorSettings;
+    }
 
-        public void Execute(GeneratorExecutionContext context) {
-            Diagnostics.GeneratorExecutionContext = context;
-            try {
-                // Receive: Source code to syntax declarations.
-                var syntaxReceiver = context.SyntaxReceiver as SourceSyntaxReceiver
-                    ?? throw new InjectionException(
-                        Diagnostics.UnexpectedError,
-                        $"Incorrect Syntax Receiver {context.SyntaxReceiver}.",
-                        Location.None);
+    public void Initialize(GeneratorInitializationContext context) {
+        context.RegisterForSyntaxNotifications(() => new SourceSyntaxReceiver());
+    }
 
-                // Extract: Syntax declarations to descriptors.
-                var sourceDesc = new SourceExtractor().Extract(syntaxReceiver, context);
-                
-                // Map: Descriptors to defs.
-                var injectionContextDefs = new SourceDefMapper(generatorSettings)
-                    .MapInjectionContexts(sourceDesc, context);
+    public void Execute(GeneratorExecutionContext context) {
+        Diagnostics.GeneratorExecutionContext = context;
+        try {
+            // Receive: Source code to syntax declarations.
+            var syntaxReceiver = context.SyntaxReceiver as SourceSyntaxReceiver
+                ?? throw new InjectionException(
+                    Diagnostics.UnexpectedError,
+                    $"Incorrect Syntax Receiver {context.SyntaxReceiver}.",
+                    Location.None);
 
-                // Construct: Defs to templates.
-                var templates = new SourceTemplateConstructor().ConstructTemplates(
-                    injectionContextDefs,
-                    context);
+            // Extract: Syntax declarations to descriptors.
+            var sourceDesc = new SourceExtractor().Extract(syntaxReceiver, context);
 
-                // Render: Templates to generated source.
-                new SourceRenderer(generatorSettings).RenderAllTemplates(templates, context);
-            } catch (InjectionException ex) {
-                foreach (var diagnostic in ex.ToDiagnostics()) {
-                    context.ReportDiagnostic(diagnostic);
-                }
-            } catch (Exception ex) {
-                context.ReportDiagnostic(Diagnostics.CreateUnexpectedErrorDiagnostic(ex.ToString()));
+            // Map: Descriptors to defs.
+            IReadOnlyList<InjectionContextDef> injectionContextDefs = new SourceDefMapper(generatorSettings)
+                .MapInjectionContexts(sourceDesc, context);
+
+            // Construct: Defs to templates.
+            IReadOnlyList<(TypeModel, IRenderTemplate)> templates = new SourceTemplateConstructor().ConstructTemplates(
+                injectionContextDefs,
+                context);
+
+            // Render: Templates to generated source.
+            new SourceRenderer(generatorSettings).RenderAllTemplates(templates, context);
+        } catch (InjectionException ex) {
+            foreach (var diagnostic in ex.ToDiagnostics()) {
+                context.ReportDiagnostic(diagnostic);
             }
+        } catch (Exception ex) {
+            context.ReportDiagnostic(Diagnostics.CreateUnexpectedErrorDiagnostic(ex.ToString()));
         }
     }
 }

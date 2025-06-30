@@ -6,14 +6,14 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Definitions {
-    using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Model;
+using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Model;
 
-    internal record DependencyProviderMethodDef(
-        TypeModel ProvidedType,
-        string ProviderMethodName,
-        SpecContainerFactoryInvocationDef SpecContainerFactoryInvocation,
-        Location Location
-    ) : IDefinition;
-}
+namespace Phx.Inject.Generator.Definitions;
+
+internal record DependencyProviderMethodDef(
+    TypeModel ProvidedType,
+    string ProviderMethodName,
+    SpecContainerFactoryInvocationDef SpecContainerFactoryInvocation,
+    Location Location
+) : IDefinition;

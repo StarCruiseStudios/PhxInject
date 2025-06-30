@@ -6,25 +6,25 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Helpers {
-    using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 
-    internal static class TypeSymbolExtractor {
-        public static IEnumerable<TSymbol> Extract<TSyntax, TSymbol>(
-            IEnumerable<TSyntax> syntaxNodes,
-            Compilation compilation
-        )
-            where TSyntax : SyntaxNode
-            where TSymbol : ISymbol {
-            foreach (var syntaxNode in syntaxNodes) {
-                var syntaxTree = syntaxNode.SyntaxTree;
-                var semanticModel = compilation.GetSemanticModel(syntaxTree);
-                if (semanticModel.GetDeclaredSymbol(syntaxNode) is not TSymbol symbol) {
-                    continue;
-                }
+namespace Phx.Inject.Tests.Helpers;
 
-                yield return symbol;
+internal static class TypeSymbolExtractor {
+    public static IEnumerable<TSymbol> Extract<TSyntax, TSymbol>(
+        IEnumerable<TSyntax> syntaxNodes,
+        Compilation compilation
+    )
+        where TSyntax : SyntaxNode
+        where TSymbol : ISymbol {
+        foreach (var syntaxNode in syntaxNodes) {
+            var syntaxTree = syntaxNode.SyntaxTree;
+            var semanticModel = compilation.GetSemanticModel(syntaxTree);
+            if (semanticModel.GetDeclaredSymbol(syntaxNode) is not TSymbol symbol) {
+                continue;
             }
+
+            yield return symbol;
         }
     }
 }

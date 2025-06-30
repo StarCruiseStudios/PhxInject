@@ -6,14 +6,14 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Definitions {
-    using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Model;
+using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Model;
 
-    internal record InjectorChildFactoryDef(
-        TypeModel InjectorChildInterfaceType,
-        string InjectorChildFactoryMethodName,
-        IList<TypeModel> Parameters,
-        Location Location
-    ) : IDefinition;
-}
+namespace Phx.Inject.Generator.Definitions;
+
+internal record InjectorChildFactoryDef(
+    TypeModel InjectorChildInterfaceType,
+    string InjectorChildFactoryMethodName,
+    IReadOnlyList<TypeModel> Parameters,
+    Location Location
+) : IDefinition;

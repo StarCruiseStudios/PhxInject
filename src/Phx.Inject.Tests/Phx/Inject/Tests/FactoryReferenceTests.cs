@@ -6,61 +6,67 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests {
-    using NUnit.Framework;
-    using Phx.Inject.Tests.Data.Model;
-    using Phx.Test;
-    using Phx.Validation;
+using NUnit.Framework;
+using Phx.Inject.Tests.Data.Model;
+using Phx.Test;
+using Phx.Validation;
 
-    #region injector
-    
-    [Specification]
-    [Link(typeof(IntLeaf), typeof(ILeaf))]
-    internal static class FactoryReferenceSpec {
-        [Factory]
-        internal static int IntValue => 10;
+namespace Phx.Inject.Tests;
 
-        [Factory]
-        internal static string StringValue => "stringvalue";
+#region injector
 
-        [FactoryReference(FabricationMode.Scoped)]
-        internal static Func<int, IntLeaf> GetIntLeaf => IntLeaf.Construct;
+[Specification]
+[Link(typeof(IntLeaf), typeof(ILeaf))]
+internal static class FactoryReferenceSpec {
+    [FactoryReference(FabricationMode.Scoped)]
+    internal static readonly Func<string, StringLeaf> GetStringLeaf = StringLeaf.Construct;
 
-        [FactoryReference(FabricationMode.Scoped)]
-        internal static readonly Func<string, StringLeaf> GetStringLeaf = StringLeaf.Construct;
+    [Factory]
+    internal static int IntValue {
+        get => 10;
     }
-    
-    [Injector(
-        typeof(FactoryReferenceSpec)
-    )]
-    internal interface IFactoryReferenceInjector {
-        public IntLeaf GetIntLeaf();
-        public StringLeaf GetStringLeaf();
+
+    [Factory]
+    internal static string StringValue {
+        get => "stringvalue";
     }
-    
-    #endregion injector
-    
-    public class FactoryReferenceTests : LoggingTestClass {
-        [Test]
-        public void AnInjectorFactoryReferencePropertyIsGenerated() {
-            IFactoryReferenceInjector injector = Given("A test injector.",
-                () => new GeneratedFactoryReferenceInjector());
 
-            var result = When("An injector method using a factory reference property is invoked.",
-                () => injector.GetIntLeaf());
+    [FactoryReference(FabricationMode.Scoped)]
+    internal static Func<int, IntLeaf> GetIntLeaf {
+        get => IntLeaf.Construct;
+    }
+}
 
-            Then("A valid value is constructed.", () => Verify.That(result.IsNotNull()));
-        }
+[Injector(
+    typeof(FactoryReferenceSpec)
+)]
+internal interface IFactoryReferenceInjector {
+    public IntLeaf GetIntLeaf();
+    public StringLeaf GetStringLeaf();
+}
 
-        [Test]
-        public void AnInjectorFactoryReferenceFieldIsGenerated() {
-            IFactoryReferenceInjector injector = Given("A test injector.",
-                () => new GeneratedFactoryReferenceInjector());
+#endregion injector
 
-            var result = When("An injector method using a factory reference field is invoked.",
-                () => injector.GetStringLeaf());
+public class FactoryReferenceTests : LoggingTestClass {
+    [Test]
+    public void AnInjectorFactoryReferencePropertyIsGenerated() {
+        IFactoryReferenceInjector injector = Given("A test injector.",
+            () => new GeneratedFactoryReferenceInjector());
 
-            Then("A valid value is constructed.", () => Verify.That(result.IsNotNull()));
-        }
+        var result = When("An injector method using a factory reference property is invoked.",
+            () => injector.GetIntLeaf());
+
+        Then("A valid value is constructed.", () => Verify.That(result.IsNotNull()));
+    }
+
+    [Test]
+    public void AnInjectorFactoryReferenceFieldIsGenerated() {
+        IFactoryReferenceInjector injector = Given("A test injector.",
+            () => new GeneratedFactoryReferenceInjector());
+
+        var result = When("An injector method using a factory reference field is invoked.",
+            () => injector.GetStringLeaf());
+
+        Then("A valid value is constructed.", () => Verify.That(result.IsNotNull()));
     }
 }

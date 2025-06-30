@@ -6,35 +6,35 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests {
-    using NUnit.Framework;
-    using Phx.Inject.Tests.Data;
-    using Phx.Test;
-    using Phx.Validation;
+using NUnit.Framework;
+using Phx.Inject.Tests.Data;
+using Phx.Test;
+using Phx.Validation;
 
-    [Injector(typeof(CommonTestValueSpecification))]
-    public interface IDefaultNamedInjector {
-        int GetInt();
-    }
-    
-    [Injector(
-        generatedClassName: "CustomNamedInjector",
-        typeof(CommonTestValueSpecification))]
-    public interface ICustomNamedInjector {
-        int GetInt();
+namespace Phx.Inject.Tests;
+
+[Injector(typeof(CommonTestValueSpecification))]
+public interface IDefaultNamedInjector {
+    int GetInt();
+}
+
+[Injector(
+    "CustomNamedInjector",
+    typeof(CommonTestValueSpecification))]
+public interface ICustomNamedInjector {
+    int GetInt();
+}
+
+public class InjectorNamingTests : LoggingTestClass {
+    [Test]
+    public void DefaultInjectorNameIsUsed() {
+        var injector = When("Creating a default named injector", () => new GeneratedDefaultNamedInjector());
+        Then("The injector was created", () => Verify.That(injector.IsNotNull()));
     }
 
-    public class InjectorNamingTests : LoggingTestClass {
-        [Test]
-        public void DefaultInjectorNameIsUsed() {
-            var injector = When("Creating a default named injector", () => new GeneratedDefaultNamedInjector());
-            Then("The injector was created", () => Verify.That(injector.IsNotNull()));
-        }
-        
-        [Test]
-        public void CustomInjectorNameIsUsed() {
-            var injector = When("Creating a custom named injector", () => new CustomNamedInjector());
-            Then("The injector was created", () => Verify.That(injector.IsNotNull()));
-        }
+    [Test]
+    public void CustomInjectorNameIsUsed() {
+        var injector = When("Creating a custom named injector", () => new CustomNamedInjector());
+        Then("The injector was created", () => Verify.That(injector.IsNotNull()));
     }
 }

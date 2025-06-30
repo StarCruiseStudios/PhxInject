@@ -6,15 +6,15 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Definitions {
-    using Phx.Inject.Generator.Model;
+using Phx.Inject.Generator.Model;
 
-    internal record RegistrationIdentifier(
-        TypeModel RegistrationType,
-        string Qualifier
-    ) {
-        public static RegistrationIdentifier FromQualifiedTypeModel(QualifiedTypeModel type) {
-            return new RegistrationIdentifier(type.TypeModel, type.Qualifier);
-        }
+namespace Phx.Inject.Generator.Definitions;
+
+internal record RegistrationIdentifier(
+    TypeModel RegistrationType,
+    string Qualifier
+) {
+    public static RegistrationIdentifier FromQualifiedTypeModel(QualifiedTypeModel type) {
+        return new RegistrationIdentifier(type.TypeModel, type.Qualifier);
     }
 }

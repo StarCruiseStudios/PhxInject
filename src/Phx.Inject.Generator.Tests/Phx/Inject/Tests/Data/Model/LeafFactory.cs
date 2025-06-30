@@ -6,15 +6,15 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Model {
-    public class LeafFactory {
-        private readonly Func<ILeaf> leafFactory;
-        public LeafFactory(Func<ILeaf> leafFactory) {
-            this.leafFactory = leafFactory;
-        }
+namespace Phx.Inject.Tests.Data.Model;
 
-        public ILeaf CreateLeaf() {
-            return leafFactory();
-        }
+public class LeafFactory {
+    private readonly Func<ILeaf> leafFactory;
+    public LeafFactory(Func<ILeaf> leafFactory) {
+        this.leafFactory = leafFactory;
+    }
+
+    public ILeaf CreateLeaf() {
+        return leafFactory();
     }
 }

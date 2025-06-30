@@ -6,18 +6,18 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Inject {
-    using Phx.Inject.Tests.Data.Model;
+using Phx.Inject.Tests.Data.Model;
 
-    internal interface IChildDependencies {
-        [Label(ParentSpecification.LeftLeaf)]
-        public ILeaf GetLeftLeaf();
+namespace Phx.Inject.Tests.Data.Inject;
 
-        [Label(ParentSpecification.RightLeaf)]
-        public ILeaf GetRightLeaf();
-    }
+internal interface IChildDependencies {
+    [Label(ParentSpecification.LeftLeaf)]
+    public ILeaf GetLeftLeaf();
 
-    internal interface IGrandchildDependencies {
-        public Node GetNode();
-    }
+    [Label(ParentSpecification.RightLeaf)]
+    public ILeaf GetRightLeaf();
+}
+
+internal interface IGrandchildDependencies {
+    public Node GetNode();
 }

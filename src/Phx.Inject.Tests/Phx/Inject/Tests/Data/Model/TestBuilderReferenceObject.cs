@@ -6,12 +6,12 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Model {
-    public class TestBuilderReferenceObject {
-        public int Value { get; set; }
+namespace Phx.Inject.Tests.Data.Model;
 
-        public static void Inject(TestBuilderReferenceObject target, int value) {
-            target.Value = value;
-        }
+public class TestBuilderReferenceObject {
+    public int Value { get; set; }
+
+    public static void Inject(TestBuilderReferenceObject target, int value) {
+        target.Value = value;
     }
 }

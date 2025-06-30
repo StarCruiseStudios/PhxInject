@@ -6,14 +6,14 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Definitions {
-    using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Model;
+using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Model;
 
-    internal record ActivatorDef(
-        QualifiedTypeModel BuiltType,
-        string ActivatorMethodName,
-        SpecContainerBuilderInvocationDef SpecContainerBuilderInvocation,
-        Location Location
-    ) : IDefinition;
-}
+namespace Phx.Inject.Generator.Definitions;
+
+internal record ActivatorDef(
+    QualifiedTypeModel BuiltType,
+    string ActivatorMethodName,
+    SpecContainerBuilderInvocationDef SpecContainerBuilderInvocation,
+    Location Location
+) : IDefinition;

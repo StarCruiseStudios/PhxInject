@@ -6,51 +6,49 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Templates {
-    using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Common;
-    using Phx.Inject.Generator.Model;
+using Microsoft.CodeAnalysis;
 
-    internal record SpecContainerBuilderTemplate(
-        string BuiltTypeQualifiedName,
-        string SpecContainerBuilderMethodName,
-        string SpecBuilderMemberName,
-        string BuiltInstanceReferenceName,
-        string SpecContainerCollectionQualifiedType,
-        string SpecContainerCollectionReferenceName,
-        string SpecificationQualifiedType,
-        IEnumerable<SpecContainerFactoryInvocationTemplate> Arguments,
-        Location Location
-    ) : ISpecContainerMemberTemplate {
-        public void Render(IRenderWriter writer) {
-            writer.AppendLine($"internal void {SpecContainerBuilderMethodName}(")
-                .IncreaseIndent(2)
-                .AppendLine(
-                    $"{BuiltTypeQualifiedName} {BuiltInstanceReferenceName},")
-                .AppendLine(
-                    $"{SpecContainerCollectionQualifiedType} {SpecContainerCollectionReferenceName}")
-                .DecreaseIndent(2)
-                .AppendLine(") {")
-                .IncreaseIndent(1);
+namespace Phx.Inject.Generator.Templates;
 
-            var referenceName = SpecificationQualifiedType;
-            writer.AppendLine($"{referenceName}.{SpecBuilderMemberName}(")
-                .IncreaseIndent(1)
-                .Append($"{BuiltInstanceReferenceName}");
+internal record SpecContainerBuilderTemplate(
+    string BuiltTypeQualifiedName,
+    string SpecContainerBuilderMethodName,
+    string SpecBuilderMemberName,
+    string BuiltInstanceReferenceName,
+    string SpecContainerCollectionQualifiedType,
+    string SpecContainerCollectionReferenceName,
+    string SpecificationQualifiedType,
+    IEnumerable<SpecContainerFactoryInvocationTemplate> Arguments,
+    Location Location
+) : ISpecContainerMemberTemplate {
+    public void Render(IRenderWriter writer) {
+        writer.AppendLine($"internal void {SpecContainerBuilderMethodName}(")
+            .IncreaseIndent(2)
+            .AppendLine(
+                $"{BuiltTypeQualifiedName} {BuiltInstanceReferenceName},")
+            .AppendLine(
+                $"{SpecContainerCollectionQualifiedType} {SpecContainerCollectionReferenceName}")
+            .DecreaseIndent(2)
+            .AppendLine(") {")
+            .IncreaseIndent(1);
 
-            var numArguments = Arguments.Count();
-            if (numArguments > 0) {
-                foreach (var argument in Arguments) {
-                    writer.AppendLine(",");
-                    argument.Render(writer);
-                }
+        var referenceName = SpecificationQualifiedType;
+        writer.AppendLine($"{referenceName}.{SpecBuilderMemberName}(")
+            .IncreaseIndent(1)
+            .Append($"{BuiltInstanceReferenceName}");
+
+        var numArguments = Arguments.Count();
+        if (numArguments > 0) {
+            foreach (var argument in Arguments) {
+                writer.AppendLine(",");
+                argument.Render(writer);
             }
-
-            writer.AppendLine(");")
-                .DecreaseIndent(1);
-
-            writer.DecreaseIndent(1)
-                .AppendLine("}");
         }
+
+        writer.AppendLine(");")
+            .DecreaseIndent(1);
+
+        writer.DecreaseIndent(1)
+            .AppendLine("}");
     }
 }

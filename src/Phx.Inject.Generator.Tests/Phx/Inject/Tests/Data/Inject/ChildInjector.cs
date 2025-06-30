@@ -6,25 +6,25 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests.Data.Inject {
-    using Phx.Inject.Tests.Data.Model;
+using Phx.Inject.Tests.Data.Model;
 
-    [Injector(typeof(ParentSpecification))]
-    internal interface IParentInjector {
-        [ChildInjector]
-        public IChildInjector GetChildInjector();
-    }
+namespace Phx.Inject.Tests.Data.Inject;
 
-    [Injector(typeof(ChildSpecification))]
-    [Dependency(typeof(IChildDependencies))]
-    internal interface IChildInjector {
-        [ChildInjector]
-        public IGrandchildInjector GetGrandchildInjector();
-    }
+[Injector(typeof(ParentSpecification))]
+internal interface IParentInjector {
+    [ChildInjector]
+    public IChildInjector GetChildInjector();
+}
 
-    [Injector(typeof(GrandchildSpecification))]
-    [Dependency(typeof(IGrandchildDependencies))]
-    internal interface IGrandchildInjector {
-        public Root GetRoot();
-    }
+[Injector(typeof(ChildSpecification))]
+[Dependency(typeof(IChildDependencies))]
+internal interface IChildInjector {
+    [ChildInjector]
+    public IGrandchildInjector GetGrandchildInjector();
+}
+
+[Injector(typeof(GrandchildSpecification))]
+[Dependency(typeof(IGrandchildDependencies))]
+internal interface IGrandchildInjector {
+    public Root GetRoot();
 }

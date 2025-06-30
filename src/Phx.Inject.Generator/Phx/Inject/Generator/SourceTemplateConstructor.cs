@@ -21,18 +21,18 @@ internal class SourceTemplateConstructor {
         GeneratorExecutionContext context
     ) {
         try {
-            var injectorDefs = injectionContextDefs
+            IReadOnlyList<InjectorDef> injectorDefs = injectionContextDefs
                 .Select(injectionContextDef => injectionContextDef.Injector)
                 .ToImmutableList();
-            var injectorDefMap = CreateTypeMap(
+            IReadOnlyDictionary<TypeModel, InjectorDef> injectorDefMap = CreateTypeMap(
                 injectorDefs,
                 injector => injector.InjectorInterfaceType);
 
             return injectionContextDefs.SelectMany(injectionContextDef => {
-                    var specDefMap = CreateTypeMap(
+                    IReadOnlyDictionary<TypeModel, SpecContainerDef> specDefMap = CreateTypeMap(
                         injectionContextDef.SpecContainers,
                         spec => spec.SpecificationType);
-                    var dependencyDefMap = CreateTypeMap(
+                    IReadOnlyDictionary<TypeModel, DependencyImplementationDef> dependencyDefMap = CreateTypeMap(
                         injectionContextDef.DependencyImplementations,
                         dep => dep.DependencyInterfaceType);
 
@@ -86,13 +86,13 @@ internal class SourceTemplateConstructor {
                 })
                 .ToImmutableList();
         } catch (Exception e) {
-            var diagnosticData = (e is InjectionException ie)
+            var diagnosticData = e is InjectionException ie
                 ? ie.DiagnosticData
                 : Diagnostics.UnexpectedError;
-            
+
             throw new InjectionException(
                 diagnosticData,
-                $"An error occurred while constructing source templates.",
+                "An error occurred while constructing source templates.",
                 Location.None,
                 e);
         }

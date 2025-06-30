@@ -6,46 +6,46 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Templates {
-    using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 
-    internal record InjectorChildFactoryTemplate(
-        string ChildInterfaceTypeQualifiedName,
-        string MethodName,
-        string ChildTypeQualifiedName,
-        IEnumerable<InjectorConstructorParameter> ConstructorParameters,
-        IEnumerable<IInjectorChildConstructorArgumentTemplate> ChildConstructorArguments,
-        Location Location
-    ) : IInjectorMemberTemplate {
-        public void Render(IRenderWriter writer) {
-            writer.Append($"public {ChildInterfaceTypeQualifiedName} {MethodName}(");
+namespace Phx.Inject.Generator.Templates;
 
-            if (ConstructorParameters.Any()) {
-                using (var collectionWriter = writer.GetCollectionWriter(CollectionWriterProperties.Default)) {
-                    foreach (var parameter in ConstructorParameters) {
-                        var elementWriter = collectionWriter.GetElementWriter();
-                        elementWriter.Append($"{parameter.ParameterTypeQualifiedName} {parameter.ParameterName}");
-                    }
-                }
-            }
+internal record InjectorChildFactoryTemplate(
+    string ChildInterfaceTypeQualifiedName,
+    string MethodName,
+    string ChildTypeQualifiedName,
+    IEnumerable<InjectorConstructorParameter> ConstructorParameters,
+    IEnumerable<IInjectorChildConstructorArgumentTemplate> ChildConstructorArguments,
+    Location Location
+) : IInjectorMemberTemplate {
+    public void Render(IRenderWriter writer) {
+        writer.Append($"public {ChildInterfaceTypeQualifiedName} {MethodName}(");
 
-            writer.AppendLine(") {")
-                .IncreaseIndent(1);
-
-            using (var collectionWriter = writer.GetCollectionWriter(
-                new CollectionWriterProperties(
-                    OpeningString: $"return new {ChildTypeQualifiedName}(",
-                    ClosingString: ");",
-                    CloseWithNewline: false))) {
-                foreach (var arg in ChildConstructorArguments) {
+        if (ConstructorParameters.Any()) {
+            using (var collectionWriter = writer.GetCollectionWriter(CollectionWriterProperties.Default)) {
+                foreach (var parameter in ConstructorParameters) {
                     var elementWriter = collectionWriter.GetElementWriter();
-                    arg.Render(elementWriter);
+                    elementWriter.Append($"{parameter.ParameterTypeQualifiedName} {parameter.ParameterName}");
                 }
             }
-
-            writer.AppendLine()
-                .DecreaseIndent(1)
-                .AppendLine("}");
         }
+
+        writer.AppendLine(") {")
+            .IncreaseIndent(1);
+
+        using (var collectionWriter = writer.GetCollectionWriter(
+            new CollectionWriterProperties(
+                OpeningString: $"return new {ChildTypeQualifiedName}(",
+                ClosingString: ");",
+                CloseWithNewline: false))) {
+            foreach (var arg in ChildConstructorArguments) {
+                var elementWriter = collectionWriter.GetElementWriter();
+                arg.Render(elementWriter);
+            }
+        }
+
+        writer.AppendLine()
+            .DecreaseIndent(1)
+            .AppendLine("}");
     }
 }

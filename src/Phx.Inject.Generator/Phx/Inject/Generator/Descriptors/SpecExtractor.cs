@@ -6,142 +6,142 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Descriptors {
-    using System.Collections.Immutable;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Phx.Inject.Generator.Common;
-    using Phx.Inject.Generator.Definitions;
-    using Phx.Inject.Generator.Model;
+using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Phx.Inject.Generator.Common;
+using Phx.Inject.Generator.Definitions;
+using Phx.Inject.Generator.Model;
 
-    internal class SpecExtractor {
-        private readonly SpecDesc.IBuilder specDescBuilder;
+namespace Phx.Inject.Generator.Descriptors;
 
-        public SpecExtractor(
-            SpecDesc.IBuilder specDescBuilder
-        ) {
-            this.specDescBuilder = specDescBuilder;
+internal class SpecExtractor {
+    private readonly SpecDesc.IBuilder specDescBuilder;
+
+    public SpecExtractor(
+        SpecDesc.IBuilder specDescBuilder
+    ) {
+        this.specDescBuilder = specDescBuilder;
+    }
+
+    public SpecExtractor() : this(
+        new SpecDesc.Builder()
+    ) { }
+
+    private HashSet<QualifiedTypeModel> GetAutoConstructorParameterTypes(QualifiedTypeModel type) {
+        var results = new HashSet<QualifiedTypeModel>();
+        results.UnionWith(MetadataHelpers.GetConstructorParameterQualifiedTypes(type.TypeModel.typeSymbol));
+        results.UnionWith(MetadataHelpers.GetRequiredPropertyQualifiedTypes(type.TypeModel.typeSymbol).Values);
+        return results;
+    }
+
+    public SpecDesc? ExtractConstructorSpecForContext(
+        DefGenerationContext context
+    ) {
+        var providedTypes = new HashSet<QualifiedTypeModel>();
+        var neededTypes = new HashSet<QualifiedTypeModel>();
+
+        var neededBuilders = new HashSet<QualifiedTypeModel>();
+        var providedBuilders = new HashSet<QualifiedTypeModel>();
+
+        foreach (var provider in context.Injector.Providers) {
+            if (provider.ProvidedType.TypeModel.QualifiedBaseTypeName == TypeHelpers.FactoryTypeName) {
+                neededTypes.Add(new QualifiedTypeModel(
+                    provider.ProvidedType.TypeModel.TypeArguments[0],
+                    provider.ProvidedType.Qualifier));
+            } else {
+                neededTypes.Add(provider.ProvidedType);
+            }
         }
 
-        public SpecExtractor() : this(
-            new SpecDesc.Builder()
-        ) { }
-
-        private HashSet<QualifiedTypeModel> GetAutoConstructorParameterTypes(QualifiedTypeModel type) {
-            var results = new HashSet<QualifiedTypeModel>();
-            results.UnionWith(MetadataHelpers.GetConstructorParameterQualifiedTypes(type.TypeModel.typeSymbol));
-            results.UnionWith(MetadataHelpers.GetRequiredPropertyQualifiedTypes(type.TypeModel.typeSymbol).Values);
-            return results;
+        foreach (var builder in context.Injector.Builders) {
+            neededBuilders.Add(builder.BuiltType);
         }
 
-        public SpecDesc? ExtractConstructorSpecForContext(
-            DefGenerationContext context
-        ) {
-            var providedTypes = new HashSet<QualifiedTypeModel>();
-            var neededTypes = new HashSet<QualifiedTypeModel>();
-            
-            var neededBuilders = new HashSet<QualifiedTypeModel>();
-            var providedBuilders = new HashSet<QualifiedTypeModel>();
+        foreach (var specDesc in context.Specifications.Values) {
+            foreach (var factory in specDesc.Factories) {
+                providedTypes.Add(factory.ReturnType);
 
-            foreach (var provider in context.Injector.Providers) {
-                if (provider.ProvidedType.TypeModel.QualifiedBaseTypeName == TypeHelpers.FactoryTypeName) {
-                    neededTypes.Add(new QualifiedTypeModel(
-                        provider.ProvidedType.TypeModel.TypeArguments[0],
-                        provider.ProvidedType.Qualifier));
-                } else {
-                    neededTypes.Add(provider.ProvidedType);
-                }
-            }
-            
-            foreach (var builder in context.Injector.Builders) {
-                neededBuilders.Add(builder.BuiltType);
-            }
-            
-            foreach (var specDesc in context.Specifications.Values) {
-                foreach (var factory in specDesc.Factories) {
-                    providedTypes.Add(factory.ReturnType);
-
-                    foreach (var parameterType in factory.Parameters) {
-                        if (parameterType.TypeModel.QualifiedBaseTypeName == TypeHelpers.FactoryTypeName) {
-                            var factoryType = parameterType with {
-                                TypeModel = parameterType.TypeModel.TypeArguments.Single()
-                            };
-                            neededTypes.Add(factoryType);
-                        } else {
-                            neededTypes.Add(parameterType);
-                        }
-                    }
-                }
-
-                foreach (var link in specDesc.Links) {
-                    providedTypes.Add(link.ReturnType);
-                    neededTypes.Add(link.InputType);
-                }
-
-                foreach (var builder in specDesc.Builders) {
-                    providedBuilders.Add(builder.BuiltType);
-                    
-                    foreach (var parameterType in builder.Parameters) {
+                foreach (var parameterType in factory.Parameters) {
+                    if (parameterType.TypeModel.QualifiedBaseTypeName == TypeHelpers.FactoryTypeName) {
+                        var factoryType = parameterType with {
+                            TypeModel = parameterType.TypeModel.TypeArguments.Single()
+                        };
+                        neededTypes.Add(factoryType);
+                    } else {
                         neededTypes.Add(parameterType);
                     }
                 }
             }
 
-            var typeSearchQueue = new Queue<QualifiedTypeModel>();
-            foreach (var qualifiedTypeModel in neededTypes) {
-                typeSearchQueue.Enqueue(qualifiedTypeModel);
+            foreach (var link in specDesc.Links) {
+                providedTypes.Add(link.ReturnType);
+                neededTypes.Add(link.InputType);
             }
 
-            while (typeSearchQueue.Count > 0) {
-                var type = typeSearchQueue.Dequeue();
-                if (!providedTypes.Contains(type)) {
-                    foreach (var parameterType in GetAutoConstructorParameterTypes(type)) {
-                        if (neededTypes.Add(parameterType)) {
-                            typeSearchQueue.Enqueue(parameterType);
-                        }
+            foreach (var builder in specDesc.Builders) {
+                providedBuilders.Add(builder.BuiltType);
+
+                foreach (var parameterType in builder.Parameters) {
+                    neededTypes.Add(parameterType);
+                }
+            }
+        }
+
+        var typeSearchQueue = new Queue<QualifiedTypeModel>();
+        foreach (var qualifiedTypeModel in neededTypes) {
+            typeSearchQueue.Enqueue(qualifiedTypeModel);
+        }
+
+        while (typeSearchQueue.Count > 0) {
+            var type = typeSearchQueue.Dequeue();
+            if (!providedTypes.Contains(type)) {
+                foreach (var parameterType in GetAutoConstructorParameterTypes(type)) {
+                    if (neededTypes.Add(parameterType)) {
+                        typeSearchQueue.Enqueue(parameterType);
                     }
                 }
             }
-
-            var missingTypes = neededTypes.Except(providedTypes).ToImmutableList();
-            var missingBuilders = neededBuilders.Except(providedBuilders).ToImmutableList();
-            
-            var needsConstructorSpec = missingTypes.Any() || missingBuilders.Any();
-            return needsConstructorSpec
-                    ? specDescBuilder.BuildConstructorSpec(
-                        context.Injector.InjectorType,
-                        missingTypes,
-                        missingBuilders)
-                    : null;
         }
 
-        public IReadOnlyList<SpecDesc> Extract(
-            IEnumerable<TypeDeclarationSyntax> syntaxNodes,
-            DescGenerationContext context
-        ) {
-            return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
-                .Where(IsSpecSymbol)
-                .Select(symbol => specDescBuilder.Build(symbol, context))
-                .ToImmutableList();
+        IReadOnlyList<QualifiedTypeModel> missingTypes = neededTypes.Except(providedTypes).ToImmutableList();
+        IReadOnlyList<QualifiedTypeModel> missingBuilders = neededBuilders.Except(providedBuilders).ToImmutableList();
+
+        var needsConstructorSpec = missingTypes.Any() || missingBuilders.Any();
+        return needsConstructorSpec
+            ? specDescBuilder.BuildConstructorSpec(
+                context.Injector.InjectorType,
+                missingTypes,
+                missingBuilders)
+            : null;
+    }
+
+    public IReadOnlyList<SpecDesc> Extract(
+        IEnumerable<TypeDeclarationSyntax> syntaxNodes,
+        DescGenerationContext context
+    ) {
+        return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
+            .Where(IsSpecSymbol)
+            .Select(symbol => specDescBuilder.Build(symbol, context))
+            .ToImmutableList();
+    }
+
+    private static bool IsSpecSymbol(ITypeSymbol symbol) {
+        var specificationAttribute = symbol.GetSpecificationAttribute();
+        if (specificationAttribute == null) {
+            return false;
         }
 
-        private static bool IsSpecSymbol(ITypeSymbol symbol) {
-            var specificationAttribute = symbol.GetSpecificationAttribute();
-            if (specificationAttribute == null) {
-                return false;
-            }
+        var isStaticSpecification = symbol.TypeKind == TypeKind.Class && symbol.IsStatic;
+        var isInterfaceSpecification = symbol.TypeKind == TypeKind.Interface;
 
-            var isStaticSpecification = symbol.TypeKind == TypeKind.Class && symbol.IsStatic;
-            var isInterfaceSpecification = symbol.TypeKind == TypeKind.Interface;
-
-            if (!isStaticSpecification && !isInterfaceSpecification) {
-                throw new InjectionException(
-                    Diagnostics.InvalidSpecification,
-                    $"Specification type {symbol.Name} must be a static class or interface.",
-                    symbol.Locations.First());
-            }
-
-            return true;
+        if (!isStaticSpecification && !isInterfaceSpecification) {
+            throw new InjectionException(
+                Diagnostics.InvalidSpecification,
+                $"Specification type {symbol.Name} must be a static class or interface.",
+                symbol.Locations.First());
         }
+
+        return true;
     }
 }

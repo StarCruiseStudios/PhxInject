@@ -16,12 +16,14 @@ namespace Phx.Inject.Generator;
 
 internal class SourceRenderer {
     private readonly GeneratorSettings generatorSettings;
-    
+
     public SourceRenderer(GeneratorSettings generatorSettings) {
         this.generatorSettings = generatorSettings;
     }
-    
-    public void RenderAllTemplates(IReadOnlyList<(TypeModel, IRenderTemplate)> templates, GeneratorExecutionContext context) {
+
+    public void RenderAllTemplates(
+        IReadOnlyList<(TypeModel, IRenderTemplate)> templates,
+        GeneratorExecutionContext context) {
         var templateRenderer = new TemplateRenderer(new RenderWriter.Factory(generatorSettings));
         try {
             foreach (var (classType, template) in templates) {
@@ -30,13 +32,13 @@ internal class SourceRenderer {
                 templateRenderer.RenderTemplate(fileName, template, context);
             }
         } catch (Exception e) {
-            var diagnosticData = (e is InjectionException ie)
+            var diagnosticData = e is InjectionException ie
                 ? ie.DiagnosticData
                 : Diagnostics.UnexpectedError;
-            
+
             throw new InjectionException(
                 diagnosticData,
-                $"An error occurred while rendering source templates.",
+                "An error occurred while rendering source templates.",
                 Location.None,
                 e);
         }

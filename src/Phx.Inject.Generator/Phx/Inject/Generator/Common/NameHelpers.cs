@@ -7,116 +7,119 @@
 // -----------------------------------------------------------------------------
 
 using System.Text;
+using System.Text.RegularExpressions;
+using Phx.Inject.Generator.Descriptors;
+using Phx.Inject.Generator.Model;
 
-namespace Phx.Inject.Generator.Common {
-    using System.Text.RegularExpressions;
-    using Phx.Inject.Generator.Descriptors;
-    using Phx.Inject.Generator.Model;
+namespace Phx.Inject.Generator.Common;
 
-    internal static class NameHelpers {
-        private const string GeneratedInjectorClassPrefix = "Generated";
-        public const string SpecContainerCollectionTypeName = "SpecContainerCollection";
+internal static class NameHelpers {
+    private const string GeneratedInjectorClassPrefix = "Generated";
+    public const string SpecContainerCollectionTypeName = "SpecContainerCollection";
 
-        private static readonly Regex ValidCharsRegex = new(@"[^a-zA-Z0-9_]");
+    private static readonly Regex ValidCharsRegex = new(@"[^a-zA-Z0-9_]");
 
-        public static string GetInjectorClassName(this TypeModel injectorInterfaceType) {
-            var baseName = injectorInterfaceType.AsVariableName()
-                .RemoveLeadingI()
-                .StartUppercase();
-            return $"{GeneratedInjectorClassPrefix}{baseName}";
-        }
+    public static string GetInjectorClassName(this TypeModel injectorInterfaceType) {
+        var baseName = injectorInterfaceType.AsVariableName()
+            .RemoveLeadingI()
+            .StartUppercase();
+        return $"{GeneratedInjectorClassPrefix}{baseName}";
+    }
 
-        public static string GetSpecContainerCollectionTypeName(this TypeModel injectorType) {
-            return $"{injectorType.BaseTypeName}.{SpecContainerCollectionTypeName}";
-        }
+    public static string GetSpecContainerCollectionTypeName(this TypeModel injectorType) {
+        return $"{injectorType.BaseTypeName}.{SpecContainerCollectionTypeName}";
+    }
 
-        public static string GetSpecContainerFactoryName(this SpecFactoryDesc factory) {
-            var sb = factory.SpecFactoryMemberType switch {
-                SpecFactoryMemberType.Method => new StringBuilder("Fac_"),
-                SpecFactoryMemberType.Property => new StringBuilder("PropFac_"),
-                SpecFactoryMemberType.Reference => new StringBuilder("RefFac_"),
-                SpecFactoryMemberType.Constructor => new StringBuilder("CtorFac_"),
-                _ => throw new InjectionException(
-                    Diagnostics.InternalError,
-                    $"Unhandled Spec Factory Member Type {factory.SpecFactoryMemberType}.",
-                    factory.Location)
-            };
-            
-            sb.Append(factory.ReturnType.AsVariableName().StartUppercase())
-                .Append("_")
-                .Append(factory.FactoryMemberName.AsValidIdentifier().StartUppercase());
+    public static string GetSpecContainerFactoryName(this SpecFactoryDesc factory) {
+        var sb = factory.SpecFactoryMemberType switch {
+            SpecFactoryMemberType.Method => new StringBuilder("Fac_"),
+            SpecFactoryMemberType.Property => new StringBuilder("PropFac_"),
+            SpecFactoryMemberType.Reference => new StringBuilder("RefFac_"),
+            SpecFactoryMemberType.Constructor => new StringBuilder("CtorFac_"),
+            _ => throw new InjectionException(
+                Diagnostics.InternalError,
+                $"Unhandled Spec Factory Member Type {factory.SpecFactoryMemberType}.",
+                factory.Location)
+        };
 
-            return sb.ToString();
-        }
+        sb.Append(factory.ReturnType.AsVariableName().StartUppercase())
+            .Append("_")
+            .Append(factory.FactoryMemberName.AsValidIdentifier().StartUppercase());
 
-        public static string GetSpecContainerBuilderName(this SpecBuilderDesc builder) {
-            var sb = builder.SpecBuilderMemberType switch {
-                SpecBuilderMemberType.Method => new StringBuilder("Bld_"),
-                SpecBuilderMemberType.Reference => new StringBuilder("RefBld_"),
-                SpecBuilderMemberType.Direct => new StringBuilder("DirBld_"),
-                _ => throw new InjectionException(
-                    Diagnostics.InternalError,
-                    $"Unhandled Spec Builder Member Type {builder.SpecBuilderMemberType}.",
-                    builder.Location)
-            };
-            
-            sb.Append(builder.BuiltType.AsVariableName().StartUppercase())
-                .Append("_")
-                .Append(builder.BuilderMemberName.AsValidIdentifier().StartUppercase());
+        return sb.ToString();
+    }
 
-            return sb.ToString();
-        }
+    public static string GetSpecContainerBuilderName(this SpecBuilderDesc builder) {
+        var sb = builder.SpecBuilderMemberType switch {
+            SpecBuilderMemberType.Method => new StringBuilder("Bld_"),
+            SpecBuilderMemberType.Reference => new StringBuilder("RefBld_"),
+            SpecBuilderMemberType.Direct => new StringBuilder("DirBld_"),
+            _ => throw new InjectionException(
+                Diagnostics.InternalError,
+                $"Unhandled Spec Builder Member Type {builder.SpecBuilderMemberType}.",
+                builder.Location)
+        };
 
-        public static string GetCombinedClassName(TypeModel prefixType, TypeModel suffixType) {
-            return GetAppendedClassName(prefixType, suffixType.BaseTypeName);
-        }
+        sb.Append(builder.BuiltType.AsVariableName().StartUppercase())
+            .Append("_")
+            .Append(builder.BuilderMemberName.AsValidIdentifier().StartUppercase());
 
-        public static string GetAppendedClassName(TypeModel prefixType, string suffix) {
-            return $"{prefixType.BaseTypeName}_{suffix}"
-                .AsValidIdentifier()
-                .StartUppercase();
-        }
+        return sb.ToString();
+    }
 
-        public static string GetVariableName(this TypeModel type) {
-            return type.AsVariableName().StartLowercase();
-        }
+    public static string GetCombinedClassName(TypeModel prefixType, TypeModel suffixType) {
+        return GetAppendedClassName(prefixType, suffixType.BaseTypeName);
+    }
 
-        public static string GetVariableName(this QualifiedTypeModel type) {
-            return type.AsVariableName().StartLowercase();
-        }
+    public static string GetAppendedClassName(TypeModel prefixType, string suffix) {
+        return $"{prefixType.BaseTypeName}_{suffix}"
+            .AsValidIdentifier()
+            .StartUppercase();
+    }
 
-        public static string GetPropertyName(this TypeModel type) {
-            return type.AsVariableName().StartUppercase();
-        }
+    public static string GetVariableName(this TypeModel type) {
+        return type.AsVariableName().StartLowercase();
+    }
 
-        public static string AsValidIdentifier(this string baseName) {
-            var referenceName = baseName.Replace(".", "_");
-            return ValidCharsRegex.Replace(referenceName, "");
-        }
+    public static string GetVariableName(this QualifiedTypeModel type) {
+        return type.AsVariableName().StartLowercase();
+    }
 
-        public static string StartLowercase(this string input) {
-            return string.IsNullOrEmpty(input) ? input : char.ToLower(input[0]) + input.Substring(1);
-        }
+    public static string GetPropertyName(this TypeModel type) {
+        return type.AsVariableName().StartUppercase();
+    }
 
-        public static string StartUppercase(this string input) {
-            return string.IsNullOrEmpty(input) ? input : char.ToUpper(input[0]) + input.Substring(1);
-        }
+    public static string AsValidIdentifier(this string baseName) {
+        var referenceName = baseName.Replace(".", "_");
+        return ValidCharsRegex.Replace(referenceName, "");
+    }
 
-        public static string RemoveLeadingI(this string input) {
-            return input.StartsWith("I")
-                ? input.Substring(1)
-                : input;
-        }
+    public static string StartLowercase(this string input) {
+        return string.IsNullOrEmpty(input)
+            ? input
+            : char.ToLower(input[0]) + input.Substring(1);
+    }
 
-        private static string AsVariableName(this TypeModel type) {
-            return type.BaseTypeName.AsValidIdentifier();
-        }
+    public static string StartUppercase(this string input) {
+        return string.IsNullOrEmpty(input)
+            ? input
+            : char.ToUpper(input[0]) + input.Substring(1);
+    }
 
-        private static string AsVariableName(this QualifiedTypeModel type) {
-            var referenceName = string.IsNullOrEmpty(type.Qualifier)
-                ? type.TypeModel.BaseTypeName
-                : $"{type.Qualifier}_{type.TypeModel.BaseTypeName}";
-            return referenceName.AsValidIdentifier();
-        }
+    public static string RemoveLeadingI(this string input) {
+        return input.StartsWith("I")
+            ? input.Substring(1)
+            : input;
+    }
+
+    private static string AsVariableName(this TypeModel type) {
+        return type.BaseTypeName.AsValidIdentifier();
+    }
+
+    private static string AsVariableName(this QualifiedTypeModel type) {
+        var referenceName = string.IsNullOrEmpty(type.Qualifier)
+            ? type.TypeModel.BaseTypeName
+            : $"{type.Qualifier}_{type.TypeModel.BaseTypeName}";
+        return referenceName.AsValidIdentifier();
     }
 }

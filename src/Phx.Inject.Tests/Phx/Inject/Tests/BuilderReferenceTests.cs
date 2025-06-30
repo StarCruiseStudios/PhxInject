@@ -6,65 +6,74 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests {
-    using NUnit.Framework;
-    using Phx.Inject.Tests.Data.Model;
-    using Phx.Test;
-    using Phx.Validation;
+using NUnit.Framework;
+using Phx.Inject.Tests.Data.Model;
+using Phx.Test;
+using Phx.Validation;
 
-    #region injector
-    
-    [Specification]
-    internal static class BuilderReferenceSpec {
-        [Factory]
-        internal static int IntValue => 10;
+namespace Phx.Inject.Tests;
 
-        [BuilderReference]
-        internal static Action<TestBuilderReferenceObject, int> BuildBuilderReferenceType => TestBuilderReferenceObject.Inject;
+#region injector
 
-        [Label("Field")]
-        [BuilderReference]
-        internal static readonly Action<TestBuilderReferenceObject, int> BuildBuilderReferenceTypeField = TestBuilderReferenceObject.Inject;
+[Specification]
+internal static class BuilderReferenceSpec {
+    [Label("Field")]
+    [BuilderReference]
+    internal static readonly Action<TestBuilderReferenceObject, int> BuildBuilderReferenceTypeField =
+        TestBuilderReferenceObject.Inject;
 
-        [FactoryReference(FabricationMode.Scoped)]
-        internal static Func<int, IntLeaf> GetIntLeaf => IntLeaf.Construct;
+    [Factory]
+    internal static int IntValue {
+        get => 10;
     }
-    
-    [Injector(
-        typeof(BuilderReferenceSpec)
-    )]
-    internal interface IBuilderReferenceInjector {
-        public void Build(TestBuilderReferenceObject testBuilderReferenceObject);
 
-        [Label("Field")]
-        public void BuildField(TestBuilderReferenceObject testBuilderReferenceObject);
+    [BuilderReference]
+    internal static Action<TestBuilderReferenceObject, int> BuildBuilderReferenceType {
+        get => TestBuilderReferenceObject.Inject;
     }
-    
-    #endregion injector
-    
-    public class BuilderReferenceTests : LoggingTestClass {
-        [Test]
-        public void ABuilderReferencePropertyIsGenerated() {
-            IBuilderReferenceInjector injector = Given("A test injector.",
-                () => new GeneratedBuilderReferenceInjector());
-            var buidlerReferenceType = Given("An uninitialized builder reference type.", () => new TestBuilderReferenceObject());
 
-            When("An injector builder method using a builder reference property is invoked.",
-                () => injector.Build(buidlerReferenceType));
+    [FactoryReference(FabricationMode.Scoped)]
+    internal static Func<int, IntLeaf> GetIntLeaf {
+        get => IntLeaf.Construct;
+    }
+}
 
-            Then("The builder reference type is initialized.", () => Verify.That(buidlerReferenceType.Value.IsNotNull()));
-        }
+[Injector(
+    typeof(BuilderReferenceSpec)
+)]
+internal interface IBuilderReferenceInjector {
+    public void Build(TestBuilderReferenceObject testBuilderReferenceObject);
 
-        [Test]
-        public void ABuilderReferenceFieldIsGenerated() {
-            IBuilderReferenceInjector injector = Given("A test injector.",
-                () => new GeneratedBuilderReferenceInjector());
-            var builderReferenceType = Given("An uninitialized builder reference type.", () => new TestBuilderReferenceObject());
+    [Label("Field")]
+    public void BuildField(TestBuilderReferenceObject testBuilderReferenceObject);
+}
 
-            When("An injector builder method using a builder reference field is invoked.",
-                () => injector.BuildField(builderReferenceType));
+#endregion injector
 
-            Then("The builder reference type is initialized.", () => Verify.That(builderReferenceType.Value.IsNotNull()));
-        }
+public class BuilderReferenceTests : LoggingTestClass {
+    [Test]
+    public void ABuilderReferencePropertyIsGenerated() {
+        IBuilderReferenceInjector injector = Given("A test injector.",
+            () => new GeneratedBuilderReferenceInjector());
+        var buidlerReferenceType =
+            Given("An uninitialized builder reference type.", () => new TestBuilderReferenceObject());
+
+        When("An injector builder method using a builder reference property is invoked.",
+            () => injector.Build(buidlerReferenceType));
+
+        Then("The builder reference type is initialized.", () => Verify.That(buidlerReferenceType.Value.IsNotNull()));
+    }
+
+    [Test]
+    public void ABuilderReferenceFieldIsGenerated() {
+        IBuilderReferenceInjector injector = Given("A test injector.",
+            () => new GeneratedBuilderReferenceInjector());
+        var builderReferenceType =
+            Given("An uninitialized builder reference type.", () => new TestBuilderReferenceObject());
+
+        When("An injector builder method using a builder reference field is invoked.",
+            () => injector.BuildField(builderReferenceType));
+
+        Then("The builder reference type is initialized.", () => Verify.That(builderReferenceType.Value.IsNotNull()));
     }
 }

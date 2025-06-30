@@ -6,16 +6,16 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Templates {
-    using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 
-    internal record InjectorChildConstructedSpecConstructorArgumentTemplate(
-        string ArgumentName,
-        string SpecParameterName,
-        Location Location
-    ) : IInjectorChildConstructorArgumentTemplate {
-        public void Render(IRenderWriter writer) {
-            writer.Append($"{ArgumentName}: {SpecParameterName}");
-        }
+namespace Phx.Inject.Generator.Templates;
+
+internal record InjectorChildConstructedSpecConstructorArgumentTemplate(
+    string ArgumentName,
+    string SpecParameterName,
+    Location Location
+) : IInjectorChildConstructorArgumentTemplate {
+    public void Render(IRenderWriter writer) {
+        writer.Append($"{ArgumentName}: {SpecParameterName}");
     }
 }

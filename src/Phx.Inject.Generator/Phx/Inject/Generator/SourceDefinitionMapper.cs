@@ -27,13 +27,13 @@ internal class SourceDefMapper {
         GeneratorExecutionContext context
     ) {
         try {
-            var injectorDescMap = CreateTypeMap(
+            IReadOnlyDictionary<TypeModel, InjectorDesc> injectorDescMap = CreateTypeMap(
                 sourceDesc.injectorDescs,
                 injector => injector.InjectorInterfaceType);
-            var specDescMap = CreateTypeMap(
+            IReadOnlyDictionary<TypeModel, SpecDesc> specDescMap = CreateTypeMap(
                 sourceDesc.GetAllSpecDescs(),
                 spec => spec.SpecType);
-            var dependencyDescMap = CreateTypeMap(
+            IReadOnlyDictionary<TypeModel, DependencyDesc> dependencyDescMap = CreateTypeMap(
                 sourceDesc.dependencyDescs,
                 dep => dep.DependencyInterfaceType);
 
@@ -80,13 +80,13 @@ internal class SourceDefMapper {
                 })
                 .ToImmutableList();
         } catch (Exception e) {
-            var diagnosticData = (e is InjectionException ie)
+            var diagnosticData = e is InjectionException ie
                 ? ie.DiagnosticData
                 : Diagnostics.UnexpectedError;
-            
+
             throw new InjectionException(
                 diagnosticData,
-                $"An error occurred while mapping source definitions.",
+                "An error occurred while mapping source definitions.",
                 Location.None,
                 e);
         }

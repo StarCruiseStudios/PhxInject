@@ -6,10 +6,10 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Templates {
-    internal record InjectorSpecContainerCollectionProperty(
-        string PropertyTypeQualifiedName,
-        string PropertyName,
-        string? ConstructorArgumentName
-    );
-}
+namespace Phx.Inject.Generator.Templates;
+
+internal record InjectorSpecContainerCollectionProperty(
+    string PropertyTypeQualifiedName,
+    string PropertyName,
+    string? ConstructorArgumentName
+);

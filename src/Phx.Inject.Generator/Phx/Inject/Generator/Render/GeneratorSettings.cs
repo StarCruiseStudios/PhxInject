@@ -6,11 +6,11 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Render {
-    internal record GeneratorSettings(
-        int TabSize = 4,
-        string GeneratedFileExtension = "generated.cs",
-        bool NullableEnabled = true,
-        bool AllowConstructorFactories = true
-    );
-}
+namespace Phx.Inject.Generator.Render;
+
+internal record GeneratorSettings(
+    int TabSize = 4,
+    string GeneratedFileExtension = "generated.cs",
+    bool NullableEnabled = true,
+    bool AllowConstructorFactories = true
+);

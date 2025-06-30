@@ -6,8 +6,8 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Descriptors {
-    using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 
-    internal record DescGenerationContext(GeneratorExecutionContext GenerationContext);
-}
+namespace Phx.Inject.Generator.Descriptors;
+
+internal record DescGenerationContext(GeneratorExecutionContext GenerationContext);

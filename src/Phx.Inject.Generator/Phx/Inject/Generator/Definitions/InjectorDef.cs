@@ -6,90 +6,88 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Definitions {
-    using System.Collections.Immutable;
-    using Microsoft.CodeAnalysis;
-    using Phx.Inject.Generator.Common;
-    using Phx.Inject.Generator.Model;
+using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Common;
+using Phx.Inject.Generator.Model;
 
-    internal record InjectorDef(
-        TypeModel InjectorType,
-        TypeModel InjectorInterfaceType,
-        IEnumerable<TypeModel> Specifications,
-        IEnumerable<TypeModel> ConstructedSpecifications,
-        IEnumerable<TypeModel> Dependencies,
-        IEnumerable<InjectorProviderDef> Providers,
-        IEnumerable<ActivatorDef> Builders,
-        IEnumerable<InjectorChildFactoryDef> ChildFactories,
-        Location Location
-    ) : IDefinition {
-        public TypeModel SpecContainerCollectionType { get; }
-            = TypeHelpers.CreateSpecContainerCollectionType(InjectorType);
+namespace Phx.Inject.Generator.Definitions;
 
-        public interface IBuilder {
-            InjectorDef Build(DefGenerationContext context);
-        }
-        public class Builder : IBuilder {
-            public InjectorDef Build(DefGenerationContext context) {
-                var constructedSpecifications = context.Injector.SpecificationsTypes
-                    .Where(spec => {
-                        var specDesc = context.GetSpec(spec, context.Injector.Location);
-                        return specDesc.InstantiationMode == SpecInstantiationMode.Instantiated;
-                    })
-                    .Where(spec => context.Injector.DependencyInterfaceTypes.Contains(spec) == false)
-                    .ToImmutableList();
+internal record InjectorDef(
+    TypeModel InjectorType,
+    TypeModel InjectorInterfaceType,
+    IEnumerable<TypeModel> Specifications,
+    IEnumerable<TypeModel> ConstructedSpecifications,
+    IEnumerable<TypeModel> Dependencies,
+    IEnumerable<InjectorProviderDef> Providers,
+    IEnumerable<ActivatorDef> Builders,
+    IEnumerable<InjectorChildFactoryDef> ChildFactories,
+    Location Location
+) : IDefinition {
+    public TypeModel SpecContainerCollectionType { get; }
+        = TypeHelpers.CreateSpecContainerCollectionType(InjectorType);
 
-                var providers = context.Injector.Providers
-                    .Select(
-                        provider => {
-                            var factoryInvocation = context.GetSpecContainerFactoryInvocation(
-                                provider.ProvidedType,
-                                provider.Location);
+    public interface IBuilder {
+        InjectorDef Build(DefGenerationContext context);
+    }
 
-                            return new InjectorProviderDef(
-                                provider.ProvidedType,
-                                provider.ProviderMethodName,
-                                factoryInvocation,
-                                provider.Location);
-                        })
-                    .ToImmutableList();
+    public class Builder : IBuilder {
+        public InjectorDef Build(DefGenerationContext context) {
+            IReadOnlyList<TypeModel> constructedSpecifications = context.Injector.SpecificationsTypes
+                .Where(spec => {
+                    var specDesc = context.GetSpec(spec, context.Injector.Location);
+                    return specDesc.InstantiationMode == SpecInstantiationMode.Instantiated;
+                })
+                .Where(spec => context.Injector.DependencyInterfaceTypes.Contains(spec) == false)
+                .ToImmutableList();
 
-                var builders = context.Injector.Builders
-                    .Select(
-                        builder => {
-                            var builderInvocation = context.GetSpecContainerBuilderInvocation(
-                                context.Injector.InjectorType,
-                                builder.BuiltType,
-                                builder.Location);
+            IReadOnlyList<InjectorProviderDef> providers = context.Injector.Providers
+                .Select(provider => {
+                    var factoryInvocation = context.GetSpecContainerFactoryInvocation(
+                        provider.ProvidedType,
+                        provider.Location);
 
-                            return new ActivatorDef(
-                                builder.BuiltType,
-                                builder.BuilderMethodName,
-                                builderInvocation,
-                                builder.Location);
-                        })
-                    .ToImmutableList();
+                    return new InjectorProviderDef(
+                        provider.ProvidedType,
+                        provider.ProviderMethodName,
+                        factoryInvocation,
+                        provider.Location);
+                })
+                .ToImmutableList();
 
-                var childFactories = context.Injector.ChildFactories
-                    .Select(
-                        factory => new InjectorChildFactoryDef(
-                            factory.ChildInjectorType,
-                            factory.InjectorChildFactoryMethodName,
-                            factory.Parameters,
-                            factory.Location))
-                    .ToImmutableList();
+            IReadOnlyList<ActivatorDef> builders = context.Injector.Builders
+                .Select(builder => {
+                    var builderInvocation = context.GetSpecContainerBuilderInvocation(
+                        context.Injector.InjectorType,
+                        builder.BuiltType,
+                        builder.Location);
 
-                return new InjectorDef(
-                    context.Injector.InjectorType,
-                    context.Injector.InjectorInterfaceType,
-                    context.Injector.SpecificationsTypes,
-                    constructedSpecifications,
-                    context.Injector.DependencyInterfaceTypes,
-                    providers,
-                    builders,
-                    childFactories,
-                    context.Injector.Location);
-            }
+                    return new ActivatorDef(
+                        builder.BuiltType,
+                        builder.BuilderMethodName,
+                        builderInvocation,
+                        builder.Location);
+                })
+                .ToImmutableList();
+
+            IReadOnlyList<InjectorChildFactoryDef> childFactories = context.Injector.ChildFactories
+                .Select(factory => new InjectorChildFactoryDef(
+                    factory.ChildInjectorType,
+                    factory.InjectorChildFactoryMethodName,
+                    factory.Parameters,
+                    factory.Location))
+                .ToImmutableList();
+
+            return new InjectorDef(
+                context.Injector.InjectorType,
+                context.Injector.InjectorInterfaceType,
+                context.Injector.SpecificationsTypes,
+                constructedSpecifications,
+                context.Injector.DependencyInterfaceTypes,
+                providers,
+                builders,
+                childFactories,
+                context.Injector.Location);
         }
     }
 }

@@ -6,73 +6,80 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests {
-    using NUnit.Framework;
-    using Phx.Inject.Tests.Data;
-    using Phx.Inject.Tests.Data.Model;
-    using Phx.Test;
-    using Phx.Validation;
-    using static Data.CommonTestValueSpecification;
+using NUnit.Framework;
+using Phx.Inject.Tests.Data;
+using Phx.Inject.Tests.Data.Model;
+using Phx.Test;
+using Phx.Validation;
 
-    [Injector(
-        generatedClassName: "AutoDependencyTestInjector",
-        typeof(CommonTestValueSpecification))]
-    public interface IAutoDependencyTestInjector {
-        OuterType GetOuterType();
-        
-        void BuildAutoBuilderType(AutoBuilderType autoBuilderType);
-        
-        [Label(nameof(AutoBuilderType))] 
-        void BuildLabeledAutoBuilderType(AutoBuilderType autoBuilderType);
-        
-        AutoBuilderType GetAutoBuilderType();
+namespace Phx.Inject.Tests;
+
+using static CommonTestValueSpecification;
+
+[Injector(
+    "AutoDependencyTestInjector",
+    typeof(CommonTestValueSpecification))]
+public interface IAutoDependencyTestInjector {
+    OuterType GetOuterType();
+
+    void BuildAutoBuilderType(AutoBuilderType autoBuilderType);
+
+    [Label(nameof(AutoBuilderType))]
+    void BuildLabeledAutoBuilderType(AutoBuilderType autoBuilderType);
+
+    AutoBuilderType GetAutoBuilderType();
+}
+
+public class AutoDependencyTests : LoggingTestClass {
+    [Test]
+    public void FactoriesCanBeAutomaticallyGenerated() {
+        IAutoDependencyTestInjector injector = Given("A test injector", () => new AutoDependencyTestInjector());
+
+        var outerType = When("Getting a auto dependency value", () => injector.GetOuterType());
+        var value = outerType.AutoType;
+        var value2 = outerType.AutoTypeWithRequiredProperties;
+
+        Then("The expected value was injected", IntValue, expected => Verify.That(value.Value.IsEqualTo(expected)));
+        Then("The expected value was injected", IntValue, expected => Verify.That(value2.X.IsEqualTo(expected)));
     }
-    
-    public class AutoDependencyTests : LoggingTestClass {
-        [Test]
-        public void FactoriesCanBeAutomaticallyGenerated() {
-            IAutoDependencyTestInjector injector = Given("A test injector", () => new AutoDependencyTestInjector());
 
-            var outerType = When("Getting a auto dependency value", () => injector.GetOuterType());
-            var value = outerType.AutoType;
-            var value2 = outerType.AutoTypeWithRequiredProperties;
+    [Test]
+    public void ScopedFactoriesCanBeAutomaticallyGenerated() {
+        IAutoDependencyTestInjector injector = Given("A test injector", () => new AutoDependencyTestInjector());
 
-            Then("The expected value was injected", IntValue, (expected) => Verify.That(value.Value.IsEqualTo(expected)));
-            Then("The expected value was injected", IntValue, (expected) => Verify.That(value2.X.IsEqualTo(expected)));
-        }
-        
-        [Test]
-        public void ScopedFactoriesCanBeAutomaticallyGenerated() {
-            IAutoDependencyTestInjector injector = Given("A test injector", () => new AutoDependencyTestInjector());
+        var outerType = When("Getting a auto dependency value", () => injector.GetOuterType());
+        var value = outerType.AutoType.AutoTypeWithFabricationMode;
+        var value2 = outerType.AutoTypeWithRequiredProperties;
 
-            
-            var outerType = When("Getting a auto dependency value", () => injector.GetOuterType());
-            var value = outerType.AutoType.AutoTypeWithFabricationMode;
-            var value2 = outerType.AutoTypeWithRequiredProperties;
+        Then("The expected value was injected", 10, expected => Verify.That(value.X.IsEqualTo(expected)));
+    }
 
-            Then("The expected value was injected", 10, (expected) => Verify.That(value.X.IsEqualTo(expected)));
-        }
-        
-        [Test]
-        public void BuildersCanBeAutomaticallyGenerated() {
-            IAutoDependencyTestInjector injector = Given("A test injector", () => new AutoDependencyTestInjector());
-            AutoBuilderType autoBuilderType = When("Getting a auto builder type", () => new AutoBuilderType());
-            AutoBuilderType labeledAutoBuilderType = When("Getting a labeled auto builder type", () => new AutoBuilderType());
+    [Test]
+    public void BuildersCanBeAutomaticallyGenerated() {
+        IAutoDependencyTestInjector injector = Given("A test injector", () => new AutoDependencyTestInjector());
+        var autoBuilderType = When("Getting a auto builder type", () => new AutoBuilderType());
+        var labeledAutoBuilderType = When("Getting a labeled auto builder type", () => new AutoBuilderType());
 
-            When("Getting a injecting the auto builder value", () => injector.BuildAutoBuilderType(autoBuilderType));
-            Then("The expected value was injected", IntValue, (expected) => Verify.That(autoBuilderType.Value.IsEqualTo(expected)));
-            
-            When("Getting a injecting the labeled auto builder value", () => injector.BuildLabeledAutoBuilderType(labeledAutoBuilderType));
-            Then("The expected value was injected", IntValue + IntValue, (expected) => Verify.That(labeledAutoBuilderType.Value.IsEqualTo(expected)));
-        }
-        
-        [Test]
-        public void BuildersCanBeAutomaticallyGeneratedForAutoConstructedTypes() {
-            IAutoDependencyTestInjector injector = Given("A test injector", () => new AutoDependencyTestInjector());
-            AutoBuilderType autoBuilderType = When("Getting a auto builder type from injector", () => injector.GetAutoBuilderType());
+        When("Getting a injecting the auto builder value", () => injector.BuildAutoBuilderType(autoBuilderType));
+        Then("The expected value was injected",
+            IntValue,
+            expected => Verify.That(autoBuilderType.Value.IsEqualTo(expected)));
 
-            When("Getting a injecting the auto builder value", () => injector.BuildAutoBuilderType(autoBuilderType));
-            Then("The expected value was injected", IntValue, (expected) => Verify.That(autoBuilderType.Value.IsEqualTo(expected)));
-        }
+        When("Getting a injecting the labeled auto builder value",
+            () => injector.BuildLabeledAutoBuilderType(labeledAutoBuilderType));
+        Then("The expected value was injected",
+            IntValue + IntValue,
+            expected => Verify.That(labeledAutoBuilderType.Value.IsEqualTo(expected)));
+    }
+
+    [Test]
+    public void BuildersCanBeAutomaticallyGeneratedForAutoConstructedTypes() {
+        IAutoDependencyTestInjector injector = Given("A test injector", () => new AutoDependencyTestInjector());
+        var autoBuilderType = When("Getting a auto builder type from injector", () => injector.GetAutoBuilderType());
+
+        When("Getting a injecting the auto builder value", () => injector.BuildAutoBuilderType(autoBuilderType));
+        Then("The expected value was injected",
+            IntValue,
+            expected => Verify.That(autoBuilderType.Value.IsEqualTo(expected)));
     }
 }

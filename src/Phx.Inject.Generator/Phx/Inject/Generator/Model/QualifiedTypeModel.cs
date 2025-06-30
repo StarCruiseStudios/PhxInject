@@ -6,17 +6,17 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Model {
-    internal record QualifiedTypeModel(
-        TypeModel TypeModel,
-        string Qualifier
-    ) {
-        public const string NoQualifier = "";
+namespace Phx.Inject.Generator.Model;
 
-        public override string ToString() {
-            return string.IsNullOrEmpty(Qualifier)
-                ? TypeModel.ToString()
-                : $"[{Qualifier}] {TypeModel}";
-        }
+internal record QualifiedTypeModel(
+    TypeModel TypeModel,
+    string Qualifier
+) {
+    public const string NoQualifier = "";
+
+    public override string ToString() {
+        return string.IsNullOrEmpty(Qualifier)
+            ? TypeModel.ToString()
+            : $"[{Qualifier}] {TypeModel}";
     }
 }

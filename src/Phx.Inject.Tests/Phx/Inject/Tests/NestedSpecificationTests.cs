@@ -6,55 +6,55 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Tests {
-    using NUnit.Framework;
-    using Phx.Inject.Tests.Data.Model;
-    using Phx.Test;
-    using Phx.Validation;
+using NUnit.Framework;
+using Phx.Inject.Tests.Data.Model;
+using Phx.Test;
+using Phx.Validation;
 
-    #region injector
-    
+namespace Phx.Inject.Tests;
+
+#region injector
+
+[Specification]
+internal static class OuterNestedSpecification {
+    [Factory]
+    public static IntLeaf GetIntLeaf(int intValue) {
+        return new IntLeaf(intValue);
+    }
+
     [Specification]
-    internal static class OuterNestedSpecification {
+    internal static class Inner {
+        public const int IntValue = 101;
+
         [Factory]
-        public static IntLeaf GetIntLeaf(int intValue) {
-            return new IntLeaf(intValue);
-        }
-
-        [Specification]
-        internal static class Inner {
-            public const int IntValue = 101;
-
-            [Factory]
-            public static int GetIntValue() {
-                return IntValue;
-            }
+        public static int GetIntValue() {
+            return IntValue;
         }
     }
-    
-    [Injector(
-        typeof(OuterNestedSpecification),
-        typeof(OuterNestedSpecification.Inner))]
-    internal interface INestedSpecInjector {
-        public IntLeaf GetIntLeaf();
-    }
-    
-    #endregion injector
-    
-    public class NestedSpecificationTests : LoggingTestClass {
-        [Test]
-        public void NestedSpecificationsAreReferencedCorrectly() {
-            INestedSpecInjector injector = Given(
-                "A test injector that references a nested spec.",
-                () => new GeneratedNestedSpecInjector());
+}
 
-            var leaf = When(
-                "A factory method is invoked on the injector.",
-                () => injector.GetIntLeaf());
+[Injector(
+    typeof(OuterNestedSpecification),
+    typeof(OuterNestedSpecification.Inner))]
+internal interface INestedSpecInjector {
+    public IntLeaf GetIntLeaf();
+}
 
-            Then(
-                "The value from the nested spec was returned",
-                () => Verify.That(leaf.Value.IsEqualTo(OuterNestedSpecification.Inner.IntValue)));
-        }
+#endregion injector
+
+public class NestedSpecificationTests : LoggingTestClass {
+    [Test]
+    public void NestedSpecificationsAreReferencedCorrectly() {
+        INestedSpecInjector injector = Given(
+            "A test injector that references a nested spec.",
+            () => new GeneratedNestedSpecInjector());
+
+        var leaf = When(
+            "A factory method is invoked on the injector.",
+            () => injector.GetIntLeaf());
+
+        Then(
+            "The value from the nested spec was returned",
+            () => Verify.That(leaf.Value.IsEqualTo(OuterNestedSpecification.Inner.IntValue)));
     }
 }

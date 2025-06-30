@@ -6,10 +6,10 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Templates {
-    internal record SpecContainerInstanceHolder(
-        string InstanceQualifiedType,
-        string ReferenceName,
-        bool isContainerScoped
-    );
-}
+namespace Phx.Inject.Generator.Templates;
+
+internal record SpecContainerInstanceHolder(
+    string InstanceQualifiedType,
+    string ReferenceName,
+    bool isContainerScoped
+);
