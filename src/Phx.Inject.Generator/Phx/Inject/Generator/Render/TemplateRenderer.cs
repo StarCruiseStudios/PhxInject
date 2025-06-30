@@ -9,7 +9,8 @@
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
-using Phx.Inject.Generator.Templates;
+using Phx.Inject.Generator.Project;
+using Phx.Inject.Generator.Project.Templates;
 
 namespace Phx.Inject.Generator.Render;
 

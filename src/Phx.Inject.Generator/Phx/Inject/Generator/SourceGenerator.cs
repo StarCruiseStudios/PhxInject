@@ -7,11 +7,12 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Generator.Common;
-using Phx.Inject.Generator.Definitions;
-using Phx.Inject.Generator.Model;
+using Phx.Inject.Common;
+using Phx.Inject.Generator.Abstract;
+using Phx.Inject.Generator.Extract;
+using Phx.Inject.Generator.Map;
+using Phx.Inject.Generator.Project;
 using Phx.Inject.Generator.Render;
-using Phx.Inject.Generator.Templates;
 
 namespace Phx.Inject.Generator;
 
@@ -32,7 +33,7 @@ internal class SourceGenerator : ISourceGenerator {
     public void Execute(GeneratorExecutionContext context) {
         Diagnostics.GeneratorExecutionContext = context;
         try {
-            // Receive: Source code to syntax declarations.
+            // Abstract: Source code to syntax declarations.
             var syntaxReceiver = context.SyntaxReceiver as SourceSyntaxReceiver
                 ?? throw new InjectionException(
                     Diagnostics.UnexpectedError,
@@ -46,8 +47,8 @@ internal class SourceGenerator : ISourceGenerator {
             var injectionContextDefs = new SourceDefMapper(generatorSettings)
                 .MapInjectionContexts(sourceDesc, context);
 
-            // Construct: Defs to templates.
-            var templates = new SourceTemplateConstructor().ConstructTemplates(
+            // Project: Defs to templates.
+            var templates = new SourceTemplateProjector().ConstructTemplates(
                 injectionContextDefs,
                 context);
 

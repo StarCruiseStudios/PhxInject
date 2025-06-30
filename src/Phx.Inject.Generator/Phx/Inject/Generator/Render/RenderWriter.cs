@@ -7,7 +7,7 @@
 // -----------------------------------------------------------------------------
 
 using System.Text;
-using Phx.Inject.Generator.Templates;
+using Phx.Inject.Generator.Project;
 
 namespace Phx.Inject.Generator.Render;
 

@@ -1,0 +1,29 @@
+﻿// -----------------------------------------------------------------------------
+//  <copyright file="InjectorConstructor.cs" company="Star Cruise Studios LLC">
+//      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
+//      Licensed under the Apache License, Version 2.0.
+//      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
+//  </copyright>
+// -----------------------------------------------------------------------------
+
+using Phx.Inject.Generator.Map.Definitions;
+using Phx.Inject.Generator.Project.Templates;
+
+namespace Phx.Inject.Generator.Project;
+
+internal class InjectorProjector {
+    private readonly InjectorTemplate.IBuilder injectorTemplateBuilder;
+
+    public InjectorProjector(InjectorTemplate.IBuilder injectorTemplateBuilder) {
+        this.injectorTemplateBuilder = injectorTemplateBuilder;
+    }
+
+    public InjectorProjector() : this(new InjectorTemplate.Builder()) { }
+
+    public IRenderTemplate Construct(InjectorDef injectorDef, TemplateGenerationContext context) {
+        return new GeneratedFileTemplate(
+            injectorDef.InjectorType.NamespaceName,
+            injectorTemplateBuilder.Build(injectorDef, context),
+            injectorDef.Location);
+    }
+}
