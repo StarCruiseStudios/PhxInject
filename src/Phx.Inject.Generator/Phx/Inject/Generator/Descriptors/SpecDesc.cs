@@ -67,19 +67,19 @@ internal record SpecDesc(
                 .OfType<IMethodSymbol>()
                 .ToImmutableArray();
 
-            IEnumerable<SpecFactoryDesc> factoryReferenceFields = specFields
+            var factoryReferenceFields = specFields
                 .Select(prop => SpecFactoryDescBuilder.BuildFactoryReference(prop, context))
                 .Where(factoryReference => factoryReference != null)
                 .Select(factoryReference => factoryReference!);
-            IEnumerable<SpecFactoryDesc> factoryReferenceProperties = specProperties
+            var factoryReferenceProperties = specProperties
                 .Select(prop => SpecFactoryDescBuilder.BuildFactoryReference(prop, context))
                 .Where(factoryReference => factoryReference != null)
                 .Select(factoryReference => factoryReference!);
-            IEnumerable<SpecFactoryDesc> factoryProperties = specProperties
+            var factoryProperties = specProperties
                 .Select(prop => SpecFactoryDescBuilder.BuildFactory(prop, context))
                 .Where(factory => factory != null)
                 .Select(factory => factory!);
-            IEnumerable<SpecFactoryDesc> factoryMethods = specMethods
+            var factoryMethods = specMethods
                 .Select(method => SpecFactoryDescBuilder.BuildFactory(method, context))
                 .Where(factory => factory != null)
                 .Select(factory => factory!);
@@ -90,17 +90,17 @@ internal record SpecDesc(
                 .Concat(factoryReferenceProperties)
                 .ToImmutableList();
 
-            IEnumerable<SpecBuilderDesc> builderReferenceFields = specFields
+            var builderReferenceFields = specFields
                 .Select(builderReference =>
                     specBuilderDescBuilder.BuildBuilderReference(builderReference))
                 .Where(builderReference => builderReference != null)
                 .Select(builderReference => builderReference!);
-            IEnumerable<SpecBuilderDesc> builderReferenceProperties = specProperties
+            var builderReferenceProperties = specProperties
                 .Select(builderReference =>
                     specBuilderDescBuilder.BuildBuilderReference(builderReference))
                 .Where(builderReference => builderReference != null)
                 .Select(builderReference => builderReference!);
-            IEnumerable<SpecBuilderDesc> builderMethods = specMethods
+            var builderMethods = specMethods
                 .Select(builder => specBuilderDescBuilder.BuildBuilder(builder))
                 .Where(builder => builder != null)
                 .Select(builder => builder!);
@@ -110,7 +110,7 @@ internal record SpecDesc(
                 .Concat(builderReferenceFields)
                 .ToImmutableList();
 
-            IReadOnlyList<AttributeData> linkAttributes = specSymbol.GetLinkAttributes();
+            var linkAttributes = specSymbol.GetLinkAttributes();
             IReadOnlyList<SpecLinkDesc> links =
                 linkAttributes.Select(link => SpecLinkDescBuilder.Build(link, specLocation, context))
                     .ToImmutableList();

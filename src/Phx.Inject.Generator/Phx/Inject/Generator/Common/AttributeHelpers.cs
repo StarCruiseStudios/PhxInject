@@ -31,7 +31,7 @@ internal static class AttributeHelpers {
     private const string SpecificationAttributeClassName = $"Phx.Inject.{SpecificationAttributeBaseName}";
 
     public static AttributeData? GetInjectorAttribute(this ISymbol injectorInterfaceSymbol) {
-        IReadOnlyList<AttributeData> injectorAttributes =
+        var injectorAttributes =
             GetAttributes(injectorInterfaceSymbol, InjectorAttributeClassName);
         return injectorAttributes.Count switch {
             0 => null,
@@ -56,7 +56,7 @@ internal static class AttributeHelpers {
     }
 
     public static AttributeData? GetSpecificationAttribute(this ISymbol specificationSymbol) {
-        IReadOnlyList<AttributeData> specificationAttributes =
+        var specificationAttributes =
             GetAttributes(specificationSymbol, SpecificationAttributeClassName);
         return specificationAttributes.Count switch {
             0 => null,
@@ -81,7 +81,7 @@ internal static class AttributeHelpers {
     }
 
     public static AttributeData? GetBuilderAttribute(this ISymbol builderSymbol) {
-        IReadOnlyList<AttributeData> builderAttributes = GetAttributes(builderSymbol, BuilderAttributeClassName);
+        var builderAttributes = GetAttributes(builderSymbol, BuilderAttributeClassName);
         var numBuilderAttributes = builderAttributes.Count;
         if (numBuilderAttributes == 0) {
             return null;
@@ -107,7 +107,7 @@ internal static class AttributeHelpers {
     }
 
     public static AttributeData? GetBuilderReferenceAttributes(this ISymbol builderReferenceSymbol) {
-        IReadOnlyList<AttributeData> builderReferenceAttribute =
+        var builderReferenceAttribute =
             GetAttributes(builderReferenceSymbol, BuilderReferenceAttributeClassName);
         var numBuilderReferenceAttributes = builderReferenceAttribute.Count;
         if (numBuilderReferenceAttributes == 0) {
@@ -152,7 +152,7 @@ internal static class AttributeHelpers {
         string attributeAttributeClassName) {
         return symbol.GetAttributes()
             .Where(attributeData => {
-                IReadOnlyList<AttributeData> attributeAttributes = GetAttributes(
+                var attributeAttributes = GetAttributes(
                     attributeData.AttributeClass!,
                     attributeAttributeClassName);
                 return attributeAttributes.Count > 0;

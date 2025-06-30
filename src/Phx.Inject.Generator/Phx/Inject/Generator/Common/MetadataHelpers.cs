@@ -28,7 +28,7 @@ internal static class MetadataHelpers {
     }
 
     public static IReadOnlyList<ITypeSymbol> GetDependencyTypes(ISymbol injectorSymbol) {
-        IReadOnlyList<AttributeData> dependencyAttributes = injectorSymbol.GetDependencyAttributes();
+        var dependencyAttributes = injectorSymbol.GetDependencyAttributes();
         return dependencyAttributes.SelectMany(attributeData => {
                 return attributeData.ConstructorArguments
                     .Where(argument => argument.Kind == TypedConstantKind.Type)
@@ -136,8 +136,8 @@ internal static class MetadataHelpers {
     }
 
     public static string GetQualifier(ISymbol symbol) {
-        IReadOnlyList<AttributeData> labelAttributes = symbol.GetLabelAttributes();
-        IReadOnlyList<AttributeData> qualifierAttributes = symbol.GetQualifierAttributes();
+        var labelAttributes = symbol.GetLabelAttributes();
+        var qualifierAttributes = symbol.GetQualifierAttributes();
         var numLabels = labelAttributes.Count();
         var numQualifiers = qualifierAttributes.Count();
 

@@ -88,7 +88,7 @@ internal record InjectionContextDef(
                 foreach (var link in specDesc.Links) {
                     if (factoryRegistrations.TryGetValue(
                         RegistrationIdentifier.FromQualifiedTypeModel(link.InputType),
-                        out List<FactoryRegistration>? targetRegistration)) {
+                        out var targetRegistration)) {
                         factoryRegistrations.Add(
                             RegistrationIdentifier.FromQualifiedTypeModel(link.ReturnType),
                             targetRegistration);

@@ -281,13 +281,13 @@ internal record InjectorTemplate(
                                 specType.GetVariableName()))
                             .ToImmutableList();
 
-                        IEnumerable<InjectorChildConstructedSpecConstructorArgumentTemplate> specConstructorArgs =
+                        var specConstructorArgs =
                             childConstructorParameters.Select(parameter =>
                                 new InjectorChildConstructedSpecConstructorArgumentTemplate(
                                     parameter.ParameterName,
                                     parameter.ParameterName,
                                     childInjector.Location));
-                        IEnumerable<InjectorChildDependencyConstructorArgumentTemplate> dependencyConstructorArgs =
+                        var dependencyConstructorArgs =
                             childInjector.Dependencies
                                 .Select(dependencyInterfaceType => {
                                     var dependencyImplementation =

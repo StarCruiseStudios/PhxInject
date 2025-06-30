@@ -24,15 +24,15 @@ internal class SourceTemplateConstructor {
             IReadOnlyList<InjectorDef> injectorDefs = injectionContextDefs
                 .Select(injectionContextDef => injectionContextDef.Injector)
                 .ToImmutableList();
-            IReadOnlyDictionary<TypeModel, InjectorDef> injectorDefMap = CreateTypeMap(
+            var injectorDefMap = CreateTypeMap(
                 injectorDefs,
                 injector => injector.InjectorInterfaceType);
 
             return injectionContextDefs.SelectMany(injectionContextDef => {
-                    IReadOnlyDictionary<TypeModel, SpecContainerDef> specDefMap = CreateTypeMap(
+                    var specDefMap = CreateTypeMap(
                         injectionContextDef.SpecContainers,
                         spec => spec.SpecificationType);
-                    IReadOnlyDictionary<TypeModel, DependencyImplementationDef> dependencyDefMap = CreateTypeMap(
+                    var dependencyDefMap = CreateTypeMap(
                         injectionContextDef.DependencyImplementations,
                         dep => dep.DependencyInterfaceType);
 

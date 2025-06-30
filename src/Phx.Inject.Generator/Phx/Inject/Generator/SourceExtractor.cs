@@ -17,17 +17,17 @@ internal class SourceExtractor {
         try {
             var descGenerationContext = new DescGenerationContext(context);
 
-            IReadOnlyList<InjectorDesc> injectorDescs = new InjectorExtractor().Extract(
+            var injectorDescs = new InjectorExtractor().Extract(
                 syntaxReceiver.InjectorCandidates,
                 descGenerationContext);
             Logger.Info($"Discovered {injectorDescs.Count} injector types.");
 
-            IReadOnlyList<SpecDesc> specDescs = new SpecExtractor().Extract(
+            var specDescs = new SpecExtractor().Extract(
                 syntaxReceiver.SpecificationCandidates,
                 descGenerationContext);
             Logger.Info($"Discovered {specDescs.Count} specification types.");
 
-            IReadOnlyList<DependencyDesc> dependencyDescs = new DependencyExtractor().Extract(
+            var dependencyDescs = new DependencyExtractor().Extract(
                 syntaxReceiver.InjectorCandidates,
                 descGenerationContext);
             Logger.Info($"Discovered {dependencyDescs.Count} dependency types.");

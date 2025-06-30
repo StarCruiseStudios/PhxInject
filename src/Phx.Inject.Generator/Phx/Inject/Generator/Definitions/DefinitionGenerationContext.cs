@@ -81,7 +81,7 @@ internal record DefGenerationContext(
         }
 
         var key = RegistrationIdentifier.FromQualifiedTypeModel(factoryType);
-        if (FactoryRegistrations.TryGetValue(key, out List<FactoryRegistration>? factoryRegistration)) {
+        if (FactoryRegistrations.TryGetValue(key, out var factoryRegistration)) {
             IReadOnlyList<SpecContainerFactorySingleInvocationDef> singleInvocationDefs = factoryRegistration
                 .Select(reg => {
                     var specContainerType = TypeHelpers.CreateSpecContainerType(

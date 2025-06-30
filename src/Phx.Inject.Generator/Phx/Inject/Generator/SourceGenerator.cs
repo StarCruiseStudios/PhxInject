@@ -43,11 +43,11 @@ internal class SourceGenerator : ISourceGenerator {
             var sourceDesc = new SourceExtractor().Extract(syntaxReceiver, context);
 
             // Map: Descriptors to defs.
-            IReadOnlyList<InjectionContextDef> injectionContextDefs = new SourceDefMapper(generatorSettings)
+            var injectionContextDefs = new SourceDefMapper(generatorSettings)
                 .MapInjectionContexts(sourceDesc, context);
 
             // Construct: Defs to templates.
-            IReadOnlyList<(TypeModel, IRenderTemplate)> templates = new SourceTemplateConstructor().ConstructTemplates(
+            var templates = new SourceTemplateConstructor().ConstructTemplates(
                 injectionContextDefs,
                 context);
 

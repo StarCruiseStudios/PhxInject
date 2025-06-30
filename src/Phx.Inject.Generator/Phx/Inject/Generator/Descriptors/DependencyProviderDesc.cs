@@ -46,7 +46,7 @@ internal record DependencyProviderDesc(
                     providerLocation);
             }
 
-            IReadOnlyList<AttributeData> partialAttributes = providerMethod.GetPartialAttributes();
+            var partialAttributes = providerMethod.GetPartialAttributes();
 
             var qualifier = MetadataHelpers.GetQualifier(providerMethod);
             var returnTypeModel = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
@@ -65,7 +65,7 @@ internal record DependencyProviderDesc(
         }
 
         private static bool GetIsPartial(ISymbol factorySymbol) {
-            IReadOnlyList<AttributeData> partialAttributes = factorySymbol.GetPartialAttributes();
+            var partialAttributes = factorySymbol.GetPartialAttributes();
             return partialAttributes.Any();
         }
     }

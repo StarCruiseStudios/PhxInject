@@ -36,7 +36,7 @@ internal record SpecBuilderDesc(
                 return null;
             }
 
-            IReadOnlyList<QualifiedTypeModel> methodParameterTypes =
+            var methodParameterTypes =
                 MetadataHelpers.GetMethodParametersQualifiedTypes(builderMethod);
             if (methodParameterTypes.Count == 0) {
                 throw new InjectionException(
@@ -86,7 +86,7 @@ internal record SpecBuilderDesc(
             }
 
             var builderMethod = builderMethods.First();
-            IReadOnlyList<QualifiedTypeModel> methodParameterTypes =
+            var methodParameterTypes =
                 MetadataHelpers.GetMethodParametersQualifiedTypes(builderMethod);
             if (methodParameterTypes.Count == 0) {
                 throw new InjectionException(
@@ -126,7 +126,7 @@ internal record SpecBuilderDesc(
                 builderProperty.Type,
                 builderReferenceLocation,
                 out var builtType,
-                out IEnumerable<QualifiedTypeModel> parameterTypes);
+                out var parameterTypes);
 
             return new SpecBuilderDesc(
                 builtType,
@@ -148,7 +148,7 @@ internal record SpecBuilderDesc(
                 builderField.Type,
                 builderReferenceLocation,
                 out var builtType,
-                out IEnumerable<QualifiedTypeModel> parameterTypes);
+                out var parameterTypes);
 
             return new SpecBuilderDesc(
                 builtType,

@@ -27,13 +27,13 @@ internal class SourceDefMapper {
         GeneratorExecutionContext context
     ) {
         try {
-            IReadOnlyDictionary<TypeModel, InjectorDesc> injectorDescMap = CreateTypeMap(
+            var injectorDescMap = CreateTypeMap(
                 sourceDesc.injectorDescs,
                 injector => injector.InjectorInterfaceType);
-            IReadOnlyDictionary<TypeModel, SpecDesc> specDescMap = CreateTypeMap(
+            var specDescMap = CreateTypeMap(
                 sourceDesc.GetAllSpecDescs(),
                 spec => spec.SpecType);
-            IReadOnlyDictionary<TypeModel, DependencyDesc> dependencyDescMap = CreateTypeMap(
+            var dependencyDescMap = CreateTypeMap(
                 sourceDesc.dependencyDescs,
                 dep => dep.DependencyInterfaceType);
 

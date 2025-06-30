@@ -28,7 +28,7 @@ internal record SpecFactoryDesc(
         Location constructorFactoryLocation,
         out SpecFactoryMethodFabricationMode fabricationMode
     ) {
-        IReadOnlyList<AttributeData> factoryAttributes = constructorFactoryType.GetFactoryAttributes();
+        var factoryAttributes = constructorFactoryType.GetFactoryAttributes();
         var numFactoryAttributes = factoryAttributes.Count;
         if (numFactoryAttributes == 0) {
             // This is an implicit constructor factory.
@@ -56,7 +56,7 @@ internal record SpecFactoryDesc(
         DescGenerationContext context,
         out SpecFactoryMethodFabricationMode fabricationMode
     ) {
-        IReadOnlyList<AttributeData> factoryAttributes = factorySymbol.GetFactoryAttributes();
+        var factoryAttributes = factorySymbol.GetFactoryAttributes();
         var numFactoryAttributes = factoryAttributes.Count;
         if (numFactoryAttributes == 0) {
             // This is not a factory method.
@@ -71,7 +71,7 @@ internal record SpecFactoryDesc(
                 factoryLocation);
         }
 
-        IReadOnlyList<AttributeData> factoryReferenceAttributes = factorySymbol.GetFactoryReferenceAttributes();
+        var factoryReferenceAttributes = factorySymbol.GetFactoryReferenceAttributes();
         if (factoryReferenceAttributes.Count > 0) {
             // Cannot be a factory and a factory reference.
             throw new InjectionException(
@@ -93,7 +93,7 @@ internal record SpecFactoryDesc(
         DescGenerationContext context,
         out SpecFactoryMethodFabricationMode fabricationMode
     ) {
-        IReadOnlyList<AttributeData> factoryReferenceAttributes =
+        var factoryReferenceAttributes =
             factoryReferenceSymbol.GetFactoryReferenceAttributes();
         var numFactoryReferenceAttributes = factoryReferenceAttributes.Count;
         if (numFactoryReferenceAttributes == 0) {
@@ -109,7 +109,7 @@ internal record SpecFactoryDesc(
                 factoryReferenceLocation);
         }
 
-        IReadOnlyList<AttributeData> factoryAttributes = factoryReferenceSymbol.GetFactoryAttributes();
+        var factoryAttributes = factoryReferenceSymbol.GetFactoryAttributes();
         if (factoryAttributes.Count > 0) {
             // Cannot be a factory and a factory reference.
             throw new InjectionException(
@@ -141,7 +141,7 @@ internal record SpecFactoryDesc(
                 factoryReferenceLocation);
         }
 
-        ImmutableArray<ITypeSymbol> typeArguments = referenceTypeSymbol.TypeArguments;
+        var typeArguments = referenceTypeSymbol.TypeArguments;
 
         var qualifier = MetadataHelpers.GetQualifier(factoryReferenceSymbol);
         var returnTypeModel = TypeModel.FromTypeSymbol(typeArguments[typeArguments.Length - 1]);
@@ -158,7 +158,7 @@ internal record SpecFactoryDesc(
     }
 
     private static bool GetIsPartial(ISymbol factorySymbol) {
-        IReadOnlyList<AttributeData> partialAttributes = factorySymbol.GetPartialAttributes();
+        var partialAttributes = factorySymbol.GetPartialAttributes();
         return partialAttributes.Any();
     }
 
@@ -192,9 +192,9 @@ internal record SpecFactoryDesc(
             var factoryLocation = factorySymbol.Locations.First();
             TryGetConstructorFactoryFabricationMode(factorySymbol, factoryLocation, out var fabricationMode);
 
-            IReadOnlyList<QualifiedTypeModel> constructorParameterTypes =
+            var constructorParameterTypes =
                 MetadataHelpers.GetConstructorParameterQualifiedTypes(factorySymbol);
-            IEnumerable<SpecFactoryRequiredPropertyDesc> requiredProperties = MetadataHelpers
+            var requiredProperties = MetadataHelpers
                 .GetRequiredPropertyQualifiedTypes(factorySymbol)
                 .Select(property => new SpecFactoryRequiredPropertyDesc(property.Value, property.Key, factoryLocation));
             var qualifier = MetadataHelpers.GetQualifier(factorySymbol);
@@ -223,7 +223,7 @@ internal record SpecFactoryDesc(
                 return null;
             }
 
-            IReadOnlyList<QualifiedTypeModel> methodParameterTypes =
+            var methodParameterTypes =
                 MetadataHelpers.GetMethodParametersQualifiedTypes(factoryMethod);
 
             var qualifier = MetadataHelpers.GetQualifier(factoryMethod);
@@ -295,7 +295,7 @@ internal record SpecFactoryDesc(
                 factoryReferenceProperty.Type,
                 factoryReferenceLocation,
                 out var returnType,
-                out IEnumerable<QualifiedTypeModel> parameterTypes);
+                out var parameterTypes);
             var isPartial = GetIsPartial(factoryReferenceProperty);
             TypeHelpers.ValidatePartialType(returnType, isPartial, factoryReferenceLocation);
 
@@ -327,7 +327,7 @@ internal record SpecFactoryDesc(
                 factoryReferenceField.Type,
                 factoryReferenceLocation,
                 out var returnType,
-                out IEnumerable<QualifiedTypeModel> parameterTypes);
+                out var parameterTypes);
             var isPartial = GetIsPartial(factoryReferenceField);
             TypeHelpers.ValidatePartialType(returnType, isPartial, factoryReferenceLocation);
 
