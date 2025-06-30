@@ -11,15 +11,15 @@ using Phx.Inject.Generator.Map.Definitions;
 namespace Phx.Inject.Generator.Map;
 
 internal class InjectionDefMapper {
-    private readonly InjectionContextDef.IBuilder injectionContextDefBuilder;
+    private readonly InjectionContextDef.IMapper injectionContextDefMapper;
 
-    public InjectionDefMapper(InjectionContextDef.IBuilder injectionContextDefBuilder) {
-        this.injectionContextDefBuilder = injectionContextDefBuilder;
+    public InjectionDefMapper(InjectionContextDef.IMapper injectionContextDefMapper) {
+        this.injectionContextDefMapper = injectionContextDefMapper;
     }
 
-    public InjectionDefMapper() : this(new InjectionContextDef.Builder()) { }
+    public InjectionDefMapper() : this(new InjectionContextDef.Mapper()) { }
 
     public InjectionContextDef Map(DefGenerationContext context) {
-        return injectionContextDefBuilder.Build(context.Injector, context);
+        return injectionContextDefMapper.Map(context.Injector, context);
     }
 }

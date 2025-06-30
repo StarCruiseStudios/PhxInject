@@ -154,17 +154,17 @@ internal record InjectorTemplate(
         string? ConstructorArgumentName
     );
     
-    public interface IBuilder {
-        InjectorTemplate Build(
+    public interface IProjector {
+        InjectorTemplate Project(
             InjectorDef injectorDef,
             TemplateGenerationContext context
         );
     }
 
-    public class Builder : IBuilder {
+    public class Projector : IProjector {
         private const string SpecContainerCollectionReferenceName = "specContainers";
 
-        public InjectorTemplate Build(
+        public InjectorTemplate Project(
             InjectorDef injectorDef,
             TemplateGenerationContext context
         ) {

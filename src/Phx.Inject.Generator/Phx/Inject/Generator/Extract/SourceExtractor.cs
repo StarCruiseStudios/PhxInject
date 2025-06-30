@@ -14,21 +14,41 @@ using Phx.Inject.Generator.Extract.Descriptors;
 namespace Phx.Inject.Generator.Extract;
 
 internal class SourceExtractor {
+    private readonly IInjectorExtractor injectorExtractor;
+    private readonly ISpecExtractor specExtractor;
+    private readonly IDependencyExtractor dependencyExtractor;
+
+    public SourceExtractor(
+        IInjectorExtractor injectorExtractor,
+        ISpecExtractor specExtractor,
+        IDependencyExtractor dependencyExtractor
+    ) {
+        this.injectorExtractor = injectorExtractor;
+        this.specExtractor = specExtractor;
+        this.dependencyExtractor = dependencyExtractor;
+    }
+    
+    public SourceExtractor() : this(
+        new InjectorExtractor(),
+        new SpecExtractor(),
+        new DependencyExtractor()
+    ) { }
+    
     public SourceDesc Extract(SourceSyntaxReceiver syntaxReceiver, GeneratorExecutionContext context) {
         try {
             var descGenerationContext = new DescGenerationContext(context);
 
-            var injectorDescs = new InjectorExtractor().Extract(
+            var injectorDescs = injectorExtractor.Extract(
                 syntaxReceiver.InjectorCandidates,
                 descGenerationContext);
             Logger.Info($"Discovered {injectorDescs.Count} injector types.");
 
-            var specDescs = new SpecExtractor().Extract(
+            var specDescs = specExtractor.Extract(
                 syntaxReceiver.SpecificationCandidates,
                 descGenerationContext);
             Logger.Info($"Discovered {specDescs.Count} specification types.");
 
-            var dependencyDescs = new DependencyExtractor().Extract(
+            var dependencyDescs = dependencyExtractor.Extract(
                 syntaxReceiver.InjectorCandidates,
                 descGenerationContext);
             Logger.Info($"Discovered {dependencyDescs.Count} dependency types.");

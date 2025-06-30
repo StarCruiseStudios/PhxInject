@@ -20,15 +20,15 @@ internal record SpecBuilderDesc(
     IEnumerable<QualifiedTypeModel> Parameters,
     Location Location
 ) : IDescriptor {
-    public interface IBuilder {
-        SpecBuilderDesc? BuildBuilder(IMethodSymbol builderMethod);
-        SpecBuilderDesc BuildDirectBuilder(QualifiedTypeModel builderType);
-        SpecBuilderDesc? BuildBuilderReference(IPropertySymbol builderProperty);
-        SpecBuilderDesc? BuildBuilderReference(IFieldSymbol builderField);
+    public interface IExtractor {
+        SpecBuilderDesc? ExtractBuilder(IMethodSymbol builderMethod);
+        SpecBuilderDesc ExtractDirectBuilder(QualifiedTypeModel builderType);
+        SpecBuilderDesc? ExtractBuilderReference(IPropertySymbol builderProperty);
+        SpecBuilderDesc? ExtractBuilderReference(IFieldSymbol builderField);
     }
 
-    public class Builder : IBuilder {
-        public SpecBuilderDesc? BuildBuilder(IMethodSymbol builderMethod) {
+    public class Extractor : IExtractor {
+        public SpecBuilderDesc? ExtractBuilder(IMethodSymbol builderMethod) {
             var builderLocation = builderMethod.Locations.First();
 
             if (!ValidateBuilder(builderMethod, builderLocation)) {
@@ -62,7 +62,7 @@ internal record SpecBuilderDesc(
                 builderLocation);
         }
 
-        public SpecBuilderDesc BuildDirectBuilder(QualifiedTypeModel builderType) {
+        public SpecBuilderDesc ExtractDirectBuilder(QualifiedTypeModel builderType) {
             var builderLocation = builderType.TypeModel.typeSymbol.Locations.First();
             IReadOnlyList<IMethodSymbol> builderMethods = MetadataHelpers
                 .GetDirectBuilderMethods(builderType.TypeModel.typeSymbol)
@@ -114,7 +114,7 @@ internal record SpecBuilderDesc(
                 builderLocation);
         }
 
-        public SpecBuilderDesc? BuildBuilderReference(IPropertySymbol builderProperty) {
+        public SpecBuilderDesc? ExtractBuilderReference(IPropertySymbol builderProperty) {
             var builderReferenceLocation = builderProperty.Locations.First();
 
             if (!ValidateBuilderReference(builderProperty, builderReferenceLocation)) {
@@ -136,7 +136,7 @@ internal record SpecBuilderDesc(
                 builderReferenceLocation);
         }
 
-        public SpecBuilderDesc? BuildBuilderReference(IFieldSymbol builderField) {
+        public SpecBuilderDesc? ExtractBuilderReference(IFieldSymbol builderField) {
             var builderReferenceLocation = builderField.Locations.First();
 
             if (!ValidateBuilderReference(builderField, builderReferenceLocation)) {

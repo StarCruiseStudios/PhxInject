@@ -14,14 +14,21 @@ using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract;
 
-internal class InjectorExtractor {
-    private readonly InjectorDesc.IBuilder injectorDescBuilder;
+internal interface IInjectorExtractor {
+    IReadOnlyList<InjectorDesc> Extract(
+        IEnumerable<TypeDeclarationSyntax> syntaxNodes,
+        DescGenerationContext context
+    );
+}
 
-    public InjectorExtractor(InjectorDesc.IBuilder injectorDescBuilder) {
-        this.injectorDescBuilder = injectorDescBuilder;
+internal class InjectorExtractor : IInjectorExtractor {
+    private readonly InjectorDesc.IExtractor injectorDescExtractor;
+
+    public InjectorExtractor(InjectorDesc.IExtractor injectorDescExtractor) {
+        this.injectorDescExtractor = injectorDescExtractor;
     }
 
-    public InjectorExtractor() : this(new InjectorDesc.Builder()) { }
+    public InjectorExtractor() : this(new InjectorDesc.Extractor()) { }
 
     public IReadOnlyList<InjectorDesc> Extract(
         IEnumerable<TypeDeclarationSyntax> syntaxNodes,
@@ -29,7 +36,7 @@ internal class InjectorExtractor {
     ) {
         return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
             .Where(IsInjectorSymbol)
-            .Select(symbol => injectorDescBuilder.Build(symbol, context))
+            .Select(symbol => injectorDescExtractor.Extract(symbol, context))
             .ToImmutableList();
     }
 

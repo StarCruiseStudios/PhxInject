@@ -165,19 +165,19 @@ internal record SpecContainerTemplate(
         bool isContainerScoped
     );
     
-    public interface IBuilder {
-        SpecContainerTemplate Build(
+    public interface IProjector {
+        SpecContainerTemplate Project(
             SpecContainerDef specContainerDef,
             TemplateGenerationContext context
         );
     }
 
-    public class Builder : IBuilder {
+    public class Projector : IProjector {
         private const string SpecReferenceName = "instance";
         private const string SpecContainerCollectionReferenceName = "specContainers";
         private const string BuiltInstanceReferenceName = "target";
 
-        public SpecContainerTemplate Build(
+        public SpecContainerTemplate Project(
             SpecContainerDef specContainerDef,
             TemplateGenerationContext context
         ) {

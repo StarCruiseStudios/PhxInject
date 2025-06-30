@@ -14,15 +14,22 @@ using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract;
 
-internal class DependencyExtractor {
-    private readonly DependencyDesc.IBuilder dependencyDescBuilder;
+internal interface IDependencyExtractor {
+    IReadOnlyList<DependencyDesc> Extract(
+        IEnumerable<TypeDeclarationSyntax> syntaxNodes,
+        DescGenerationContext context
+    );
+}
 
-    public DependencyExtractor(DependencyDesc.IBuilder dependencyDescBuilder) {
-        this.dependencyDescBuilder = dependencyDescBuilder;
+internal class DependencyExtractor : IDependencyExtractor {
+    private readonly DependencyDesc.IExtractor dependencyDescExtractor;
+
+    public DependencyExtractor(DependencyDesc.IExtractor dependencyDescExtractor) {
+        this.dependencyDescExtractor = dependencyDescExtractor;
     }
 
     public DependencyExtractor() : this(
-        new DependencyDesc.Builder(new DependencyProviderDesc.Builder())) { }
+        new DependencyDesc.Extractor(new DependencyProviderDesc.Extractor())) { }
 
     public IReadOnlyList<DependencyDesc> Extract(
         IEnumerable<TypeDeclarationSyntax> syntaxNodes,
@@ -33,7 +40,7 @@ internal class DependencyExtractor {
             .GroupBy(typeSymbol => typeSymbol, SymbolEqualityComparer.Default)
             .Select(group => group.First())
             .Where(IsDependencySymbol)
-            .Select(type => dependencyDescBuilder.Build(type, context))
+            .Select(type => dependencyDescExtractor.Extract(type, context))
             .ToImmutableList();
     }
 

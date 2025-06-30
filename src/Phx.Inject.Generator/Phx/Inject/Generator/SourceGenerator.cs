@@ -45,10 +45,10 @@ internal class SourceGenerator : ISourceGenerator {
 
             // Map: Descriptors to defs.
             var injectionContextDefs = new SourceDefMapper(generatorSettings)
-                .MapInjectionContexts(sourceDesc, context);
+                .Map(sourceDesc, context);
 
             // Project: Defs to templates.
-            var templates = new SourceTemplateProjector().ConstructTemplates(
+            var templates = new SourceTemplateProjector().Project(
                 injectionContextDefs,
                 context);
 

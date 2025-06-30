@@ -17,15 +17,15 @@ internal record ActivatorDesc(
     string BuilderMethodName,
     Location Location
 ) : IDescriptor {
-    public interface IBuilder {
-        ActivatorDesc? Build(
+    public interface IExtractor {
+        ActivatorDesc? Extract(
             IMethodSymbol builderMethod,
             DescGenerationContext context
         );
     }
 
-    public class Builder : IBuilder {
-        public ActivatorDesc? Build(
+    public class Extractor : IExtractor {
+        public ActivatorDesc? Extract(
             IMethodSymbol builderMethod,
             DescGenerationContext context
         ) {

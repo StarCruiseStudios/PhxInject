@@ -21,36 +21,36 @@ internal record SpecDesc(
     IEnumerable<SpecLinkDesc> Links,
     Location Location
 ) : IDescriptor {
-    public interface IBuilder {
-        SpecDesc Build(ITypeSymbol specSymbol, DescGenerationContext context);
+    public interface IExtractor {
+        SpecDesc Extract(ITypeSymbol specSymbol, DescGenerationContext context);
 
-        SpecDesc BuildConstructorSpec(
+        SpecDesc ExtractConstructorSpec(
             TypeModel injectorType,
             IReadOnlyList<QualifiedTypeModel> constructorTypes,
             IReadOnlyList<QualifiedTypeModel> builderTypes);
     }
 
-    public class Builder : IBuilder {
-        private readonly SpecBuilderDesc.IBuilder specBuilderDescBuilder;
-        private readonly SpecFactoryDesc.IBuilder SpecFactoryDescBuilder;
-        private readonly SpecLinkDesc.IBuilder SpecLinkDescBuilder;
+    public class Extractor : IExtractor {
+        private readonly SpecBuilderDesc.IExtractor specExtractorDescExtractor;
+        private readonly SpecFactoryDesc.IExtractor specFactoryDescExtractor;
+        private readonly SpecLinkDesc.IExtractor specLinkDescExtractor;
 
-        public Builder(
-            SpecFactoryDesc.IBuilder specFactoryDescBuilder,
-            SpecBuilderDesc.IBuilder specBuilderDescBuilder,
-            SpecLinkDesc.IBuilder specLinkDescBuilder
+        public Extractor(
+            SpecFactoryDesc.IExtractor specFactoryDescExtractor,
+            SpecBuilderDesc.IExtractor specExtractorDescExtractor,
+            SpecLinkDesc.IExtractor specLinkDescExtractor
         ) {
-            SpecFactoryDescBuilder = specFactoryDescBuilder;
-            this.specBuilderDescBuilder = specBuilderDescBuilder;
-            SpecLinkDescBuilder = specLinkDescBuilder;
+            this.specFactoryDescExtractor = specFactoryDescExtractor;
+            this.specExtractorDescExtractor = specExtractorDescExtractor;
+            this.specLinkDescExtractor = specLinkDescExtractor;
         }
 
-        public Builder() : this(
-            new SpecFactoryDesc.Builder(),
-            new SpecBuilderDesc.Builder(),
-            new SpecLinkDesc.Builder()) { }
+        public Extractor() : this(
+            new SpecFactoryDesc.Extractor(),
+            new SpecBuilderDesc.Extractor(),
+            new SpecLinkDesc.Extractor()) { }
 
-        public SpecDesc Build(ITypeSymbol specSymbol, DescGenerationContext context) {
+        public SpecDesc Extract(ITypeSymbol specSymbol, DescGenerationContext context) {
             var specLocation = specSymbol.Locations.First();
             var specType = TypeModel.FromTypeSymbol(specSymbol);
             var specInstantiationMode = specSymbol.IsStatic
@@ -68,19 +68,19 @@ internal record SpecDesc(
                 .ToImmutableArray();
 
             var factoryReferenceFields = specFields
-                .Select(prop => SpecFactoryDescBuilder.BuildFactoryReference(prop, context))
+                .Select(prop => specFactoryDescExtractor.ExtractFactoryReference(prop, context))
                 .Where(factoryReference => factoryReference != null)
                 .Select(factoryReference => factoryReference!);
             var factoryReferenceProperties = specProperties
-                .Select(prop => SpecFactoryDescBuilder.BuildFactoryReference(prop, context))
+                .Select(prop => specFactoryDescExtractor.ExtractFactoryReference(prop, context))
                 .Where(factoryReference => factoryReference != null)
                 .Select(factoryReference => factoryReference!);
             var factoryProperties = specProperties
-                .Select(prop => SpecFactoryDescBuilder.BuildFactory(prop, context))
+                .Select(prop => specFactoryDescExtractor.ExtractFactory(prop, context))
                 .Where(factory => factory != null)
                 .Select(factory => factory!);
             var factoryMethods = specMethods
-                .Select(method => SpecFactoryDescBuilder.BuildFactory(method, context))
+                .Select(method => specFactoryDescExtractor.ExtractFactory(method, context))
                 .Where(factory => factory != null)
                 .Select(factory => factory!);
 
@@ -92,16 +92,16 @@ internal record SpecDesc(
 
             var builderReferenceFields = specFields
                 .Select(builderReference =>
-                    specBuilderDescBuilder.BuildBuilderReference(builderReference))
+                    specExtractorDescExtractor.ExtractBuilderReference(builderReference))
                 .Where(builderReference => builderReference != null)
                 .Select(builderReference => builderReference!);
             var builderReferenceProperties = specProperties
                 .Select(builderReference =>
-                    specBuilderDescBuilder.BuildBuilderReference(builderReference))
+                    specExtractorDescExtractor.ExtractBuilderReference(builderReference))
                 .Where(builderReference => builderReference != null)
                 .Select(builderReference => builderReference!);
             var builderMethods = specMethods
-                .Select(builder => specBuilderDescBuilder.BuildBuilder(builder))
+                .Select(builder => specExtractorDescExtractor.ExtractBuilder(builder))
                 .Where(builder => builder != null)
                 .Select(builder => builder!);
 
@@ -112,7 +112,7 @@ internal record SpecDesc(
 
             var linkAttributes = specSymbol.GetLinkAttributes();
             IReadOnlyList<SpecLinkDesc> links =
-                linkAttributes.Select(link => SpecLinkDescBuilder.Build(link, specLocation, context))
+                linkAttributes.Select(link => specLinkDescExtractor.Extract(link, specLocation, context))
                     .ToImmutableList();
             return new SpecDesc(
                 specType,
@@ -123,7 +123,7 @@ internal record SpecDesc(
                 specLocation);
         }
 
-        public SpecDesc BuildConstructorSpec(
+        public SpecDesc ExtractConstructorSpec(
             TypeModel injectorType,
             IReadOnlyList<QualifiedTypeModel> constructorTypes,
             IReadOnlyList<QualifiedTypeModel> builderTypes
@@ -133,11 +133,11 @@ internal record SpecDesc(
             var specInstantiationMode = SpecInstantiationMode.Static;
 
             IReadOnlyList<SpecFactoryDesc> factories = constructorTypes
-                .Select(type => SpecFactoryDescBuilder.BuildConstructorFactory(type))
+                .Select(type => specFactoryDescExtractor.ExtractConstructorFactory(type))
                 .ToImmutableList();
 
             IReadOnlyList<SpecBuilderDesc> builders = builderTypes
-                .Select(type => specBuilderDescBuilder.BuildDirectBuilder(type))
+                .Select(type => specExtractorDescExtractor.ExtractDirectBuilder(type))
                 .ToImmutableList();
 
             return new SpecDesc(

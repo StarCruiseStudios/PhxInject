@@ -16,17 +16,27 @@ using Phx.Inject.Generator.Map;
 
 namespace Phx.Inject.Generator.Extract;
 
-internal class SpecExtractor {
-    private readonly SpecDesc.IBuilder specDescBuilder;
+internal interface ISpecExtractor {
+    SpecDesc? ExtractConstructorSpecForContext(
+        DefGenerationContext context
+    );
+    IReadOnlyList<SpecDesc> Extract(
+        IEnumerable<TypeDeclarationSyntax> syntaxNodes,
+        DescGenerationContext context
+    );
+}
+
+internal class SpecExtractor : ISpecExtractor {
+    private readonly SpecDesc.IExtractor specDescExtractor;
 
     public SpecExtractor(
-        SpecDesc.IBuilder specDescBuilder
+        SpecDesc.IExtractor specDescExtractor
     ) {
-        this.specDescBuilder = specDescBuilder;
+        this.specDescExtractor = specDescExtractor;
     }
 
     public SpecExtractor() : this(
-        new SpecDesc.Builder()
+        new SpecDesc.Extractor()
     ) { }
 
     private HashSet<QualifiedTypeModel> GetAutoConstructorParameterTypes(QualifiedTypeModel type) {
@@ -110,7 +120,7 @@ internal class SpecExtractor {
 
         var needsConstructorSpec = missingTypes.Any() || missingBuilders.Any();
         return needsConstructorSpec
-            ? specDescBuilder.BuildConstructorSpec(
+            ? specDescExtractor.ExtractConstructorSpec(
                 context.Injector.InjectorType,
                 missingTypes,
                 missingBuilders)
@@ -123,7 +133,7 @@ internal class SpecExtractor {
     ) {
         return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
             .Where(IsSpecSymbol)
-            .Select(symbol => specDescBuilder.Build(symbol, context))
+            .Select(symbol => specDescExtractor.Extract(symbol, context))
             .ToImmutableList();
     }
 

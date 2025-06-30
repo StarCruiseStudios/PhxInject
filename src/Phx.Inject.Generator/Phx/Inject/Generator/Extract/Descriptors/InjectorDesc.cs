@@ -28,34 +28,34 @@ internal record InjectorDesc(
         TypeArguments = ImmutableList<TypeModel>.Empty
     };
 
-    public interface IBuilder {
-        InjectorDesc Build(
+    public interface IExtractor {
+        InjectorDesc Extract(
             ITypeSymbol injectorInterfaceSymbol,
             DescGenerationContext context
         );
     }
 
-    public class Builder : IBuilder {
-        private readonly ActivatorDesc.IBuilder injectorBuilderDescBuilder;
-        private readonly InjectorChildFactoryDesc.IBuilder injectorChildFactoryDescBuilder;
-        private readonly InjectorProviderDesc.IBuilder injectorProviderDescriptionBuilder;
+    public class Extractor : IExtractor {
+        private readonly ActivatorDesc.IExtractor injectorExtractorDescExtractor;
+        private readonly InjectorChildFactoryDesc.IExtractor injectorChildFactoryDescExtractor;
+        private readonly InjectorProviderDesc.IExtractor injectorProviderDescriptionExtractor;
 
-        public Builder(
-            InjectorProviderDesc.IBuilder injectorProviderDescriptionBuilder,
-            ActivatorDesc.IBuilder injectorBuilderDescBuilder,
-            InjectorChildFactoryDesc.IBuilder injectorChildFactoryDescBuilder
+        public Extractor(
+            InjectorProviderDesc.IExtractor injectorProviderDescriptionExtractor,
+            ActivatorDesc.IExtractor injectorExtractorDescExtractor,
+            InjectorChildFactoryDesc.IExtractor injectorChildFactoryDescExtractor
         ) {
-            this.injectorProviderDescriptionBuilder = injectorProviderDescriptionBuilder;
-            this.injectorBuilderDescBuilder = injectorBuilderDescBuilder;
-            this.injectorChildFactoryDescBuilder = injectorChildFactoryDescBuilder;
+            this.injectorProviderDescriptionExtractor = injectorProviderDescriptionExtractor;
+            this.injectorExtractorDescExtractor = injectorExtractorDescExtractor;
+            this.injectorChildFactoryDescExtractor = injectorChildFactoryDescExtractor;
         }
 
-        public Builder() : this(
-            new InjectorProviderDesc.Builder(),
-            new ActivatorDesc.Builder(),
-            new InjectorChildFactoryDesc.Builder()) { }
+        public Extractor() : this(
+            new InjectorProviderDesc.Extractor(),
+            new ActivatorDesc.Extractor(),
+            new InjectorChildFactoryDesc.Extractor()) { }
 
-        public InjectorDesc Build(
+        public InjectorDesc Extract(
             ITypeSymbol injectorInterfaceSymbol,
             DescGenerationContext context
         ) {
@@ -79,19 +79,19 @@ internal record InjectorDesc(
                 .ToImmutableList();
 
             IReadOnlyList<InjectorProviderDesc> providers = injectorMethods
-                .Select(method => injectorProviderDescriptionBuilder.Build(method, context))
+                .Select(method => injectorProviderDescriptionExtractor.Extract(method, context))
                 .Where(provider => provider != null)
                 .Select(provider => provider!)
                 .ToImmutableList();
 
             IReadOnlyList<ActivatorDesc> builders = injectorMethods
-                .Select(method => injectorBuilderDescBuilder.Build(method, context))
+                .Select(method => injectorExtractorDescExtractor.Extract(method, context))
                 .Where(builder => builder != null)
                 .Select(builder => builder!)
                 .ToImmutableList();
 
             IReadOnlyList<InjectorChildFactoryDesc> childFactories = injectorMethods
-                .Select(method => injectorChildFactoryDescBuilder.Build(method, context))
+                .Select(method => injectorChildFactoryDescExtractor.Extract(method, context))
                 .Where(childFactory => childFactory != null)
                 .Select(childFactory => childFactory!)
                 .ToImmutableList();

@@ -19,15 +19,15 @@ internal record InjectorChildFactoryDesc(
     IReadOnlyList<TypeModel> Parameters,
     Location Location
 ) : IDescriptor {
-    public interface IBuilder {
-        InjectorChildFactoryDesc? Build(
+    public interface IExtractor {
+        InjectorChildFactoryDesc? Extract(
             IMethodSymbol childInjectorMethod,
             DescGenerationContext context
         );
     }
 
-    public class Builder : IBuilder {
-        public InjectorChildFactoryDesc? Build(
+    public class Extractor : IExtractor {
+        public InjectorChildFactoryDesc? Extract(
             IMethodSymbol childInjectorMethod,
             DescGenerationContext context
         ) {

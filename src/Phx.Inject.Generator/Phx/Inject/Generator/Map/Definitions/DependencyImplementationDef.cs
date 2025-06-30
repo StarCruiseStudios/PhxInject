@@ -20,15 +20,15 @@ internal record DependencyImplementationDef(
     IEnumerable<DependencyProviderMethodDef> ProviderMethodDefs,
     Location Location
 ) : IDefinition {
-    public interface IBuilder {
-        DependencyImplementationDef Build(
+    public interface IMapper {
+        DependencyImplementationDef Map(
             DependencyDesc dependencyDesc,
             DefGenerationContext context
         );
     }
 
-    public class Builder : IBuilder {
-        public DependencyImplementationDef Build(
+    public class Mapper : IMapper {
+        public DependencyImplementationDef Map(
             DependencyDesc dependencyDesc,
             DefGenerationContext context
         ) {

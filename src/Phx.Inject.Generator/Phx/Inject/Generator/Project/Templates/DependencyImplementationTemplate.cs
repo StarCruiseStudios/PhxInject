@@ -56,15 +56,15 @@ internal record DependencyImplementationTemplate(
             .AppendLine("}");
     }
 
-    internal interface IBuilder {
-        DependencyImplementationTemplate Build(
+    internal interface IProjector {
+        DependencyImplementationTemplate Project(
             DependencyImplementationDef dependencyImplementationDef,
             TemplateGenerationContext context
         );
     }
 
-    public class Builder : IBuilder {
-        public DependencyImplementationTemplate Build(
+    public class Projector : IProjector {
+        public DependencyImplementationTemplate Project(
             DependencyImplementationDef dependencyImplementationDef,
             TemplateGenerationContext context
         ) {

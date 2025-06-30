@@ -38,21 +38,21 @@ internal record DependencyDesc(
             Location);
     }
 
-    public interface IBuilder {
-        DependencyDesc Build(
+    public interface IExtractor {
+        DependencyDesc Extract(
             ITypeSymbol dependencyInterfaceSymbol,
             DescGenerationContext context
         );
     }
 
-    public class Builder : IBuilder {
-        private readonly DependencyProviderDesc.IBuilder dependencyProviderDescBuilder;
+    public class Extractor : IExtractor {
+        private readonly DependencyProviderDesc.IExtractor dependencyProviderDescExtractor;
 
-        public Builder(DependencyProviderDesc.IBuilder dependencyProviderDescBuilder) {
-            this.dependencyProviderDescBuilder = dependencyProviderDescBuilder;
+        public Extractor(DependencyProviderDesc.IExtractor dependencyProviderDescExtractor) {
+            this.dependencyProviderDescExtractor = dependencyProviderDescExtractor;
         }
 
-        public DependencyDesc Build(
+        public DependencyDesc Extract(
             ITypeSymbol dependencyInterfaceSymbol,
             DescGenerationContext context
         ) {
@@ -62,7 +62,7 @@ internal record DependencyDesc(
             IReadOnlyList<DependencyProviderDesc> providers = dependencyInterfaceSymbol
                 .GetMembers()
                 .OfType<IMethodSymbol>()
-                .Select(method => dependencyProviderDescBuilder.Build(method, context))
+                .Select(method => dependencyProviderDescExtractor.Extract(method, context))
                 .ToImmutableList();
 
             return new DependencyDesc(

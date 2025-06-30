@@ -22,12 +22,12 @@ internal record SpecContainerDef(
     IEnumerable<SpecContainerBuilderDef> BuilderMethodDefs,
     Location Location
 ) : IDefinition {
-    public interface IBuilder {
-        SpecContainerDef Build(SpecDesc specDesc, DefGenerationContext context);
+    public interface IMapper {
+        SpecContainerDef Map(SpecDesc specDesc, DefGenerationContext context);
     }
 
-    public class Builder : IBuilder {
-        public SpecContainerDef Build(SpecDesc specDesc, DefGenerationContext context) {
+    public class Mapper : IMapper {
+        public SpecContainerDef Map(SpecDesc specDesc, DefGenerationContext context) {
             var specContainerType = TypeHelpers.CreateSpecContainerType(
                 context.Injector.InjectorType,
                 specDesc.SpecType);

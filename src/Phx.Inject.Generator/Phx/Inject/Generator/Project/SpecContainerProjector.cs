@@ -12,21 +12,21 @@ using Phx.Inject.Generator.Project.Templates;
 namespace Phx.Inject.Generator.Project;
 
 internal class SpecContainerProjector {
-    private readonly SpecContainerTemplate.IBuilder specContainerTemplateBuilder;
+    private readonly SpecContainerTemplate.IProjector specContainerTemplateProjector;
 
-    public SpecContainerProjector(SpecContainerTemplate.IBuilder specContainerTemplateBuilder) {
-        this.specContainerTemplateBuilder = specContainerTemplateBuilder;
+    public SpecContainerProjector(SpecContainerTemplate.IProjector specContainerTemplateProjector) {
+        this.specContainerTemplateProjector = specContainerTemplateProjector;
     }
 
-    public SpecContainerProjector() : this(new SpecContainerTemplate.Builder()) { }
+    public SpecContainerProjector() : this(new SpecContainerTemplate.Projector()) { }
 
-    public IRenderTemplate Construct(
+    public IRenderTemplate Project(
         SpecContainerDef specContainerDef,
         TemplateGenerationContext context
     ) {
         return new GeneratedFileTemplate(
             specContainerDef.SpecContainerType.NamespaceName,
-            specContainerTemplateBuilder.Build(specContainerDef, context),
+            specContainerTemplateProjector.Project(specContainerDef, context),
             specContainerDef.Location);
     }
 }

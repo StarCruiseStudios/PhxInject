@@ -16,7 +16,7 @@ using Phx.Inject.Generator.Project.Templates;
 namespace Phx.Inject.Generator.Project;
 
 internal class SourceTemplateProjector {
-    public IReadOnlyList<(TypeModel, IRenderTemplate)> ConstructTemplates(
+    public IReadOnlyList<(TypeModel, IRenderTemplate)> Project(
         IReadOnlyList<InjectionContextDef> injectionContextDefs,
         GeneratorExecutionContext context
     ) {
@@ -48,7 +48,7 @@ internal class SourceTemplateProjector {
                     templates.Add(
                         (
                             injectorDef.InjectorType,
-                            new InjectorProjector().Construct(
+                            new InjectorProjector().Project(
                                 injectorDef,
                                 templateGenerationContext)
                         ));
@@ -59,7 +59,7 @@ internal class SourceTemplateProjector {
                         templates.Add(
                             (
                                 specContainerDef.SpecContainerType,
-                                specContainerPresenter.Construct(
+                                specContainerPresenter.Project(
                                     specContainerDef,
                                     templateGenerationContext)
                             ));

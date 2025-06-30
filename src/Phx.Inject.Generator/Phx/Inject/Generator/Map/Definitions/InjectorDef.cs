@@ -27,12 +27,12 @@ internal record InjectorDef(
     public TypeModel SpecContainerCollectionType { get; }
         = TypeHelpers.CreateSpecContainerCollectionType(InjectorType);
 
-    public interface IBuilder {
-        InjectorDef Build(DefGenerationContext context);
+    public interface IMapper {
+        InjectorDef Map(DefGenerationContext context);
     }
 
-    public class Builder : IBuilder {
-        public InjectorDef Build(DefGenerationContext context) {
+    public class Mapper : IMapper {
+        public InjectorDef Map(DefGenerationContext context) {
             IReadOnlyList<TypeModel> constructedSpecifications = context.Injector.SpecificationsTypes
                 .Where(spec => {
                     var specDesc = context.GetSpec(spec, context.Injector.Location);

@@ -162,30 +162,30 @@ internal record SpecFactoryDesc(
         return partialAttributes.Any();
     }
 
-    public interface IBuilder {
-        SpecFactoryDesc BuildConstructorFactory(
+    public interface IExtractor {
+        SpecFactoryDesc ExtractConstructorFactory(
             QualifiedTypeModel factoryType
         );
-        SpecFactoryDesc? BuildFactory(
+        SpecFactoryDesc? ExtractFactory(
             IMethodSymbol factoryMethod,
             DescGenerationContext context
         );
-        SpecFactoryDesc? BuildFactory(
+        SpecFactoryDesc? ExtractFactory(
             IPropertySymbol factoryProperty,
             DescGenerationContext context
         );
-        SpecFactoryDesc? BuildFactoryReference(
+        SpecFactoryDesc? ExtractFactoryReference(
             IPropertySymbol factoryReferenceProperty,
             DescGenerationContext context
         );
-        SpecFactoryDesc? BuildFactoryReference(
+        SpecFactoryDesc? ExtractFactoryReference(
             IFieldSymbol factoryReferenceField,
             DescGenerationContext context
         );
     }
 
-    public class Builder : IBuilder {
-        public SpecFactoryDesc BuildConstructorFactory(
+    public class Extractor : IExtractor {
+        public SpecFactoryDesc ExtractConstructorFactory(
             QualifiedTypeModel factoryType
         ) {
             var factorySymbol = factoryType.TypeModel.typeSymbol;
@@ -213,7 +213,7 @@ internal record SpecFactoryDesc(
                 factoryLocation);
         }
 
-        public SpecFactoryDesc? BuildFactory(
+        public SpecFactoryDesc? ExtractFactory(
             IMethodSymbol factoryMethod,
             DescGenerationContext context) {
             var factoryLocation = factoryMethod.Locations.First();
@@ -246,7 +246,7 @@ internal record SpecFactoryDesc(
                 factoryLocation);
         }
 
-        public SpecFactoryDesc? BuildFactory(
+        public SpecFactoryDesc? ExtractFactory(
             IPropertySymbol factoryProperty,
             DescGenerationContext context) {
             var factoryLocation = factoryProperty.Locations.First();
@@ -278,7 +278,7 @@ internal record SpecFactoryDesc(
                 factoryLocation);
         }
 
-        public SpecFactoryDesc? BuildFactoryReference(
+        public SpecFactoryDesc? ExtractFactoryReference(
             IPropertySymbol factoryReferenceProperty,
             DescGenerationContext context) {
             var factoryReferenceLocation = factoryReferenceProperty.Locations.First();
@@ -310,7 +310,7 @@ internal record SpecFactoryDesc(
                 factoryReferenceLocation);
         }
 
-        public SpecFactoryDesc? BuildFactoryReference(
+        public SpecFactoryDesc? ExtractFactoryReference(
             IFieldSymbol factoryReferenceField,
             DescGenerationContext context) {
             var factoryReferenceLocation = factoryReferenceField.Locations.First();

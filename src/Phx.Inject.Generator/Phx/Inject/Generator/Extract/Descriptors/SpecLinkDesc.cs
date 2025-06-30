@@ -17,16 +17,16 @@ internal record SpecLinkDesc(
     QualifiedTypeModel ReturnType,
     Location Location
 ) : IDescriptor {
-    public interface IBuilder {
-        SpecLinkDesc Build(
+    public interface IExtractor {
+        SpecLinkDesc Extract(
             AttributeData linkAttribute,
             Location linkLocation,
             DescGenerationContext context
         );
     }
 
-    public class Builder : IBuilder {
-        public SpecLinkDesc Build(
+    public class Extractor : IExtractor {
+        public SpecLinkDesc Extract(
             AttributeData linkAttribute,
             Location linkLocation,
             DescGenerationContext context

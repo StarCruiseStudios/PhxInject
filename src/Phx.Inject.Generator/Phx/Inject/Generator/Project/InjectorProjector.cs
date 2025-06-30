@@ -12,18 +12,18 @@ using Phx.Inject.Generator.Project.Templates;
 namespace Phx.Inject.Generator.Project;
 
 internal class InjectorProjector {
-    private readonly InjectorTemplate.IBuilder injectorTemplateBuilder;
+    private readonly InjectorTemplate.IProjector injectorTemplateProjector;
 
-    public InjectorProjector(InjectorTemplate.IBuilder injectorTemplateBuilder) {
-        this.injectorTemplateBuilder = injectorTemplateBuilder;
+    public InjectorProjector(InjectorTemplate.IProjector injectorTemplateProjector) {
+        this.injectorTemplateProjector = injectorTemplateProjector;
     }
 
-    public InjectorProjector() : this(new InjectorTemplate.Builder()) { }
+    public InjectorProjector() : this(new InjectorTemplate.Projector()) { }
 
-    public IRenderTemplate Construct(InjectorDef injectorDef, TemplateGenerationContext context) {
+    public IRenderTemplate Project(InjectorDef injectorDef, TemplateGenerationContext context) {
         return new GeneratedFileTemplate(
             injectorDef.InjectorType.NamespaceName,
-            injectorTemplateBuilder.Build(injectorDef, context),
+            injectorTemplateProjector.Project(injectorDef, context),
             injectorDef.Location);
     }
 }

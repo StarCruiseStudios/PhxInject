@@ -18,15 +18,15 @@ internal record DependencyProviderDesc(
     bool isPartial,
     Location Location
 ) : IDescriptor {
-    public interface IBuilder {
-        DependencyProviderDesc Build(
+    public interface IExtractor {
+        DependencyProviderDesc Extract(
             IMethodSymbol providerMethod,
             DescGenerationContext context
         );
     }
 
-    public class Builder : IBuilder {
-        public DependencyProviderDesc Build(
+    public class Extractor : IExtractor {
+        public DependencyProviderDesc Extract(
             IMethodSymbol providerMethod,
             DescGenerationContext context
         ) {

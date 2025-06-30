@@ -17,15 +17,15 @@ internal record InjectorProviderDesc(
     string ProviderMethodName,
     Location Location
 ) : IDescriptor {
-    public interface IBuilder {
-        InjectorProviderDesc? Build(
+    public interface IExtractor {
+        InjectorProviderDesc? Extract(
             IMethodSymbol providerMethod,
             DescGenerationContext context
         );
     }
 
-    public class Builder : IBuilder {
-        public InjectorProviderDesc? Build(
+    public class Extractor : IExtractor {
+        public InjectorProviderDesc? Extract(
             IMethodSymbol providerMethod,
             DescGenerationContext context
         ) {

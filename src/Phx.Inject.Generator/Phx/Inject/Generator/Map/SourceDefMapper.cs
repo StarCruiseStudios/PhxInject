@@ -8,6 +8,7 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Extract;
@@ -18,12 +19,18 @@ using Phx.Inject.Generator.Render;
 namespace Phx.Inject.Generator.Map;
 
 internal class SourceDefMapper {
+    private readonly ISpecExtractor specExtractor;
     private readonly GeneratorSettings generatorSettings;
-    public SourceDefMapper(GeneratorSettings generatorSettings) {
+    
+    public SourceDefMapper(ISpecExtractor specExtractor, GeneratorSettings generatorSettings) {
+        this.specExtractor = specExtractor;
         this.generatorSettings = generatorSettings;
     }
+    
+    public SourceDefMapper(GeneratorSettings generatorSettings)
+        : this(new SpecExtractor(), generatorSettings) { }
 
-    public IReadOnlyList<InjectionContextDef> MapInjectionContexts(
+    public IReadOnlyList<InjectionContextDef> Map(
         SourceDesc sourceDesc,
         GeneratorExecutionContext context
     ) {
@@ -53,8 +60,7 @@ internal class SourceDefMapper {
                     }
 
                     if (generatorSettings.AllowConstructorFactories) {
-                        var constructorSpec = new SpecExtractor()
-                            .ExtractConstructorSpecForContext(new DefGenerationContext(
+                        var constructorSpec = specExtractor.ExtractConstructorSpecForContext(new DefGenerationContext(
                                 injectorDesc,
                                 injectorDescMap,
                                 injectorSpecDescMap,

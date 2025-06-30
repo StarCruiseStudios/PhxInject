@@ -19,34 +19,34 @@ internal record InjectionContextDef(
     IEnumerable<DependencyImplementationDef> DependencyImplementations,
     Location Location
 ) : IDefinition {
-    public interface IBuilder {
-        InjectionContextDef Build(
+    public interface IMapper {
+        InjectionContextDef Map(
             InjectorDesc injectorDesc,
             DefGenerationContext context
         );
     }
 
-    public class Builder : IBuilder {
-        private readonly DependencyImplementationDef.IBuilder dependencyImplementationDefBuilder;
-        private readonly InjectorDef.IBuilder injectorDefBuilder;
-        private readonly SpecContainerDef.IBuilder specContainerDefBuilder;
+    public class Mapper : IMapper {
+        private readonly DependencyImplementationDef.IMapper dependencyImplementationDefMapper;
+        private readonly InjectorDef.IMapper injectorDefMapper;
+        private readonly SpecContainerDef.IMapper specContainerDefMapper;
 
-        public Builder(
-            InjectorDef.IBuilder injectorDefBuilder,
-            SpecContainerDef.IBuilder specContainerDefBuilder,
-            DependencyImplementationDef.IBuilder dependencyImplementationDefBuilder
+        public Mapper(
+            InjectorDef.IMapper injectorDefMapper,
+            SpecContainerDef.IMapper specContainerDefMapper,
+            DependencyImplementationDef.IMapper dependencyImplementationDefMapper
         ) {
-            this.injectorDefBuilder = injectorDefBuilder;
-            this.specContainerDefBuilder = specContainerDefBuilder;
-            this.dependencyImplementationDefBuilder = dependencyImplementationDefBuilder;
+            this.injectorDefMapper = injectorDefMapper;
+            this.specContainerDefMapper = specContainerDefMapper;
+            this.dependencyImplementationDefMapper = dependencyImplementationDefMapper;
         }
 
-        public Builder() : this(
-            new InjectorDef.Builder(),
-            new SpecContainerDef.Builder(),
-            new DependencyImplementationDef.Builder()) { }
+        public Mapper() : this(
+            new InjectorDef.Mapper(),
+            new SpecContainerDef.Mapper(),
+            new DependencyImplementationDef.Mapper()) { }
 
-        public InjectionContextDef Build(
+        public InjectionContextDef Map(
             InjectorDesc injectorDesc,
             DefGenerationContext context
         ) {
@@ -106,10 +106,10 @@ internal record InjectionContextDef(
                 BuilderRegistrations = builderRegistrations
             };
 
-            var injectorDef = injectorDefBuilder.Build(generationContext);
+            var injectorDef = injectorDefMapper.Map(generationContext);
 
             IReadOnlyList<SpecContainerDef> specContainerDefs = specDescs
-                .Select(specDesc => specContainerDefBuilder.Build(specDesc, generationContext))
+                .Select(specDesc => specContainerDefMapper.Map(specDesc, generationContext))
                 .ToImmutableList();
 
             IReadOnlyList<DependencyImplementationDef> dependencyImplementationDefs = injectorDesc.ChildFactories
@@ -122,7 +122,7 @@ internal record InjectionContextDef(
                 .Select(dependencyType => generationContext.GetDependency(
                     dependencyType,
                     injectorDesc.Location))
-                .Select(dependency => dependencyImplementationDefBuilder.Build(
+                .Select(dependency => dependencyImplementationDefMapper.Map(
                     dependency,
                     generationContext))
                 .ToImmutableList();

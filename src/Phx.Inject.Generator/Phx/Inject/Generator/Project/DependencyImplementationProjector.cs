@@ -12,16 +12,16 @@ using Phx.Inject.Generator.Project.Templates;
 namespace Phx.Inject.Generator.Project;
 
 internal class DependencyImplementationProjector {
-    private readonly DependencyImplementationTemplate.IBuilder dependencyImplementationTemplateBuilder;
+    private readonly DependencyImplementationTemplate.IProjector dependencyImplementationTemplateProjector;
 
     public DependencyImplementationProjector(
-        DependencyImplementationTemplate.IBuilder dependencyImplementationTemplateBuilder
+        DependencyImplementationTemplate.IProjector dependencyImplementationTemplateProjector
     ) {
-        this.dependencyImplementationTemplateBuilder = dependencyImplementationTemplateBuilder;
+        this.dependencyImplementationTemplateProjector = dependencyImplementationTemplateProjector;
     }
 
     public DependencyImplementationProjector() : this(
-        new DependencyImplementationTemplate.Builder()) { }
+        new DependencyImplementationTemplate.Projector()) { }
 
     public IRenderTemplate Construct(
         DependencyImplementationDef dependencyImplementationDef,
@@ -29,7 +29,7 @@ internal class DependencyImplementationProjector {
     ) {
         return new GeneratedFileTemplate(
             dependencyImplementationDef.DependencyImplementationType.NamespaceName,
-            dependencyImplementationTemplateBuilder.Build(dependencyImplementationDef, context),
+            dependencyImplementationTemplateProjector.Project(dependencyImplementationDef, context),
             dependencyImplementationDef.Location);
     }
 }
