@@ -9,11 +9,11 @@
 namespace Phx.Inject;
 
 public static class InjectionUtil {
-    public static List<T> Combine<T>(params List<T>[] lists) {
+    public static IReadOnlyList<T> Combine<T>(params IReadOnlyList<T>[] lists) {
         return lists.SelectMany(list => list).ToList();
     }
 
-    public static HashSet<T> Combine<T>(params HashSet<T>[] sets) {
+    public static ISet<T> Combine<T>(params ISet<T>[] sets) {
         return sets.Aggregate(new HashSet<T>(),
             (acc, set) => {
                 if (acc.Overlaps(set)) {
@@ -26,9 +26,9 @@ public static class InjectionUtil {
             });
     }
 
-    public static Dictionary<K, V> Combine<K, V>(params Dictionary<K, V>[] dicts) {
+    public static IReadOnlyDictionary<K, V> Combine<K, V>(params IReadOnlyDictionary<K, V>[] dicts) {
         var combinedDictionary = new Dictionary<K, V>();
-        foreach (Dictionary<K, V> dict in dicts) {
+        foreach (IReadOnlyDictionary<K, V> dict in dicts) {
             foreach (KeyValuePair<K, V> kvp in dict) {
                 if (combinedDictionary.ContainsKey(kvp.Key)) {
                     throw new InvalidOperationException(

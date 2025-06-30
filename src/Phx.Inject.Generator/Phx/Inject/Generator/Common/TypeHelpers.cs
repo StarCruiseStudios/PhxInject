@@ -15,9 +15,9 @@ namespace Phx.Inject.Generator.Common;
 internal static class TypeHelpers {
     public const string FactoryTypeName = "Phx.Inject.Factory";
     public const string InjectionUtilTypeName = "Phx.Inject.InjectionUtil";
-    public const string ListTypeName = "System.Collections.Generic.List";
-    public const string HashSetTypeName = "System.Collections.Generic.HashSet";
-    public const string DictionaryTypeName = "System.Collections.Generic.Dictionary";
+    public const string ListTypeName = "System.Collections.Generic.IReadOnlyList";
+    public const string HashSetTypeName = "System.Collections.Generic.ISet";
+    public const string DictionaryTypeName = "System.Collections.Generic.IReadOnlyDictionary";
 
     public static readonly IImmutableSet<string> MultiBindTypes = ImmutableHashSet.CreateRange(new[] {
         ListTypeName,
@@ -30,7 +30,7 @@ internal static class TypeHelpers {
             if (!MultiBindTypes.Contains(returnType.TypeModel.QualifiedBaseTypeName)) {
                 throw new InjectionException(
                     Diagnostics.InvalidSpecification,
-                    "Partial factories must return a List, HashSet, or Dictionary.",
+                    "Partial factories must return a IReadOnlyList, ISet, or IReadOnlyDictionary.",
                     location);
             }
         }

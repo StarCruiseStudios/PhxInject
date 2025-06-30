@@ -6,6 +6,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+using System.Collections.Immutable;
 using NUnit.Framework;
 using Phx.Inject.Tests.Data.Model;
 using Phx.Test;
@@ -31,22 +32,18 @@ internal static class ContainerSpecification {
 
     [Factory]
     [Partial]
-    internal static List<IntLeaf> GetIntLeaf1(IntLeaf leaf) {
-        return new List<IntLeaf> {
-            leaf
-        };
+    internal static IReadOnlyList<IntLeaf> GetIntLeaf1(IntLeaf leaf) {
+        return ImmutableList.Create(leaf);
     }
 
     [Factory]
     [Partial]
-    internal static List<IntLeaf> GetIntLeaf2(IntLeaf leaf) {
-        return new List<IntLeaf> {
-            leaf
-        };
+    internal static IReadOnlyList<IntLeaf> GetIntLeaf2(IntLeaf leaf) {
+        return ImmutableList.Create(leaf);
     }
 
     [Factory(FabricationMode.Container)]
-    internal static Node GetNode(List<IntLeaf> leaves) {
+    internal static Node GetNode(IReadOnlyList<IntLeaf> leaves) {
         var left = leaves[0];
         var right = leaves[1];
         return new Node(left, right);
@@ -66,7 +63,7 @@ public interface IContainerInjector {
     [Label("WithScoped")]
     Node GetNodeWithScoped();
 
-    List<IntLeaf> GetIntLeaves();
+    IReadOnlyList<IntLeaf> GetIntLeaves();
 
     StringLeaf GetStringLeaf();
 }
