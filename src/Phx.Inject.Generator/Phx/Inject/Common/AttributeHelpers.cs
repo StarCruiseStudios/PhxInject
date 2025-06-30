@@ -13,22 +13,22 @@ namespace Phx.Inject.Common;
 
 internal static class AttributeHelpers {
     public const string InjectorAttributeShortName = "Injector";
-    public const string InjectorAttributeBaseName = $"{InjectorAttributeShortName}Attribute";
+    public const string InjectorAttributeBaseName = nameof(InjectorAttribute);
     public const string SpecificationAttributeShortName = "Specification";
-    public const string SpecificationAttributeBaseName = $"{SpecificationAttributeShortName}Attribute";
+    public const string SpecificationAttributeBaseName = nameof(SpecificationAttribute);
 
-    private const string BuilderAttributeClassName = "Phx.Inject.BuilderAttribute";
-    private const string BuilderReferenceAttributeClassName = "Phx.Inject.BuilderReferenceAttribute";
-    private const string ChildInjectorAttributeClassName = "Phx.Inject.ChildInjectorAttribute";
-    private const string DependencyAttributeClassName = "Phx.Inject.DependencyAttribute";
-    private const string FactoryAttributeClassName = "Phx.Inject.FactoryAttribute";
-    private const string FactoryReferenceAttributeClassName = "Phx.Inject.FactoryReferenceAttribute";
-    private const string InjectorAttributeClassName = $"Phx.Inject.{InjectorAttributeBaseName}";
-    private const string LabelAttributeClassName = "Phx.Inject.LabelAttribute";
-    private const string LinkAttributeClassName = "Phx.Inject.LinkAttribute";
-    private const string PartialAttributeClassName = "Phx.Inject.PartialAttribute";
-    private const string QualifierAttributeClassName = "Phx.Inject.QualifierAttribute";
-    private const string SpecificationAttributeClassName = $"Phx.Inject.{SpecificationAttributeBaseName}";
+    private const string BuilderAttributeClassName = $"Phx.Inject.{nameof(BuilderAttribute)}";
+    private const string BuilderReferenceAttributeClassName = $"Phx.Inject.{nameof(BuilderReferenceAttribute)}";
+    private const string ChildInjectorAttributeClassName = $"Phx.Inject.{nameof(ChildInjectorAttribute)}";
+    private const string DependencyAttributeClassName = $"Phx.Inject.{nameof(DependencyAttribute)}";
+    private const string FactoryAttributeClassName = $"Phx.Inject.{nameof(FactoryAttribute)}";
+    private const string FactoryReferenceAttributeClassName = $"Phx.Inject.{nameof(FactoryReferenceAttribute)}";
+    private const string InjectorAttributeClassName = $"Phx.Inject.{nameof(InjectorAttribute)}";
+    private const string LabelAttributeClassName = $"Phx.Inject.{nameof(LabelAttribute)}";
+    private const string LinkAttributeClassName = $"Phx.Inject.{nameof(LinkAttribute)}";
+    private const string PartialAttributeClassName = $"Phx.Inject.{nameof(PartialAttribute)}";
+    private const string QualifierAttributeClassName = $"Phx.Inject.{nameof(QualifierAttribute)}";
+    private const string SpecificationAttributeClassName = $"Phx.Inject.{nameof(SpecificationAttribute)}";
 
     public static AttributeData? GetInjectorAttribute(this ISymbol injectorInterfaceSymbol) {
         var injectorAttributes =
