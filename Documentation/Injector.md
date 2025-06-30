@@ -52,8 +52,8 @@ public interface ITestInjector {
 }
 ```
 
-## Builders
-Builders are methods that initialize a provided value using values from the
+## Activators
+Activators are methods that initialize a provided value using values from the
 dependency graph. They will be linked to a builder in the injector's set of
 specifications based on the type of the first parameter and the qualifier of the
 method.
@@ -62,11 +62,11 @@ method.
     typeof(TestSpecification)
 )]
 public interface ITestInjector {
-    /// Builders must always return void and contain a single parameter of the
+    /// Activators must always return void and contain a single parameter of the
     /// type that is to be injected.
     public void Build(MyClass class);
     
-    /// Qualifier attributes should be placed on the builder method, not on the
+    /// Qualifier attributes should be placed on the activator method, not on the
     /// parameter.
     [Label("MyLabel")]
     public void BuildOther(MyClass class);
@@ -112,7 +112,7 @@ Verify.That(Object.ReferenceEquals(myClass1a, myClass2).IsFalse());
 A child injector is an injector that is not constructed directly by the calling
 code, but that is constructed by another "parent" injector. This child injector
 will have access to the dependencies provided by the parent injector through an
-`ExternalDependency` interface, but the parent will not have implicit access to
+`Dependency` interface, but the parent will not have implicit access to
 dependencies provided by the child.
 
 ```csharp
@@ -123,9 +123,9 @@ internal static ChildSpecification {
     }
 }
 
-/// The external dependency interface defines the types that must be provided
+/// The dependency interface defines the types that must be provided
 /// by the parent injector.
-internal interface IChildExternalDependencies {
+internal interface IChildDependencies {
     /// Qualifier attributes could also be used to differentiate dependencies
     /// with the same type.
     public int GetIntValue();
@@ -134,7 +134,7 @@ internal interface IChildExternalDependencies {
 [Injector(
     typeof(ChildSpecification)
 )]
-[ExternalDependency(typeof(IChildExternalDependencies))]
+[Dependency(typeof(IChildDependencies))]
 internal interface IChildInjector {
     public MyClass GetMyClass();
 }
@@ -177,7 +177,7 @@ internal interface IApplicationInjector {
 }
 
 [Injector(...)]
-[ExternalDependency(...)]
+[Dependency(...)]
 internal interface ISessionInjector {
     /// Session credentials are shared by all dependencies created within a
     /// session.
@@ -188,7 +188,7 @@ internal interface ISessionInjector {
 }
 
 [Injector(...)]
-[ExternalDependency(...)]
+[Dependency(...)]
 internal interface IRequestInjector {
     /// A unique request ID is shared by all dependencies while a request is
     /// processing.
@@ -208,7 +208,7 @@ var requestInjector = sessionInjector.GetRequestInjector();
 
 requestInjector.GetRequestId();
 ```
-> **Note:** The external interface implementation does not accept values from the child injector.
+> **Note:** The dependency interface implementation does not accept values from the child injector.
 > This means that factory defined in the parent cannot be injected with a value from the child,
 > if it is invoked from a factory on the child.
 

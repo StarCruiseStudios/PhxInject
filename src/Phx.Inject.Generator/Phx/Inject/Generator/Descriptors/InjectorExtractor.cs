@@ -13,21 +13,21 @@ namespace Phx.Inject.Generator.Descriptors {
     using Phx.Inject.Generator.Common;
 
     internal class InjectorExtractor {
-        private readonly InjectorDescriptor.IBuilder injectorDescriptorBuilder;
+        private readonly InjectorDesc.IBuilder injectorDescBuilder;
 
-        public InjectorExtractor(InjectorDescriptor.IBuilder injectorDescriptorBuilder) {
-            this.injectorDescriptorBuilder = injectorDescriptorBuilder;
+        public InjectorExtractor(InjectorDesc.IBuilder injectorDescBuilder) {
+            this.injectorDescBuilder = injectorDescBuilder;
         }
 
-        public InjectorExtractor() : this(new InjectorDescriptor.Builder()) { }
+        public InjectorExtractor() : this(new InjectorDesc.Builder()) { }
 
-        public IReadOnlyList<InjectorDescriptor> Extract(
+        public IReadOnlyList<InjectorDesc> Extract(
             IEnumerable<TypeDeclarationSyntax> syntaxNodes,
-            DescriptorGenerationContext context
+            DescGenerationContext context
         ) {
             return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
                 .Where(IsInjectorSymbol)
-                .Select(symbol => injectorDescriptorBuilder.Build(symbol, context))
+                .Select(symbol => injectorDescBuilder.Build(symbol, context))
                 .ToImmutableList();
         }
 

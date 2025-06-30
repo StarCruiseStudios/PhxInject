@@ -18,11 +18,11 @@ namespace Phx.Inject.Generator.Templates {
 
         public InjectorConstructor() : this(new InjectorTemplate.Builder()) { }
 
-        public IRenderTemplate Construct(InjectorDefinition injectorDefinition, TemplateGenerationContext context) {
+        public IRenderTemplate Construct(InjectorDef injectorDef, TemplateGenerationContext context) {
             return new GeneratedFileTemplate(
-                injectorDefinition.InjectorType.NamespaceName,
-                injectorTemplateBuilder.Build(injectorDefinition, context),
-                injectorDefinition.Location);
+                injectorDef.InjectorType.NamespaceName,
+                injectorTemplateBuilder.Build(injectorDef, context),
+                injectorDef.Location);
         }
     }
 }

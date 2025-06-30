@@ -13,29 +13,29 @@ using Phx.Inject.Generator.Descriptors;
 namespace Phx.Inject.Generator;
 
 internal class SourceExtractor {
-    public SourceDescriptor Extract(SourceSyntaxReceiver syntaxReceiver, GeneratorExecutionContext context) {
+    public SourceDesc Extract(SourceSyntaxReceiver syntaxReceiver, GeneratorExecutionContext context) {
         try {
-            var descriptorGenerationContext = new DescriptorGenerationContext(context);
+            var descGenerationContext = new DescGenerationContext(context);
 
-            var injectorDescriptors = new InjectorExtractor().Extract(
+            var injectorDescs = new InjectorExtractor().Extract(
                 syntaxReceiver.InjectorCandidates,
-                descriptorGenerationContext);
-            Logger.Info($"Discovered {injectorDescriptors.Count} injector types.");
+                descGenerationContext);
+            Logger.Info($"Discovered {injectorDescs.Count} injector types.");
 
-            var specDescriptors = new SpecExtractor().Extract(
+            var specDescs = new SpecExtractor().Extract(
                 syntaxReceiver.SpecificationCandidates,
-                descriptorGenerationContext);
-            Logger.Info($"Discovered {specDescriptors.Count} specification types.");
+                descGenerationContext);
+            Logger.Info($"Discovered {specDescs.Count} specification types.");
 
-            var externalDependencyDescriptors = new ExternalDependencyExtractor().Extract(
+            var dependencyDescs = new DependencyExtractor().Extract(
                 syntaxReceiver.InjectorCandidates,
-                descriptorGenerationContext);
-            Logger.Info($"Discovered {externalDependencyDescriptors.Count} external dependency types.");
+                descGenerationContext);
+            Logger.Info($"Discovered {dependencyDescs.Count} dependency types.");
 
-            return new SourceDescriptor(
-                injectorDescriptors: injectorDescriptors,
-                specDescriptors: specDescriptors,
-                externalDependencyDescriptors: externalDependencyDescriptors
+            return new SourceDesc(
+                injectorDescs: injectorDescs,
+                specDescs: specDescs,
+                dependencyDescs: dependencyDescs
             );
         } catch (Exception e) {
             var diagnosticData = (e is InjectionException ie)

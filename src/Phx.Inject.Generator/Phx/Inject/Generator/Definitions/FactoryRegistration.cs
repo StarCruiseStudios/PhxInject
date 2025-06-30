@@ -10,7 +10,7 @@ namespace Phx.Inject.Generator.Definitions {
     using Phx.Inject.Generator.Descriptors;
 
     internal record FactoryRegistration(
-        SpecDescriptor Specification,
-        SpecFactoryDescriptor FactoryDescriptor
+        SpecDesc Specification,
+        SpecFactoryDesc FactoryDesc
     );
 }

@@ -65,7 +65,7 @@ namespace Phx.Inject.Generator.Common {
             };
         }
 
-        public static TypeModel CreateExternalDependencyImplementationType(
+        public static TypeModel CreateDependencyImplementationType(
             TypeModel injectorType,
             TypeModel dependencyInterfaceType
         ) {

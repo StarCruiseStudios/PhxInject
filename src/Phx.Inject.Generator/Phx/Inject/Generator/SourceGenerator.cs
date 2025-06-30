@@ -39,15 +39,15 @@ namespace Phx.Inject.Generator {
                         Location.None);
 
                 // Extract: Syntax declarations to descriptors.
-                var sourceDescriptor = new SourceExtractor().Extract(syntaxReceiver, context);
+                var sourceDesc = new SourceExtractor().Extract(syntaxReceiver, context);
                 
-                // Map: Descriptors to definitions.
-                var injectionContextDefinitions = new SourceDefinitionMapper(generatorSettings)
-                    .MapInjectionContexts(sourceDescriptor, context);
+                // Map: Descriptors to defs.
+                var injectionContextDefs = new SourceDefMapper(generatorSettings)
+                    .MapInjectionContexts(sourceDesc, context);
 
-                // Construct: Definitions to templates.
+                // Construct: Defs to templates.
                 var templates = new SourceTemplateConstructor().ConstructTemplates(
-                    injectionContextDefinitions,
+                    injectionContextDefs,
                     context);
 
                 // Render: Templates to generated source.
@@ -58,7 +58,6 @@ namespace Phx.Inject.Generator {
                 }
             } catch (Exception ex) {
                 context.ReportDiagnostic(Diagnostics.CreateUnexpectedErrorDiagnostic(ex.ToString()));
-                Logger.Error("An unexpected error occurred while generating source.", ex);
             }
         }
     }

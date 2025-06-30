@@ -54,7 +54,7 @@ namespace Phx.Inject.Tests {
         }
 
         [Test]
-        public void ExternalDependencyTypesAreGenerated() {
+        public void DependencyTypesAreGenerated() {
             var compilation = CompileCode();
             var dataNamespace =
                 ThenTheExpectedNamespaceExists(compilation.GlobalNamespace, "Phx", "Inject", "Tests", "Data");
@@ -62,14 +62,14 @@ namespace Phx.Inject.Tests {
             var externalNamespace = ThenTheExpectedNamespaceExists(dataNamespace, "Inject");
 
             ThenTheNamespaceContainsTheExpectedType(externalNamespace,
-                "GeneratedParentInjector_IChildExternalDependencies");
+                "GeneratedParentInjector_IChildDependencies");
             ThenTheNamespaceContainsTheExpectedType(externalNamespace,
-                "GeneratedChildInjector_IGrandchildExternalDependencies");
+                "GeneratedChildInjector_IGrandchildDependencies");
 
             ThenTheNamespaceContainsTheExpectedType(externalNamespace,
-                "GeneratedChildInjector_IChildExternalDependencies");
+                "GeneratedChildInjector_IChildDependencies");
             ThenTheNamespaceContainsTheExpectedType(externalNamespace,
-                "GeneratedGrandchildInjector_IGrandchildExternalDependencies");
+                "GeneratedGrandchildInjector_IGrandchildDependencies");
         }
 
         private Compilation CompileCode() {

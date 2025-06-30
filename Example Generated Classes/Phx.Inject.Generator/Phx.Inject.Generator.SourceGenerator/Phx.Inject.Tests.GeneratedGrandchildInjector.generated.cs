@@ -12,23 +12,23 @@ namespace Phx.Inject.Tests {
     internal partial class GeneratedGrandchildInjector : Phx.Inject.Tests.IGrandchildInjector {
         internal record SpecContainerCollection (
                 Phx.Inject.Tests.GeneratedGrandchildInjector_GrandchildSpecification GeneratedGrandchildInjector_GrandchildSpecification,
-                Phx.Inject.Tests.GeneratedGrandchildInjector_IGrandchildExternalDependencies GeneratedGrandchildInjector_IGrandchildExternalDependencies
+                Phx.Inject.Tests.GeneratedGrandchildInjector_IGrandchildDependencies GeneratedGrandchildInjector_IGrandchildDependencies
         ) {
             internal SpecContainerCollection CreateNewFrame() {
                 return new SpecContainerCollection(
                         GeneratedGrandchildInjector_GrandchildSpecification.CreateNewFrame(),
-                        GeneratedGrandchildInjector_IGrandchildExternalDependencies.CreateNewFrame());
+                        GeneratedGrandchildInjector_IGrandchildDependencies.CreateNewFrame());
             }
         }
 
         private readonly SpecContainerCollection specContainers;
 
         public GeneratedGrandchildInjector(
-                Phx.Inject.Tests.IGrandchildExternalDependencies iGrandchildExternalDependencies
+                Phx.Inject.Tests.IGrandchildDependencies iGrandchildDependencies
         ) {
             specContainers = new SpecContainerCollection(
                     GeneratedGrandchildInjector_GrandchildSpecification: new Phx.Inject.Tests.GeneratedGrandchildInjector_GrandchildSpecification(),
-                    GeneratedGrandchildInjector_IGrandchildExternalDependencies: new Phx.Inject.Tests.GeneratedGrandchildInjector_IGrandchildExternalDependencies(iGrandchildExternalDependencies));
+                    GeneratedGrandchildInjector_IGrandchildDependencies: new Phx.Inject.Tests.GeneratedGrandchildInjector_IGrandchildDependencies(iGrandchildDependencies));
         }
 
         public Phx.Inject.Tests.Data.Model.Root GetRoot() {

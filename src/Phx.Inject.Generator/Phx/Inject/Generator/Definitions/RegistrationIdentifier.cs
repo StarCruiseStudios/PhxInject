@@ -13,7 +13,7 @@ namespace Phx.Inject.Generator.Definitions {
         TypeModel RegistrationType,
         string Qualifier
     ) {
-        public static RegistrationIdentifier FromQualifiedTypeDescriptor(QualifiedTypeModel type) {
+        public static RegistrationIdentifier FromQualifiedTypeModel(QualifiedTypeModel type) {
             return new RegistrationIdentifier(type.TypeModel, type.Qualifier);
         }
     }

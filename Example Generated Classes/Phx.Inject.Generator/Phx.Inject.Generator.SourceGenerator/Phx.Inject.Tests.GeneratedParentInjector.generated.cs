@@ -28,7 +28,7 @@ namespace Phx.Inject.Tests {
 
         public Phx.Inject.Tests.IChildInjector GetChildInjector() {
             return new Phx.Inject.Tests.GeneratedChildInjector(
-                    iChildExternalDependencies: new Phx.Inject.Tests.GeneratedParentInjector_IChildExternalDependencies(specContainers));
+                    iChildDependencies: new Phx.Inject.Tests.GeneratedParentInjector_IChildDependencies(specContainers));
         }
     }
 }

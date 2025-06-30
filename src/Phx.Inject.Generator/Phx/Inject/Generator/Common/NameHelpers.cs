@@ -30,7 +30,7 @@ namespace Phx.Inject.Generator.Common {
             return $"{injectorType.BaseTypeName}.{SpecContainerCollectionTypeName}";
         }
 
-        public static string GetSpecContainerFactoryName(this SpecFactoryDescriptor factory) {
+        public static string GetSpecContainerFactoryName(this SpecFactoryDesc factory) {
             var sb = factory.SpecFactoryMemberType switch {
                 SpecFactoryMemberType.Method => new StringBuilder("Fac_"),
                 SpecFactoryMemberType.Property => new StringBuilder("PropFac_"),
@@ -49,7 +49,7 @@ namespace Phx.Inject.Generator.Common {
             return sb.ToString();
         }
 
-        public static string GetSpecContainerBuilderName(this SpecBuilderDescriptor builder) {
+        public static string GetSpecContainerBuilderName(this SpecBuilderDesc builder) {
             var sb = builder.SpecBuilderMemberType switch {
                 SpecBuilderMemberType.Method => new StringBuilder("Bld_"),
                 SpecBuilderMemberType.Reference => new StringBuilder("RefBld_"),

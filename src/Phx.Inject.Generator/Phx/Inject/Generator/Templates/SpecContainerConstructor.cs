@@ -19,13 +19,13 @@ namespace Phx.Inject.Generator.Templates {
         public SpecContainerConstructor() : this(new SpecContainerTemplate.Builder()) { }
 
         public IRenderTemplate Construct(
-            SpecContainerDefinition specContainerDefinition,
+            SpecContainerDef specContainerDef,
             TemplateGenerationContext context
         ) {
             return new GeneratedFileTemplate(
-                specContainerDefinition.SpecContainerType.NamespaceName,
-                specContainerTemplateBuilder.Build(specContainerDefinition, context),
-                specContainerDefinition.Location);
+                specContainerDef.SpecContainerType.NamespaceName,
+                specContainerTemplateBuilder.Build(specContainerDef, context),
+                specContainerDef.Location);
         }
     }
 }

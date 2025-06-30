@@ -27,9 +27,9 @@ namespace Phx.Inject.Generator.Common {
                 .ToImmutableList();
         }
 
-        public static IEnumerable<ITypeSymbol> GetExternalDependencyTypes(ISymbol injectorSymbol) {
-            var externalDependencyAttributes = injectorSymbol.GetExternalDependencyAttributes();
-            return externalDependencyAttributes.SelectMany(
+        public static IEnumerable<ITypeSymbol> GetDependencyTypes(ISymbol injectorSymbol) {
+            var dependencyAttributes = injectorSymbol.GetDependencyAttributes();
+            return dependencyAttributes.SelectMany(
                     attributeData => {
                         return attributeData.ConstructorArguments
                             .Where(argument => argument.Kind == TypedConstantKind.Type)

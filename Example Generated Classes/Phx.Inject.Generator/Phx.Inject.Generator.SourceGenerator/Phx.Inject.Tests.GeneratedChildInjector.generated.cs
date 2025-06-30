@@ -12,28 +12,28 @@ namespace Phx.Inject.Tests {
     internal partial class GeneratedChildInjector : Phx.Inject.Tests.IChildInjector {
         internal record SpecContainerCollection (
                 Phx.Inject.Tests.GeneratedChildInjector_ChildSpecification GeneratedChildInjector_ChildSpecification,
-                Phx.Inject.Tests.GeneratedChildInjector_IChildExternalDependencies GeneratedChildInjector_IChildExternalDependencies
+                Phx.Inject.Tests.GeneratedChildInjector_IChildDependencies GeneratedChildInjector_IChildDependencies
         ) {
             internal SpecContainerCollection CreateNewFrame() {
                 return new SpecContainerCollection(
                         GeneratedChildInjector_ChildSpecification.CreateNewFrame(),
-                        GeneratedChildInjector_IChildExternalDependencies.CreateNewFrame());
+                        GeneratedChildInjector_IChildDependencies.CreateNewFrame());
             }
         }
 
         private readonly SpecContainerCollection specContainers;
 
         public GeneratedChildInjector(
-                Phx.Inject.Tests.IChildExternalDependencies iChildExternalDependencies
+                Phx.Inject.Tests.IChildDependencies iChildDependencies
         ) {
             specContainers = new SpecContainerCollection(
                     GeneratedChildInjector_ChildSpecification: new Phx.Inject.Tests.GeneratedChildInjector_ChildSpecification(),
-                    GeneratedChildInjector_IChildExternalDependencies: new Phx.Inject.Tests.GeneratedChildInjector_IChildExternalDependencies(iChildExternalDependencies));
+                    GeneratedChildInjector_IChildDependencies: new Phx.Inject.Tests.GeneratedChildInjector_IChildDependencies(iChildDependencies));
         }
 
         public Phx.Inject.Tests.IGrandchildInjector GetGrandchildInjector() {
             return new Phx.Inject.Tests.GeneratedGrandchildInjector(
-                    iGrandchildExternalDependencies: new Phx.Inject.Tests.GeneratedChildInjector_IGrandchildExternalDependencies(specContainers));
+                    iGrandchildDependencies: new Phx.Inject.Tests.GeneratedChildInjector_IGrandchildDependencies(specContainers));
         }
     }
 }

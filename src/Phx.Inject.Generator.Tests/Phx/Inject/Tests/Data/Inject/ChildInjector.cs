@@ -16,14 +16,14 @@ namespace Phx.Inject.Tests.Data.Inject {
     }
 
     [Injector(typeof(ChildSpecification))]
-    [ExternalDependency(typeof(IChildExternalDependencies))]
+    [Dependency(typeof(IChildDependencies))]
     internal interface IChildInjector {
         [ChildInjector]
         public IGrandchildInjector GetGrandchildInjector();
     }
 
     [Injector(typeof(GrandchildSpecification))]
-    [ExternalDependency(typeof(IGrandchildExternalDependencies))]
+    [Dependency(typeof(IGrandchildDependencies))]
     internal interface IGrandchildInjector {
         public Root GetRoot();
     }

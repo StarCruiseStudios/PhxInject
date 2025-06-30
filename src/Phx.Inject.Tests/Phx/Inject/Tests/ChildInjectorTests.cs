@@ -52,7 +52,7 @@ namespace Phx.Inject.Tests {
         }
     }
     
-    internal interface IChildExternalDependencies {
+    internal interface IChildDependencies {
         [Label(ParentSpecification.LeftLeaf)]
         public ILeaf GetLeftLeaf();
 
@@ -61,7 +61,7 @@ namespace Phx.Inject.Tests {
     }
     
     [Injector(typeof(ChildSpecification))]
-    [ExternalDependency(typeof(IChildExternalDependencies))]
+    [Dependency(typeof(IChildDependencies))]
     internal interface IChildInjector {
         [ChildInjector]
         public IGrandchildInjector GetGrandchildInjector();
@@ -79,12 +79,12 @@ namespace Phx.Inject.Tests {
         }
     }
 
-    internal interface IGrandchildExternalDependencies {
+    internal interface IGrandchildDependencies {
         public Node GetNode();
     }
     
     [Injector(typeof(GrandchildSpecification))]
-    [ExternalDependency(typeof(IGrandchildExternalDependencies))]
+    [Dependency(typeof(IGrandchildDependencies))]
     internal interface IGrandchildInjector {
         public Root GetRoot();
     }

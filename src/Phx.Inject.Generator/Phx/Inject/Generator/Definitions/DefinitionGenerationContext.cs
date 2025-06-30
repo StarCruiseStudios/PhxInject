@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------------
-//  <copyright file="DefinitionGenerationContext.cs" company="Star Cruise Studios LLC">
+//  <copyright file="DefGenerationContext.cs" company="Star Cruise Studios LLC">
 //      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
 //      Licensed under the Apache License, Version 2.0.
 //      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -12,16 +12,16 @@ namespace Phx.Inject.Generator.Definitions {
     using Phx.Inject.Generator.Descriptors;
     using Phx.Inject.Generator.Model;
 
-    internal record DefinitionGenerationContext(
-        InjectorDescriptor Injector,
-        IReadOnlyDictionary<TypeModel, InjectorDescriptor> Injectors,
-        IReadOnlyDictionary<TypeModel, SpecDescriptor> Specifications,
-        IReadOnlyDictionary<TypeModel, ExternalDependencyDescriptor> ExternalDependencies,
+    internal record DefGenerationContext(
+        InjectorDesc Injector,
+        IReadOnlyDictionary<TypeModel, InjectorDesc> Injectors,
+        IReadOnlyDictionary<TypeModel, SpecDesc> Specifications,
+        IReadOnlyDictionary<TypeModel, DependencyDesc> Dependencies,
         IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> FactoryRegistrations,
         IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> BuilderRegistrations,
         GeneratorExecutionContext GenerationContext
     ) {
-        public InjectorDescriptor GetInjector(TypeModel type, Location location) {
+        public InjectorDesc GetInjector(TypeModel type, Location location) {
             if (Injectors.TryGetValue(type, out var injector)) {
                 return injector;
             }
@@ -33,7 +33,7 @@ namespace Phx.Inject.Generator.Definitions {
                 location);
         }
 
-        public SpecDescriptor GetSpec(TypeModel type, Location location) {
+        public SpecDesc GetSpec(TypeModel type, Location location) {
             if (Specifications.TryGetValue(type, out var spec)) {
                 return spec;
             }
@@ -45,19 +45,19 @@ namespace Phx.Inject.Generator.Definitions {
                 location);
         }
 
-        public ExternalDependencyDescriptor GetExternalDependency(TypeModel type, Location location) {
-            if (ExternalDependencies.TryGetValue(type, out var dep)) {
+        public DependencyDesc GetDependency(TypeModel type, Location location) {
+            if (Dependencies.TryGetValue(type, out var dep)) {
                 return dep;
             }
 
             throw new InjectionException(
                 Diagnostics.IncompleteSpecification,
-                $"Cannot find required external dependency type {type}"
+                $"Cannot find required dependency type {type}"
                 + $" while generating injection for type {Injector.InjectorInterfaceType}.",
                 location);
         }
 
-        public SpecContainerFactoryInvocationDefinition GetSpecContainerFactoryInvocation(
+        public SpecContainerFactoryInvocationDef GetSpecContainerFactoryInvocation(
             QualifiedTypeModel returnedType,
             Location location
         ) {
@@ -78,21 +78,21 @@ namespace Phx.Inject.Generator.Definitions {
                 runtimeFactoryProvidedType = factoryType.TypeModel;
             }
 
-            var key = RegistrationIdentifier.FromQualifiedTypeDescriptor(factoryType);
+            var key = RegistrationIdentifier.FromQualifiedTypeModel(factoryType);
             if (FactoryRegistrations.TryGetValue(key, out var factoryRegistration)) {
-                var singleInvocationDefinitions = factoryRegistration.Select(reg => {
+                var singleInvocationDefs = factoryRegistration.Select(reg => {
                     var specContainerType = TypeHelpers.CreateSpecContainerType(
                         Injector.InjectorType,
                         reg.Specification.SpecType);
-                    return new SpecContainerFactorySingleInvocationDefinition(
+                    return new SpecContainerFactorySingleInvocationDef(
                         specContainerType,
-                        reg.FactoryDescriptor.GetSpecContainerFactoryName(),
-                        reg.FactoryDescriptor.Location
+                        reg.FactoryDesc.GetSpecContainerFactoryName(),
+                        reg.FactoryDesc.Location
                     );
                 }).ToList();
 
-                return new SpecContainerFactoryInvocationDefinition(
-                    singleInvocationDefinitions,
+                return new SpecContainerFactoryInvocationDef(
+                    singleInvocationDefs,
                     factoryType,
                     runtimeFactoryProvidedType,
                     location);
@@ -105,7 +105,7 @@ namespace Phx.Inject.Generator.Definitions {
                 location);
         }
 
-        public SpecContainerBuilderInvocationDefinition GetSpecContainerBuilderInvocation(
+        public SpecContainerBuilderInvocationDef GetSpecContainerBuilderInvocation(
             TypeModel injectorType,
             QualifiedTypeModel builtType,
             Location location
@@ -118,15 +118,15 @@ namespace Phx.Inject.Generator.Definitions {
                     location);
             }
 
-            var key = RegistrationIdentifier.FromQualifiedTypeDescriptor(builtType);
+            var key = RegistrationIdentifier.FromQualifiedTypeModel(builtType);
             if (BuilderRegistrations.TryGetValue(key, out var builderRegistration)) {
                 var specContainerType = TypeHelpers.CreateSpecContainerType(
                     injectorType,
                     builderRegistration.Specification.SpecType);
-                return new SpecContainerBuilderInvocationDefinition(
+                return new SpecContainerBuilderInvocationDef(
                     specContainerType,
-                    builderRegistration.BuilderDescriptor.GetSpecContainerBuilderName(),
-                    builderRegistration.BuilderDescriptor.Location);
+                    builderRegistration.BuilderDesc.GetSpecContainerBuilderName(),
+                    builderRegistration.BuilderDesc.Location);
             }
 
             throw new InjectionException(

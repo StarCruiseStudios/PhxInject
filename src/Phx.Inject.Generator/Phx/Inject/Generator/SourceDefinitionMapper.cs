@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------------
-// <copyright file="SourceDefinitionMapper.cs" company="Star Cruise Studios LLC">
+// <copyright file="SourceDefMapper.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2025 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
 //     See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -16,67 +16,67 @@ using Phx.Inject.Generator.Render;
 
 namespace Phx.Inject.Generator;
 
-internal class SourceDefinitionMapper {
+internal class SourceDefMapper {
     private readonly GeneratorSettings generatorSettings;
-    public SourceDefinitionMapper(GeneratorSettings generatorSettings) {
+    public SourceDefMapper(GeneratorSettings generatorSettings) {
         this.generatorSettings = generatorSettings;
     }
 
-    public IReadOnlyList<InjectionContextDefinition> MapInjectionContexts(
-        SourceDescriptor sourceDescriptor,
+    public IReadOnlyList<InjectionContextDef> MapInjectionContexts(
+        SourceDesc sourceDesc,
         GeneratorExecutionContext context
     ) {
         try {
-            var injectorDescriptorMap = CreateTypeMap(
-                sourceDescriptor.injectorDescriptors,
+            var injectorDescMap = CreateTypeMap(
+                sourceDesc.injectorDescs,
                 injector => injector.InjectorInterfaceType);
-            var specDescriptorMap = CreateTypeMap(
-                sourceDescriptor.GetAllSpecDescriptors(),
+            var specDescMap = CreateTypeMap(
+                sourceDesc.GetAllSpecDescs(),
                 spec => spec.SpecType);
-            var externalDependencyDescriptorMap = CreateTypeMap(
-                sourceDescriptor.externalDependencyDescriptors,
-                dep => dep.ExternalDependencyInterfaceType);
+            var dependencyDescMap = CreateTypeMap(
+                sourceDesc.dependencyDescs,
+                dep => dep.DependencyInterfaceType);
 
-            return sourceDescriptor.injectorDescriptors.Select(injectorDescriptor => {
-                    var injectorSpecDescriptorMap = new Dictionary<TypeModel, SpecDescriptor>();
-                    foreach (var spec in injectorDescriptor.SpecificationsTypes) {
-                        if (!specDescriptorMap.TryGetValue(spec, out var specDescriptor)) {
+            return sourceDesc.injectorDescs.Select(injectorDesc => {
+                    var injectorSpecDescMap = new Dictionary<TypeModel, SpecDesc>();
+                    foreach (var spec in injectorDesc.SpecificationsTypes) {
+                        if (!specDescMap.TryGetValue(spec, out var specDesc)) {
                             throw new InjectionException(
                                 Diagnostics.IncompleteSpecification,
                                 $"Cannot find required specification type {spec}"
-                                + $" while generating injection for type {injectorDescriptor.InjectorInterfaceType}.",
-                                injectorDescriptor.Location);
+                                + $" while generating injection for type {injectorDesc.InjectorInterfaceType}.",
+                                injectorDesc.Location);
                         }
 
-                        injectorSpecDescriptorMap.Add(spec, specDescriptor);
+                        injectorSpecDescMap.Add(spec, specDesc);
                     }
 
                     if (generatorSettings.AllowConstructorFactories) {
                         var constructorSpec = new SpecExtractor()
-                            .ExtractConstructorSpecForContext(new DefinitionGenerationContext(
-                                injectorDescriptor,
-                                injectorDescriptorMap,
-                                injectorSpecDescriptorMap,
-                                externalDependencyDescriptorMap,
+                            .ExtractConstructorSpecForContext(new DefGenerationContext(
+                                injectorDesc,
+                                injectorDescMap,
+                                injectorSpecDescMap,
+                                dependencyDescMap,
                                 ImmutableDictionary<RegistrationIdentifier, List<FactoryRegistration>>.Empty,
                                 ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
                                 context));
 
                         if (constructorSpec != null) {
-                            injectorSpecDescriptorMap.Add(constructorSpec.SpecType, constructorSpec);
+                            injectorSpecDescMap.Add(constructorSpec.SpecType, constructorSpec);
                         }
                     }
 
-                    var definitionGenerationContext = new DefinitionGenerationContext(
-                        injectorDescriptor,
-                        injectorDescriptorMap,
-                        injectorSpecDescriptorMap,
-                        externalDependencyDescriptorMap,
+                    var defGenerationContext = new DefGenerationContext(
+                        injectorDesc,
+                        injectorDescMap,
+                        injectorSpecDescMap,
+                        dependencyDescMap,
                         ImmutableDictionary<RegistrationIdentifier, List<FactoryRegistration>>.Empty,
                         ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
                         context);
 
-                    return new InjectionDefinitionMapper().Map(definitionGenerationContext);
+                    return new InjectionDefMapper().Map(defGenerationContext);
                 })
                 .ToImmutableList();
         } catch (Exception e) {

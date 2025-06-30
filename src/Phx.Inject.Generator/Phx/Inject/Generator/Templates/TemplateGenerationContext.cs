@@ -13,14 +13,14 @@ namespace Phx.Inject.Generator.Templates {
     using Phx.Inject.Generator.Model;
 
     internal record TemplateGenerationContext(
-        InjectorDefinition Injector,
-        IReadOnlyDictionary<TypeModel, InjectorDefinition> Injectors,
-        IReadOnlyDictionary<TypeModel, SpecContainerDefinition> SpecContainers,
-        IReadOnlyDictionary<TypeModel, ExternalDependencyImplementationDefinition>
-            ExternalDependencyImplementations,
+        InjectorDef Injector,
+        IReadOnlyDictionary<TypeModel, InjectorDef> Injectors,
+        IReadOnlyDictionary<TypeModel, SpecContainerDef> SpecContainers,
+        IReadOnlyDictionary<TypeModel, DependencyImplementationDef>
+            DependencyImplementations,
         GeneratorExecutionContext GenerationContext
     ) {
-        public InjectorDefinition GetInjector(TypeModel type, Location location) {
+        public InjectorDef GetInjector(TypeModel type, Location location) {
             if (Injectors.TryGetValue(type, out var injector)) {
                 return injector;
             }
@@ -31,7 +31,7 @@ namespace Phx.Inject.Generator.Templates {
                 location);
         }
 
-        public SpecContainerDefinition GetSpecContainer(TypeModel type, Location location) {
+        public SpecContainerDef GetSpecContainer(TypeModel type, Location location) {
             if (SpecContainers.TryGetValue(type, out var spec)) {
                 return spec;
             }
@@ -42,14 +42,14 @@ namespace Phx.Inject.Generator.Templates {
                 location);
         }
 
-        public ExternalDependencyImplementationDefinition GetExternalDependency(TypeModel type, Location location) {
-            if (ExternalDependencyImplementations.TryGetValue(type, out var dep)) {
+        public DependencyImplementationDef GetDependency(TypeModel type, Location location) {
+            if (DependencyImplementations.TryGetValue(type, out var dep)) {
                 return dep;
             }
 
             throw new InjectionException(
                 Diagnostics.IncompleteSpecification,
-                $"Cannot find required external dependency type {type}.",
+                $"Cannot find required dependency type {type}.",
                 location);
         }
     }

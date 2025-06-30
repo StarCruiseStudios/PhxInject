@@ -160,7 +160,7 @@ namespace Phx.Inject.Generator.Templates {
 
         public interface IBuilder {
             SpecContainerTemplate Build(
-                SpecContainerDefinition specContainerDefinition,
+                SpecContainerDef specContainerDef,
                 TemplateGenerationContext context
             );
         }
@@ -171,13 +171,13 @@ namespace Phx.Inject.Generator.Templates {
             private const string BuiltInstanceReferenceName = "target";
 
             public SpecContainerTemplate Build(
-                SpecContainerDefinition specContainerDefinition,
+                SpecContainerDef specContainerDef,
                 TemplateGenerationContext context
             ) {
                 string? constructedSpecInterfaceQualifiedType = null;
                 string? constructedSpecificationReference = null;
-                if (specContainerDefinition.SpecInstantiationMode == SpecInstantiationMode.Instantiated) {
-                    constructedSpecInterfaceQualifiedType = specContainerDefinition.SpecificationType.QualifiedName;
+                if (specContainerDef.SpecInstantiationMode == SpecInstantiationMode.Instantiated) {
+                    constructedSpecInterfaceQualifiedType = specContainerDef.SpecificationType.QualifiedName;
                     constructedSpecificationReference = SpecReferenceName;
                 }
 
@@ -185,7 +185,7 @@ namespace Phx.Inject.Generator.Templates {
                 var memberTemplates = new List<ISpecContainerMemberTemplate>();
 
                 // Create factory methods and instance holder declarations.
-                foreach (var factoryMethod in specContainerDefinition.FactoryMethodDefinitions) {
+                foreach (var factoryMethod in specContainerDef.FactoryMethodDefs) {
                     string? instanceHolderReferenceName = null;
                     if (factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.Scoped
                         || factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.ContainerScoped) {
@@ -220,20 +220,20 @@ namespace Phx.Inject.Generator.Templates {
                             instanceHolderReferenceName,
                             startNewContainer,
                             constructedSpecificationReference,
-                            specContainerDefinition.SpecificationType.QualifiedName,
+                            specContainerDef.SpecificationType.QualifiedName,
                             arguments,
                             requiredProperties,
-                            specContainerDefinition.Location
+                            specContainerDef.Location
                         )
                     );
                 }
 
                 // Create builder methods.
-                foreach (var builderMethod in specContainerDefinition.BuilderMethodDefinitions) {
+                foreach (var builderMethod in specContainerDef.BuilderMethodDefs) {
                     var arguments = builderMethod.Arguments
                         .Select(argument => {
                             var singleInvocationTemplates =
-                                argument.FactoryInvocationDefinitions.Select(
+                                argument.FactoryInvocationDefs.Select(
                                     def => {
                                         return new SpecContainerFactorySingleInvocationTemplate(
                                             SpecContainerCollectionReferenceName,
@@ -244,7 +244,7 @@ namespace Phx.Inject.Generator.Templates {
                                     }).ToList();
 
                             string? multiBindQualifiedTypeArgs = null;
-                            if (argument.FactoryInvocationDefinitions.Count > 1) {
+                            if (argument.FactoryInvocationDefs.Count > 1) {
                                 multiBindQualifiedTypeArgs =
                                     TypeHelpers.GetQualifiedTypeArgs(
                                         argument.FactoryReturnType);
@@ -262,7 +262,7 @@ namespace Phx.Inject.Generator.Templates {
                     var specificationQualifiedType = constructedSpecificationReference ??
                         (builderMethod.SpecBuilderMemberType == SpecBuilderMemberType.Direct
                             ? builderMethod.BuiltType.QualifiedName
-                            : specContainerDefinition.SpecificationType.QualifiedName); 
+                            : specContainerDef.SpecificationType.QualifiedName); 
                     
                     
                     memberTemplates.Add(
@@ -279,19 +279,19 @@ namespace Phx.Inject.Generator.Templates {
                 }
 
                 return new SpecContainerTemplate(
-                    specContainerDefinition.SpecContainerType.TypeName,
+                    specContainerDef.SpecContainerType.TypeName,
                     constructedSpecInterfaceQualifiedType,
                     constructedSpecificationReference,
                     instanceHolders,
                     memberTemplates,
-                    specContainerDefinition.Location);
+                    specContainerDef.Location);
             }
             
             private SpecContainerFactoryInvocationTemplate createSpecContainerFactoryInvocationTemplate(
-                SpecContainerFactoryInvocationDefinition argument
+                SpecContainerFactoryInvocationDef argument
             ) {
                 var singleInvocationTemplates =
-                    argument.FactoryInvocationDefinitions.Select(
+                    argument.FactoryInvocationDefs.Select(
                         def => {
                             return new SpecContainerFactorySingleInvocationTemplate(
                                 SpecContainerCollectionReferenceName,
@@ -302,7 +302,7 @@ namespace Phx.Inject.Generator.Templates {
                         }).ToList();
 
                 string? multiBindQualifiedTypeArgs = null;
-                if (argument.FactoryInvocationDefinitions.Count > 1) {
+                if (argument.FactoryInvocationDefs.Count > 1) {
                     multiBindQualifiedTypeArgs =
                         TypeHelpers.GetQualifiedTypeArgs(
                             argument.FactoryReturnType);

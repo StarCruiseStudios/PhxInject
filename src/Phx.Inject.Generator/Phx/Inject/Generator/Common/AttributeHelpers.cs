@@ -19,7 +19,7 @@ namespace Phx.Inject.Generator.Common {
         private const string BuilderAttributeClassName = "Phx.Inject.BuilderAttribute";
         private const string BuilderReferenceAttributeClassName = "Phx.Inject.BuilderReferenceAttribute";
         private const string ChildInjectorAttributeClassName = "Phx.Inject.ChildInjectorAttribute";
-        private const string ExternalDependencyAttributeClassName = "Phx.Inject.ExternalDependencyAttribute";
+        private const string DependencyAttributeClassName = "Phx.Inject.DependencyAttribute";
         private const string FactoryAttributeClassName = "Phx.Inject.FactoryAttribute";
         private const string FactoryReferenceAttributeClassName = "Phx.Inject.FactoryReferenceAttribute";
         private const string InjectorAttributeClassName = $"Phx.Inject.{InjectorAttributeBaseName}";
@@ -41,8 +41,8 @@ namespace Phx.Inject.Generator.Common {
             };
         }
 
-        public static IEnumerable<AttributeData> GetExternalDependencyAttributes(this ISymbol injectorSymbol) {
-            return GetAttributes(injectorSymbol, ExternalDependencyAttributeClassName);
+        public static IEnumerable<AttributeData> GetDependencyAttributes(this ISymbol injectorSymbol) {
+            return GetAttributes(injectorSymbol, DependencyAttributeClassName);
         }
 
         public static IEnumerable<AttributeData> GetLabelAttributes(this ISymbol symbol) {

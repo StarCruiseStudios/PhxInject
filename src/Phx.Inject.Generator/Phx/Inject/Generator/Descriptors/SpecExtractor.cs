@@ -15,16 +15,16 @@ namespace Phx.Inject.Generator.Descriptors {
     using Phx.Inject.Generator.Model;
 
     internal class SpecExtractor {
-        private readonly SpecDescriptor.IBuilder specDescriptorBuilder;
+        private readonly SpecDesc.IBuilder specDescBuilder;
 
         public SpecExtractor(
-            SpecDescriptor.IBuilder specDescriptorBuilder
+            SpecDesc.IBuilder specDescBuilder
         ) {
-            this.specDescriptorBuilder = specDescriptorBuilder;
+            this.specDescBuilder = specDescBuilder;
         }
 
         public SpecExtractor() : this(
-            new SpecDescriptor.Builder()
+            new SpecDesc.Builder()
         ) { }
 
         private HashSet<QualifiedTypeModel> GetAutoConstructorParameterTypes(QualifiedTypeModel type) {
@@ -34,8 +34,8 @@ namespace Phx.Inject.Generator.Descriptors {
             return results;
         }
 
-        public SpecDescriptor? ExtractConstructorSpecForContext(
-            DefinitionGenerationContext context
+        public SpecDesc? ExtractConstructorSpecForContext(
+            DefGenerationContext context
         ) {
             var providedTypes = new HashSet<QualifiedTypeModel>();
             var neededTypes = new HashSet<QualifiedTypeModel>();
@@ -57,8 +57,8 @@ namespace Phx.Inject.Generator.Descriptors {
                 neededBuilders.Add(builder.BuiltType);
             }
             
-            foreach (var specDescriptor in context.Specifications.Values) {
-                foreach (var factory in specDescriptor.Factories) {
+            foreach (var specDesc in context.Specifications.Values) {
+                foreach (var factory in specDesc.Factories) {
                     providedTypes.Add(factory.ReturnType);
 
                     foreach (var parameterType in factory.Parameters) {
@@ -73,12 +73,12 @@ namespace Phx.Inject.Generator.Descriptors {
                     }
                 }
 
-                foreach (var link in specDescriptor.Links) {
+                foreach (var link in specDesc.Links) {
                     providedTypes.Add(link.ReturnType);
                     neededTypes.Add(link.InputType);
                 }
 
-                foreach (var builder in specDescriptor.Builders) {
+                foreach (var builder in specDesc.Builders) {
                     providedBuilders.Add(builder.BuiltType);
                     
                     foreach (var parameterType in builder.Parameters) {
@@ -108,20 +108,20 @@ namespace Phx.Inject.Generator.Descriptors {
             
             var needsConstructorSpec = missingTypes.Any() || missingBuilders.Any();
             return needsConstructorSpec
-                    ? specDescriptorBuilder.BuildConstructorSpec(
+                    ? specDescBuilder.BuildConstructorSpec(
                         context.Injector.InjectorType,
                         missingTypes,
                         missingBuilders)
                     : null;
         }
 
-        public IReadOnlyList<SpecDescriptor> Extract(
+        public IReadOnlyList<SpecDesc> Extract(
             IEnumerable<TypeDeclarationSyntax> syntaxNodes,
-            DescriptorGenerationContext context
+            DescGenerationContext context
         ) {
             return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
                 .Where(IsSpecSymbol)
-                .Select(symbol => specDescriptorBuilder.Build(symbol, context))
+                .Select(symbol => specDescBuilder.Build(symbol, context))
                 .ToImmutableList();
         }
 

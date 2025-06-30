@@ -19,8 +19,8 @@ namespace Phx.Inject.Tests {
                 Phx.Inject.Tests.GeneratedChildInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.ChildSpecification.GetNode(
-                specContainers.GeneratedChildInjector_IChildExternalDependencies.Fac_Left_ILeaf_GetLeftLeaf(specContainers),
-                specContainers.GeneratedChildInjector_IChildExternalDependencies.Fac_Right_ILeaf_GetRightLeaf(specContainers));
+                specContainers.GeneratedChildInjector_IChildDependencies.Fac_Left_ILeaf_GetLeftLeaf(specContainers),
+                specContainers.GeneratedChildInjector_IChildDependencies.Fac_Right_ILeaf_GetRightLeaf(specContainers));
         }
     }
 }

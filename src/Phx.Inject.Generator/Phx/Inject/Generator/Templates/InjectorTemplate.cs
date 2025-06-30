@@ -135,7 +135,7 @@ namespace Phx.Inject.Generator.Templates {
             //      }
             //
             //      public ChildInjectorQualifiedInterfaceType ChildFactoryName() {
-            //          return new ChildInjectorQualifiedImplementationType(new ExternalDependencyImplementation(specContainers));
+            //          return new ChildInjectorQualifiedImplementationType(new DependencyImplementation(specContainers));
             //      }
             foreach (var memberTemplate in InjectorMemberTemplates) {
                 writer.AppendBlankLine();
@@ -149,7 +149,7 @@ namespace Phx.Inject.Generator.Templates {
 
         public interface IBuilder {
             InjectorTemplate Build(
-                InjectorDefinition injectorDefinition,
+                InjectorDef injectorDef,
                 TemplateGenerationContext context
             );
         }
@@ -158,7 +158,7 @@ namespace Phx.Inject.Generator.Templates {
             private const string SpecContainerCollectionReferenceName = "specContainers";
 
             public InjectorTemplate Build(
-                InjectorDefinition injectorDefinition,
+                InjectorDef injectorDef,
                 TemplateGenerationContext context
             ) {
                 var specContainers = context.SpecContainers.Values.ToImmutableList();
@@ -185,11 +185,11 @@ namespace Phx.Inject.Generator.Templates {
                             specType.GetVariableName()))
                     .ToImmutableList();
 
-                IEnumerable<IInjectorMemberTemplate> injectorMemberTemplates = injectorDefinition.Providers.Select(
+                IEnumerable<IInjectorMemberTemplate> injectorMemberTemplates = injectorDef.Providers.Select(
                         provider => {
-                            var invocationDefinition = provider.SpecContainerFactoryInvocation;
+                            var invocationDef = provider.SpecContainerFactoryInvocation;
 
-                            var singleInvocationTemplates = invocationDefinition.FactoryInvocationDefinitions.Select(
+                            var singleInvocationTemplates = invocationDef.FactoryInvocationDefs.Select(
                                 def => {
                                     return new SpecContainerFactorySingleInvocationTemplate(
                                         SpecContainerCollectionReferenceName,
@@ -200,16 +200,16 @@ namespace Phx.Inject.Generator.Templates {
                                 }).ToList();
 
                             string? multiBindQualifiedTypeArgs = null;
-                            if (invocationDefinition.FactoryInvocationDefinitions.Count > 1) {
+                            if (invocationDef.FactoryInvocationDefs.Count > 1) {
                                 multiBindQualifiedTypeArgs =
-                                    TypeHelpers.GetQualifiedTypeArgs(invocationDefinition.FactoryReturnType);
+                                    TypeHelpers.GetQualifiedTypeArgs(invocationDef.FactoryReturnType);
                             }
 
                             var factoryInvocation = new SpecContainerFactoryInvocationTemplate(
                                 singleInvocationTemplates,
                                 multiBindQualifiedTypeArgs,
-                                invocationDefinition.RuntimeFactoryProvidedType?.QualifiedName,
-                                invocationDefinition.Location);
+                                invocationDef.RuntimeFactoryProvidedType?.QualifiedName,
+                                invocationDef.Location);
 
                             return new InjectorProviderTemplate(
                                 provider.ProvidedType.TypeModel.QualifiedName,
@@ -218,47 +218,47 @@ namespace Phx.Inject.Generator.Templates {
                                 provider.Location);
                         })
                     .Concat<IInjectorMemberTemplate>(
-                        injectorDefinition.Builders.Select(
+                        injectorDef.Builders.Select(
                             builder => {
                                 var builderTargetName = "target";
-                                var invocationDefinition = builder.SpecContainerBuilderInvocation;
+                                var invocationDef = builder.SpecContainerBuilderInvocation;
                                 var builderInvocation = new SpecContainerBuilderInvocationTemplate(
                                     SpecContainerCollectionReferenceName,
-                                    invocationDefinition.SpecContainerType.GetPropertyName(),
-                                    invocationDefinition.BuilderMethodName,
+                                    invocationDef.SpecContainerType.GetPropertyName(),
+                                    invocationDef.BuilderMethodName,
                                     builderTargetName,
-                                    invocationDefinition.Location);
+                                    invocationDef.Location);
 
-                                return new InjectorBuilderTemplate(
+                                return new ActivatorTemplate(
                                     builder.BuiltType.TypeModel.QualifiedName,
-                                    builder.InjectorBuilderMethodName,
+                                    builder.ActivatorMethodName,
                                     builderTargetName,
                                     builderInvocation,
                                     builder.Location);
                             }))
                     .Concat(
-                        injectorDefinition.ChildFactories.Select(
+                        injectorDef.ChildFactories.Select(
                             factory => {
                                 var childInjector = context.GetInjector(
                                     factory.InjectorChildInterfaceType,
                                     factory.Location);
                                 var childTypeQualifiedName = childInjector.InjectorType.QualifiedName;
 
-                                var missingExternalDependencies =
+                                var missingDependencies =
                                     childInjector.ConstructedSpecifications.Where(specType =>
                                             !factory.Parameters.Contains(specType))
                                         .ToImmutableList();
-                                if (missingExternalDependencies.Any()) {
+                                if (missingDependencies.Any()) {
                                     var constructedSpecificationsString = string.Join(",",
                                         childInjector.ConstructedSpecifications.Select(spec =>
                                             spec.ToString()));
-                                    var missingExternalDependenciesString = string.Join(",",
-                                        missingExternalDependencies.Select(dep => dep.ToString()));
+                                    var missingDependenciesString = string.Join(",",
+                                        missingDependencies.Select(dep => dep.ToString()));
 
                                     throw new InjectionException(
                                         Diagnostics.InvalidSpecification,
                                         $"Child Injector factory must contain parameters for each of the child injector's constructed specification types: {constructedSpecificationsString}."
-                                        + $" Missing: {missingExternalDependenciesString}.",
+                                        + $" Missing: {missingDependenciesString}.",
                                         factory.Location);
                                 }
 
@@ -290,29 +290,29 @@ namespace Phx.Inject.Generator.Templates {
                                         parameter.ParameterName,
                                         parameter.ParameterName,
                                         childInjector.Location));
-                                var externalDependencyConstructorArgs = childInjector.ExternalDependencies
-                                    .Select(externalDependencyInterfaceType => {
-                                        var externalDependencyImplementation =
-                                            context.GetExternalDependency(
-                                                externalDependencyInterfaceType,
+                                var dependencyConstructorArgs = childInjector.Dependencies
+                                    .Select(dependencyInterfaceType => {
+                                        var dependencyImplementation =
+                                            context.GetDependency(
+                                                dependencyInterfaceType,
                                                 childInjector.Location);
-                                        var externalDependencyImplementationQualifiedName =
-                                            externalDependencyImplementation
-                                                .ExternalDependencyImplementationType
+                                        var dependencyImplementationQualifiedName =
+                                            dependencyImplementation
+                                                .DependencyImplementationType
                                                 .QualifiedName;
 
                                         return new
-                                            InjectorChildExternalDependencyConstructorArgumentTemplate(
-                                                externalDependencyInterfaceType
+                                            InjectorChildDependencyConstructorArgumentTemplate(
+                                                dependencyInterfaceType
                                                     .GetVariableName(),
-                                                externalDependencyImplementationQualifiedName,
+                                                dependencyImplementationQualifiedName,
                                                 SpecContainerCollectionReferenceName,
                                                 childInjector.Location);
                                     });
 
                                 var args = specConstructorArgs
                                     .Concat<IInjectorChildConstructorArgumentTemplate>(
-                                        externalDependencyConstructorArgs)
+                                        dependencyConstructorArgs)
                                     .ToImmutableList();
 
                                 return new InjectorChildFactoryTemplate(
@@ -326,14 +326,14 @@ namespace Phx.Inject.Generator.Templates {
                     .ToImmutableList();
 
                 return new InjectorTemplate(
-                    injectorDefinition.InjectorType.TypeName,
-                    injectorDefinition.InjectorInterfaceType.QualifiedName,
+                    injectorDef.InjectorType.TypeName,
+                    injectorDef.InjectorInterfaceType.QualifiedName,
                     NameHelpers.SpecContainerCollectionTypeName,
                     SpecContainerCollectionReferenceName,
                     specContainerProperties,
                     constructorParameters,
                     injectorMemberTemplates,
-                    injectorDefinition.Location);
+                    injectorDef.Location);
             }
         }
     }

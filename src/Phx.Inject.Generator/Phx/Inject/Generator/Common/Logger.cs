@@ -13,14 +13,5 @@ namespace Phx.Inject.Generator.Common {
         public static void Info(string message, Location? location = null) {
             Diagnostics.Log(message, null);
         }
-
-        public static void Error(string message) {
-            Console.Error.WriteLine(message);
-        }
-
-        public static void Error(string message, Exception ex) {
-            Console.Error.WriteLine(message);
-            Console.Error.WriteLine(ex);
-        }
     }
 }

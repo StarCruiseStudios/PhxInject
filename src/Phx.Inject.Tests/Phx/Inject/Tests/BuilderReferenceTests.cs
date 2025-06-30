@@ -44,7 +44,7 @@ namespace Phx.Inject.Tests {
     
     public class BuilderReferenceTests : LoggingTestClass {
         [Test]
-        public void AnInjectorBuilderPropertyIsGenerated() {
+        public void ABuilderReferencePropertyIsGenerated() {
             IBuilderReferenceInjector injector = Given("A test injector.",
                 () => new GeneratedBuilderReferenceInjector());
             var buidlerReferenceType = Given("An uninitialized builder reference type.", () => new TestBuilderReferenceObject());
@@ -56,7 +56,7 @@ namespace Phx.Inject.Tests {
         }
 
         [Test]
-        public void AnInjectorBuilderFieldIsGenerated() {
+        public void ABuilderReferenceFieldIsGenerated() {
             IBuilderReferenceInjector injector = Given("A test injector.",
                 () => new GeneratedBuilderReferenceInjector());
             var builderReferenceType = Given("An uninitialized builder reference type.", () => new TestBuilderReferenceObject());

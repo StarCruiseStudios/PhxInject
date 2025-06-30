@@ -17,69 +17,69 @@ namespace Phx.Inject.Generator;
 
 internal class SourceTemplateConstructor {
     public IReadOnlyList<(TypeModel, IRenderTemplate)> ConstructTemplates(
-        IReadOnlyList<InjectionContextDefinition> injectionContextDefinitions,
+        IReadOnlyList<InjectionContextDef> injectionContextDefs,
         GeneratorExecutionContext context
     ) {
         try {
-            var injectorDefinitions = injectionContextDefinitions
-                .Select(injectionContextDefinition => injectionContextDefinition.Injector)
+            var injectorDefs = injectionContextDefs
+                .Select(injectionContextDef => injectionContextDef.Injector)
                 .ToImmutableList();
-            var injectorDefinitionMap = CreateTypeMap(
-                injectorDefinitions,
+            var injectorDefMap = CreateTypeMap(
+                injectorDefs,
                 injector => injector.InjectorInterfaceType);
 
-            return injectionContextDefinitions.SelectMany(injectionContextDefinition => {
-                    var specDefinitionMap = CreateTypeMap(
-                        injectionContextDefinition.SpecContainers,
+            return injectionContextDefs.SelectMany(injectionContextDef => {
+                    var specDefMap = CreateTypeMap(
+                        injectionContextDef.SpecContainers,
                         spec => spec.SpecificationType);
-                    var externalDependencyDefinitionMap = CreateTypeMap(
-                        injectionContextDefinition.ExternalDependencyImplementations,
-                        dep => dep.ExternalDependencyInterfaceType);
+                    var dependencyDefMap = CreateTypeMap(
+                        injectionContextDef.DependencyImplementations,
+                        dep => dep.DependencyInterfaceType);
 
                     var templateGenerationContext = new TemplateGenerationContext(
-                        injectionContextDefinition.Injector,
-                        injectorDefinitionMap,
-                        specDefinitionMap,
-                        externalDependencyDefinitionMap,
+                        injectionContextDef.Injector,
+                        injectorDefMap,
+                        specDefMap,
+                        dependencyDefMap,
                         context);
 
                     var templates = new List<(TypeModel, IRenderTemplate)>();
-                    var injectorDefinition = injectionContextDefinition.Injector;
+                    var injectorDef = injectionContextDef.Injector;
                     templates.Add(
                         (
-                            injectorDefinition.InjectorType,
+                            injectorDef.InjectorType,
                             new InjectorConstructor().Construct(
-                                injectorDefinition,
+                                injectorDef,
                                 templateGenerationContext)
                         ));
-                    Logger.Info($"Generated injector {injectorDefinition.InjectorType}.");
+                    Logger.Info($"Generated injector {injectorDef.InjectorType}.");
 
                     var specContainerPresenter = new SpecContainerConstructor();
-                    foreach (var specContainerDefinition in injectionContextDefinition.SpecContainers) {
+                    foreach (var specContainerDef in injectionContextDef.SpecContainers) {
                         templates.Add(
                             (
-                                specContainerDefinition.SpecContainerType,
+                                specContainerDef.SpecContainerType,
                                 specContainerPresenter.Construct(
-                                    specContainerDefinition,
+                                    specContainerDef,
                                     templateGenerationContext)
                             ));
                         Logger.Info(
-                            $"Generated spec container {specContainerDefinition.SpecContainerType} for injector {injectorDefinition.InjectorType}.");
+                            $"Generated spec container {specContainerDef.SpecContainerType} for injector {injectorDef.InjectorType}.");
                     }
 
-                    var externalDependencyImplementationPresenter
-                        = new ExternalDependencyImplementationConstructor();
-                    foreach (var dependency in injectionContextDefinition
-                        .ExternalDependencyImplementations) {
+                    var dependencyImplementationPresenter
+                        = new DependencyImplementationConstructor();
+                    foreach (var dependency in injectionContextDef
+                        .DependencyImplementations) {
                         templates.Add(
                             (
-                                dependency.ExternalDependencyImplementationType,
-                                externalDependencyImplementationPresenter.Construct(
+                                dependency.DependencyImplementationType,
+                                dependencyImplementationPresenter.Construct(
                                     dependency,
                                     templateGenerationContext)
                             ));
                         Logger.Info(
-                            $"Generated external dependency implementation {dependency.ExternalDependencyImplementationType} for injector {injectorDefinition.InjectorType}.");
+                            $"Generated dependency implementation {dependency.DependencyImplementationType} for injector {injectorDef.InjectorType}.");
                     }
 
                     return templates;
