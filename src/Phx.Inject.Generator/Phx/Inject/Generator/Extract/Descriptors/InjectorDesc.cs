@@ -15,7 +15,7 @@ namespace Phx.Inject.Generator.Extract.Descriptors;
 
 internal record InjectorDesc(
     TypeModel InjectorInterfaceType,
-    string GeneratedInjectorTypeName,
+    TypeModel InjectorType,
     IEnumerable<TypeModel> SpecificationsTypes,
     IEnumerable<TypeModel> DependencyInterfaceTypes,
     IEnumerable<InjectorProviderDesc> Providers,
@@ -23,11 +23,6 @@ internal record InjectorDesc(
     IEnumerable<InjectorChildFactoryDesc> ChildFactories,
     Location Location
 ) : IDescriptor {
-    public TypeModel InjectorType { get; } = InjectorInterfaceType with {
-        BaseTypeName = GeneratedInjectorTypeName,
-        TypeArguments = ImmutableList<TypeModel>.Empty
-    };
-
     public interface IExtractor {
         InjectorDesc Extract(
             ITypeSymbol injectorInterfaceSymbol,
@@ -36,17 +31,17 @@ internal record InjectorDesc(
     }
 
     public class Extractor : IExtractor {
-        private readonly ActivatorDesc.IExtractor injectorExtractorDescExtractor;
+        private readonly ActivatorDesc.IExtractor activatorDescExtractor;
         private readonly InjectorChildFactoryDesc.IExtractor injectorChildFactoryDescExtractor;
         private readonly InjectorProviderDesc.IExtractor injectorProviderDescriptionExtractor;
 
         public Extractor(
             InjectorProviderDesc.IExtractor injectorProviderDescriptionExtractor,
-            ActivatorDesc.IExtractor injectorExtractorDescExtractor,
+            ActivatorDesc.IExtractor activatorDescExtractor,
             InjectorChildFactoryDesc.IExtractor injectorChildFactoryDescExtractor
         ) {
             this.injectorProviderDescriptionExtractor = injectorProviderDescriptionExtractor;
-            this.injectorExtractorDescExtractor = injectorExtractorDescExtractor;
+            this.activatorDescExtractor = activatorDescExtractor;
             this.injectorChildFactoryDescExtractor = injectorChildFactoryDescExtractor;
         }
 
@@ -59,52 +54,63 @@ internal record InjectorDesc(
             ITypeSymbol injectorInterfaceSymbol,
             DescGenerationContext context
         ) {
+            var injectorLocation = injectorInterfaceSymbol.Locations.First();
             var injectorInterfaceType = TypeModel.FromTypeSymbol(injectorInterfaceSymbol);
             var generatedInjectorTypeName = MetadataHelpers.GetGeneratedInjectorClassName(injectorInterfaceSymbol);
+            var injectorType = injectorInterfaceType with {
+                BaseTypeName = generatedInjectorTypeName,
+                TypeArguments = ImmutableList<TypeModel>.Empty
+            };
 
-            IReadOnlyList<TypeModel> dependencyInterfaceTypes = MetadataHelpers
-                .GetDependencyTypes(injectorInterfaceSymbol)
-                .Select(TypeModel.FromTypeSymbol)
-                .ToImmutableList();
+            return InjectionException.TryAggregate(aggregateException => {
+                IReadOnlyList<TypeModel> dependencyInterfaceTypes = MetadataHelpers
+                    .GetDependencyTypes(injectorInterfaceSymbol)
+                    .Select(TypeModel.FromTypeSymbol)
+                    .ToImmutableList();
 
-            IReadOnlyList<TypeModel> specificationTypes = MetadataHelpers
-                .GetInjectorSpecificationTypes(injectorInterfaceSymbol)
-                .Select(TypeModel.FromTypeSymbol)
-                .Concat(dependencyInterfaceTypes)
-                .ToImmutableList();
+                IReadOnlyList<TypeModel> specificationTypes = MetadataHelpers
+                    .GetInjectorSpecificationTypes(injectorInterfaceSymbol)
+                    .Select(TypeModel.FromTypeSymbol)
+                    .Concat(dependencyInterfaceTypes)
+                    .ToImmutableList();
 
-            IReadOnlyList<IMethodSymbol> injectorMethods = injectorInterfaceSymbol
-                .GetMembers()
-                .OfType<IMethodSymbol>()
-                .ToImmutableList();
+                IReadOnlyList<IMethodSymbol> injectorMethods = injectorInterfaceSymbol
+                    .GetMembers()
+                    .OfType<IMethodSymbol>()
+                    .ToImmutableList();
 
-            IReadOnlyList<InjectorProviderDesc> providers = injectorMethods
-                .Select(method => injectorProviderDescriptionExtractor.Extract(method, context))
-                .Where(provider => provider != null)
-                .Select(provider => provider!)
-                .ToImmutableList();
+                IReadOnlyList<InjectorProviderDesc> providers = aggregateException.Aggregate(() => injectorMethods
+                        .SelectCatching(method => injectorProviderDescriptionExtractor.Extract(method, context))
+                        .Where(provider => provider != null)
+                        .Select(provider => provider!)
+                        .ToImmutableList(),
+                    ImmutableList.Create<InjectorProviderDesc>);
 
-            IReadOnlyList<ActivatorDesc> builders = injectorMethods
-                .Select(method => injectorExtractorDescExtractor.Extract(method, context))
-                .Where(builder => builder != null)
-                .Select(builder => builder!)
-                .ToImmutableList();
+                IReadOnlyList<ActivatorDesc> builders = aggregateException.Aggregate(() => injectorMethods
+                        .SelectCatching(method => activatorDescExtractor.Extract(method, context))
+                        .Where(builder => builder != null)
+                        .Select(builder => builder!)
+                        .ToImmutableList(),
+                    ImmutableList.Create<ActivatorDesc>);
 
-            IReadOnlyList<InjectorChildFactoryDesc> childFactories = injectorMethods
-                .Select(method => injectorChildFactoryDescExtractor.Extract(method, context))
-                .Where(childFactory => childFactory != null)
-                .Select(childFactory => childFactory!)
-                .ToImmutableList();
+                IReadOnlyList<InjectorChildFactoryDesc> childFactories = aggregateException.Aggregate(() =>
+                        injectorMethods
+                            .SelectCatching(method => injectorChildFactoryDescExtractor.Extract(method, context))
+                            .Where(childFactory => childFactory != null)
+                            .Select(childFactory => childFactory!)
+                            .ToImmutableList(),
+                    ImmutableList.Create<InjectorChildFactoryDesc>);
 
-            return new InjectorDesc(
-                injectorInterfaceType,
-                generatedInjectorTypeName,
-                specificationTypes,
-                dependencyInterfaceTypes,
-                providers,
-                builders,
-                childFactories,
-                injectorInterfaceSymbol.Locations.First());
+                return new InjectorDesc(
+                    injectorInterfaceType,
+                    injectorType,
+                    specificationTypes,
+                    dependencyInterfaceTypes,
+                    providers,
+                    builders,
+                    childFactories,
+                    injectorLocation);
+            });
         }
     }
 }

@@ -23,7 +23,13 @@ public class AutoBuilderType {
     }
 }
 
-public class AutoType {
+public interface IAutoType {
+    int Value { get; }
+    AutoTypeWithFabricationMode AutoTypeWithFabricationMode { get; }
+}
+
+[Link(typeof(AutoType), typeof(IAutoType))]
+public class AutoType : IAutoType {
     public int Value { get; }
 
     public AutoTypeWithFabricationMode AutoTypeWithFabricationMode { get; }
@@ -52,8 +58,8 @@ public class OuterType {
     }
 }
 
-public record class AutoTypeWithRequiredProperties(AutoType autoType) {
-    public AutoType AutoType { get; } = autoType;
+public record class AutoTypeWithRequiredProperties(IAutoType autoType) {
+    public IAutoType AutoType { get; } = autoType;
     public required int X { get; init; }
     public required AutoTypeWithFabricationMode Y { get; init; }
 }

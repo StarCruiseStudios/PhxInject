@@ -8,6 +8,7 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Phx.Inject.Common;
 
@@ -29,7 +30,16 @@ internal static class AttributeHelpers {
     private const string PartialAttributeClassName = $"Phx.Inject.{nameof(PartialAttribute)}";
     private const string QualifierAttributeClassName = $"Phx.Inject.{nameof(QualifierAttribute)}";
     private const string SpecificationAttributeClassName = $"Phx.Inject.{nameof(SpecificationAttribute)}";
-
+    
+    public static bool HasInjectorAttribute(MemberDeclarationSyntax memberDeclaration) {
+        return memberDeclaration.AttributeLists
+            .Any(attributeList => attributeList.Attributes
+                .Any(attribute => {
+                    var name = attribute.Name.ToString();
+                    return name is InjectorAttributeShortName or InjectorAttributeBaseName;
+                }));
+    }
+    
     public static AttributeData? GetInjectorAttribute(this ISymbol injectorInterfaceSymbol) {
         var injectorAttributes =
             GetAttributes(injectorInterfaceSymbol, InjectorAttributeClassName);
@@ -55,6 +65,15 @@ internal static class AttributeHelpers {
         return GetAttributedAttributes(symbol, QualifierAttributeClassName);
     }
 
+    public static bool HasSpecificationAttribute(MemberDeclarationSyntax memberDeclaration) {
+        return memberDeclaration.AttributeLists
+            .Any(attributeList => attributeList.Attributes
+                .Any(attribute => {
+                    var name = attribute.Name.ToString();
+                    return name is SpecificationAttributeShortName or SpecificationAttributeBaseName;
+                }));
+    }
+    
     public static AttributeData? GetSpecificationAttribute(this ISymbol specificationSymbol) {
         var specificationAttributes =
             GetAttributes(specificationSymbol, SpecificationAttributeClassName);

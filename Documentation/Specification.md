@@ -354,6 +354,8 @@ Auto dependencies can also be scoped by applying a `Factory` attribute to the
 class. This will ensure that they are scoped to the injector that contains them.
 By default, auto dependencies are `Recurrent`.
 
+An auto dependency can also define `Link`s from itself.
+
 ```csharp
 [Factory(FabricationMode.Scoped)]
 public class AutoTypeWithFabricationMode {
@@ -364,7 +366,13 @@ public record AutoTypeWithRequiredProperty {
     public required int X { get; init; }
 }
 
-public class AutoType {
+public interface IAutoType {
+    AutoTypeWithFabricationMode Y { get; }
+    AutoTypeWithRequiredProperty Z { get; }
+}
+
+[Link(typeof(AutoType), typeof(IAutoType))]
+public class AutoType : IAutoType {
     public AutoTypeWithFabricationMode Y { get; }
     public AutoTypeWithRequiredProperty Z { get; }
     

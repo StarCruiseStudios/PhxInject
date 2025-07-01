@@ -52,8 +52,8 @@ internal class SpecExtractor : ISpecExtractor {
         var providedTypes = new HashSet<QualifiedTypeModel>();
         var neededTypes = new HashSet<QualifiedTypeModel>();
 
-        var neededBuilders = new HashSet<QualifiedTypeModel>();
         var providedBuilders = new HashSet<QualifiedTypeModel>();
+        var neededBuilders = new HashSet<QualifiedTypeModel>();
 
         foreach (var provider in context.Injector.Providers) {
             if (provider.ProvidedType.TypeModel.QualifiedBaseTypeName == TypeHelpers.FactoryTypeName) {
@@ -115,18 +115,20 @@ internal class SpecExtractor : ISpecExtractor {
             }
         }
 
-        IReadOnlyList<QualifiedTypeModel> missingTypes = neededTypes.Except(providedTypes).ToImmutableList();
-        IReadOnlyList<QualifiedTypeModel> missingBuilders = neededBuilders.Except(providedBuilders).ToImmutableList();
+        IReadOnlyList<QualifiedTypeModel> autoFactoryTypes = neededTypes.Except(providedTypes)
+            .Where(TypeHelpers.IsAutoFactoryEligible)
+            .ToImmutableList();
+        IReadOnlyList<QualifiedTypeModel> autoBuilderTypes = neededBuilders.Except(providedBuilders).ToImmutableList();
 
-        var needsConstructorSpec = missingTypes.Any() || missingBuilders.Any();
+        var needsConstructorSpec = autoFactoryTypes.Any() || autoBuilderTypes.Any();
         return needsConstructorSpec
             ? specDescExtractor.ExtractConstructorSpec(
                 context.Injector.InjectorType,
-                missingTypes,
-                missingBuilders)
+                autoFactoryTypes,
+                autoBuilderTypes)
             : null;
     }
-
+    
     public IReadOnlyList<SpecDesc> Extract(
         IEnumerable<TypeDeclarationSyntax> syntaxNodes,
         DescGenerationContext context

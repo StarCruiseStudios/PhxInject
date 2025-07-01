@@ -6,6 +6,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Generator.Abstract;
@@ -36,28 +37,33 @@ internal class SourceExtractor {
     
     public SourceDesc Extract(SourceSyntaxReceiver syntaxReceiver, GeneratorExecutionContext context) {
         return InjectionException.Try(() => {
-            var descGenerationContext = new DescGenerationContext(context);
+            return InjectionException.TryAggregate(aggregateException => {
+                var descGenerationContext = new DescGenerationContext(context);
 
-            var injectorDescs = injectorExtractor.Extract(
-                syntaxReceiver.InjectorCandidates,
-                descGenerationContext);
-            Logger.Info($"Discovered {injectorDescs.Count} injector types.");
+                var injectorDescs = aggregateException.Aggregate(() => injectorExtractor.Extract(
+                    syntaxReceiver.InjectorCandidates,
+                    descGenerationContext),
+                    ImmutableList.Create<InjectorDesc>);
+                Logger.Info($"Discovered {injectorDescs.Count} injector types.");
 
-            var specDescs = specExtractor.Extract(
-                syntaxReceiver.SpecificationCandidates,
-                descGenerationContext);
-            Logger.Info($"Discovered {specDescs.Count} specification types.");
+                var specDescs = aggregateException.Aggregate(() => specExtractor.Extract(
+                    syntaxReceiver.SpecificationCandidates,
+                    descGenerationContext),
+                    ImmutableList.Create<SpecDesc>);
+                Logger.Info($"Discovered {specDescs.Count} specification types.");
 
-            var dependencyDescs = dependencyExtractor.Extract(
-                syntaxReceiver.InjectorCandidates,
-                descGenerationContext);
-            Logger.Info($"Discovered {dependencyDescs.Count} dependency types.");
+                var dependencyDescs = aggregateException.Aggregate(() => dependencyExtractor.Extract(
+                    syntaxReceiver.InjectorCandidates,
+                    descGenerationContext),
+                    ImmutableList.Create<DependencyDesc>);
+                Logger.Info($"Discovered {dependencyDescs.Count} dependency types.");
 
-            return new SourceDesc(
-                injectorDescs,
-                specDescs,
-                dependencyDescs
-            );
+                return new SourceDesc(
+                    injectorDescs,
+                    specDescs,
+                    dependencyDescs
+                );
+            });
         }, "extracting source descriptors");
     }
 }

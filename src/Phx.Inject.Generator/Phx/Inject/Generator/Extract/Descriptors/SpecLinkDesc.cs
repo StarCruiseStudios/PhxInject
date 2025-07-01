@@ -20,16 +20,14 @@ internal record SpecLinkDesc(
     public interface IExtractor {
         SpecLinkDesc Extract(
             AttributeData linkAttribute,
-            Location linkLocation,
-            DescGenerationContext context
+            Location linkLocation
         );
     }
 
     public class Extractor : IExtractor {
         public SpecLinkDesc Extract(
             AttributeData linkAttribute,
-            Location linkLocation,
-            DescGenerationContext context
+            Location linkLocation
         ) {
             if (linkAttribute.ConstructorArguments.Length != 2) {
                 throw new InjectionException(

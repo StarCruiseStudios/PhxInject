@@ -24,6 +24,33 @@ internal static class TypeHelpers {
         HashSetTypeName,
         DictionaryTypeName
     });
+    
+    public static bool IsInjectorSymbol(ITypeSymbol symbol) {
+        var injectorAttribute = symbol.GetInjectorAttribute();
+        if (injectorAttribute == null) {
+            return false;
+        }
+
+        if (symbol.TypeKind != TypeKind.Interface) {
+            throw new InjectionException(
+                Diagnostics.InvalidSpecification,
+                $"Injector type {symbol.Name} must be an interface.",
+                symbol.Locations.First());
+        }
+
+        return true;
+    }
+    
+    public static bool IsAutoFactoryEligible(QualifiedTypeModel type) {
+        var typeSymbol = type.TypeModel.typeSymbol;
+        var isVisible = typeSymbol.DeclaredAccessibility == Accessibility.Public
+            || typeSymbol.DeclaredAccessibility == Accessibility.Internal;
+        return isVisible
+            && !typeSymbol.IsStatic
+            && !typeSymbol.IsAbstract
+            && typeSymbol.TypeKind != TypeKind.Interface
+            && type.TypeModel.TypeArguments.Count == 0;
+    }
 
     public static void ValidatePartialType(QualifiedTypeModel returnType, bool isPartial, Location location) {
         if (isPartial) {

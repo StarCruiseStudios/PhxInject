@@ -6,6 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 
 namespace Phx.Inject.Common;
@@ -13,7 +14,7 @@ namespace Phx.Inject.Common;
 internal class InjectionException : Exception {
     public Diagnostics.DiagnosticData DiagnosticData { get; }
     public Location Location { get; }
-    public List<Diagnostic> Diagnostics { get; } = new(); 
+    public List<Diagnostic> Diagnostics { get; } = new();
 
     public InjectionException(
         IEnumerable<Exception> aggregateExceptions
@@ -21,16 +22,8 @@ internal class InjectionException : Exception {
         DiagnosticData = Common.Diagnostics.AggregateError;
         Location = Location.None;
 
-        if (!aggregateExceptions.Any()) {
-            Diagnostics.Add(Common.Diagnostics.CreateUnexpectedErrorDiagnostic("An unexpected error occurred, but no exceptions were provided."));
-        }
-        
         foreach (var e in aggregateExceptions) {
-            if (e is InjectionException ie) {
-                Diagnostics.AddRange(ie.Diagnostics);
-            } else {
-                Diagnostics.Add(Common.Diagnostics.CreateUnexpectedErrorDiagnostic(e?.ToString() ?? "[null]"));
-            }
+            Diagnostics.AddRange(GetDiagnosticsFromException(e));
         }
     }
     
@@ -72,14 +65,33 @@ internal class InjectionException : Exception {
                 DiagnosticSeverity.Error,
                 true),
             location));
-        
-        if (inner is InjectionException innerInjectionException) {
-            Diagnostics.AddRange(innerInjectionException.Diagnostics);
-        } else {
-            Diagnostics.Add(Common.Diagnostics.CreateUnexpectedErrorDiagnostic(inner.ToString()));
+        Diagnostics.AddRange(GetDiagnosticsFromException(inner));
+    }
+    
+    public T Aggregate<T>(Func<T> func, Func<T> defaultValue) {
+        try {
+            return func();
+        } catch (Exception e) {
+            Diagnostics.AddRange(GetDiagnosticsFromException(e));
+        }
+
+        return defaultValue();
+    }
+    
+    public void Aggregate(Action action) {
+        try {
+            action();
+        } catch (Exception e) {
+            Diagnostics.AddRange(GetDiagnosticsFromException(e));
         }
     }
-
+    
+    public void ThrowIfAggregate() {
+        if (Diagnostics.Count > 0) {
+            throw this;
+        }
+    }
+    
     public static T Try<T>(Func<T> func, string description) => Try(func, description, Location.None);
     
     public static T Try<T>(Func<T> func, string description, Location location) {
@@ -93,6 +105,18 @@ internal class InjectionException : Exception {
                 location,
                 e
             );
+        }
+    }
+    
+    public static T TryAggregate<T>(Func<InjectionException, T> func) {
+        var aggregateException = CreateAggregator();
+        try {
+            var result = func(aggregateException);
+            aggregateException.ThrowIfAggregate();
+            return result;
+        } catch (Exception e) {
+            aggregateException.Diagnostics.AddRange(GetDiagnosticsFromException(e));
+            throw aggregateException;
         }
     }
     
@@ -110,6 +134,23 @@ internal class InjectionException : Exception {
                 e
             );
         }
+    }
+    
+    
+    public static void TryAggregate(Action<InjectionException> action) {
+        var aggregateException = CreateAggregator();
+        aggregateException.Aggregate(() => action(aggregateException));
+        aggregateException.ThrowIfAggregate();
+    }
+    
+    private static IList<Diagnostic> GetDiagnosticsFromException(Exception e) {
+        return e is InjectionException ie
+            ? ie.Diagnostics
+            : ImmutableList.Create(Common.Diagnostics.CreateUnexpectedErrorDiagnostic(e?.ToString() ?? "[null]"));
+    }
+
+    private static InjectionException CreateAggregator() {
+        return new InjectionException(ImmutableList.Create<Exception>());
     }
 }
 

@@ -51,13 +51,8 @@ internal static class MetadataHelpers {
     public static IReadOnlyList<QualifiedTypeModel> GetConstructorParameterQualifiedTypes(ITypeSymbol type) {
         var typeLocation = type.Locations.First();
 
-        var isVisible = type.DeclaredAccessibility == Accessibility.Public
-            || type.DeclaredAccessibility == Accessibility.Internal;
-        if (!isVisible || type.IsStatic || type.IsAbstract) {
-            throw new InjectionException(
-                Diagnostics.InvalidSpecification,
-                $"Auto injected type '{type.Name}' must be public or internal, non-static, and non-abstract.",
-                typeLocation);
+        if (type.IsStatic || type.IsAbstract || type.TypeKind == TypeKind.Interface) {
+            return ImmutableList<QualifiedTypeModel>.Empty;
         }
 
         IReadOnlyList<IMethodSymbol> constructors = type

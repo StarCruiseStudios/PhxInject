@@ -35,24 +35,8 @@ internal class InjectorExtractor : IInjectorExtractor {
         DescGenerationContext context
     ) {
         return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
-            .Where(IsInjectorSymbol)
+            .Where(TypeHelpers.IsInjectorSymbol)
             .SelectCatching(symbol => injectorDescExtractor.Extract(symbol, context))
             .ToImmutableList();
-    }
-
-    private static bool IsInjectorSymbol(ITypeSymbol symbol) {
-        var injectorAttribute = symbol.GetInjectorAttribute();
-        if (injectorAttribute == null) {
-            return false;
-        }
-
-        if (symbol.TypeKind != TypeKind.Interface) {
-            throw new InjectionException(
-                Diagnostics.InvalidSpecification,
-                $"Injector type {symbol.Name} must be an interface.",
-                symbol.Locations.First());
-        }
-
-        return true;
     }
 }
