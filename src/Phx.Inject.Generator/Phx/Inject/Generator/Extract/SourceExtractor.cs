@@ -35,7 +35,7 @@ internal class SourceExtractor {
     ) { }
     
     public SourceDesc Extract(SourceSyntaxReceiver syntaxReceiver, GeneratorExecutionContext context) {
-        try {
+        return InjectionException.Try(() => {
             var descGenerationContext = new DescGenerationContext(context);
 
             var injectorDescs = injectorExtractor.Extract(
@@ -58,16 +58,6 @@ internal class SourceExtractor {
                 specDescs,
                 dependencyDescs
             );
-        } catch (Exception e) {
-            var diagnosticData = e is InjectionException ie
-                ? ie.DiagnosticData
-                : Diagnostics.UnexpectedError;
-
-            throw new InjectionException(
-                diagnosticData,
-                "An error occurred while extracting source descriptors.",
-                Location.None,
-                e);
-        }
+        }, "extracting source descriptors");
     }
 }

@@ -40,7 +40,7 @@ internal class DependencyExtractor : IDependencyExtractor {
             .GroupBy(typeSymbol => typeSymbol, SymbolEqualityComparer.Default)
             .Select(group => group.First())
             .Where(IsDependencySymbol)
-            .Select(type => dependencyDescExtractor.Extract(type, context))
+            .SelectCatching(type => dependencyDescExtractor.Extract(type, context))
             .ToImmutableList();
     }
 

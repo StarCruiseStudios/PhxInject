@@ -35,6 +35,11 @@ internal static class Diagnostics {
         PhxInjectIdPrefix + "0004",
         "The provided injection specification is invalid.",
         InjectionCategory);
+    
+    public static readonly DiagnosticData AggregateError = new(
+        PhxInjectIdPrefix + "9999",
+        "One or more errors occurred during injection generation.",
+        InjectionCategory);
 
     public static GeneratorExecutionContext? GeneratorExecutionContext = null;
 

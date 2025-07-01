@@ -55,7 +55,7 @@ internal class SourceGenerator : ISourceGenerator {
             // Render: Templates to generated source.
             new SourceRenderer(generatorSettings).RenderAllTemplates(templates, context);
         } catch (InjectionException ex) {
-            foreach (var diagnostic in ex.ToDiagnostics()) {
+            foreach (var diagnostic in ex.Diagnostics) {
                 context.ReportDiagnostic(diagnostic);
             }
         } catch (Exception ex) {

@@ -133,7 +133,7 @@ internal class SpecExtractor : ISpecExtractor {
     ) {
         return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
             .Where(IsSpecSymbol)
-            .Select(symbol => specDescExtractor.Extract(symbol, context))
+            .SelectCatching(symbol => specDescExtractor.Extract(symbol, context))
             .ToImmutableList();
     }
 

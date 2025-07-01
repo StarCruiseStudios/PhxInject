@@ -24,22 +24,14 @@ internal class SourceRenderer {
         IReadOnlyList<(TypeModel, IRenderTemplate)> templates,
         GeneratorExecutionContext context) {
         var templateRenderer = new TemplateRenderer(new RenderWriter.Factory(generatorSettings));
-        try {
-            foreach (var (classType, template) in templates) {
+        InjectionException.Try(() => {
+            templates.SelectCatching(t => {
+                var (classType, template) = t;
                 var fileName = $"{classType.QualifiedName}.{generatorSettings.GeneratedFileExtension}";
                 Logger.Info($"Rendering source for {fileName}");
                 templateRenderer.RenderTemplate(fileName, template, context);
-            }
-        } catch (Exception e) {
-            var diagnosticData = e is InjectionException ie
-                ? ie.DiagnosticData
-                : Diagnostics.UnexpectedError;
-
-            throw new InjectionException(
-                diagnosticData,
-                "An error occurred while rendering source templates.",
-                Location.None,
-                e);
-        }
+                return fileName;
+            });
+        }, "rendering source templates");
     }
 }

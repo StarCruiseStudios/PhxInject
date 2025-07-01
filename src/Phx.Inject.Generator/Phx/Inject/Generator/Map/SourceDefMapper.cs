@@ -34,69 +34,61 @@ internal class SourceDefMapper {
         SourceDesc sourceDesc,
         GeneratorExecutionContext context
     ) {
-        try {
-            var injectorDescMap = CreateTypeMap(
-                sourceDesc.injectorDescs,
-                injector => injector.InjectorInterfaceType);
-            var specDescMap = CreateTypeMap(
-                sourceDesc.GetAllSpecDescs(),
-                spec => spec.SpecType);
-            var dependencyDescMap = CreateTypeMap(
-                sourceDesc.dependencyDescs,
-                dep => dep.DependencyInterfaceType);
+        return InjectionException.Try(() => {
+                var injectorDescMap = CreateTypeMap(
+                    sourceDesc.injectorDescs,
+                    injector => injector.InjectorInterfaceType);
+                var specDescMap = CreateTypeMap(
+                    sourceDesc.GetAllSpecDescs(),
+                    spec => spec.SpecType);
+                var dependencyDescMap = CreateTypeMap(
+                    sourceDesc.dependencyDescs,
+                    dep => dep.DependencyInterfaceType);
 
-            return sourceDesc.injectorDescs.Select(injectorDesc => {
-                    var injectorSpecDescMap = new Dictionary<TypeModel, SpecDesc>();
-                    foreach (var spec in injectorDesc.SpecificationsTypes) {
-                        if (!specDescMap.TryGetValue(spec, out var specDesc)) {
-                            throw new InjectionException(
-                                Diagnostics.IncompleteSpecification,
-                                $"Cannot find required specification type {spec}"
-                                + $" while generating injection for type {injectorDesc.InjectorInterfaceType}.",
-                                injectorDesc.Location);
+                return sourceDesc.injectorDescs.SelectCatching(injectorDesc => {
+                        var injectorSpecDescMap = new Dictionary<TypeModel, SpecDesc>();
+                        foreach (var spec in injectorDesc.SpecificationsTypes) {
+                            if (!specDescMap.TryGetValue(spec, out var specDesc)) {
+                                throw new InjectionException(
+                                    Diagnostics.IncompleteSpecification,
+                                    $"Cannot find required specification type {spec}"
+                                    + $" while generating injection for type {injectorDesc.InjectorInterfaceType}.",
+                                    injectorDesc.Location);
+                            }
+
+                            injectorSpecDescMap.Add(spec, specDesc);
                         }
 
-                        injectorSpecDescMap.Add(spec, specDesc);
-                    }
+                        if (generatorSettings.AllowConstructorFactories) {
+                            var constructorSpec = specExtractor.ExtractConstructorSpecForContext(
+                                new DefGenerationContext(
+                                    injectorDesc,
+                                    injectorDescMap,
+                                    injectorSpecDescMap,
+                                    dependencyDescMap,
+                                    ImmutableDictionary<RegistrationIdentifier, List<FactoryRegistration>>.Empty,
+                                    ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
+                                    context));
 
-                    if (generatorSettings.AllowConstructorFactories) {
-                        var constructorSpec = specExtractor.ExtractConstructorSpecForContext(new DefGenerationContext(
-                                injectorDesc,
-                                injectorDescMap,
-                                injectorSpecDescMap,
-                                dependencyDescMap,
-                                ImmutableDictionary<RegistrationIdentifier, List<FactoryRegistration>>.Empty,
-                                ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
-                                context));
-
-                        if (constructorSpec != null) {
-                            injectorSpecDescMap.Add(constructorSpec.SpecType, constructorSpec);
+                            if (constructorSpec != null) {
+                                injectorSpecDescMap.Add(constructorSpec.SpecType, constructorSpec);
+                            }
                         }
-                    }
 
-                    var defGenerationContext = new DefGenerationContext(
-                        injectorDesc,
-                        injectorDescMap,
-                        injectorSpecDescMap,
-                        dependencyDescMap,
-                        ImmutableDictionary<RegistrationIdentifier, List<FactoryRegistration>>.Empty,
-                        ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
-                        context);
+                        var defGenerationContext = new DefGenerationContext(
+                            injectorDesc,
+                            injectorDescMap,
+                            injectorSpecDescMap,
+                            dependencyDescMap,
+                            ImmutableDictionary<RegistrationIdentifier, List<FactoryRegistration>>.Empty,
+                            ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
+                            context);
 
-                    return new InjectionDefMapper().Map(defGenerationContext);
-                })
-                .ToImmutableList();
-        } catch (Exception e) {
-            var diagnosticData = e is InjectionException ie
-                ? ie.DiagnosticData
-                : Diagnostics.UnexpectedError;
-
-            throw new InjectionException(
-                diagnosticData,
-                "An error occurred while mapping source definitions.",
-                Location.None,
-                e);
-        }
+                        return new InjectionDefMapper().Map(defGenerationContext);
+                    })
+                    .ToImmutableList();
+            },
+            "mapping source definition");
     }
 
     private static IReadOnlyDictionary<TypeModel, T> CreateTypeMap<T>(
