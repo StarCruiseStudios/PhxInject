@@ -36,23 +36,23 @@ internal class SourceExtractor {
     ) { }
     
     public SourceDesc Extract(SourceSyntaxReceiver syntaxReceiver, GeneratorExecutionContext context) {
-        return InjectionException.Try(() => {
-            return InjectionException.TryAggregate(aggregateException => {
+        return InjectionException.Try(context, () => {
+            return InjectionException.TryAggregate(context, aggregateException => {
                 var descGenerationContext = new DescGenerationContext(context);
 
-                var injectorDescs = aggregateException.Aggregate(() => injectorExtractor.Extract(
+                var injectorDescs = aggregateException.Aggregate(context, () => injectorExtractor.Extract(
                     syntaxReceiver.InjectorCandidates,
                     descGenerationContext),
                     ImmutableList.Create<InjectorDesc>);
                 context.Log($"Discovered {injectorDescs.Count} injector types.");
 
-                var specDescs = aggregateException.Aggregate(() => specExtractor.Extract(
+                var specDescs = aggregateException.Aggregate(context, () => specExtractor.Extract(
                     syntaxReceiver.SpecificationCandidates,
                     descGenerationContext),
                     ImmutableList.Create<SpecDesc>);
                 context.Log($"Discovered {specDescs.Count} specification types.");
 
-                var dependencyDescs = aggregateException.Aggregate(() => dependencyExtractor.Extract(
+                var dependencyDescs = aggregateException.Aggregate(context, () => dependencyExtractor.Extract(
                     syntaxReceiver.InjectorCandidates,
                     descGenerationContext),
                     ImmutableList.Create<DependencyDesc>);

@@ -30,6 +30,7 @@ internal record DefGenerationContext(
         }
 
         throw new InjectionException(
+            GenerationContext,
             Diagnostics.IncompleteSpecification,
             $"Cannot find required injector type {type}"
             + $" while generating injection for type {Injector.InjectorInterfaceType}.",
@@ -42,6 +43,7 @@ internal record DefGenerationContext(
         }
 
         throw new InjectionException(
+            GenerationContext,
             Diagnostics.IncompleteSpecification,
             $"Cannot find required specification type {type}"
             + $" while generating injection for type {Injector.InjectorInterfaceType}.",
@@ -54,6 +56,7 @@ internal record DefGenerationContext(
         }
 
         throw new InjectionException(
+            GenerationContext,
             Diagnostics.IncompleteSpecification,
             $"Cannot find required dependency type {type}"
             + $" while generating injection for type {Injector.InjectorInterfaceType}.",
@@ -66,6 +69,7 @@ internal record DefGenerationContext(
     ) {
         if (FactoryRegistrations.Count == 0) {
             throw new InjectionException(
+                GenerationContext,
                 Diagnostics.InternalError,
                 $"Cannot search factory for type {returnedType} before factory registrations are created "
                 + $" while generating injection for type {Injector.InjectorInterfaceType}.",
@@ -90,7 +94,7 @@ internal record DefGenerationContext(
                         reg.Specification.SpecType);
                     return new SpecContainerFactorySingleInvocationDef(
                         specContainerType,
-                        reg.FactoryDesc.GetSpecContainerFactoryName(),
+                        reg.FactoryDesc.GetSpecContainerFactoryName(GenerationContext),
                         reg.FactoryDesc.Location
                     );
                 })
@@ -104,6 +108,7 @@ internal record DefGenerationContext(
         }
 
         throw new InjectionException(
+            GenerationContext,
             Diagnostics.IncompleteSpecification,
             $"Cannot find factory for type {factoryType}"
             + $" while generating injection for type {Injector.InjectorInterfaceType}.",
@@ -117,6 +122,7 @@ internal record DefGenerationContext(
     ) {
         if (BuilderRegistrations.Count == 0) {
             throw new InjectionException(
+                GenerationContext,
                 Diagnostics.InternalError,
                 $"Cannot search for builder for type {builtType} before builder registrations are created "
                 + $" while generating injection for type {Injector.InjectorInterfaceType}.",
@@ -130,11 +136,12 @@ internal record DefGenerationContext(
                 builderRegistration.Specification.SpecType);
             return new SpecContainerBuilderInvocationDef(
                 specContainerType,
-                builderRegistration.BuilderDesc.GetSpecContainerBuilderName(),
+                builderRegistration.BuilderDesc.GetSpecContainerBuilderName(GenerationContext),
                 builderRegistration.BuilderDesc.Location);
         }
 
         throw new InjectionException(
+            GenerationContext,
             Diagnostics.IncompleteSpecification,
             $"Cannot find builder for type {builtType}"
             + $" while generating injection for type {Injector.InjectorInterfaceType}.",

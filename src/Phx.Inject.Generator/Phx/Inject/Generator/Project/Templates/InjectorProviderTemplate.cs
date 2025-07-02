@@ -16,11 +16,11 @@ internal record InjectorProviderTemplate(
     SpecContainerFactoryInvocationTemplate FactoryInvocationTemplate,
     Location Location
 ) : IInjectorMemberTemplate {
-    public void Render(IRenderWriter writer) {
+    public void Render(IRenderWriter writer, RenderContext context) {
         writer.AppendLine($"public {ReturnTypeQualifiedName} {MethodName}() {{")
             .IncreaseIndent(1)
             .Append("return ");
-        FactoryInvocationTemplate.Render(writer);
+        FactoryInvocationTemplate.Render(writer, context);
         writer.AppendLine(";")
             .DecreaseIndent(1)
             .AppendLine("}");

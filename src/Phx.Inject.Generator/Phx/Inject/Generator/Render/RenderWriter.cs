@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 using System.Text;
+using Microsoft.CodeAnalysis.Text;
 using Phx.Inject.Generator.Project;
 
 namespace Phx.Inject.Generator.Render;
@@ -90,6 +91,13 @@ internal class RenderWriter : IRenderWriter {
         }
         public IRenderWriter Build() {
             return new RenderWriter(settings);
+        }
+        
+        public SourceText Use(Action<IRenderWriter> builder) {
+            var renderWriter = Build();
+            builder(renderWriter);
+            var classSource = renderWriter.GetRenderedString();
+            return SourceText.From(classSource, Encoding.UTF8);
         }
     }
 

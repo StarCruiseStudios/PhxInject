@@ -34,6 +34,7 @@ internal record DependencyProviderDesc(
 
             if (providerMethod.ReturnsVoid) {
                 throw new InjectionException(
+                    context.GenerationContext,
                     Diagnostics.InvalidSpecification,
                     $"Dependency provider {providerMethod.Name} must have a return type.",
                     providerLocation);
@@ -41,6 +42,7 @@ internal record DependencyProviderDesc(
 
             if (providerMethod.Parameters.Length > 0) {
                 throw new InjectionException(
+                    context.GenerationContext,
                     Diagnostics.InvalidSpecification,
                     $"Dependency provider {providerMethod.Name} must not have any parameters.",
                     providerLocation);
@@ -48,14 +50,14 @@ internal record DependencyProviderDesc(
 
             var partialAttributes = providerMethod.GetPartialAttributes();
 
-            var qualifier = MetadataHelpers.GetQualifier(providerMethod);
+            var qualifier = MetadataHelpers.GetQualifier(providerMethod, context.GenerationContext);
             var returnTypeModel = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
             var returnType = new QualifiedTypeModel(
                 returnTypeModel,
                 qualifier);
 
             var isPartial = partialAttributes.Any();
-            TypeHelpers.ValidatePartialType(returnType, isPartial, providerLocation);
+            TypeHelpers.ValidatePartialType(returnType, isPartial, providerLocation, context.GenerationContext);
 
             return new DependencyProviderDesc(
                 returnType,

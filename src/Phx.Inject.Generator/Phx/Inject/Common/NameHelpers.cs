@@ -8,6 +8,7 @@
 
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Extract.Descriptors;
 
@@ -30,13 +31,14 @@ internal static class NameHelpers {
         return $"{injectorType.BaseTypeName}.{SpecContainerCollectionTypeName}";
     }
 
-    public static string GetSpecContainerFactoryName(this SpecFactoryDesc factory) {
+    public static string GetSpecContainerFactoryName(this SpecFactoryDesc factory, GeneratorExecutionContext context) {
         var sb = factory.SpecFactoryMemberType switch {
             SpecFactoryMemberType.Method => new StringBuilder("Fac_"),
             SpecFactoryMemberType.Property => new StringBuilder("PropFac_"),
             SpecFactoryMemberType.Reference => new StringBuilder("RefFac_"),
             SpecFactoryMemberType.Constructor => new StringBuilder("CtorFac_"),
             _ => throw new InjectionException(
+                context,
                 Diagnostics.InternalError,
                 $"Unhandled Spec Factory Member Type {factory.SpecFactoryMemberType}.",
                 factory.Location)
@@ -49,12 +51,13 @@ internal static class NameHelpers {
         return sb.ToString();
     }
 
-    public static string GetSpecContainerBuilderName(this SpecBuilderDesc builder) {
+    public static string GetSpecContainerBuilderName(this SpecBuilderDesc builder, GeneratorExecutionContext context) {
         var sb = builder.SpecBuilderMemberType switch {
             SpecBuilderMemberType.Method => new StringBuilder("Bld_"),
             SpecBuilderMemberType.Reference => new StringBuilder("RefBld_"),
             SpecBuilderMemberType.Direct => new StringBuilder("DirBld_"),
             _ => throw new InjectionException(
+                context,
                 Diagnostics.InternalError,
                 $"Unhandled Spec Builder Member Type {builder.SpecBuilderMemberType}.",
                 builder.Location)

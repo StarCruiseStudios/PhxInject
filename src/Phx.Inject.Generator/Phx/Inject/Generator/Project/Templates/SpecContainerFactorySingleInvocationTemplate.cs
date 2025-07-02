@@ -16,7 +16,7 @@ internal record SpecContainerFactorySingleInvocationTemplate(
     string SpecContainerFactoryMethodName,
     Location Location
 ) : IRenderTemplate {
-    public void Render(IRenderWriter writer) {
+    public void Render(IRenderWriter writer, RenderContext context) {
         writer.Append(
             $"{SpecContainerCollectionReferenceName}.{SpecContainerReferenceName}.{SpecContainerFactoryMethodName}({SpecContainerCollectionReferenceName})");
     }

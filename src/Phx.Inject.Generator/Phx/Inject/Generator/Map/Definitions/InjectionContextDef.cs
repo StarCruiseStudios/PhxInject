@@ -63,6 +63,7 @@ internal record InjectionContextDef(
                     if (factoryRegistrations.TryGetValue(key, out registrationList)) {
                         if (!registrationList.First().FactoryDesc.isPartial || !factory.isPartial) {
                             throw new InjectionException(
+                                context.GenerationContext,
                                 Diagnostics.InvalidSpecification,
                                 $"Factory for type {factory.ReturnType} must be unique or all factories must be partial.",
                                 factory.Location);
@@ -94,6 +95,7 @@ internal record InjectionContextDef(
                             targetRegistration);
                     } else {
                         throw new InjectionException(
+                            context.GenerationContext,
                             Diagnostics.IncompleteSpecification,
                             $"Cannot find factory for type {link.InputType} required by link in specification {specDesc.SpecType}.",
                             link.Location);

@@ -18,7 +18,7 @@ namespace Phx.Inject.Generator.Extract;
 
 internal interface ISpecExtractor {
     SpecDesc? ExtractConstructorSpecForContext(
-        DefGenerationContext context
+        Map.DefGenerationContext context
     );
     IReadOnlyList<SpecDesc> Extract(
         IEnumerable<TypeDeclarationSyntax> syntaxNodes,
@@ -39,10 +39,10 @@ internal class SpecExtractor : ISpecExtractor {
         new SpecDesc.Extractor()
     ) { }
 
-    private HashSet<QualifiedTypeModel> GetAutoConstructorParameterTypes(QualifiedTypeModel type) {
+    private HashSet<QualifiedTypeModel> GetAutoConstructorParameterTypes(QualifiedTypeModel type, Map.DefGenerationContext context) {
         var results = new HashSet<QualifiedTypeModel>();
-        results.UnionWith(MetadataHelpers.GetConstructorParameterQualifiedTypes(type.TypeModel.typeSymbol));
-        results.UnionWith(MetadataHelpers.GetRequiredPropertyQualifiedTypes(type.TypeModel.typeSymbol).Values);
+        results.UnionWith(MetadataHelpers.GetConstructorParameterQualifiedTypes(type.TypeModel.typeSymbol, context.GenerationContext));
+        results.UnionWith(MetadataHelpers.GetRequiredPropertyQualifiedTypes(type.TypeModel.typeSymbol, context.GenerationContext).Values);
         return results;
     }
 
@@ -107,7 +107,7 @@ internal class SpecExtractor : ISpecExtractor {
         while (typeSearchQueue.Count > 0) {
             var type = typeSearchQueue.Dequeue();
             if (!providedTypes.Contains(type)) {
-                foreach (var parameterType in GetAutoConstructorParameterTypes(type)) {
+                foreach (var parameterType in GetAutoConstructorParameterTypes(type, context)) {
                     if (neededTypes.Add(parameterType)) {
                         typeSearchQueue.Enqueue(parameterType);
                     }
@@ -125,7 +125,8 @@ internal class SpecExtractor : ISpecExtractor {
             ? specDescExtractor.ExtractConstructorSpec(
                 context.Injector.InjectorType,
                 autoFactoryTypes,
-                autoBuilderTypes)
+                autoBuilderTypes,
+                new DescGenerationContext(context.GenerationContext))
             : null;
     }
     
@@ -134,13 +135,13 @@ internal class SpecExtractor : ISpecExtractor {
         DescGenerationContext context
     ) {
         return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
-            .Where(IsSpecSymbol)
-            .SelectCatching(symbol => specDescExtractor.Extract(symbol, context))
+            .Where(symbol => IsSpecSymbol(symbol, context.GenerationContext))
+            .SelectCatching(context.GenerationContext, symbol => specDescExtractor.Extract(symbol, context))
             .ToImmutableList();
     }
 
-    private static bool IsSpecSymbol(ITypeSymbol symbol) {
-        var specificationAttribute = symbol.GetSpecificationAttribute();
+    private static bool IsSpecSymbol(ITypeSymbol symbol, GeneratorExecutionContext context) {
+        var specificationAttribute = symbol.GetSpecificationAttribute(context);
         if (specificationAttribute == null) {
             return false;
         }
@@ -150,6 +151,7 @@ internal class SpecExtractor : ISpecExtractor {
 
         if (!isStaticSpecification && !isInterfaceSpecification) {
             throw new InjectionException(
+                context,
                 Diagnostics.InvalidSpecification,
                 $"Specification type {symbol.Name} must be a static class or interface.",
                 symbol.Locations.First());

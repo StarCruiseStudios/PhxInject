@@ -6,12 +6,14 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis.Text;
 using Phx.Inject.Generator.Render;
 
 namespace Phx.Inject.Generator.Project;
 
 internal interface IRenderWriterFactory {
     IRenderWriter Build();
+    SourceText Use(Action<IRenderWriter> builder);
 }
 
 internal interface IRenderWriter {

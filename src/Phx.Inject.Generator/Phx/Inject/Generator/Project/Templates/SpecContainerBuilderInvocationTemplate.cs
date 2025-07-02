@@ -17,7 +17,7 @@ internal record SpecContainerBuilderInvocationTemplate(
     string BuilderTargetReferenceName,
     Location Location
 ) : IRenderTemplate {
-    public void Render(IRenderWriter writer) {
+    public void Render(IRenderWriter writer, RenderContext context) {
         writer.Append(
             $"{SpecContainerCollectionReferenceName}.{SpecContainerReferenceName}.{SpecContainerBuilderMethodName}({BuilderTargetReferenceName}, {SpecContainerCollectionReferenceName})");
     }

@@ -17,27 +17,32 @@ internal class InjectionException : Exception {
     public List<Diagnostic> Diagnostics { get; } = new();
 
     public InjectionException(
+        GeneratorExecutionContext context,
         IEnumerable<Exception> aggregateExceptions
     ) : base(Common.Diagnostics.AggregateError.Title) {
         DiagnosticData = Common.Diagnostics.AggregateError;
         Location = Location.None;
 
         foreach (var e in aggregateExceptions) {
+            ReportUnexpectedError(context, e);
             Diagnostics.AddRange(GetDiagnosticsFromException(e));
         }
     }
     
     public InjectionException(
+        GeneratorExecutionContext context,
         Diagnostics.DiagnosticData diagnosticData,
         string message,
         Location location
     ) : base(message) {
         DiagnosticData = diagnosticData;
         Location = location;
+        context.ReportDiagnostic(diagnosticData.CreateDiagnostic(message, location));
         Diagnostics.Add(diagnosticData.CreateDiagnostic(message, location));
     }
 
     public InjectionException(
+        GeneratorExecutionContext context,
         Diagnostics.DiagnosticData? diagnosticData,
         string message,
         Location location,
@@ -48,24 +53,28 @@ internal class InjectionException : Exception {
                 ? ie.DiagnosticData
                 : Common.Diagnostics.UnexpectedError);
         Location = location;
+        context.ReportDiagnostic(DiagnosticData.CreateDiagnostic(message, location));
+        ReportUnexpectedError(context, inner);
         Diagnostics.Add(DiagnosticData.CreateDiagnostic(message, location));
         Diagnostics.AddRange(GetDiagnosticsFromException(inner));
     }
     
-    public T Aggregate<T>(Func<T> func, Func<T> defaultValue) {
+    public T Aggregate<T>(GeneratorExecutionContext context, Func<T> func, Func<T> defaultValue) {
         try {
             return func();
         } catch (Exception e) {
+            ReportUnexpectedError(context, e);
             Diagnostics.AddRange(GetDiagnosticsFromException(e));
         }
 
         return defaultValue();
     }
     
-    public void Aggregate(Action action) {
+    public void Aggregate(GeneratorExecutionContext context, Action action) {
         try {
             action();
         } catch (Exception e) {
+            ReportUnexpectedError(context, e);
             Diagnostics.AddRange(GetDiagnosticsFromException(e));
         }
     }
@@ -76,13 +85,13 @@ internal class InjectionException : Exception {
         }
     }
     
-    public static T Try<T>(Func<T> func, string description) => Try(func, description, Location.None);
+    public static T Try<T>(GeneratorExecutionContext context, Func<T> func, string description) => Try(context, func, description, Location.None);
     
-    public static T Try<T>(Func<T> func, string description, Location location) {
+    public static T Try<T>(GeneratorExecutionContext context, Func<T> func, string description, Location location) {
         try {
             return func();
         } catch (Exception e) {
-            throw new InjectionException((e is InjectionException ie && ie.DiagnosticData.Id != Common.Diagnostics.AggregateError.Id
+            throw new InjectionException(context, (e is InjectionException ie && ie.DiagnosticData.Id != Common.Diagnostics.AggregateError.Id
                     ? null
                     : Common.Diagnostics.UnexpectedError),
                 $"An error occurred while {description}.",
@@ -92,25 +101,26 @@ internal class InjectionException : Exception {
         }
     }
     
-    public static T TryAggregate<T>(Func<InjectionException, T> func) {
-        var aggregateException = CreateAggregator();
+    public static T TryAggregate<T>(GeneratorExecutionContext context, Func<InjectionException, T> func) {
+        var aggregateException = CreateAggregator(context);
         try {
             var result = func(aggregateException);
             aggregateException.ThrowIfAggregate();
             return result;
         } catch (Exception e) {
+            ReportUnexpectedError(context, e);
             aggregateException.Diagnostics.AddRange(GetDiagnosticsFromException(e));
             throw aggregateException;
         }
     }
     
-    public static void Try(Action action, string description) => Try(action, description, Location.None);
+    public static void Try(Action action, string description, GeneratorExecutionContext context) => Try(action, description, Location.None, context);
     
-    public static void Try(Action action, string description, Location location) {
+    public static void Try(Action action, string description, Location location, GeneratorExecutionContext context) {
         try {
             action();
         } catch (Exception e) {
-            throw new InjectionException((e is InjectionException ie && ie.DiagnosticData.Id != Common.Diagnostics.AggregateError.Id
+            throw new InjectionException(context, (e is InjectionException ie && ie.DiagnosticData.Id != Common.Diagnostics.AggregateError.Id
                     ? null
                     : Common.Diagnostics.UnexpectedError),
                 $"An error occurred while {description}.",
@@ -121,10 +131,16 @@ internal class InjectionException : Exception {
     }
     
     
-    public static void TryAggregate(Action<InjectionException> action) {
-        var aggregateException = CreateAggregator();
-        aggregateException.Aggregate(() => action(aggregateException));
+    public static void TryAggregate(GeneratorExecutionContext context, Action<InjectionException> action) {
+        var aggregateException = CreateAggregator(context);
+        aggregateException.Aggregate(context, () => action(aggregateException));
         aggregateException.ThrowIfAggregate();
+    }
+
+    private static void ReportUnexpectedError(GeneratorExecutionContext context, Exception e) {
+        if (e is not InjectionException) {
+            context.ReportDiagnostic(Common.Diagnostics.UnexpectedError.CreateDiagnostic(e.ToString()));
+        }
     }
     
     private static IList<Diagnostic> GetDiagnosticsFromException(Exception e) {
@@ -133,14 +149,15 @@ internal class InjectionException : Exception {
             : ImmutableList.Create(Common.Diagnostics.UnexpectedError.CreateDiagnostic(e.ToString()));
     }
 
-    private static InjectionException CreateAggregator() {
-        return new InjectionException(ImmutableList.Create<Exception>());
+    private static InjectionException CreateAggregator(GeneratorExecutionContext context) {
+        return new InjectionException(context, ImmutableList.Create<Exception>());
     }
 }
 
 public static class InjectionExceptionExtensions {
     public static IEnumerable<TResult> SelectCatching<TSource, TResult>(
         this IEnumerable<TSource> source,
+        GeneratorExecutionContext context,
         Func<TSource, TResult> selector
     ) {
         if (source == null) throw new ArgumentNullException(nameof(source));
@@ -157,7 +174,7 @@ public static class InjectionExceptionExtensions {
         }
 
         if (exceptions.Any()) {
-            throw new InjectionException(exceptions);
+            throw new InjectionException(context, exceptions);
         }
 
         return results;

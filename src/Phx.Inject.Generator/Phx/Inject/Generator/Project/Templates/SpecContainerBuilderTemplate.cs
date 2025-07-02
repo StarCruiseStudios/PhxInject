@@ -21,7 +21,7 @@ internal record SpecContainerBuilderTemplate(
     IEnumerable<SpecContainerFactoryInvocationTemplate> Arguments,
     Location Location
 ) : ISpecContainerMemberTemplate {
-    public void Render(IRenderWriter writer) {
+    public void Render(IRenderWriter writer, RenderContext context) {
         writer.AppendLine($"internal void {SpecContainerBuilderMethodName}(")
             .IncreaseIndent(2)
             .AppendLine(
@@ -41,7 +41,7 @@ internal record SpecContainerBuilderTemplate(
         if (numArguments > 0) {
             foreach (var argument in Arguments) {
                 writer.AppendLine(",");
-                argument.Render(writer);
+                argument.Render(writer, context);
             }
         }
 

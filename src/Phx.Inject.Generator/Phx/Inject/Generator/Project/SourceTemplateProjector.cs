@@ -20,21 +20,24 @@ internal class SourceTemplateProjector {
         IReadOnlyList<InjectionContextDef> injectionContextDefs,
         GeneratorExecutionContext context
     ) {
-        return InjectionException.Try(() => {
+        return InjectionException.Try(context, () => {
                 IReadOnlyList<InjectorDef> injectorDefs = injectionContextDefs
                     .Select(injectionContextDef => injectionContextDef.Injector)
                     .ToImmutableList();
                 var injectorDefMap = CreateTypeMap(
                     injectorDefs,
-                    injector => injector.InjectorInterfaceType);
+                    injector => injector.InjectorInterfaceType,
+                    context);
 
-                return injectionContextDefs.SelectCatching(injectionContextDef => {
+                return injectionContextDefs.SelectCatching(context, injectionContextDef => {
                         var specDefMap = CreateTypeMap(
                             injectionContextDef.SpecContainers,
-                            spec => spec.SpecificationType);
+                            spec => spec.SpecificationType,
+                            context);
                         var dependencyDefMap = CreateTypeMap(
                             injectionContextDef.DependencyImplementations,
-                            dep => dep.DependencyInterfaceType);
+                            dep => dep.DependencyInterfaceType,
+                            context);
 
                         var templateGenerationContext = new TemplateGenerationContext(
                             injectionContextDef.Injector,
@@ -91,13 +94,15 @@ internal class SourceTemplateProjector {
 
     private static IReadOnlyDictionary<TypeModel, T> CreateTypeMap<T>(
         IEnumerable<T> values,
-        Func<T, TypeModel> extractKey
+        Func<T, TypeModel> extractKey,
+        GeneratorExecutionContext context
     ) where T : ISourceCodeElement {
         var map = new Dictionary<TypeModel, T>();
         foreach (var value in values) {
             var key = extractKey(value);
             if (map.ContainsKey(key)) {
                 throw new InjectionException(
+                    context,
                     Diagnostics.InvalidSpecification,
                     $"{typeof(T).Name} with {key} is already defined.",
                     value.Location);

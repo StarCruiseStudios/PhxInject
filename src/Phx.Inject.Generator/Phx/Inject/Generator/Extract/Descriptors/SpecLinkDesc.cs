@@ -9,6 +9,7 @@
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Map;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
@@ -20,17 +21,20 @@ internal record SpecLinkDesc(
     public interface IExtractor {
         SpecLinkDesc Extract(
             AttributeData linkAttribute,
-            Location linkLocation
+            Location linkLocation,
+            DescGenerationContext context
         );
     }
 
     public class Extractor : IExtractor {
         public SpecLinkDesc Extract(
             AttributeData linkAttribute,
-            Location linkLocation
+            Location linkLocation,
+            DescGenerationContext context
         ) {
             if (linkAttribute.ConstructorArguments.Length != 2) {
                 throw new InjectionException(
+                    context.GenerationContext,
                     Diagnostics.InternalError,
                     "Link attribute must have only an input and return type specified.",
                     linkLocation);
@@ -41,6 +45,7 @@ internal record SpecLinkDesc(
 
             if (inputTypeArgument == null || returnTypeArgument == null) {
                 throw new InjectionException(
+                    context.GenerationContext,
                     Diagnostics.InvalidSpecification,
                     "Link attribute must specify non-null types.",
                     linkLocation);

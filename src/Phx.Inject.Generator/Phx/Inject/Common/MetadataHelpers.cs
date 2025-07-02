@@ -38,9 +38,9 @@ internal static class MetadataHelpers {
             .ToImmutableList();
     }
 
-    public static IReadOnlyList<QualifiedTypeModel> GetMethodParametersQualifiedTypes(IMethodSymbol methodSymbol) {
+    public static IReadOnlyList<QualifiedTypeModel> GetMethodParametersQualifiedTypes(IMethodSymbol methodSymbol, GeneratorExecutionContext context) {
         return methodSymbol.Parameters.Select(parameter => {
-                var qualifier = GetQualifier(parameter);
+                var qualifier = GetQualifier(parameter, context);
                 return new QualifiedTypeModel(
                     TypeModel.FromTypeSymbol(parameter.Type),
                     qualifier);
@@ -48,7 +48,7 @@ internal static class MetadataHelpers {
             .ToImmutableList();
     }
 
-    public static IReadOnlyList<QualifiedTypeModel> GetConstructorParameterQualifiedTypes(ITypeSymbol type) {
+    public static IReadOnlyList<QualifiedTypeModel> GetConstructorParameterQualifiedTypes(ITypeSymbol type, GeneratorExecutionContext context) {
         var typeLocation = type.Locations.First();
 
         if (type.IsStatic || type.IsAbstract || type.TypeKind == TypeKind.Interface) {
@@ -62,6 +62,7 @@ internal static class MetadataHelpers {
             .ToImmutableList();
         if (constructors.Count != 1) {
             throw new InjectionException(
+                context,
                 Diagnostics.InvalidSpecification,
                 $"Auto injected type '{type.Name}' must contain exactly one public constructor",
                 typeLocation);
@@ -69,13 +70,14 @@ internal static class MetadataHelpers {
 
         var constructorMethod = constructors.Single();
 
-        return GetMethodParametersQualifiedTypes(constructorMethod);
+        return GetMethodParametersQualifiedTypes(constructorMethod, context);
     }
 
-    public static string GetGeneratedInjectorClassName(ITypeSymbol injectorInterfaceSymbol) {
-        var injectorAttribute = injectorInterfaceSymbol.GetInjectorAttribute();
+    public static string GetGeneratedInjectorClassName(ITypeSymbol injectorInterfaceSymbol, GeneratorExecutionContext context) {
+        var injectorAttribute = injectorInterfaceSymbol.GetInjectorAttribute(context);
         if (injectorAttribute == null) {
             throw new InjectionException(
+                context,
                 Diagnostics.InternalError,
                 $"Injector type {injectorInterfaceSymbol.Name} must have one Injector attribute.",
                 injectorInterfaceSymbol.Locations.First());
@@ -94,10 +96,11 @@ internal static class MetadataHelpers {
         return generatedClassName;
     }
 
-    public static IReadOnlyList<ITypeSymbol> GetInjectorSpecificationTypes(ISymbol injectorInterfaceSymbol) {
-        var injectorAttribute = injectorInterfaceSymbol.GetInjectorAttribute();
+    public static IReadOnlyList<ITypeSymbol> GetInjectorSpecificationTypes(ISymbol injectorInterfaceSymbol, GeneratorExecutionContext context) {
+        var injectorAttribute = injectorInterfaceSymbol.GetInjectorAttribute(context);
         if (injectorAttribute == null) {
             throw new InjectionException(
+                context,
                 Diagnostics.InternalError,
                 $"Injector type {injectorInterfaceSymbol.Name} must have one Injector attribute.",
                 injectorInterfaceSymbol.Locations.First());
@@ -113,7 +116,8 @@ internal static class MetadataHelpers {
 
     public static SpecFactoryMethodFabricationMode GetFactoryFabricationMode(
         AttributeData factoryAttribute,
-        Location location
+        Location location,
+        GeneratorExecutionContext context
     ) {
         IReadOnlyList<SpecFactoryMethodFabricationMode> fabricationModes = factoryAttribute.ConstructorArguments
             .Where(argument => argument.Type!.Name == "FabricationMode")
@@ -124,13 +128,14 @@ internal static class MetadataHelpers {
             0 => SpecFactoryMethodFabricationMode.Recurrent, // The default
             1 => fabricationModes.Single(),
             _ => throw new InjectionException(
+                context,
                 Diagnostics.InternalError,
                 "Factories can only have a single fabrication mode.",
                 location)
         };
     }
 
-    public static string GetQualifier(ISymbol symbol) {
+    public static string GetQualifier(ISymbol symbol, GeneratorExecutionContext context) {
         var labelAttributes = symbol.GetLabelAttributes();
         var qualifierAttributes = symbol.GetQualifierAttributes();
         var numLabels = labelAttributes.Count();
@@ -138,6 +143,7 @@ internal static class MetadataHelpers {
 
         if (numLabels + numQualifiers > 1) {
             throw new InjectionException(
+                context,
                 Diagnostics.InvalidSpecification,
                 $"Symbol {symbol.Name} can only have one Label or Qualifier attribute. Found {numLabels + numQualifiers}.",
                 symbol.Locations.First());
@@ -151,6 +157,7 @@ internal static class MetadataHelpers {
             return labels.Any()
                 ? labels.Single()
                 : throw new InjectionException(
+                    context,
                     Diagnostics.InternalError,
                     $"Label for symbol {symbol.Name} must have exactly one label value.",
                     symbol.Locations.First()); // This should never happen
@@ -164,7 +171,7 @@ internal static class MetadataHelpers {
         return QualifiedTypeModel.NoQualifier;
     }
 
-    public static IReadOnlyDictionary<string, QualifiedTypeModel> GetRequiredPropertyQualifiedTypes(ITypeSymbol type) {
+    public static IReadOnlyDictionary<string, QualifiedTypeModel> GetRequiredPropertyQualifiedTypes(ITypeSymbol type, GeneratorExecutionContext context) {
         return type.GetMembers()
             .OfType<IPropertySymbol>()
             .Where(p => p.SetMethod != null && p.SetMethod.DeclaredAccessibility == Accessibility.Public)
@@ -173,15 +180,15 @@ internal static class MetadataHelpers {
                 property => property.Name,
                 property => new QualifiedTypeModel(
                     TypeModel.FromTypeSymbol(property.Type),
-                    GetQualifier(property)
+                    GetQualifier(property, context)
                 )
             );
     }
 
-    public static IReadOnlyList<IMethodSymbol> GetDirectBuilderMethods(ITypeSymbol type) {
+    public static IReadOnlyList<IMethodSymbol> GetDirectBuilderMethods(ITypeSymbol type, GeneratorExecutionContext context) {
         return type.GetMembers()
             .OfType<IMethodSymbol>()
-            .Where(m => m.GetBuilderAttribute() != null)
+            .Where(m => m.GetBuilderAttribute(context) != null)
             .ToImmutableList();
     }
 }

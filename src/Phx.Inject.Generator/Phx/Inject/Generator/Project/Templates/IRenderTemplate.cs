@@ -6,10 +6,17 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Render;
 
 namespace Phx.Inject.Generator.Project.Templates;
 
 internal interface IRenderTemplate : ISourceCodeElement {
-    void Render(IRenderWriter writer);
+    void Render(IRenderWriter writer, RenderContext context);
 }
+
+internal record RenderContext(
+    GeneratorSettings generatorSettings,
+    GeneratorExecutionContext GenerationContext
+);

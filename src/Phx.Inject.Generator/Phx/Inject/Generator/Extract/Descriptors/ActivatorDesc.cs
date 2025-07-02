@@ -38,13 +38,14 @@ internal record ActivatorDesc(
 
             if (builderMethod.Parameters.Length != 1) {
                 throw new InjectionException(
+                    context.GenerationContext,
                     Diagnostics.InvalidSpecification,
                     $"Injector builder {builderMethod.Name} must have exactly 1 parameter.",
                     builderLocation);
             }
 
             var builtType = TypeModel.FromTypeSymbol(builderMethod.Parameters[0].Type);
-            var qualifier = MetadataHelpers.GetQualifier(builderMethod);
+            var qualifier = MetadataHelpers.GetQualifier(builderMethod, context.GenerationContext);
             return new ActivatorDesc(
                 new QualifiedTypeModel(builtType, qualifier),
                 builderMethod.Name,

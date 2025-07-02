@@ -24,7 +24,7 @@ internal record InjectorTemplate(
     IEnumerable<IInjectorMemberTemplate> InjectorMemberTemplates,
     Location Location
 ) : IRenderTemplate {
-    public void Render(IRenderWriter writer) {
+    public void Render(IRenderWriter writer, RenderContext context) {
         //  internal partial class InjectorClassName : InjectorInterfaceQualifiedName {
         writer.AppendLine($"internal partial class {InjectorClassName} : {InjectorInterfaceQualifiedName} {{")
             .IncreaseIndent(1);
@@ -140,7 +140,7 @@ internal record InjectorTemplate(
         //      }
         foreach (var memberTemplate in InjectorMemberTemplates) {
             writer.AppendBlankLine();
-            memberTemplate.Render(writer);
+            memberTemplate.Render(writer, context);
         }
 
         // }
@@ -259,6 +259,7 @@ internal record InjectorTemplate(
                                 missingDependencies.Select(dep => dep.ToString()));
 
                             throw new InjectionException(
+                                context.GenerationContext,
                                 Diagnostics.InvalidSpecification,
                                 $"Child Injector factory must contain parameters for each of the child injector's constructed specification types: {constructedSpecificationsString}."
                                 + $" Missing: {missingDependenciesString}.",
@@ -273,6 +274,7 @@ internal record InjectorTemplate(
                             var unusedParametersString = string.Join(",",
                                 unusedParameters.Select(dep => dep.ToString()));
                             throw new InjectionException(
+                                context.GenerationContext,
                                 Diagnostics.InvalidSpecification,
                                 $"Child Injector factory contains unused parameters: {unusedParametersString}.",
                                 factory.Location);

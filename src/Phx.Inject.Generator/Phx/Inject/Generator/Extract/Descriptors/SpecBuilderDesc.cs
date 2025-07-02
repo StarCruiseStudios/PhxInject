@@ -21,31 +21,32 @@ internal record SpecBuilderDesc(
     Location Location
 ) : IDescriptor {
     public interface IExtractor {
-        SpecBuilderDesc? ExtractBuilder(IMethodSymbol builderMethod);
-        SpecBuilderDesc ExtractDirectBuilder(QualifiedTypeModel builderType);
-        SpecBuilderDesc? ExtractBuilderReference(IPropertySymbol builderProperty);
-        SpecBuilderDesc? ExtractBuilderReference(IFieldSymbol builderField);
+        SpecBuilderDesc? ExtractBuilder(IMethodSymbol builderMethod, DescGenerationContext context);
+        SpecBuilderDesc ExtractDirectBuilder(QualifiedTypeModel builderType, DescGenerationContext context);
+        SpecBuilderDesc? ExtractBuilderReference(IPropertySymbol builderProperty, DescGenerationContext context);
+        SpecBuilderDesc? ExtractBuilderReference(IFieldSymbol builderField, DescGenerationContext context);
     }
 
     public class Extractor : IExtractor {
-        public SpecBuilderDesc? ExtractBuilder(IMethodSymbol builderMethod) {
+        public SpecBuilderDesc? ExtractBuilder(IMethodSymbol builderMethod, DescGenerationContext context) {
             var builderLocation = builderMethod.Locations.First();
 
-            if (!ValidateBuilder(builderMethod, builderLocation)) {
+            if (!ValidateBuilder(builderMethod, builderLocation, context.GenerationContext)) {
                 // This is not a builder method.
                 return null;
             }
 
             var methodParameterTypes =
-                MetadataHelpers.GetMethodParametersQualifiedTypes(builderMethod);
+                MetadataHelpers.GetMethodParametersQualifiedTypes(builderMethod, context.GenerationContext);
             if (methodParameterTypes.Count == 0) {
                 throw new InjectionException(
+                    context.GenerationContext,
                     Diagnostics.InvalidSpecification,
                     "Builder method must have at least one parameter.",
                     builderLocation);
             }
 
-            var qualifier = MetadataHelpers.GetQualifier(builderMethod);
+            var qualifier = MetadataHelpers.GetQualifier(builderMethod, context.GenerationContext);
             // Use the qualifier from the method, not the parameter.
             var builtType = methodParameterTypes[0] with {
                 Qualifier = qualifier
@@ -62,17 +63,18 @@ internal record SpecBuilderDesc(
                 builderLocation);
         }
 
-        public SpecBuilderDesc ExtractDirectBuilder(QualifiedTypeModel builderType) {
+        public SpecBuilderDesc ExtractDirectBuilder(QualifiedTypeModel builderType, DescGenerationContext context) {
             var builderLocation = builderType.TypeModel.typeSymbol.Locations.First();
             IReadOnlyList<IMethodSymbol> builderMethods = MetadataHelpers
-                .GetDirectBuilderMethods(builderType.TypeModel.typeSymbol)
-                .Where(b => MetadataHelpers.GetQualifier(b) == builderType.Qualifier)
-                .Where(b => ValidateBuilder(b, builderLocation))
+                .GetDirectBuilderMethods(builderType.TypeModel.typeSymbol, context.GenerationContext)
+                .Where(b => MetadataHelpers.GetQualifier(b, context.GenerationContext) == builderType.Qualifier)
+                .Where(b => ValidateBuilder(b, builderLocation, context.GenerationContext))
                 .ToImmutableList();
 
             var numBuilderMethods = builderMethods.Count;
             if (numBuilderMethods == 0) {
                 throw new InjectionException(
+                    context.GenerationContext,
                     Diagnostics.InvalidSpecification,
                     "No direct builder method found for required builder type: " + builderType,
                     builderLocation);
@@ -80,6 +82,7 @@ internal record SpecBuilderDesc(
 
             if (numBuilderMethods > 1) {
                 throw new InjectionException(
+                    context.GenerationContext,
                     Diagnostics.InvalidSpecification,
                     "More than one direct builder method found for type: " + builderType,
                     builderLocation);
@@ -87,9 +90,10 @@ internal record SpecBuilderDesc(
 
             var builderMethod = builderMethods.First();
             var methodParameterTypes =
-                MetadataHelpers.GetMethodParametersQualifiedTypes(builderMethod);
+                MetadataHelpers.GetMethodParametersQualifiedTypes(builderMethod, context.GenerationContext);
             if (methodParameterTypes.Count == 0) {
                 throw new InjectionException(
+                    context.GenerationContext,
                     Diagnostics.InvalidSpecification,
                     "Builder method must have at least one parameter.",
                     builderLocation);
@@ -97,6 +101,7 @@ internal record SpecBuilderDesc(
 
             if (methodParameterTypes[0].TypeModel != builderType.TypeModel) {
                 throw new InjectionException(
+                    context.GenerationContext,
                     Diagnostics.InvalidSpecification,
                     "Direct builder method must accept a first parameter of the built type.",
                     builderLocation);
@@ -114,10 +119,10 @@ internal record SpecBuilderDesc(
                 builderLocation);
         }
 
-        public SpecBuilderDesc? ExtractBuilderReference(IPropertySymbol builderProperty) {
+        public SpecBuilderDesc? ExtractBuilderReference(IPropertySymbol builderProperty, DescGenerationContext context) {
             var builderReferenceLocation = builderProperty.Locations.First();
 
-            if (!ValidateBuilderReference(builderProperty, builderReferenceLocation)) {
+            if (!ValidateBuilderReference(builderProperty, builderReferenceLocation, context.GenerationContext)) {
                 // This is not a builder reference.
                 return null;
             }
@@ -125,6 +130,7 @@ internal record SpecBuilderDesc(
             GetBuilderReferenceTypes(builderProperty,
                 builderProperty.Type,
                 builderReferenceLocation,
+                context,
                 out var builtType,
                 out var parameterTypes);
 
@@ -136,10 +142,10 @@ internal record SpecBuilderDesc(
                 builderReferenceLocation);
         }
 
-        public SpecBuilderDesc? ExtractBuilderReference(IFieldSymbol builderField) {
+        public SpecBuilderDesc? ExtractBuilderReference(IFieldSymbol builderField, DescGenerationContext context) {
             var builderReferenceLocation = builderField.Locations.First();
 
-            if (!ValidateBuilderReference(builderField, builderReferenceLocation)) {
+            if (!ValidateBuilderReference(builderField, builderReferenceLocation, context.GenerationContext)) {
                 // This is not a builder reference.
                 return null;
             }
@@ -147,6 +153,7 @@ internal record SpecBuilderDesc(
             GetBuilderReferenceTypes(builderField,
                 builderField.Type,
                 builderReferenceLocation,
+                context,
                 out var builtType,
                 out var parameterTypes);
 
@@ -160,18 +167,20 @@ internal record SpecBuilderDesc(
 
         private static bool ValidateBuilder(
             ISymbol builderSymbol,
-            Location builderLocation
+            Location builderLocation,
+            GeneratorExecutionContext context
         ) {
-            var builderAttribute = builderSymbol.GetBuilderAttribute();
+            var builderAttribute = builderSymbol.GetBuilderAttribute(context);
             if (builderAttribute == null) {
                 // This is not a builder method.
                 return false;
             }
 
-            var builderReferenceAttribute = builderSymbol.GetBuilderReferenceAttributes();
+            var builderReferenceAttribute = builderSymbol.GetBuilderReferenceAttributes(context);
             if (builderReferenceAttribute != null) {
                 // Cannot be a builder and a builder reference.
                 throw new InjectionException(
+                    context,
                     Diagnostics.InvalidSpecification,
                     "Method cannot have both Builder and BuilderReference attributes.",
                     builderLocation);
@@ -182,18 +191,20 @@ internal record SpecBuilderDesc(
 
         private static bool ValidateBuilderReference(
             ISymbol builderReferenceSymbol,
-            Location builderReferenceLocation
+            Location builderReferenceLocation,
+            GeneratorExecutionContext context
         ) {
-            var builderReferenceAttribute = builderReferenceSymbol.GetBuilderReferenceAttributes();
+            var builderReferenceAttribute = builderReferenceSymbol.GetBuilderReferenceAttributes(context);
             if (builderReferenceAttribute == null) {
                 // This is not a builder reference.
                 return false;
             }
 
-            var builderAttribute = builderReferenceSymbol.GetBuilderAttribute();
+            var builderAttribute = builderReferenceSymbol.GetBuilderAttribute(context);
             if (builderAttribute != null) {
                 // Cannot be a builder and a builder reference.
                 throw new InjectionException(
+                    context,
                     Diagnostics.InvalidSpecification,
                     "Property or Field cannot have both Builder and BuilderReference attributes.",
                     builderReferenceLocation);
@@ -206,6 +217,7 @@ internal record SpecBuilderDesc(
             ISymbol builderReferenceSymbol,
             ITypeSymbol builderReferenceTypeSymbol,
             Location builderReferenceLocation,
+            DescGenerationContext context,
             out QualifiedTypeModel builtType,
             out IEnumerable<QualifiedTypeModel> parameterTypes
         ) {
@@ -213,6 +225,7 @@ internal record SpecBuilderDesc(
             if (referenceTypeSymbol == null || referenceTypeSymbol.Name != "Action") {
                 // Not the correct type to be a builder reference.
                 throw new InjectionException(
+                    context.GenerationContext,
                     Diagnostics.InvalidSpecification,
                     "Factory reference must be a field or property of type Action<>.",
                     builderReferenceLocation);
@@ -220,7 +233,7 @@ internal record SpecBuilderDesc(
 
             IReadOnlyList<ITypeSymbol> typeArguments = referenceTypeSymbol.TypeArguments;
 
-            var qualifier = MetadataHelpers.GetQualifier(builderReferenceSymbol);
+            var qualifier = MetadataHelpers.GetQualifier(builderReferenceSymbol, context.GenerationContext);
             var returnTypeModel = TypeModel.FromTypeSymbol(typeArguments[0]);
             builtType = new QualifiedTypeModel(
                 returnTypeModel,

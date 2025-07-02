@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Map;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
@@ -27,7 +28,8 @@ internal record SpecDesc(
         SpecDesc ExtractConstructorSpec(
             TypeModel injectorType,
             IReadOnlyList<QualifiedTypeModel> constructorTypes,
-            IReadOnlyList<QualifiedTypeModel> builderTypes);
+            IReadOnlyList<QualifiedTypeModel> builderTypes,
+            DescGenerationContext context);
     }
 
     public class Extractor : IExtractor {
@@ -57,7 +59,7 @@ internal record SpecDesc(
                 ? SpecInstantiationMode.Static
                 : SpecInstantiationMode.Instantiated;
 
-            return InjectionException.TryAggregate(aggregateException => {
+            return InjectionException.TryAggregate(context.GenerationContext, aggregateException => {
                 IReadOnlyList<IFieldSymbol> specFields = specSymbol.GetMembers()
                     .OfType<IFieldSymbol>()
                     .ToImmutableArray();
@@ -68,20 +70,20 @@ internal record SpecDesc(
                     .OfType<IMethodSymbol>()
                     .ToImmutableArray();
 
-                var factoryReferenceFields = aggregateException.Aggregate(() => specFields
-                        .SelectCatching(prop => specFactoryDescExtractor.ExtractFactoryReference(prop, context))
+                var factoryReferenceFields = aggregateException.Aggregate(context.GenerationContext, () => specFields
+                        .SelectCatching(context.GenerationContext, prop => specFactoryDescExtractor.ExtractFactoryReference(prop, context))
                         .OfType<SpecFactoryDesc>(),
                     ImmutableList.Create<SpecFactoryDesc>);
-                var factoryReferenceProperties = aggregateException.Aggregate(() => specProperties
-                        .SelectCatching(prop => specFactoryDescExtractor.ExtractFactoryReference(prop, context))
+                var factoryReferenceProperties = aggregateException.Aggregate(context.GenerationContext, () => specProperties
+                        .SelectCatching(context.GenerationContext, prop => specFactoryDescExtractor.ExtractFactoryReference(prop, context))
                         .OfType<SpecFactoryDesc>(),
                     ImmutableList.Create<SpecFactoryDesc>);
-                var factoryProperties = aggregateException.Aggregate(() => specProperties
-                        .SelectCatching(prop => specFactoryDescExtractor.ExtractFactory(prop, context))
+                var factoryProperties = aggregateException.Aggregate(context.GenerationContext, () => specProperties
+                        .SelectCatching(context.GenerationContext, prop => specFactoryDescExtractor.ExtractFactory(prop, context))
                         .OfType<SpecFactoryDesc>(),
                     ImmutableList.Create<SpecFactoryDesc>);
-                var factoryMethods = aggregateException.Aggregate(() => specMethods
-                        .SelectCatching(method => specFactoryDescExtractor.ExtractFactory(method, context))
+                var factoryMethods = aggregateException.Aggregate(context.GenerationContext, () => specMethods
+                        .SelectCatching(context.GenerationContext, method => specFactoryDescExtractor.ExtractFactory(method, context))
                         .OfType<SpecFactoryDesc>(),
                     ImmutableList.Create<SpecFactoryDesc>);
 
@@ -91,18 +93,18 @@ internal record SpecDesc(
                     .Concat(factoryReferenceProperties)
                     .ToImmutableList();
 
-                var builderReferenceFields = aggregateException.Aggregate(() => specFields
-                        .SelectCatching(builderReference =>
-                            specExtractorDescExtractor.ExtractBuilderReference(builderReference))
+                var builderReferenceFields = aggregateException.Aggregate(context.GenerationContext, () => specFields
+                        .SelectCatching(context.GenerationContext, builderReference =>
+                            specExtractorDescExtractor.ExtractBuilderReference(builderReference, context))
                         .OfType<SpecBuilderDesc>(),
                     ImmutableList.Create<SpecBuilderDesc>);
-                var builderReferenceProperties = aggregateException.Aggregate(() => specProperties
-                        .SelectCatching(builderReference =>
-                            specExtractorDescExtractor.ExtractBuilderReference(builderReference))
+                var builderReferenceProperties = aggregateException.Aggregate(context.GenerationContext, () => specProperties
+                        .SelectCatching(context.GenerationContext, builderReference =>
+                            specExtractorDescExtractor.ExtractBuilderReference(builderReference, context))
                         .OfType<SpecBuilderDesc>(),
                     ImmutableList.Create<SpecBuilderDesc>);
-                var builderMethods = aggregateException.Aggregate(() => specMethods
-                        .SelectCatching(builder => specExtractorDescExtractor.ExtractBuilder(builder))
+                var builderMethods = aggregateException.Aggregate(context.GenerationContext, () => specMethods
+                        .SelectCatching(context.GenerationContext, builder => specExtractorDescExtractor.ExtractBuilder(builder, context))
                         .OfType<SpecBuilderDesc>(),
                     ImmutableList.Create<SpecBuilderDesc>);
 
@@ -112,8 +114,8 @@ internal record SpecDesc(
                     .ToImmutableList();
 
                 var linkAttributes = specSymbol.GetLinkAttributes();
-                IReadOnlyList<SpecLinkDesc> links = aggregateException.Aggregate(() => linkAttributes
-                        .SelectCatching(link => specLinkDescExtractor.Extract(link, specLocation))
+                IReadOnlyList<SpecLinkDesc> links = aggregateException.Aggregate(context.GenerationContext, () => linkAttributes
+                        .SelectCatching(context.GenerationContext, link => specLinkDescExtractor.Extract(link, specLocation, context))
                         .ToImmutableList(),
                     ImmutableList.Create<SpecLinkDesc>);
                 return new SpecDesc(
@@ -129,30 +131,32 @@ internal record SpecDesc(
         public SpecDesc ExtractConstructorSpec(
             TypeModel injectorType,
             IReadOnlyList<QualifiedTypeModel> constructorTypes,
-            IReadOnlyList<QualifiedTypeModel> builderTypes
+            IReadOnlyList<QualifiedTypeModel> builderTypes,
+            DescGenerationContext context
         ) {
             var specLocation = injectorType.typeSymbol.Locations.First();
             var specType = TypeHelpers.CreateConstructorSpecContainerType(injectorType);
             var specInstantiationMode = SpecInstantiationMode.Static;
 
-            return InjectionException.TryAggregate(aggregateException => {
-                IReadOnlyList<SpecFactoryDesc> factories = aggregateException.Aggregate(() => constructorTypes
-                    .SelectCatching(type => specFactoryDescExtractor.ExtractConstructorFactory(type))
+            return InjectionException.TryAggregate(context.GenerationContext, aggregateException => {
+                IReadOnlyList<SpecFactoryDesc> factories = aggregateException.Aggregate(context.GenerationContext, () => constructorTypes
+                    .SelectCatching(context.GenerationContext, type => specFactoryDescExtractor.ExtractConstructorFactory(type, context))
                     .ToImmutableList(),
                     ImmutableList.Create<SpecFactoryDesc>);
 
-                IReadOnlyList<SpecBuilderDesc> builders = aggregateException.Aggregate(() => builderTypes
-                    .SelectCatching(type => specExtractorDescExtractor.ExtractDirectBuilder(type))
+                IReadOnlyList<SpecBuilderDesc> builders = aggregateException.Aggregate(context.GenerationContext, () => builderTypes
+                    .SelectCatching(context.GenerationContext, type => specExtractorDescExtractor.ExtractDirectBuilder(type, context))
                     .ToImmutableList(),
                     ImmutableList.Create<SpecBuilderDesc>);
                 
-                var links = aggregateException.Aggregate(() => constructorTypes
-                    .SelectCatching(constructorType => {
+                var links = aggregateException.Aggregate(context.GenerationContext, () => constructorTypes
+                    .SelectCatching(context.GenerationContext, constructorType => {
                         return constructorType.TypeModel.typeSymbol.GetLinkAttributes()
-                            .SelectCatching(link => {
-                                var linkDesc = specLinkDescExtractor.Extract(link, specLocation);
+                            .SelectCatching(context.GenerationContext, link => {
+                                var linkDesc = specLinkDescExtractor.Extract(link, specLocation, context);
                                 if (linkDesc.InputType != constructorType) {
                                     throw new InjectionException(
+                                        context.GenerationContext,
                                         Diagnostics.InvalidSpecification,
                                         $"Auto constructed type {constructorType} can only link from itself. Found link with input type {linkDesc.InputType}.",
                                         constructorType.TypeModel.typeSymbol.Locations.First());

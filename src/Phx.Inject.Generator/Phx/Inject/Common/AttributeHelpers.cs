@@ -13,13 +13,14 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Phx.Inject.Common;
 
 internal static class AttributeHelpers {
-    public static AttributeData? GetInjectorAttribute(this ISymbol injectorInterfaceSymbol) {
+    public static AttributeData? GetInjectorAttribute(this ISymbol injectorInterfaceSymbol, GeneratorExecutionContext context) {
         var injectorAttributes =
             GetAttributes(injectorInterfaceSymbol, PhxInjectNames.Attributes.InjectorAttributeClassName);
         return injectorAttributes.Count switch {
             0 => null,
             1 => injectorAttributes.Single(),
             _ => throw new InjectionException(
+                context,
                 Diagnostics.InvalidSpecification,
                 $"Injector type {injectorInterfaceSymbol.Name} can only have one Injector attribute. Found {injectorAttributes.Count}.",
                 injectorInterfaceSymbol.Locations.First())
@@ -38,13 +39,14 @@ internal static class AttributeHelpers {
         return GetAttributedAttributes(symbol, PhxInjectNames.Attributes.QualifierAttributeClassName);
     }
     
-    public static AttributeData? GetSpecificationAttribute(this ISymbol specificationSymbol) {
+    public static AttributeData? GetSpecificationAttribute(this ISymbol specificationSymbol, GeneratorExecutionContext context) {
         var specificationAttributes =
             GetAttributes(specificationSymbol, PhxInjectNames.Attributes.SpecificationAttributeClassName);
         return specificationAttributes.Count switch {
             0 => null,
             1 => specificationAttributes.Single(),
             _ => throw new InjectionException(
+                context,
                 Diagnostics.InvalidSpecification,
                 $"Specification type {specificationSymbol.Name} can only have one Specification attribute. Found {specificationAttributes.Count}.",
                 specificationSymbol.Locations.First())
@@ -63,7 +65,7 @@ internal static class AttributeHelpers {
         return GetAttributes(factoryMethodSymbol, PhxInjectNames.Attributes.FactoryReferenceAttributeClassName);
     }
 
-    public static AttributeData? GetBuilderAttribute(this ISymbol builderSymbol) {
+    public static AttributeData? GetBuilderAttribute(this ISymbol builderSymbol, GeneratorExecutionContext context) {
         var builderAttributes = GetAttributes(builderSymbol, PhxInjectNames.Attributes.BuilderAttributeClassName);
         var numBuilderAttributes = builderAttributes.Count;
         if (numBuilderAttributes == 0) {
@@ -72,6 +74,7 @@ internal static class AttributeHelpers {
 
         if (numBuilderAttributes > 1) {
             throw new InjectionException(
+                context,
                 Diagnostics.InvalidSpecification,
                 "Builders can only have a single builder attribute.",
                 builderSymbol.Locations.First());
@@ -81,6 +84,7 @@ internal static class AttributeHelpers {
             || builderSymbol.DeclaredAccessibility is not (Accessibility.Public or Accessibility.Internal)
         ) {
             throw new InjectionException(
+                context,
                 Diagnostics.InvalidSpecification,
                 "Builders must be public or internal static methods.",
                 builderSymbol.Locations.First());
@@ -89,7 +93,7 @@ internal static class AttributeHelpers {
         return builderAttributes.First();
     }
 
-    public static AttributeData? GetBuilderReferenceAttributes(this ISymbol builderReferenceSymbol) {
+    public static AttributeData? GetBuilderReferenceAttributes(this ISymbol builderReferenceSymbol, GeneratorExecutionContext context) {
         var builderReferenceAttribute =
             GetAttributes(builderReferenceSymbol, PhxInjectNames.Attributes.BuilderReferenceAttributeClassName);
         var numBuilderReferenceAttributes = builderReferenceAttribute.Count;
@@ -99,6 +103,7 @@ internal static class AttributeHelpers {
 
         if (numBuilderReferenceAttributes > 1) {
             throw new InjectionException(
+                context,
                 Diagnostics.InvalidSpecification,
                 "Builder references can only have a single builder reference attribute.",
                 builderReferenceSymbol.Locations.First());
@@ -108,6 +113,7 @@ internal static class AttributeHelpers {
             || builderReferenceSymbol.DeclaredAccessibility is not (Accessibility.Public or Accessibility.Internal)
         ) {
             throw new InjectionException(
+                context,
                 Diagnostics.InvalidSpecification,
                 "Builders references must be public or internal static methods.",
                 builderReferenceSymbol.Locations.First());

@@ -15,23 +15,30 @@ namespace Phx.Inject.Generator.Render;
 
 internal class SourceRenderer {
     private readonly GeneratorSettings generatorSettings;
+    private readonly RenderWriter.Factory writerFactory;
 
-    public SourceRenderer(GeneratorSettings generatorSettings) {
+    public SourceRenderer(GeneratorSettings generatorSettings, RenderWriter.Factory writerFactory) {
         this.generatorSettings = generatorSettings;
+        this.writerFactory = writerFactory;
     }
+    
+    public SourceRenderer(GeneratorSettings generatorSettings) 
+    : this(generatorSettings, new RenderWriter.Factory(generatorSettings)) { }
 
-    public void RenderAllTemplates(
+    public void Render(
         IReadOnlyList<(TypeModel, IRenderTemplate)> templates,
-        GeneratorExecutionContext context) {
-        var templateRenderer = new TemplateRenderer(new RenderWriter.Factory(generatorSettings));
+        GeneratorExecutionContext context
+    ) {
+        var renderContext = new RenderContext(generatorSettings, context);
         InjectionException.Try(() => {
-            templates.SelectCatching(t => {
+            templates.SelectCatching(context, t => {
                 var (classType, template) = t;
                 var fileName = $"{classType.QualifiedName}.{generatorSettings.GeneratedFileExtension}";
                 context.Log($"Rendering source for {fileName}");
-                templateRenderer.RenderTemplate(fileName, template, context);
+                context.AddSource(fileName, writerFactory.Use(writer => template.Render(writer, renderContext)));
                 return fileName;
             });
-        }, "rendering source templates");
+        }, "rendering source templates",
+        context);
     }
 }

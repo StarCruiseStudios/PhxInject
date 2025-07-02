@@ -35,6 +35,7 @@ internal class SourceGenerator : ISourceGenerator {
             // Abstract: Source code to syntax declarations.
             var syntaxReceiver = context.SyntaxReceiver as SourceSyntaxReceiver
                 ?? throw new InjectionException(
+                    context,
                     Diagnostics.UnexpectedError,
                     $"Incorrect Syntax Receiver {context.SyntaxReceiver}.",
                     Location.None);
@@ -52,13 +53,11 @@ internal class SourceGenerator : ISourceGenerator {
                 context);
 
             // Render: Templates to generated source.
-            new SourceRenderer(generatorSettings).RenderAllTemplates(templates, context);
-        } catch (InjectionException ex) {
-            foreach (var diagnostic in ex.Diagnostics) {
-                context.ReportDiagnostic(diagnostic);
-            }
+            new SourceRenderer(generatorSettings).Render(templates, context);
         } catch (Exception ex) {
-            context.ReportDiagnostic(Diagnostics.UnexpectedError.CreateDiagnostic(ex.ToString()));
+            if (ex is not InjectionException) {
+                context.ReportDiagnostic(Diagnostics.UnexpectedError.CreateDiagnostic(ex.ToString()));
+            }
         }
     }
 }

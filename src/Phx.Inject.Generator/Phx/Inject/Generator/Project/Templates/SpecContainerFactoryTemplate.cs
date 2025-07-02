@@ -27,7 +27,7 @@ internal record SpecContainerFactoryTemplate(
     IEnumerable<RequiredPropertyTemplate> RequiredProperties,
     Location Location
 ) : ISpecContainerMemberTemplate {
-    public void Render(IRenderWriter writer) {
+    public void Render(IRenderWriter writer, RenderContext context) {
         var specContainerCollectionArgName = startNewContainer
             ? "parentSpecContainer"
             : SpecContainerCollectionReferenceName;
@@ -67,7 +67,7 @@ internal record SpecContainerFactoryTemplate(
                         }
 
                         isFirst = false;
-                        argument.Render(writer);
+                        argument.Render(writer, context);
                     }
 
                     writer.AppendLine(");")
@@ -92,7 +92,7 @@ internal record SpecContainerFactoryTemplate(
                         }
 
                         isFirst = false;
-                        argument.Render(writer);
+                        argument.Render(writer, context);
                     }
 
                     if (numRequiredProperties > 0) {
@@ -120,7 +120,7 @@ internal record SpecContainerFactoryTemplate(
 
                         writer.Append(property.PropertyName)
                             .Append(" = ");
-                        property.PropertyValue.Render(writer);
+                        property.PropertyValue.Render(writer, context);
                     }
 
                     writer.DecreaseIndent(1)
@@ -138,6 +138,7 @@ internal record SpecContainerFactoryTemplate(
 
             default:
                 throw new InjectionException(
+                    context.GenerationContext,
                     Diagnostics.InternalError,
                     $"Unhandled Spec Factory Member Type {SpecFactoryMemberType}.",
                     Location);

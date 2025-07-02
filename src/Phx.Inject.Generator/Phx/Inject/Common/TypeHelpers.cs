@@ -25,14 +25,15 @@ internal static class TypeHelpers {
         DictionaryTypeName
     });
     
-    public static bool IsInjectorSymbol(ITypeSymbol symbol) {
-        var injectorAttribute = symbol.GetInjectorAttribute();
+    public static bool IsInjectorSymbol(ITypeSymbol symbol, GeneratorExecutionContext context) {
+        var injectorAttribute = symbol.GetInjectorAttribute(context);
         if (injectorAttribute == null) {
             return false;
         }
 
         if (symbol.TypeKind != TypeKind.Interface) {
             throw new InjectionException(
+                context,
                 Diagnostics.InvalidSpecification,
                 $"Injector type {symbol.Name} must be an interface.",
                 symbol.Locations.First());
@@ -52,10 +53,11 @@ internal static class TypeHelpers {
             && type.TypeModel.TypeArguments.Count == 0;
     }
 
-    public static void ValidatePartialType(QualifiedTypeModel returnType, bool isPartial, Location location) {
+    public static void ValidatePartialType(QualifiedTypeModel returnType, bool isPartial, Location location, GeneratorExecutionContext context) {
         if (isPartial) {
             if (!MultiBindTypes.Contains(returnType.TypeModel.QualifiedBaseTypeName)) {
                 throw new InjectionException(
+                    context,
                     Diagnostics.InvalidSpecification,
                     "Partial factories must return a IReadOnlyList, ISet, or IReadOnlyDictionary.",
                     location);

@@ -39,14 +39,15 @@ internal class DependencyExtractor : IDependencyExtractor {
             .SelectMany(MetadataHelpers.GetDependencyTypes)
             .GroupBy(typeSymbol => typeSymbol, SymbolEqualityComparer.Default)
             .Select(group => group.First())
-            .Where(IsDependencySymbol)
-            .SelectCatching(type => dependencyDescExtractor.Extract(type, context))
+            .Where(symbol => IsDependencySymbol(symbol, context.GenerationContext))
+            .SelectCatching(context.GenerationContext, type => dependencyDescExtractor.Extract(type, context))
             .ToImmutableList();
     }
 
-    private static bool IsDependencySymbol(ITypeSymbol symbol) {
+    private static bool IsDependencySymbol(ITypeSymbol symbol, GeneratorExecutionContext context) {
         if (symbol.TypeKind != TypeKind.Interface) {
             throw new InjectionException(
+                context,
                 Diagnostics.InvalidSpecification,
                 $"Dependency type {symbol.Name} must be an interface.",
                 symbol.Locations.First());

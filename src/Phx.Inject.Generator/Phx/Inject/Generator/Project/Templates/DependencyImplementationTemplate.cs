@@ -21,7 +21,7 @@ internal record DependencyImplementationTemplate(
     IEnumerable<DependencyProviderMethodTemplate> DependencyProviderMethods,
     Location Location
 ) : IRenderTemplate {
-    public void Render(IRenderWriter writer) {
+    public void Render(IRenderWriter writer, RenderContext context) {
         //  internal class DependencyImplementationClassName : DependencyInterfaceQualifiedType {
         writer.AppendLine(
                 $"internal class {DependencyImplementationClassName} : {DependencyInterfaceQualifiedName} {{")
@@ -48,7 +48,7 @@ internal record DependencyImplementationTemplate(
         //      }
         foreach (var method in DependencyProviderMethods) {
             writer.AppendBlankLine();
-            method.Render(writer);
+            method.Render(writer, context);
         }
 
         //  }

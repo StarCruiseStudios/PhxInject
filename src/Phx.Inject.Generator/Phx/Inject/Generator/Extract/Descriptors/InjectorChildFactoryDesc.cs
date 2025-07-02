@@ -40,6 +40,7 @@ internal record InjectorChildFactoryDesc(
 
             if (childInjectorMethod.ReturnsVoid) {
                 throw new InjectionException(
+                    context.GenerationContext,
                     Diagnostics.InvalidSpecification,
                     $"Injector child factory {childInjectorMethod.Name} must return a type.",
                     childInjectorLocation);

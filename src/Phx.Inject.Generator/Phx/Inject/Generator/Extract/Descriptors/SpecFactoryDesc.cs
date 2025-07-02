@@ -26,6 +26,7 @@ internal record SpecFactoryDesc(
     private static bool TryGetConstructorFactoryFabricationMode(
         ITypeSymbol constructorFactoryType,
         Location constructorFactoryLocation,
+        DescGenerationContext context,
         out SpecFactoryMethodFabricationMode fabricationMode
     ) {
         var factoryAttributes = constructorFactoryType.GetFactoryAttributes();
@@ -38,6 +39,7 @@ internal record SpecFactoryDesc(
 
         if (numFactoryAttributes > 1) {
             throw new InjectionException(
+                context.GenerationContext,
                 Diagnostics.InvalidSpecification,
                 "Method or Property can only have a single factory attribute.",
                 constructorFactoryLocation);
@@ -46,7 +48,8 @@ internal record SpecFactoryDesc(
         var factoryAttribute = factoryAttributes.Single();
         fabricationMode = MetadataHelpers.GetFactoryFabricationMode(
             factoryAttribute,
-            constructorFactoryLocation);
+            constructorFactoryLocation,
+            context.GenerationContext);
         return true;
     }
 
@@ -66,6 +69,7 @@ internal record SpecFactoryDesc(
 
         if (numFactoryAttributes > 1) {
             throw new InjectionException(
+                context.GenerationContext,
                 Diagnostics.InvalidSpecification,
                 "Method or Property can only have a single factory attribute.",
                 factoryLocation);
@@ -75,6 +79,7 @@ internal record SpecFactoryDesc(
         if (factoryReferenceAttributes.Count > 0) {
             // Cannot be a factory and a factory reference.
             throw new InjectionException(
+                context.GenerationContext,
                 Diagnostics.InvalidSpecification,
                 "Method or Property cannot have both Factory and FactoryReference attributes.",
                 factoryLocation);
@@ -83,7 +88,8 @@ internal record SpecFactoryDesc(
         var factoryAttribute = factoryAttributes.Single();
         fabricationMode = MetadataHelpers.GetFactoryFabricationMode(
             factoryAttribute,
-            factoryLocation);
+            factoryLocation,
+            context.GenerationContext);
         return true;
     }
 
@@ -104,6 +110,7 @@ internal record SpecFactoryDesc(
 
         if (numFactoryReferenceAttributes > 1) {
             throw new InjectionException(
+                context.GenerationContext,
                 Diagnostics.InvalidSpecification,
                 "Property or Field can only have a single factory reference attribute.",
                 factoryReferenceLocation);
@@ -113,6 +120,7 @@ internal record SpecFactoryDesc(
         if (factoryAttributes.Count > 0) {
             // Cannot be a factory and a factory reference.
             throw new InjectionException(
+                context.GenerationContext,
                 Diagnostics.InvalidSpecification,
                 "Property or Field cannot have both Factory and FactoryReference attributes.",
                 factoryReferenceLocation);
@@ -121,7 +129,8 @@ internal record SpecFactoryDesc(
         var factoryReferenceAttribute = factoryReferenceAttributes.Single();
         fabricationMode = MetadataHelpers.GetFactoryFabricationMode(
             factoryReferenceAttribute,
-            factoryReferenceLocation);
+            factoryReferenceLocation,
+            context.GenerationContext);
         return true;
     }
 
@@ -129,6 +138,7 @@ internal record SpecFactoryDesc(
         ISymbol factoryReferenceSymbol,
         ITypeSymbol factoryReferenceTypeSymbol,
         Location factoryReferenceLocation,
+        DescGenerationContext context,
         out QualifiedTypeModel returnType,
         out IEnumerable<QualifiedTypeModel> parameterTypes
     ) {
@@ -136,6 +146,7 @@ internal record SpecFactoryDesc(
         if (referenceTypeSymbol == null || referenceTypeSymbol.Name != "Func") {
             // Not the correct type to be a factory reference.
             throw new InjectionException(
+                context.GenerationContext,
                 Diagnostics.InvalidSpecification,
                 "Factory reference must be a field or property of type Func<>.",
                 factoryReferenceLocation);
@@ -143,7 +154,7 @@ internal record SpecFactoryDesc(
 
         var typeArguments = referenceTypeSymbol.TypeArguments;
 
-        var qualifier = MetadataHelpers.GetQualifier(factoryReferenceSymbol);
+        var qualifier = MetadataHelpers.GetQualifier(factoryReferenceSymbol, context.GenerationContext);
         var returnTypeModel = TypeModel.FromTypeSymbol(typeArguments[typeArguments.Length - 1]);
         returnType = new QualifiedTypeModel(
             returnTypeModel,
@@ -164,7 +175,8 @@ internal record SpecFactoryDesc(
 
     public interface IExtractor {
         SpecFactoryDesc ExtractConstructorFactory(
-            QualifiedTypeModel factoryType
+            QualifiedTypeModel factoryType,
+            DescGenerationContext context
         );
         SpecFactoryDesc? ExtractFactory(
             IMethodSymbol factoryMethod,
@@ -186,18 +198,19 @@ internal record SpecFactoryDesc(
 
     public class Extractor : IExtractor {
         public SpecFactoryDesc ExtractConstructorFactory(
-            QualifiedTypeModel factoryType
+            QualifiedTypeModel factoryType,
+            DescGenerationContext context
         ) {
             var factorySymbol = factoryType.TypeModel.typeSymbol;
             var factoryLocation = factorySymbol.Locations.First();
-            TryGetConstructorFactoryFabricationMode(factorySymbol, factoryLocation, out var fabricationMode);
+            TryGetConstructorFactoryFabricationMode(factorySymbol, factoryLocation, context, out var fabricationMode);
 
             var constructorParameterTypes =
-                MetadataHelpers.GetConstructorParameterQualifiedTypes(factorySymbol);
+                MetadataHelpers.GetConstructorParameterQualifiedTypes(factorySymbol, context.GenerationContext);
             var requiredProperties = MetadataHelpers
-                .GetRequiredPropertyQualifiedTypes(factorySymbol)
+                .GetRequiredPropertyQualifiedTypes(factorySymbol, context.GenerationContext)
                 .Select(property => new SpecFactoryRequiredPropertyDesc(property.Value, property.Key, factoryLocation));
-            var qualifier = MetadataHelpers.GetQualifier(factorySymbol);
+            var qualifier = MetadataHelpers.GetQualifier(factorySymbol, context.GenerationContext);
             var returnType = factoryType with {
                 Qualifier = qualifier
             };
@@ -224,16 +237,16 @@ internal record SpecFactoryDesc(
             }
 
             var methodParameterTypes =
-                MetadataHelpers.GetMethodParametersQualifiedTypes(factoryMethod);
+                MetadataHelpers.GetMethodParametersQualifiedTypes(factoryMethod, context.GenerationContext);
 
-            var qualifier = MetadataHelpers.GetQualifier(factoryMethod);
+            var qualifier = MetadataHelpers.GetQualifier(factoryMethod, context.GenerationContext);
             var returnTypeModel = TypeModel.FromTypeSymbol(factoryMethod.ReturnType);
             var returnType = new QualifiedTypeModel(
                 returnTypeModel,
                 qualifier);
 
             var isPartial = GetIsPartial(factoryMethod);
-            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryLocation);
+            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryLocation, context.GenerationContext);
 
             return new SpecFactoryDesc(
                 returnType,
@@ -258,14 +271,14 @@ internal record SpecFactoryDesc(
 
             var methodParameterTypes = ImmutableList.Create<QualifiedTypeModel>();
 
-            var qualifier = MetadataHelpers.GetQualifier(factoryProperty);
+            var qualifier = MetadataHelpers.GetQualifier(factoryProperty, context.GenerationContext);
             var returnTypeModel = TypeModel.FromTypeSymbol(factoryProperty.Type);
             var returnType = new QualifiedTypeModel(
                 returnTypeModel,
                 qualifier);
 
             var isPartial = GetIsPartial(factoryProperty);
-            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryLocation);
+            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryLocation, context.GenerationContext);
 
             return new SpecFactoryDesc(
                 returnType,
@@ -294,10 +307,11 @@ internal record SpecFactoryDesc(
                 factoryReferenceProperty,
                 factoryReferenceProperty.Type,
                 factoryReferenceLocation,
+                context,
                 out var returnType,
                 out var parameterTypes);
             var isPartial = GetIsPartial(factoryReferenceProperty);
-            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryReferenceLocation);
+            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryReferenceLocation, context.GenerationContext);
 
             return new SpecFactoryDesc(
                 returnType,
@@ -326,10 +340,11 @@ internal record SpecFactoryDesc(
                 factoryReferenceField,
                 factoryReferenceField.Type,
                 factoryReferenceLocation,
+                context,
                 out var returnType,
                 out var parameterTypes);
             var isPartial = GetIsPartial(factoryReferenceField);
-            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryReferenceLocation);
+            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryReferenceLocation, context.GenerationContext);
 
             return new SpecFactoryDesc(
                 returnType,

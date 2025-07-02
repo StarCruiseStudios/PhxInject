@@ -35,8 +35,8 @@ internal class InjectorExtractor : IInjectorExtractor {
         DescGenerationContext context
     ) {
         return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
-            .Where(TypeHelpers.IsInjectorSymbol)
-            .SelectCatching(symbol => injectorDescExtractor.Extract(symbol, context))
+            .Where(symbol => TypeHelpers.IsInjectorSymbol(symbol, context.GenerationContext))
+            .SelectCatching(context.GenerationContext, symbol => injectorDescExtractor.Extract(symbol, context))
             .ToImmutableList();
     }
 }

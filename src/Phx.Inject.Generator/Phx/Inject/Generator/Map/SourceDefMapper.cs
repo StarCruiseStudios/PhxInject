@@ -34,22 +34,26 @@ internal class SourceDefMapper {
         SourceDesc sourceDesc,
         GeneratorExecutionContext context
     ) {
-        return InjectionException.Try(() => {
+        return InjectionException.Try(context, () => {
                 var injectorDescMap = CreateTypeMap(
                     sourceDesc.injectorDescs,
-                    injector => injector.InjectorInterfaceType);
+                    injector => injector.InjectorInterfaceType,
+                    context);
                 var specDescMap = CreateTypeMap(
                     sourceDesc.GetAllSpecDescs(),
-                    spec => spec.SpecType);
+                    spec => spec.SpecType,
+                    context);
                 var dependencyDescMap = CreateTypeMap(
                     sourceDesc.dependencyDescs,
-                    dep => dep.DependencyInterfaceType);
+                    dep => dep.DependencyInterfaceType,
+                    context);
 
-                return sourceDesc.injectorDescs.SelectCatching(injectorDesc => {
+                return sourceDesc.injectorDescs.SelectCatching(context, injectorDesc => {
                         var injectorSpecDescMap = new Dictionary<TypeModel, SpecDesc>();
                         foreach (var spec in injectorDesc.SpecificationsTypes) {
                             if (!specDescMap.TryGetValue(spec, out var specDesc)) {
                                 throw new InjectionException(
+                                    context,
                                     Diagnostics.IncompleteSpecification,
                                     $"Cannot find required specification type {spec}"
                                     + $" while generating injection for type {injectorDesc.InjectorInterfaceType}.",
@@ -93,13 +97,15 @@ internal class SourceDefMapper {
 
     private static IReadOnlyDictionary<TypeModel, T> CreateTypeMap<T>(
         IEnumerable<T> values,
-        Func<T, TypeModel> extractKey
+        Func<T, TypeModel> extractKey,
+        GeneratorExecutionContext context
     ) where T : ISourceCodeElement {
         var map = new Dictionary<TypeModel, T>();
         foreach (var value in values) {
             var key = extractKey(value);
             if (map.ContainsKey(key)) {
                 throw new InjectionException(
+                    context,
                     Diagnostics.InvalidSpecification,
                     $"{typeof(T).Name} with {key} is already defined.",
                     value.Location);

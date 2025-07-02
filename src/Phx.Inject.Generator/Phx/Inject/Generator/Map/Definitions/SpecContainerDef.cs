@@ -48,7 +48,7 @@ internal record SpecContainerDef(
                                     factory.Location),
                                 factory.Location))
                         .ToImmutableList();
-                    var specContainerFactoryMethodName = factory.GetSpecContainerFactoryName();
+                    var specContainerFactoryMethodName = factory.GetSpecContainerFactoryName(context.GenerationContext);
 
                     return new SpecContainerFactoryDef(
                         factory.ReturnType,
@@ -68,7 +68,7 @@ internal record SpecContainerDef(
                                 parameter,
                                 builder.Location))
                         .ToImmutableList();
-                    var specContainerBuilderMethodName = builder.GetSpecContainerBuilderName();
+                    var specContainerBuilderMethodName = builder.GetSpecContainerBuilderName(context.GenerationContext);
 
                     return new SpecContainerBuilderDef(
                         builder.BuiltType.TypeModel,

@@ -43,13 +43,14 @@ internal record InjectorProviderDesc(
 
             if (providerMethod.Parameters.Length > 0) {
                 throw new InjectionException(
+                    context.GenerationContext,
                     Diagnostics.InvalidSpecification,
                     $"Injector provider {providerMethod.Name} must not have any parameters.",
                     providerLocation);
             }
 
             var returnType = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
-            var qualifier = MetadataHelpers.GetQualifier(providerMethod);
+            var qualifier = MetadataHelpers.GetQualifier(providerMethod, context.GenerationContext);
             return new InjectorProviderDesc(
                 new QualifiedTypeModel(returnType, qualifier),
                 providerMethod.Name,
