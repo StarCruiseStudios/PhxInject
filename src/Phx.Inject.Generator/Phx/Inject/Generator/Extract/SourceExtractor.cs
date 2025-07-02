@@ -44,19 +44,19 @@ internal class SourceExtractor {
                     syntaxReceiver.InjectorCandidates,
                     descGenerationContext),
                     ImmutableList.Create<InjectorDesc>);
-                Logger.Info($"Discovered {injectorDescs.Count} injector types.");
+                context.Log($"Discovered {injectorDescs.Count} injector types.");
 
                 var specDescs = aggregateException.Aggregate(() => specExtractor.Extract(
                     syntaxReceiver.SpecificationCandidates,
                     descGenerationContext),
                     ImmutableList.Create<SpecDesc>);
-                Logger.Info($"Discovered {specDescs.Count} specification types.");
+                context.Log($"Discovered {specDescs.Count} specification types.");
 
                 var dependencyDescs = aggregateException.Aggregate(() => dependencyExtractor.Extract(
                     syntaxReceiver.InjectorCandidates,
                     descGenerationContext),
                     ImmutableList.Create<DependencyDesc>);
-                Logger.Info($"Discovered {dependencyDescs.Count} dependency types.");
+                context.Log($"Discovered {dependencyDescs.Count} dependency types.");
 
                 return new SourceDesc(
                     injectorDescs,

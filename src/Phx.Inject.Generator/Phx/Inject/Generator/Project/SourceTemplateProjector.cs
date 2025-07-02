@@ -52,7 +52,7 @@ internal class SourceTemplateProjector {
                                     injectorDef,
                                     templateGenerationContext)
                             ));
-                        Logger.Info($"Generated injector {injectorDef.InjectorType}.");
+                        context.Log($"Generated injector {injectorDef.InjectorType}.");
 
                         var specContainerPresenter = new SpecContainerProjector();
                         foreach (var specContainerDef in injectionContextDef.SpecContainers) {
@@ -63,7 +63,7 @@ internal class SourceTemplateProjector {
                                         specContainerDef,
                                         templateGenerationContext)
                                 ));
-                            Logger.Info(
+                            context.Log(
                                 $"Generated spec container {specContainerDef.SpecContainerType} for injector {injectorDef.InjectorType}.");
                         }
 
@@ -78,7 +78,7 @@ internal class SourceTemplateProjector {
                                         dependency,
                                         templateGenerationContext)
                                 ));
-                            Logger.Info(
+                            context.Log(
                                 $"Generated dependency implementation {dependency.DependencyImplementationType} for injector {injectorDef.InjectorType}.");
                         }
 

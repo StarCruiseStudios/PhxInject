@@ -28,7 +28,7 @@ internal class SourceRenderer {
             templates.SelectCatching(t => {
                 var (classType, template) = t;
                 var fileName = $"{classType.QualifiedName}.{generatorSettings.GeneratedFileExtension}";
-                Logger.Info($"Rendering source for {fileName}");
+                context.Log($"Rendering source for {fileName}");
                 templateRenderer.RenderTemplate(fileName, template, context);
                 return fileName;
             });

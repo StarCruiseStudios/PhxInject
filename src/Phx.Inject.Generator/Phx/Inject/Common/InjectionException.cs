@@ -34,15 +34,7 @@ internal class InjectionException : Exception {
     ) : base(message) {
         DiagnosticData = diagnosticData;
         Location = location;
-        Diagnostics.Add(Diagnostic.Create(
-            new DiagnosticDescriptor(
-                diagnosticData.Id,
-                diagnosticData.Title,
-                message,
-                diagnosticData.Category,
-                DiagnosticSeverity.Error,
-                true),
-            location));
+        Diagnostics.Add(diagnosticData.CreateDiagnostic(message, location));
     }
 
     public InjectionException(
@@ -56,15 +48,7 @@ internal class InjectionException : Exception {
                 ? ie.DiagnosticData
                 : Common.Diagnostics.UnexpectedError);
         Location = location;
-        Diagnostics.Add(Diagnostic.Create(
-            new DiagnosticDescriptor(
-                DiagnosticData.Id,
-                DiagnosticData.Title,
-                message,
-                DiagnosticData.Category,
-                DiagnosticSeverity.Error,
-                true),
-            location));
+        Diagnostics.Add(DiagnosticData.CreateDiagnostic(message, location));
         Diagnostics.AddRange(GetDiagnosticsFromException(inner));
     }
     
@@ -146,7 +130,7 @@ internal class InjectionException : Exception {
     private static IList<Diagnostic> GetDiagnosticsFromException(Exception e) {
         return e is InjectionException ie
             ? ie.Diagnostics
-            : ImmutableList.Create(Common.Diagnostics.CreateUnexpectedErrorDiagnostic(e?.ToString() ?? "[null]"));
+            : ImmutableList.Create(Common.Diagnostics.UnexpectedError.CreateDiagnostic(e.ToString()));
     }
 
     private static InjectionException CreateAggregator() {

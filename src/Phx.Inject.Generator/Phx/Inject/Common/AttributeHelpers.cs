@@ -13,36 +13,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Phx.Inject.Common;
 
 internal static class AttributeHelpers {
-    public const string InjectorAttributeShortName = "Injector";
-    public const string InjectorAttributeBaseName = nameof(InjectorAttribute);
-    public const string SpecificationAttributeShortName = "Specification";
-    public const string SpecificationAttributeBaseName = nameof(SpecificationAttribute);
-
-    private const string BuilderAttributeClassName = $"Phx.Inject.{nameof(BuilderAttribute)}";
-    private const string BuilderReferenceAttributeClassName = $"Phx.Inject.{nameof(BuilderReferenceAttribute)}";
-    private const string ChildInjectorAttributeClassName = $"Phx.Inject.{nameof(ChildInjectorAttribute)}";
-    private const string DependencyAttributeClassName = $"Phx.Inject.{nameof(DependencyAttribute)}";
-    private const string FactoryAttributeClassName = $"Phx.Inject.{nameof(FactoryAttribute)}";
-    private const string FactoryReferenceAttributeClassName = $"Phx.Inject.{nameof(FactoryReferenceAttribute)}";
-    private const string InjectorAttributeClassName = $"Phx.Inject.{nameof(InjectorAttribute)}";
-    private const string LabelAttributeClassName = $"Phx.Inject.{nameof(LabelAttribute)}";
-    private const string LinkAttributeClassName = $"Phx.Inject.{nameof(LinkAttribute)}";
-    private const string PartialAttributeClassName = $"Phx.Inject.{nameof(PartialAttribute)}";
-    private const string QualifierAttributeClassName = $"Phx.Inject.{nameof(QualifierAttribute)}";
-    private const string SpecificationAttributeClassName = $"Phx.Inject.{nameof(SpecificationAttribute)}";
-    
-    public static bool HasInjectorAttribute(MemberDeclarationSyntax memberDeclaration) {
-        return memberDeclaration.AttributeLists
-            .Any(attributeList => attributeList.Attributes
-                .Any(attribute => {
-                    var name = attribute.Name.ToString();
-                    return name is InjectorAttributeShortName or InjectorAttributeBaseName;
-                }));
-    }
-    
     public static AttributeData? GetInjectorAttribute(this ISymbol injectorInterfaceSymbol) {
         var injectorAttributes =
-            GetAttributes(injectorInterfaceSymbol, InjectorAttributeClassName);
+            GetAttributes(injectorInterfaceSymbol, PhxInjectNames.Attributes.InjectorAttributeClassName);
         return injectorAttributes.Count switch {
             0 => null,
             1 => injectorAttributes.Single(),
@@ -54,29 +27,20 @@ internal static class AttributeHelpers {
     }
 
     public static IReadOnlyList<AttributeData> GetDependencyAttributes(this ISymbol injectorSymbol) {
-        return GetAttributes(injectorSymbol, DependencyAttributeClassName);
+        return GetAttributes(injectorSymbol, PhxInjectNames.Attributes.DependencyAttributeClassName);
     }
 
     public static IReadOnlyList<AttributeData> GetLabelAttributes(this ISymbol symbol) {
-        return GetAttributes(symbol, LabelAttributeClassName);
+        return GetAttributes(symbol, PhxInjectNames.Attributes.LabelAttributeClassName);
     }
 
     public static IReadOnlyList<AttributeData> GetQualifierAttributes(this ISymbol symbol) {
-        return GetAttributedAttributes(symbol, QualifierAttributeClassName);
-    }
-
-    public static bool HasSpecificationAttribute(MemberDeclarationSyntax memberDeclaration) {
-        return memberDeclaration.AttributeLists
-            .Any(attributeList => attributeList.Attributes
-                .Any(attribute => {
-                    var name = attribute.Name.ToString();
-                    return name is SpecificationAttributeShortName or SpecificationAttributeBaseName;
-                }));
+        return GetAttributedAttributes(symbol, PhxInjectNames.Attributes.QualifierAttributeClassName);
     }
     
     public static AttributeData? GetSpecificationAttribute(this ISymbol specificationSymbol) {
         var specificationAttributes =
-            GetAttributes(specificationSymbol, SpecificationAttributeClassName);
+            GetAttributes(specificationSymbol, PhxInjectNames.Attributes.SpecificationAttributeClassName);
         return specificationAttributes.Count switch {
             0 => null,
             1 => specificationAttributes.Single(),
@@ -88,19 +52,19 @@ internal static class AttributeHelpers {
     }
 
     public static IReadOnlyList<AttributeData> GetLinkAttributes(this ISymbol specificationSymbol) {
-        return GetAttributes(specificationSymbol, LinkAttributeClassName);
+        return GetAttributes(specificationSymbol, PhxInjectNames.Attributes.LinkAttributeClassName);
     }
 
     public static IReadOnlyList<AttributeData> GetFactoryAttributes(this ISymbol factoryMethodSymbol) {
-        return GetAttributes(factoryMethodSymbol, FactoryAttributeClassName);
+        return GetAttributes(factoryMethodSymbol, PhxInjectNames.Attributes.FactoryAttributeClassName);
     }
 
     public static IReadOnlyList<AttributeData> GetFactoryReferenceAttributes(this ISymbol factoryMethodSymbol) {
-        return GetAttributes(factoryMethodSymbol, FactoryReferenceAttributeClassName);
+        return GetAttributes(factoryMethodSymbol, PhxInjectNames.Attributes.FactoryReferenceAttributeClassName);
     }
 
     public static AttributeData? GetBuilderAttribute(this ISymbol builderSymbol) {
-        var builderAttributes = GetAttributes(builderSymbol, BuilderAttributeClassName);
+        var builderAttributes = GetAttributes(builderSymbol, PhxInjectNames.Attributes.BuilderAttributeClassName);
         var numBuilderAttributes = builderAttributes.Count;
         if (numBuilderAttributes == 0) {
             return null;
@@ -127,7 +91,7 @@ internal static class AttributeHelpers {
 
     public static AttributeData? GetBuilderReferenceAttributes(this ISymbol builderReferenceSymbol) {
         var builderReferenceAttribute =
-            GetAttributes(builderReferenceSymbol, BuilderReferenceAttributeClassName);
+            GetAttributes(builderReferenceSymbol, PhxInjectNames.Attributes.BuilderReferenceAttributeClassName);
         var numBuilderReferenceAttributes = builderReferenceAttribute.Count;
         if (numBuilderReferenceAttributes == 0) {
             return null;
@@ -153,11 +117,11 @@ internal static class AttributeHelpers {
     }
 
     public static IReadOnlyList<AttributeData> GetChildInjectorAttributes(this ISymbol childInjectorMethodSymbol) {
-        return GetAttributes(childInjectorMethodSymbol, ChildInjectorAttributeClassName);
+        return GetAttributes(childInjectorMethodSymbol, PhxInjectNames.Attributes.ChildInjectorAttributeClassName);
     }
 
     public static IReadOnlyList<AttributeData> GetPartialAttributes(this ISymbol partialMethodSymbol) {
-        return GetAttributes(partialMethodSymbol, PartialAttributeClassName);
+        return GetAttributes(partialMethodSymbol, PhxInjectNames.Attributes.PartialAttributeClassName);
     }
 
     private static IReadOnlyList<AttributeData> GetAttributes(ISymbol symbol, string attributeClassName) {

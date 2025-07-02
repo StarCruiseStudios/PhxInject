@@ -28,8 +28,8 @@ public static class InjectionUtil {
 
     public static IReadOnlyDictionary<K, V> Combine<K, V>(params IReadOnlyDictionary<K, V>[] dicts) {
         var combinedDictionary = new Dictionary<K, V>();
-        foreach (IReadOnlyDictionary<K, V> dict in dicts) {
-            foreach (KeyValuePair<K, V> kvp in dict) {
+        foreach (var dict in dicts) {
+            foreach (var kvp in dict) {
                 if (combinedDictionary.ContainsKey(kvp.Key)) {
                     throw new InvalidOperationException(
                         $"Injected map keys must be unique. Found duplicate key {kvp.Key}.");

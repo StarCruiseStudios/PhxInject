@@ -19,21 +19,49 @@ internal class SourceSyntaxReceiver : ISyntaxReceiver {
     public void OnVisitSyntaxNode(SyntaxNode syntaxNode) {
         switch (syntaxNode) {
             case InterfaceDeclarationSyntax interfaceDeclaration:
-                if (AttributeHelpers.HasInjectorAttribute(interfaceDeclaration)) {
+                // Track all interfaces with the injector attribute as injector candidates.
+                if (interfaceDeclaration.HasInjectorAttribute()) {
                     InjectorCandidates.Add(interfaceDeclaration);
                 }
 
-                if (AttributeHelpers.HasSpecificationAttribute(interfaceDeclaration)) {
+                // Track all interfaces with the specification attribute as specification candidates.
+                if (interfaceDeclaration.HasSpecificationAttribute()) {
                     SpecificationCandidates.Add(interfaceDeclaration);
                 }
 
                 break;
             case ClassDeclarationSyntax classDeclaration:
-                if (AttributeHelpers.HasSpecificationAttribute(classDeclaration)) {
+                // Track all classes with the specification attribute as specification candidates.
+                if (classDeclaration.HasSpecificationAttribute()) {
                     SpecificationCandidates.Add(classDeclaration);
                 }
 
                 break;
         }
+    }
+}
+
+internal static class MemberDeclarationSyntaxExtensions {
+    public static bool HasInjectorAttribute(this MemberDeclarationSyntax memberDeclaration) {
+        return HasAttribute(memberDeclaration,
+            it =>
+                it is PhxInjectNames.Attributes.InjectorAttributeShortName
+                    or PhxInjectNames.Attributes.InjectorAttributeBaseName);
+    }
+
+    public static bool HasSpecificationAttribute(this MemberDeclarationSyntax memberDeclaration) {
+        return HasAttribute(memberDeclaration,
+            it =>
+                it is PhxInjectNames.Attributes.SpecificationAttributeShortName
+                    or PhxInjectNames.Attributes.SpecificationAttributeBaseName);
+    }
+    
+    private static bool HasAttribute(MemberDeclarationSyntax memberDeclaration, Func<string, bool> predicate) {
+        return memberDeclaration.AttributeLists
+            .Any(attributeList => attributeList.Attributes
+                .Any(attribute => {
+                    var name = attribute.Name.ToString();
+                    return predicate(name);
+                }));
     }
 }

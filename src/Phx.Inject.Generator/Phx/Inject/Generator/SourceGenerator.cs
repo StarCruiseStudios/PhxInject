@@ -31,7 +31,6 @@ internal class SourceGenerator : ISourceGenerator {
     }
 
     public void Execute(GeneratorExecutionContext context) {
-        Diagnostics.GeneratorExecutionContext = context;
         try {
             // Abstract: Source code to syntax declarations.
             var syntaxReceiver = context.SyntaxReceiver as SourceSyntaxReceiver
@@ -59,7 +58,7 @@ internal class SourceGenerator : ISourceGenerator {
                 context.ReportDiagnostic(diagnostic);
             }
         } catch (Exception ex) {
-            context.ReportDiagnostic(Diagnostics.CreateUnexpectedErrorDiagnostic(ex.ToString()));
+            context.ReportDiagnostic(Diagnostics.UnexpectedError.CreateDiagnostic(ex.ToString()));
         }
     }
 }
