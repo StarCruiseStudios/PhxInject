@@ -6,6 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Generator.Abstract;
@@ -40,11 +41,26 @@ internal class SourceGenerator : ISourceGenerator {
                     $"Incorrect Syntax Receiver {context.SyntaxReceiver}.",
                     Location.None);
 
+            var settingsCandidates = 
+                MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxReceiver.PhxInjectSettingsCandidates, context)
+                .Where(symbol => TypeHelpers.IsPhxInjectSettingsSymbol(symbol, context))
+                .ToImmutableList();
+                
+            var settings = settingsCandidates.Count switch {
+                0 => generatorSettings,
+                1 => MetadataHelpers.GetGeneratorSettings(settingsCandidates.First().GetPhxInjectAttribute(context)!, context),
+                _ => throw new InjectionException(
+                    context,
+                    Diagnostics.UnexpectedError,
+                    $"Only one PhxInject settings can be specified. Found {settingsCandidates.Count} on types [{string.Join(", ", settingsCandidates.Select(it => it.Name))}].",
+                    Location.None)
+            };
+
             // Extract: Syntax declarations to descriptors.
             var sourceDesc = new SourceExtractor().Extract(syntaxReceiver, context);
 
             // Map: Descriptors to defs.
-            var injectionContextDefs = new SourceDefMapper(generatorSettings)
+            var injectionContextDefs = new SourceDefMapper(settings)
                 .Map(sourceDesc, context);
 
             // Project: Defs to templates.
@@ -53,7 +69,7 @@ internal class SourceGenerator : ISourceGenerator {
                 context);
 
             // Render: Templates to generated source.
-            new SourceRenderer(generatorSettings).Render(templates, context);
+            new SourceRenderer(settings).Render(templates, context);
         } catch (Exception ex) {
             if (ex is not InjectionException) {
                 context.ReportDiagnostic(Diagnostics.UnexpectedError.CreateDiagnostic(ex.ToString()));

@@ -13,6 +13,20 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Phx.Inject.Common;
 
 internal static class AttributeHelpers {
+    public static AttributeData? GetPhxInjectAttribute(this ISymbol symbol, GeneratorExecutionContext context) {
+        var phxInjectAttributes =
+            GetAttributes(symbol, PhxInjectNames.Attributes.PhxInjectAttributeClassName);
+        return phxInjectAttributes.Count switch {
+            0 => null,
+            1 => phxInjectAttributes.Single(),
+            _ => throw new InjectionException(
+                context,
+                Diagnostics.InvalidSpecification,
+                $"Symbol {symbol.Name} can only have one PhxInject attribute. Found {phxInjectAttributes.Count}.",
+                symbol.Locations.First())
+        };
+    }
+    
     public static AttributeData? GetInjectorAttribute(this ISymbol injectorInterfaceSymbol, GeneratorExecutionContext context) {
         var injectorAttributes =
             GetAttributes(injectorInterfaceSymbol, PhxInjectNames.Attributes.InjectorAttributeClassName);

@@ -13,6 +13,7 @@ using Phx.Inject.Common;
 namespace Phx.Inject.Generator.Abstract;
 
 internal class SourceSyntaxReceiver : ISyntaxReceiver {
+    public List<TypeDeclarationSyntax> PhxInjectSettingsCandidates { get; } = new();
     public List<TypeDeclarationSyntax> InjectorCandidates { get; } = new();
     public List<TypeDeclarationSyntax> SpecificationCandidates { get; } = new();
 
@@ -35,6 +36,11 @@ internal class SourceSyntaxReceiver : ISyntaxReceiver {
                 if (classDeclaration.HasSpecificationAttribute()) {
                     SpecificationCandidates.Add(classDeclaration);
                 }
+                
+                // Track all classes with the phx inject attribute as settings candidates.
+                if (classDeclaration.HasPhxInjectAttribute()) {
+                    PhxInjectSettingsCandidates.Add(classDeclaration);
+                }
 
                 break;
         }
@@ -47,6 +53,13 @@ internal static class MemberDeclarationSyntaxExtensions {
             it =>
                 it is PhxInjectNames.Attributes.InjectorAttributeShortName
                     or PhxInjectNames.Attributes.InjectorAttributeBaseName);
+    }
+    
+    public static bool HasPhxInjectAttribute(this MemberDeclarationSyntax memberDeclaration) {
+        return HasAttribute(memberDeclaration,
+            it =>
+                it is PhxInjectNames.Attributes.PhxInjectAttributeShortName
+                    or PhxInjectNames.Attributes.PhxInjectAttributeBaseName);
     }
 
     public static bool HasSpecificationAttribute(this MemberDeclarationSyntax memberDeclaration) {

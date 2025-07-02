@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Render;
 
 namespace Phx.Inject.Common;
 
@@ -133,6 +134,31 @@ internal static class MetadataHelpers {
                 "Factories can only have a single fabrication mode.",
                 location)
         };
+    }
+    
+    public static GeneratorSettings GetGeneratorSettings(AttributeData phxInjectAttribute, GeneratorExecutionContext context) {
+        var tabSize = phxInjectAttribute.NamedArguments
+            .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.TabSize))
+            .Value.Value is int value ? value : 4;
+
+        var generatedFileExtension = phxInjectAttribute.NamedArguments
+            .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.GeneratedFileExtension))
+            .Value.Value as string ?? "generated.cs";
+
+        var nullableEnabled = phxInjectAttribute.NamedArguments
+            .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.NullableEnabled))
+            .Value.Value as bool? ?? true;
+
+        var allowConstructorFactories = phxInjectAttribute.NamedArguments
+            .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.AllowConstructorFactories))
+            .Value.Value as bool? ?? true;
+
+        return new GeneratorSettings(
+            tabSize,
+            generatedFileExtension,
+            nullableEnabled,
+            allowConstructorFactories
+        );
     }
 
     public static string GetQualifier(ISymbol symbol, GeneratorExecutionContext context) {

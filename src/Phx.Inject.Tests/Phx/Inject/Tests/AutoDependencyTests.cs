@@ -30,6 +30,7 @@ public interface IAutoDependencyTestInjector {
     AutoBuilderType GetAutoBuilderType();
 }
 
+[PhxInject]
 public class AutoDependencyTests : LoggingTestClass {
     [Test]
     public void FactoriesCanBeAutomaticallyGenerated() {

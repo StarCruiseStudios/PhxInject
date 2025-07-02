@@ -13,6 +13,8 @@ internal static class PhxInjectNames {
         public const string PhxInjectNamespace = "Phx.Inject";
         public const string InjectorAttributeShortName = "Injector";
         public const string InjectorAttributeBaseName = nameof(InjectorAttribute);
+        public const string PhxInjectAttributeShortName = "PhxInject";
+        public const string PhxInjectAttributeBaseName = nameof(PhxInjectAttribute);
         public const string SpecificationAttributeShortName = "Specification";
         public const string SpecificationAttributeBaseName = nameof(SpecificationAttribute);
 
@@ -26,6 +28,7 @@ internal static class PhxInjectNames {
         public const string LabelAttributeClassName = $"{PhxInjectNamespace}.{nameof(LabelAttribute)}";
         public const string LinkAttributeClassName = $"{PhxInjectNamespace}.{nameof(LinkAttribute)}";
         public const string PartialAttributeClassName = $"{PhxInjectNamespace}.{nameof(PartialAttribute)}";
+        public const string PhxInjectAttributeClassName = $"{PhxInjectNamespace}.{nameof(PhxInjectAttribute)}";
         public const string QualifierAttributeClassName = $"{PhxInjectNamespace}.{nameof(QualifierAttribute)}";
         public const string SpecificationAttributeClassName = $"{PhxInjectNamespace}.{nameof(SpecificationAttribute)}";
         

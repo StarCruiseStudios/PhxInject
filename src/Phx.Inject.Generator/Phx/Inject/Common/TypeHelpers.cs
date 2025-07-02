@@ -42,6 +42,23 @@ internal static class TypeHelpers {
         return true;
     }
     
+    public static bool IsPhxInjectSettingsSymbol(ITypeSymbol symbol, GeneratorExecutionContext context) {
+        var settingsAttribute = symbol.GetPhxInjectAttribute(context);
+        if (settingsAttribute == null) {
+            return false;
+        }
+
+        if (symbol.TypeKind != TypeKind.Class) {
+            throw new InjectionException(
+                context,
+                Diagnostics.InvalidSpecification,
+                $"PhxInject Settings type {symbol.Name} must be class.",
+                symbol.Locations.First());
+        }
+
+        return true;
+    }
+    
     public static bool IsAutoFactoryEligible(QualifiedTypeModel type) {
         var typeSymbol = type.TypeModel.typeSymbol;
         var isVisible = typeSymbol.DeclaredAccessibility == Accessibility.Public
