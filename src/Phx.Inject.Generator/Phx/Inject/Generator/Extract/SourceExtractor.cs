@@ -39,6 +39,7 @@ internal class SourceExtractor {
     public SourceDesc Extract(SourceSyntaxReceiver syntaxReceiver, GeneratorExecutionContext context) {
         return ExceptionAggregator.Try(
             "extracting source descriptors",
+            Location.None,
             context,
             exceptionAggregator => {
                 var extractorContext = new ExtractorContext(context);

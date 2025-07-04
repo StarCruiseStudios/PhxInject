@@ -168,6 +168,7 @@ internal record SpecDesc(
 
             return ExceptionAggregator.Try(
                 $"extracting auto specification for injector {injectorType}",
+                specLocation,
                 extractorContext.GenerationContext,
                 exceptionAggregator => {
                     var specInstantiationMode = SpecInstantiationMode.Static;
@@ -190,9 +191,8 @@ internal record SpecDesc(
                                     .Extract(link, specLocation, extractorContext)
                                     .Also(it => {
                                         if (it.InputType != constructorType) {
-                                            throw new InjectionException(
+                                            throw Diagnostics.InvalidSpecification.AsException(
                                                 $"Auto constructed type {constructorType} must link to itself. Found link with input type {it.InputType}.",
-                                                Diagnostics.InvalidSpecification,
                                                 constructorType.TypeModel.typeSymbol.Locations.First(),
                                                 extractorContext.GenerationContext);
                                         }

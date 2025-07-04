@@ -34,15 +34,15 @@ internal record DependencyProviderDesc(
             var providerLocation = providerMethod.Locations.First();
 
             if (providerMethod.ReturnsVoid) {
-                throw new InjectionException($"Dependency provider {providerMethod.Name} must have a return type.",
-                    Diagnostics.InvalidSpecification,
+                throw Diagnostics.InvalidSpecification.AsException(
+                    $"Dependency provider {providerMethod.Name} must have a return type.",
                     providerLocation,
                     context.GenerationContext);
             }
 
             if (providerMethod.Parameters.Length > 0) {
-                throw new InjectionException($"Dependency provider {providerMethod.Name} must not have any parameters.",
-                    Diagnostics.InvalidSpecification,
+                throw Diagnostics.InvalidSpecification.AsException(
+                    $"Dependency provider {providerMethod.Name} must not have any parameters.",
                     providerLocation,
                     context.GenerationContext);
             }

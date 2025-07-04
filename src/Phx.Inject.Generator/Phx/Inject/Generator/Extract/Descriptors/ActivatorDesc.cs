@@ -38,9 +38,8 @@ internal record ActivatorDesc(
             }
 
             if (builderMethod.Parameters.Length != 1) {
-                throw new InjectionException(
-                    (string)$"Injector builder {builderMethod.Name} must have exactly 1 parameter.",
-                    Diagnostics.InvalidSpecification,
+                throw Diagnostics.InvalidSpecification.AsException(
+                    $"Injector builder {builderMethod.Name} must have exactly 1 parameter.",
                     builderLocation,
                     context.GenerationContext);
             }

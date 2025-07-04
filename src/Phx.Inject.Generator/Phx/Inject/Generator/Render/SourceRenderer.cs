@@ -31,7 +31,9 @@ internal class SourceRenderer {
         GeneratorExecutionContext context
     ) {
         var renderContext = new RenderContext(generatorSettings, context);
-        ExceptionAggregator.Try("rendering source templates",
+        ExceptionAggregator.Try(
+            "rendering source templates",
+            Location.None,
             context,
             exceptionAggregator => {
                 templates.SelectCatching(exceptionAggregator,

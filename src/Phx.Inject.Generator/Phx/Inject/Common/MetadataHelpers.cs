@@ -78,9 +78,8 @@ internal static class MetadataHelpers {
             .Where(m => m.MethodKind == MethodKind.Constructor && m.DeclaredAccessibility == Accessibility.Public)
             .ToImmutableList();
         if (constructors.Count != 1) {
-            throw new InjectionException(
+            throw Diagnostics.InvalidSpecification.AsException(
                 $"Auto injected type '{type.Name}' must contain exactly one public constructor",
-                Diagnostics.InvalidSpecification,
                 typeLocation,
                 context);
         }
@@ -132,8 +131,8 @@ internal static class MetadataHelpers {
         return fabricationModes.Count switch {
             0 => SpecFactoryMethodFabricationMode.Recurrent, // The default
             1 => fabricationModes.Single(),
-            _ => throw new InjectionException((string)"Factories can only have a single fabrication mode.",
-                Diagnostics.InternalError,
+            _ => throw Diagnostics.InternalError.AsException(
+                "Factories can only have a single fabrication mode.",
                 location,
                 context)
         };

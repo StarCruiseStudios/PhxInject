@@ -43,8 +43,8 @@ internal record InjectorProviderDesc(
             }
 
             if (providerMethod.Parameters.Length > 0) {
-                throw new InjectionException($"Injector provider {providerMethod.Name} must not have any parameters.",
-                    Diagnostics.InvalidSpecification,
+                throw Diagnostics.InvalidSpecification.AsException(
+                    $"Injector provider {providerMethod.Name} must not have any parameters.",
                     providerLocation,
                     context.GenerationContext);
             }

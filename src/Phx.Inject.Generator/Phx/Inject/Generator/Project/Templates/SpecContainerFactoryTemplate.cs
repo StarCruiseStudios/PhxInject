@@ -138,8 +138,8 @@ internal record SpecContainerFactoryTemplate(
                 break;
 
             default:
-                throw new InjectionException($"Unhandled Spec Factory Member Type {SpecFactoryMemberType}.",
-                    Diagnostics.InternalError,
+                throw Diagnostics.InvalidSpecification.AsException(
+                    $"Unhandled Spec Factory Member Type {SpecFactoryMemberType}.",
                     Location,
                     context.GenerationContext);
         }

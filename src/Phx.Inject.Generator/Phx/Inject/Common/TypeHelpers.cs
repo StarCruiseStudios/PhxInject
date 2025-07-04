@@ -102,9 +102,8 @@ internal static class TypeHelpers {
         GeneratorExecutionContext context) {
         if (isPartial) {
             if (!MultiBindTypes.Contains(returnType.TypeModel.QualifiedBaseTypeName)) {
-                throw new InjectionException(
+                throw Diagnostics.InvalidSpecification.AsException(
                     "Partial factories must return a IReadOnlyList, ISet, or IReadOnlyDictionary.",
-                    Diagnostics.InvalidSpecification,
                     location,
                     context);
             }

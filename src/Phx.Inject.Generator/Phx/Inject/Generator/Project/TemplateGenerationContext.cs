@@ -27,8 +27,8 @@ internal record TemplateGenerationContext(
             return injector;
         }
 
-        throw new InjectionException($"Cannot find required injector type {type}.",
-            Diagnostics.IncompleteSpecification,
+        throw Diagnostics.IncompleteSpecification.AsException(
+            $"Cannot find required injector type {type}.",
             location,
             GenerationContext);
     }
@@ -38,8 +38,8 @@ internal record TemplateGenerationContext(
             return spec;
         }
 
-        throw new InjectionException($"Cannot find required specification container type {type}.",
-            Diagnostics.IncompleteSpecification,
+        throw Diagnostics.IncompleteSpecification.AsException(
+            $"Cannot find required specification container type {type}.",
             location,
             GenerationContext);
     }
@@ -49,8 +49,8 @@ internal record TemplateGenerationContext(
             return dep;
         }
 
-        throw new InjectionException($"Cannot find required dependency type {type}.",
-            Diagnostics.IncompleteSpecification,
+        throw Diagnostics.IncompleteSpecification.AsException(
+            $"Cannot find required dependency type {type}.",
             location,
             GenerationContext);
     }

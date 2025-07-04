@@ -21,7 +21,9 @@ internal class SourceTemplateProjector {
         IReadOnlyList<InjectionContextDef> injectionContextDefs,
         GeneratorExecutionContext context
     ) {
-        return ExceptionAggregator.Try("constructing source templates.",
+        return ExceptionAggregator.Try(
+            "constructing source templates.",
+            Location.None,
             context,
             exceptionAggregator => {
                 IReadOnlyList<InjectorDef> injectorDefs = injectionContextDefs
@@ -32,9 +34,9 @@ internal class SourceTemplateProjector {
                     injector => injector.InjectorInterfaceType,
                     context);
 
-                return injectionContextDefs.SelectCatching("constructing injection templates",
-                        t => t.ToString(),
-                        context,
+                return injectionContextDefs.SelectCatching(
+                    exceptionAggregator,
+                    injectionContextDef => $"constructing injection templates for {injectionContextDef.Injector.InjectorInterfaceType}.",
                         injectionContextDef => {
                             var specDefMap = CreateTypeMap(
                                 injectionContextDef.SpecContainers,
@@ -107,9 +109,8 @@ internal class SourceTemplateProjector {
         foreach (var value in values) {
             var key = extractKey(value);
             if (map.ContainsKey(key)) {
-                throw new InjectionException(
+                throw Diagnostics.InvalidSpecification.AsException(
                     $"{typeof(T).Name} with {key} is already defined.",
-                    Diagnostics.InvalidSpecification,
                     value.Location,
                     context
                 );

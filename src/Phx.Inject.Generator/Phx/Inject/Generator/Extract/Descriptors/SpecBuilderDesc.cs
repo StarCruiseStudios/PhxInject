@@ -40,8 +40,8 @@ internal record SpecBuilderDesc(
             var methodParameterTypes =
                 MetadataHelpers.TryGetMethodParametersQualifiedTypes(builderMethod, context.GenerationContext);
             if (methodParameterTypes.Count == 0) {
-                throw new InjectionException("Builder method must have at least one parameter.",
-                    Diagnostics.InvalidSpecification,
+                throw Diagnostics.InvalidSpecification.AsException(
+                    "Builder method must have at least one parameter.",
                     builderLocation,
                     context.GenerationContext);
             }
@@ -76,15 +76,15 @@ internal record SpecBuilderDesc(
 
             var numBuilderMethods = builderMethods.Count;
             if (numBuilderMethods == 0) {
-                throw new InjectionException("No direct builder method found for required builder type: " + builderType,
-                    Diagnostics.InvalidSpecification,
+                throw Diagnostics.InvalidSpecification.AsException(
+                    "No direct builder method found for required builder type: " + builderType,
                     builderLocation,
                     context.GenerationContext);
             }
 
             if (numBuilderMethods > 1) {
-                throw new InjectionException("More than one direct builder method found for type: " + builderType,
-                    Diagnostics.InvalidSpecification,
+                throw Diagnostics.InvalidSpecification.AsException(
+                    "More than one direct builder method found for type: " + builderType,
                     builderLocation,
                     context.GenerationContext);
             }
@@ -93,15 +93,15 @@ internal record SpecBuilderDesc(
             var methodParameterTypes =
                 MetadataHelpers.TryGetMethodParametersQualifiedTypes(builderMethod, context.GenerationContext);
             if (methodParameterTypes.Count == 0) {
-                throw new InjectionException("Builder method must have at least one parameter.",
-                    Diagnostics.InvalidSpecification,
+                throw Diagnostics.InvalidSpecification.AsException(
+                    "Builder method must have at least one parameter.",
                     builderLocation,
                     context.GenerationContext);
             }
 
             if (methodParameterTypes[0].TypeModel != builderType.TypeModel) {
-                throw new InjectionException("Direct builder method must accept a first parameter of the built type.",
-                    Diagnostics.InvalidSpecification,
+                throw Diagnostics.InvalidSpecification.AsException(
+                    "Direct builder method must accept a first parameter of the built type.",
                     builderLocation,
                     context.GenerationContext);
             }
@@ -175,8 +175,8 @@ internal record SpecBuilderDesc(
 
             if (builderSymbol.HasBuilderReferenceAttribute().GetOrThrow(context)) {
                 // Cannot be a builder and a builder reference.
-                throw new InjectionException("Method cannot have both Builder and BuilderReference attributes.",
-                    Diagnostics.InvalidSpecification,
+                throw Diagnostics.InvalidSpecification.AsException(
+                    "Method cannot have both Builder and BuilderReference attributes.",
                     builderLocation,
                     context);
             }
@@ -205,9 +205,8 @@ internal record SpecBuilderDesc(
 
             if (builderReferenceSymbol.HasBuilderAttribute().GetOrThrow(context)) {
                 // Cannot be a builder and a builder reference.
-                throw new InjectionException(
+                throw Diagnostics.InvalidSpecification.AsException(
                     "Property or Field cannot have both Builder and BuilderReference attributes.",
-                    Diagnostics.InvalidSpecification,
                     builderReferenceLocation,
                     context);
             }
@@ -236,8 +235,8 @@ internal record SpecBuilderDesc(
             var referenceTypeSymbol = builderReferenceTypeSymbol as INamedTypeSymbol;
             if (referenceTypeSymbol == null || referenceTypeSymbol.Name != "Action") {
                 // Not the correct type to be a builder reference.
-                throw new InjectionException("Factory reference must be a field or property of type Action<>.",
-                    Diagnostics.InvalidSpecification,
+                throw Diagnostics.InvalidSpecification.AsException(
+                    "Factory reference must be a field or property of type Action<>.",
                     builderReferenceLocation,
                     context.GenerationContext);
             }

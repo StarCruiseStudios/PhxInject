@@ -20,7 +20,6 @@ internal sealed class AggregateInjectionException : InjectionException {
         IEnumerable<InjectionException> exceptions,
         GeneratorExecutionContext generatorContext
     ) : base(
-        message,
         Diagnostics.AggregateError.CreateDiagnostic(message, location),
         generatorContext
     ) {

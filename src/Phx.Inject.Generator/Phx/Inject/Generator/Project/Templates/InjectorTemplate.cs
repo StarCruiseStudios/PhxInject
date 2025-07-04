@@ -259,10 +259,8 @@ internal record InjectorTemplate(
                             var missingDependenciesString = string.Join(",",
                                 missingDependencies.Select(dep => dep.ToString()));
 
-                            throw new InjectionException(
-                                $"Child Injector factory must contain parameters for each of the child injector's constructed specification types: {constructedSpecificationsString}."
-                                + $" Missing: {missingDependenciesString}.",
-                                Diagnostics.InvalidSpecification,
+                            throw Diagnostics.InvalidSpecification.AsException(
+                                $"Child Injector factory must contain parameters for each of the child injector's constructed specification types: {constructedSpecificationsString}. Missing: {missingDependenciesString}.",
                                 factory.Location,
                                 context.GenerationContext);
                         }
@@ -274,9 +272,8 @@ internal record InjectorTemplate(
                         if (unusedParameters.Any()) {
                             var unusedParametersString = string.Join(",",
                                 unusedParameters.Select(dep => dep.ToString()));
-                            throw new InjectionException(
+                            throw Diagnostics.InvalidSpecification.AsException(
                                 $"Child Injector factory contains unused parameters: {unusedParametersString}.",
-                                Diagnostics.InvalidSpecification,
                                 factory.Location,
                                 context.GenerationContext);
                         }

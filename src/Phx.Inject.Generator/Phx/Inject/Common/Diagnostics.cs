@@ -52,16 +52,11 @@ internal static class Diagnostics {
         DiagnosticSeverity.Error);
 
     internal record DiagnosticData(string Id, string Title, string Category, DiagnosticSeverity Severity) {
-        public InjectionException AsException(string message, GeneratorExecutionContext generatorExecutionContext) {
-            return AsException(message, Location.None, generatorExecutionContext);
-        }
-
         public InjectionException AsException(
             string message,
             Location location,
             GeneratorExecutionContext generatorExecutionContext) {
             return new InjectionException(
-                message,
                 Diagnostic.Create(new DiagnosticDescriptor(Id, Title, message, Category, Severity, true), location),
                 generatorExecutionContext);
         }

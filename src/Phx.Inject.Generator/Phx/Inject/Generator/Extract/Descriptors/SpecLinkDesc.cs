@@ -33,9 +33,8 @@ internal record SpecLinkDesc(
             ExtractorContext context
         ) {
             if (linkAttribute.ConstructorArguments.Length != 2) {
-                throw new InjectionException(
+                throw Diagnostics.InternalError.AsException(
                     "Link attribute must have only an input and return type specified.",
-                    Diagnostics.InternalError,
                     linkLocation,
                     context.GenerationContext);
             }
@@ -44,9 +43,8 @@ internal record SpecLinkDesc(
             var returnTypeArgument = linkAttribute.ConstructorArguments[1].Value as ITypeSymbol;
 
             if (inputTypeArgument == null || returnTypeArgument == null) {
-                throw new InjectionException(
+                throw Diagnostics.InvalidSpecification.AsException(
                     "Link attribute must specify non-null types.",
-                    Diagnostics.InvalidSpecification,
                     linkLocation,
                     context.GenerationContext);
             }

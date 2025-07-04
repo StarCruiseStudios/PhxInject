@@ -30,9 +30,8 @@ internal record DefGenerationContext(
             return injector;
         }
 
-        throw new InjectionException((string)($"Cannot find required injector type {type}"
-                + $" while generating injection for type {Injector.InjectorInterfaceType}."),
-            Diagnostics.IncompleteSpecification,
+        throw Diagnostics.IncompleteSpecification.AsException(
+            $"Cannot find required injector type {type} while generating injection for type {Injector.InjectorInterfaceType}.",
             location,
             GenerationContext);
     }
@@ -42,9 +41,8 @@ internal record DefGenerationContext(
             return spec;
         }
 
-        throw new InjectionException((string)($"Cannot find required specification type {type}"
-                + $" while generating injection for type {Injector.InjectorInterfaceType}."),
-            Diagnostics.IncompleteSpecification,
+        throw Diagnostics.IncompleteSpecification.AsException(
+            $"Cannot find required specification type {type} while generating injection for type {Injector.InjectorInterfaceType}.",
             location,
             GenerationContext);
     }
@@ -54,9 +52,8 @@ internal record DefGenerationContext(
             return dep;
         }
 
-        throw new InjectionException((string)($"Cannot find required dependency type {type}"
-                + $" while generating injection for type {Injector.InjectorInterfaceType}."),
-            Diagnostics.IncompleteSpecification,
+        throw Diagnostics.IncompleteSpecification.AsException(
+            $"Cannot find required dependency type {type} while generating injection for type {Injector.InjectorInterfaceType}.",
             location,
             GenerationContext);
     }
@@ -66,10 +63,8 @@ internal record DefGenerationContext(
         Location location
     ) {
         if (FactoryRegistrations.Count == 0) {
-            throw new InjectionException(
-                (string)($"Cannot search factory for type {returnedType} before factory registrations are created "
-                    + $" while generating injection for type {Injector.InjectorInterfaceType}."),
-                Diagnostics.InternalError,
+            throw Diagnostics.InternalError.AsException(
+                $"Cannot search factory for type {returnedType} before factory registrations are created  while generating injection for type {Injector.InjectorInterfaceType}.",
                 location,
                 GenerationContext);
         }
@@ -105,9 +100,8 @@ internal record DefGenerationContext(
                 location);
         }
 
-        throw new InjectionException((string)($"Cannot find factory for type {factoryType}"
-                + $" while generating injection for type {Injector.InjectorInterfaceType}."),
-            Diagnostics.IncompleteSpecification,
+        throw Diagnostics.IncompleteSpecification.AsException(
+            $"Cannot find factory for type {factoryType} while generating injection for type {Injector.InjectorInterfaceType}.",
             location,
             GenerationContext);
     }
@@ -118,10 +112,8 @@ internal record DefGenerationContext(
         Location location
     ) {
         if (BuilderRegistrations.Count == 0) {
-            throw new InjectionException(
-                (string)($"Cannot search for builder for type {builtType} before builder registrations are created "
-                    + $" while generating injection for type {Injector.InjectorInterfaceType}."),
-                Diagnostics.InternalError,
+            throw Diagnostics.InternalError.AsException(
+                $"Cannot search for builder for type {builtType} before builder registrations are created  while generating injection for type {Injector.InjectorInterfaceType}.",
                 location,
                 GenerationContext);
         }
@@ -137,9 +129,8 @@ internal record DefGenerationContext(
                 builderRegistration.BuilderDesc.Location);
         }
 
-        throw new InjectionException((string)($"Cannot find builder for type {builtType}"
-                + $" while generating injection for type {Injector.InjectorInterfaceType}."),
-            Diagnostics.IncompleteSpecification,
+        throw Diagnostics.IncompleteSpecification.AsException(
+            $"Cannot find builder for type {builtType} while generating injection for type {Injector.InjectorInterfaceType}.",
             location,
             GenerationContext);
     }

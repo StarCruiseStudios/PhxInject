@@ -38,9 +38,8 @@ internal static class NameHelpers {
             SpecFactoryMemberType.Property => new StringBuilder("PropFac_"),
             SpecFactoryMemberType.Reference => new StringBuilder("RefFac_"),
             SpecFactoryMemberType.Constructor => new StringBuilder("CtorFac_"),
-            _ => throw new InjectionException(
+            _ => throw Diagnostics.InternalError.AsException(
                 $"Unhandled Spec Factory Member Type {factory.SpecFactoryMemberType}.",
-                Diagnostics.InternalError,
                 factory.Location,
                 context)
         };
@@ -57,9 +56,8 @@ internal static class NameHelpers {
             SpecBuilderMemberType.Method => new StringBuilder("Bld_"),
             SpecBuilderMemberType.Reference => new StringBuilder("RefBld_"),
             SpecBuilderMemberType.Direct => new StringBuilder("DirBld_"),
-            _ => throw new InjectionException(
+            _ => throw Diagnostics.InternalError.AsException(
                 $"Unhandled Spec Builder Member Type {builder.SpecBuilderMemberType}.",
-                Diagnostics.InternalError,
                 builder.Location,
                 context)
         };

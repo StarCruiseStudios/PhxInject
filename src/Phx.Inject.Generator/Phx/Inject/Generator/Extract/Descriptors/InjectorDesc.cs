@@ -64,7 +64,9 @@ internal record InjectorDesc(
                 TypeArguments = ImmutableList<TypeModel>.Empty
             };
 
-            return ExceptionAggregator.Try("extract injector",
+            return ExceptionAggregator.Try(
+                "extracting injector",
+                injectorLocation,
                 context.GenerationContext,
                 exceptionAggregator => {
                     IReadOnlyList<TypeModel> dependencyInterfaceTypes =
@@ -86,28 +88,28 @@ internal record InjectorDesc(
                         .ToImmutableList();
 
                     IReadOnlyList<InjectorProviderDesc> providers = injectorMethods
-                        .SelectCatching("extracting injector providers",
-                            t => t.ToString(),
-                            context.GenerationContext,
-                            method => injectorProviderDescriptionExtractor.Extract(method, context))
+                        .SelectCatching(
+                            exceptionAggregator,
+                            methodSymbol => $"extracting injector provider method {injectorType}.{methodSymbol.Name}",
+                            methodSymbol => injectorProviderDescriptionExtractor.Extract(methodSymbol, context))
                         .Where(provider => provider != null)
                         .Select(provider => provider!)
                         .ToImmutableList();
 
                     IReadOnlyList<ActivatorDesc> builders = injectorMethods
-                        .SelectCatching("extracting activators",
-                            t => t.ToString(),
-                            context.GenerationContext,
+                        .SelectCatching(
+                            exceptionAggregator,
+                            methodSymbol => $"extracting injector activator {injectorType}.{methodSymbol.Name}",
                             method => activatorDescExtractor.Extract(method, context))
                         .Where(builder => builder != null)
                         .Select(builder => builder!)
                         .ToImmutableList();
 
                     IReadOnlyList<InjectorChildFactoryDesc> childFactories = injectorMethods
-                        .SelectCatching("extracting injector child factories",
-                            t => t.ToString(),
-                            context.GenerationContext,
-                            method => injectorChildFactoryDescExtractor.Extract(method, context))
+                        .SelectCatching(
+                            exceptionAggregator,
+                            methodSymbol => $"extracting injector child factory {injectorType}.{methodSymbol.Name}",
+                            methodSymbol => injectorChildFactoryDescExtractor.Extract(methodSymbol, context))
                         .Where(childFactory => childFactory != null)
                         .Select(childFactory => childFactory!)
                         .ToImmutableList();

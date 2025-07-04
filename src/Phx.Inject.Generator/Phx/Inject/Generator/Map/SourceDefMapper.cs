@@ -33,7 +33,9 @@ internal class SourceDefMapper {
         SourceDesc sourceDesc,
         GeneratorExecutionContext context
     ) {
-        return ExceptionAggregator.Try("mapping source definition",
+        return ExceptionAggregator.Try(
+            "mapping source definition",
+            Location.None,
             context,
             exceptionAggregator => {
                 var injectorDescMap = CreateTypeMap(
@@ -49,17 +51,15 @@ internal class SourceDefMapper {
                     dep => dep.DependencyInterfaceType,
                     context);
 
-                return sourceDesc.injectorDescs.SelectCatching("extracting injectors",
-                        t => t.ToString(),
-                        context,
+                return sourceDesc.injectorDescs.SelectCatching(
+                        exceptionAggregator,
+                        injectorDesc => $"extracting injector {injectorDesc.InjectorInterfaceType}",
                         injectorDesc => {
                             var injectorSpecDescMap = new Dictionary<TypeModel, SpecDesc>();
                             foreach (var spec in injectorDesc.SpecificationsTypes) {
                                 if (!specDescMap.TryGetValue(spec, out var specDesc)) {
-                                    throw new InjectionException(
-                                        (string)($"Cannot find required specification type {spec}"
-                                            + $" while generating injection for type {injectorDesc.InjectorInterfaceType}."),
-                                        Diagnostics.IncompleteSpecification,
+                                    throw Diagnostics.IncompleteSpecification.AsException(
+                                        $"Cannot find required specification type {spec} while generating injection for type {injectorDesc.InjectorInterfaceType}.",
                                         injectorDesc.Location,
                                         context);
                                 }
@@ -107,8 +107,8 @@ internal class SourceDefMapper {
         foreach (var value in values) {
             var key = extractKey(value);
             if (map.ContainsKey(key)) {
-                throw new InjectionException((string)$"{typeof(T).Name} with {key} is already defined.",
-                    Diagnostics.InvalidSpecification,
+                throw Diagnostics.InvalidSpecification.AsException(
+                    $"{typeof(T).Name} with {key} is already defined.",
                     value.Location,
                     context);
             }

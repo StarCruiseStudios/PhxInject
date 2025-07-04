@@ -61,9 +61,8 @@ internal record SpecFactoryDesc(
             factorySymbol.TryGetFactoryReferenceAttribute().GetOrThrow(context.GenerationContext);
         if (factoryReferenceAttribute != null) {
             // Cannot be a factory and a factory reference.
-            throw new InjectionException(
+            throw Diagnostics.InvalidSpecification.AsException(
                 "Method or Property cannot have both Factory and FactoryReference attributes.",
-                Diagnostics.InvalidSpecification,
                 factoryLocation,
                 context.GenerationContext);
         }
@@ -93,8 +92,8 @@ internal record SpecFactoryDesc(
         var factoryAttribute = factoryReferenceSymbol.TryGetFactoryAttribute().GetOrThrow(context.GenerationContext);
         if (factoryAttribute != null) {
             // Cannot be a factory and a factory reference.
-            throw new InjectionException("Property or Field cannot have both Factory and FactoryReference attributes.",
-                Diagnostics.InvalidSpecification,
+            throw Diagnostics.InvalidSpecification.AsException(
+                "Property or Field cannot have both Factory and FactoryReference attributes.",
                 factoryReferenceLocation,
                 context.GenerationContext);
         }
@@ -117,8 +116,8 @@ internal record SpecFactoryDesc(
         var referenceTypeSymbol = factoryReferenceTypeSymbol as INamedTypeSymbol;
         if (referenceTypeSymbol == null || referenceTypeSymbol.Name != "Func") {
             // Not the correct type to be a factory reference.
-            throw new InjectionException("Factory reference must be a field or property of type Func<>.",
-                Diagnostics.InvalidSpecification,
+            throw Diagnostics.InvalidSpecification.AsException(
+                "Factory reference must be a field or property of type Func<>.",
                 factoryReferenceLocation,
                 context.GenerationContext);
         }
