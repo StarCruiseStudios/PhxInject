@@ -8,6 +8,7 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 
 namespace Phx.Inject.Generator.Project.Templates;
@@ -137,11 +138,10 @@ internal record SpecContainerFactoryTemplate(
                 break;
 
             default:
-                throw new InjectionException(
-                    context.GenerationContext,
+                throw new InjectionException($"Unhandled Spec Factory Member Type {SpecFactoryMemberType}.",
                     Diagnostics.InternalError,
-                    $"Unhandled Spec Factory Member Type {SpecFactoryMemberType}.",
-                    Location);
+                    Location,
+                    context.GenerationContext);
         }
 
         writer.DecreaseIndent(1)

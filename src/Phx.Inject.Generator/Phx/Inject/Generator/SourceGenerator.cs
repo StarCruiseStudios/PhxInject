@@ -9,6 +9,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Generator.Abstract;
 using Phx.Inject.Generator.Extract;
 using Phx.Inject.Generator.Map;
@@ -31,49 +32,59 @@ internal class SourceGenerator : ISourceGenerator {
         context.RegisterForSyntaxNotifications(() => new SourceSyntaxReceiver());
     }
 
-    public void Execute(GeneratorExecutionContext context) {
-        try {
-            // Abstract: Source code to syntax declarations.
-            var syntaxReceiver = context.SyntaxReceiver as SourceSyntaxReceiver
-                ?? throw new InjectionException(
-                    context,
-                    Diagnostics.UnexpectedError,
-                    $"Incorrect Syntax Receiver {context.SyntaxReceiver}.",
-                    Location.None);
+    public void Execute(GeneratorExecutionContext generatorContext) {
+        ExceptionAggregator.Try(
+            "generating injection types",
+            generatorContext,
+            exceptionAggregator => {
+                // Abstract: Source code to syntax declarations.
+                var syntaxReceiver = generatorContext.SyntaxReceiver as SourceSyntaxReceiver
+                    ?? throw new InjectionException($"Incorrect Syntax Receiver {generatorContext.SyntaxReceiver}.",
+                        Diagnostics.UnexpectedError,
+                        Location.None,
+                        generatorContext);
 
-            var settingsCandidates = 
-                MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxReceiver.PhxInjectSettingsCandidates, context)
-                .Where(symbol => TypeHelpers.IsPhxInjectSettingsSymbol(symbol, context))
-                .ToImmutableList();
-                
-            var settings = settingsCandidates.Count switch {
-                0 => generatorSettings,
-                1 => MetadataHelpers.GetGeneratorSettings(settingsCandidates.First().GetPhxInjectAttribute(context)!, context),
-                _ => throw new InjectionException(
-                    context,
-                    Diagnostics.UnexpectedError,
-                    $"Only one PhxInject settings can be specified. Found {settingsCandidates.Count} on types [{string.Join(", ", settingsCandidates.Select(it => it.Name))}].",
-                    Location.None)
-            };
+                IReadOnlyList<ITypeSymbol> settingsSymbols = syntaxReceiver.PhxInjectSettingsCandidates
+                    .SelectCatching(
+                        exceptionAggregator,
+                        syntaxNode => $"extracting PhxInject settings from {syntaxNode.Identifier.Text}",
+                        syntaxNode => {
+                            var settingsSymbol = MetadataHelpers
+                                .ExpectTypeSymbolFromDeclaration(syntaxNode, generatorContext)
+                                .GetOrThrow(generatorContext);
+                            return TypeHelpers.IsPhxInjectSettingsSymbol(settingsSymbol).GetOrThrow(generatorContext)
+                                ? settingsSymbol
+                                : null;
+                        })
+                    .OfType<ITypeSymbol>()
+                    .ToImmutableList();
 
-            // Extract: Syntax declarations to descriptors.
-            var sourceDesc = new SourceExtractor().Extract(syntaxReceiver, context);
+                var settings = settingsSymbols.Count switch {
+                    0 => generatorSettings,
+                    1 => MetadataHelpers.GetGeneratorSettings(settingsSymbols.First()
+                        .ExpectPhxInjectAttribute()
+                        .GetOrThrow(generatorContext)),
+                    _ => Result.Error<GeneratorSettings>(
+                            $"Only one PhxInject settings can be specified. Found {settingsSymbols.Count} on types [{string.Join(", ", settingsSymbols.Select(it => it.Name))}].",
+                            Location.None,
+                            Diagnostics.UnexpectedError)
+                        .GetOrThrow(generatorContext)
+                };
 
-            // Map: Descriptors to defs.
-            var injectionContextDefs = new SourceDefMapper(settings)
-                .Map(sourceDesc, context);
+                // Extract: Syntax declarations to descriptors.
+                var sourceDesc = new SourceExtractor().Extract(syntaxReceiver, generatorContext);
 
-            // Project: Defs to templates.
-            var templates = new SourceTemplateProjector().Project(
-                injectionContextDefs,
-                context);
+                // Map: Descriptors to defs.
+                var injectionContextDefs = new SourceDefMapper(settings)
+                    .Map(sourceDesc, generatorContext);
 
-            // Render: Templates to generated source.
-            new SourceRenderer(settings).Render(templates, context);
-        } catch (Exception ex) {
-            if (ex is not InjectionException) {
-                context.ReportDiagnostic(Diagnostics.UnexpectedError.CreateDiagnostic(ex.ToString()));
-            }
-        }
+                // Project: Defs to templates.
+                var templates = new SourceTemplateProjector().Project(
+                    injectionContextDefs,
+                    generatorContext);
+
+                // Render: Templates to generated source.
+                new SourceRenderer(settings).Render(templates, generatorContext);
+            });
     }
 }

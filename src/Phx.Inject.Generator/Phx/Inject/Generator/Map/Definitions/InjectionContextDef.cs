@@ -9,6 +9,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Map.Definitions;
@@ -63,10 +64,10 @@ internal record InjectionContextDef(
                     if (factoryRegistrations.TryGetValue(key, out registrationList)) {
                         if (!registrationList.First().FactoryDesc.isPartial || !factory.isPartial) {
                             throw new InjectionException(
-                                context.GenerationContext,
-                                Diagnostics.InvalidSpecification,
                                 $"Factory for type {factory.ReturnType} must be unique or all factories must be partial.",
-                                factory.Location);
+                                Diagnostics.InvalidSpecification,
+                                factory.Location,
+                                context.GenerationContext);
                         }
                     } else {
                         registrationList = new List<FactoryRegistration>();
@@ -95,10 +96,10 @@ internal record InjectionContextDef(
                             targetRegistration);
                     } else {
                         throw new InjectionException(
-                            context.GenerationContext,
-                            Diagnostics.IncompleteSpecification,
                             $"Cannot find factory for type {link.InputType} required by link in specification {specDesc.SpecType}.",
-                            link.Location);
+                            Diagnostics.IncompleteSpecification,
+                            link.Location,
+                            context.GenerationContext);
                     }
                 }
             }

@@ -8,8 +8,8 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Generator.Map;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
@@ -22,7 +22,7 @@ internal record SpecLinkDesc(
         SpecLinkDesc Extract(
             AttributeData linkAttribute,
             Location linkLocation,
-            DescGenerationContext context
+            ExtractorContext context
         );
     }
 
@@ -30,14 +30,14 @@ internal record SpecLinkDesc(
         public SpecLinkDesc Extract(
             AttributeData linkAttribute,
             Location linkLocation,
-            DescGenerationContext context
+            ExtractorContext context
         ) {
             if (linkAttribute.ConstructorArguments.Length != 2) {
                 throw new InjectionException(
-                    context.GenerationContext,
-                    Diagnostics.InternalError,
                     "Link attribute must have only an input and return type specified.",
-                    linkLocation);
+                    Diagnostics.InternalError,
+                    linkLocation,
+                    context.GenerationContext);
             }
 
             var inputTypeArgument = linkAttribute.ConstructorArguments[0].Value as ITypeSymbol;
@@ -45,10 +45,10 @@ internal record SpecLinkDesc(
 
             if (inputTypeArgument == null || returnTypeArgument == null) {
                 throw new InjectionException(
-                    context.GenerationContext,
-                    Diagnostics.InvalidSpecification,
                     "Link attribute must specify non-null types.",
-                    linkLocation);
+                    Diagnostics.InvalidSpecification,
+                    linkLocation,
+                    context.GenerationContext);
             }
 
             var inputType = TypeModel.FromTypeSymbol(inputTypeArgument);

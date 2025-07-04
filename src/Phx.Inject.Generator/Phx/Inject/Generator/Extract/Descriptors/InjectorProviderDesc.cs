@@ -8,6 +8,7 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
@@ -20,14 +21,14 @@ internal record InjectorProviderDesc(
     public interface IExtractor {
         InjectorProviderDesc? Extract(
             IMethodSymbol providerMethod,
-            DescGenerationContext context
+            ExtractorContext context
         );
     }
 
     public class Extractor : IExtractor {
         public InjectorProviderDesc? Extract(
             IMethodSymbol providerMethod,
-            DescGenerationContext context
+            ExtractorContext context
         ) {
             var providerLocation = providerMethod.Locations.First();
 
@@ -36,21 +37,21 @@ internal record InjectorProviderDesc(
                 return null;
             }
 
-            if (providerMethod.GetChildInjectorAttributes().Any()) {
+            if (providerMethod.TryGetChildInjectorAttribute().GetOrThrow(context.GenerationContext) != null) {
                 // This is an injector child factory, not a provider.
                 return null;
             }
 
             if (providerMethod.Parameters.Length > 0) {
-                throw new InjectionException(
-                    context.GenerationContext,
+                throw new InjectionException($"Injector provider {providerMethod.Name} must not have any parameters.",
                     Diagnostics.InvalidSpecification,
-                    $"Injector provider {providerMethod.Name} must not have any parameters.",
-                    providerLocation);
+                    providerLocation,
+                    context.GenerationContext);
             }
 
             var returnType = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
-            var qualifier = MetadataHelpers.GetQualifier(providerMethod, context.GenerationContext);
+            var qualifier = MetadataHelpers.TryGetQualifier(providerMethod, context.GenerationContext)
+                .GetOrThrow(context.GenerationContext);
             return new InjectorProviderDesc(
                 new QualifiedTypeModel(returnType, qualifier),
                 providerMethod.Name,

@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Exceptions;
 
 namespace Phx.Inject.Common;
 
@@ -43,7 +44,7 @@ internal static class Diagnostics {
         "The provided injection specification is invalid.",
         InjectionCategory,
         DiagnosticSeverity.Error);
-    
+
     public static readonly DiagnosticData AggregateError = new(
         PhxInjectIdPrefix + "9999",
         "One or more errors occurred during injection generation.",
@@ -51,6 +52,20 @@ internal static class Diagnostics {
         DiagnosticSeverity.Error);
 
     internal record DiagnosticData(string Id, string Title, string Category, DiagnosticSeverity Severity) {
+        public InjectionException AsException(string message, GeneratorExecutionContext generatorExecutionContext) {
+            return AsException(message, Location.None, generatorExecutionContext);
+        }
+
+        public InjectionException AsException(
+            string message,
+            Location location,
+            GeneratorExecutionContext generatorExecutionContext) {
+            return new InjectionException(
+                message,
+                Diagnostic.Create(new DiagnosticDescriptor(Id, Title, message, Category, Severity, true), location),
+                generatorExecutionContext);
+        }
+
         public Diagnostic CreateDiagnostic(string message, Location? location = null) {
             return Diagnostic.Create(
                 new DiagnosticDescriptor(Id, Title, message, Category, Severity, true),
@@ -60,7 +75,10 @@ internal static class Diagnostics {
 }
 
 internal static class GeneratorExecutionContextExtensions {
-    public static void Log(this GeneratorExecutionContext generatorExecutionContext, string message, Location? location = null) {
+    public static void Log(
+        this GeneratorExecutionContext generatorExecutionContext,
+        string message,
+        Location? location = null) {
         generatorExecutionContext.ReportDiagnostic(Diagnostics.DebugMessage.CreateDiagnostic(message, location));
     }
 }

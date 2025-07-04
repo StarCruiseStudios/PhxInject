@@ -9,8 +9,8 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Generator.Map;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
@@ -23,13 +23,7 @@ internal record SpecDesc(
     Location Location
 ) : IDescriptor {
     public interface IExtractor {
-        SpecDesc Extract(ITypeSymbol specSymbol, DescGenerationContext context);
-
-        SpecDesc ExtractConstructorSpec(
-            TypeModel injectorType,
-            IReadOnlyList<QualifiedTypeModel> constructorTypes,
-            IReadOnlyList<QualifiedTypeModel> builderTypes,
-            DescGenerationContext context);
+        SpecDesc Extract(ITypeSymbol specSymbol, ExtractorContext extractorContext);
     }
 
     public class Extractor : IExtractor {
@@ -52,130 +46,174 @@ internal record SpecDesc(
             new SpecBuilderDesc.Extractor(),
             new SpecLinkDesc.Extractor()) { }
 
-        public SpecDesc Extract(ITypeSymbol specSymbol, DescGenerationContext context) {
+        public SpecDesc Extract(ITypeSymbol specSymbol, ExtractorContext extractorContext) {
             var specLocation = specSymbol.Locations.First();
             var specType = TypeModel.FromTypeSymbol(specSymbol);
-            var specInstantiationMode = specSymbol.IsStatic
-                ? SpecInstantiationMode.Static
-                : SpecInstantiationMode.Instantiated;
 
-            return InjectionException.TryAggregate(context.GenerationContext, aggregateException => {
-                IReadOnlyList<IFieldSymbol> specFields = specSymbol.GetMembers()
-                    .OfType<IFieldSymbol>()
-                    .ToImmutableArray();
-                IReadOnlyList<IPropertySymbol> specProperties = specSymbol.GetMembers()
-                    .OfType<IPropertySymbol>()
-                    .ToImmutableArray();
-                IReadOnlyList<IMethodSymbol> specMethods = specSymbol.GetMembers()
-                    .OfType<IMethodSymbol>()
-                    .ToImmutableArray();
+            return ExceptionAggregator.Try(
+                $"extracting specification {specType}",
+                specLocation,
+                extractorContext.GenerationContext,
+                exceptionAggregator => {
+                    var specInstantiationMode = specSymbol.IsStatic
+                        ? SpecInstantiationMode.Static
+                        : SpecInstantiationMode.Instantiated;
 
-                var factoryReferenceFields = aggregateException.Aggregate(context.GenerationContext, () => specFields
-                        .SelectCatching(context.GenerationContext, prop => specFactoryDescExtractor.ExtractFactoryReference(prop, context))
-                        .OfType<SpecFactoryDesc>(),
-                    ImmutableList.Create<SpecFactoryDesc>);
-                var factoryReferenceProperties = aggregateException.Aggregate(context.GenerationContext, () => specProperties
-                        .SelectCatching(context.GenerationContext, prop => specFactoryDescExtractor.ExtractFactoryReference(prop, context))
-                        .OfType<SpecFactoryDesc>(),
-                    ImmutableList.Create<SpecFactoryDesc>);
-                var factoryProperties = aggregateException.Aggregate(context.GenerationContext, () => specProperties
-                        .SelectCatching(context.GenerationContext, prop => specFactoryDescExtractor.ExtractFactory(prop, context))
-                        .OfType<SpecFactoryDesc>(),
-                    ImmutableList.Create<SpecFactoryDesc>);
-                var factoryMethods = aggregateException.Aggregate(context.GenerationContext, () => specMethods
-                        .SelectCatching(context.GenerationContext, method => specFactoryDescExtractor.ExtractFactory(method, context))
-                        .OfType<SpecFactoryDesc>(),
-                    ImmutableList.Create<SpecFactoryDesc>);
+                    IReadOnlyList<ISymbol> specMembers = specSymbol.GetMembers().ToImmutableList();
+                    IReadOnlyList<IFieldSymbol> specFields = specMembers
+                        .OfType<IFieldSymbol>()
+                        .ToImmutableList();
+                    IReadOnlyList<IPropertySymbol> specProperties = specMembers
+                        .OfType<IPropertySymbol>()
+                        .ToImmutableList();
+                    IReadOnlyList<IMethodSymbol> specMethods = specMembers
+                        .OfType<IMethodSymbol>()
+                        .ToImmutableList();
 
-                IReadOnlyList<SpecFactoryDesc> factories = factoryMethods
-                    .Concat(factoryProperties)
-                    .Concat(factoryReferenceFields)
-                    .Concat(factoryReferenceProperties)
-                    .ToImmutableList();
+                    IReadOnlyList<SpecFactoryDesc> factories = specFields
+                        .SelectCatching(
+                            exceptionAggregator,
+                            field => $"extracting specification factory reference field {specType}.{field.Name}",
+                            field => specFactoryDescExtractor.ExtractFactoryReference(field, extractorContext))
+                        .Concat(specProperties
+                            .SelectCatching(
+                                exceptionAggregator,
+                                prop => $"extracting specification factory reference property {specType}.{prop.Name}",
+                                prop => specFactoryDescExtractor.ExtractFactoryReference(prop, extractorContext)))
+                        .Concat(specProperties
+                            .SelectCatching(
+                                exceptionAggregator,
+                                prop => $"extracting specification factory property {specType}.{prop.Name}",
+                                prop => specFactoryDescExtractor.ExtractFactory(prop, extractorContext)))
+                        .Concat(specMethods
+                            .SelectCatching(
+                                exceptionAggregator,
+                                method => $"extracting specification factory method {specType}.{method.Name}",
+                                method => specFactoryDescExtractor.ExtractFactory(method, extractorContext)))
+                        .OfType<SpecFactoryDesc>()
+                        .ToImmutableList();
 
-                var builderReferenceFields = aggregateException.Aggregate(context.GenerationContext, () => specFields
-                        .SelectCatching(context.GenerationContext, builderReference =>
-                            specExtractorDescExtractor.ExtractBuilderReference(builderReference, context))
-                        .OfType<SpecBuilderDesc>(),
-                    ImmutableList.Create<SpecBuilderDesc>);
-                var builderReferenceProperties = aggregateException.Aggregate(context.GenerationContext, () => specProperties
-                        .SelectCatching(context.GenerationContext, builderReference =>
-                            specExtractorDescExtractor.ExtractBuilderReference(builderReference, context))
-                        .OfType<SpecBuilderDesc>(),
-                    ImmutableList.Create<SpecBuilderDesc>);
-                var builderMethods = aggregateException.Aggregate(context.GenerationContext, () => specMethods
-                        .SelectCatching(context.GenerationContext, builder => specExtractorDescExtractor.ExtractBuilder(builder, context))
-                        .OfType<SpecBuilderDesc>(),
-                    ImmutableList.Create<SpecBuilderDesc>);
+                    IReadOnlyList<SpecBuilderDesc> builders = specFields
+                        .SelectCatching(
+                            exceptionAggregator,
+                            field => $"extracting specification builder reference field {specType}.{field.Name}",
+                            field => specExtractorDescExtractor.ExtractBuilderReference(field, extractorContext))
+                        .Concat(specProperties
+                            .SelectCatching(
+                                exceptionAggregator,
+                                prop => $"extracting specification builder reference property {specType}.{prop.Name}",
+                                prop => specExtractorDescExtractor.ExtractBuilderReference(prop, extractorContext)))
+                        .Concat(specMethods
+                            .SelectCatching(
+                                exceptionAggregator,
+                                method => $"extracting specification builder method {specType}.{method.Name}",
+                                method => specExtractorDescExtractor.ExtractBuilder(method, extractorContext)))
+                        .OfType<SpecBuilderDesc>()
+                        .ToImmutableList();
 
-                IReadOnlyList<SpecBuilderDesc> builders = builderMethods
-                    .Concat(builderReferenceProperties)
-                    .Concat(builderReferenceFields)
-                    .ToImmutableList();
+                    IReadOnlyList<SpecLinkDesc> links = specSymbol.GetAllLinkAttributes()
+                        .SelectCatching(
+                            exceptionAggregator,
+                            link => $"extracting specification link from {specType}",
+                            link => specLinkDescExtractor.Extract(link, specLocation, extractorContext))
+                        .ToImmutableList();
 
-                var linkAttributes = specSymbol.GetLinkAttributes();
-                IReadOnlyList<SpecLinkDesc> links = aggregateException.Aggregate(context.GenerationContext, () => linkAttributes
-                        .SelectCatching(context.GenerationContext, link => specLinkDescExtractor.Extract(link, specLocation, context))
-                        .ToImmutableList(),
-                    ImmutableList.Create<SpecLinkDesc>);
-                return new SpecDesc(
-                    specType,
-                    specInstantiationMode,
-                    factories,
-                    builders,
-                    links,
-                    specLocation);
-            });
+                    return new SpecDesc(
+                        specType,
+                        specInstantiationMode,
+                        factories,
+                        builders,
+                        links,
+                        specLocation);
+                });
         }
+    }
 
-        public SpecDesc ExtractConstructorSpec(
+    public interface IAutoSpecExtractor {
+        SpecDesc Extract(
             TypeModel injectorType,
             IReadOnlyList<QualifiedTypeModel> constructorTypes,
             IReadOnlyList<QualifiedTypeModel> builderTypes,
-            DescGenerationContext context
+            ExtractorContext extractorContext);
+    }
+
+    public class AutoSpecExtractor : IAutoSpecExtractor {
+        private readonly SpecBuilderDesc.IExtractor specExtractorDescExtractor;
+        private readonly SpecFactoryDesc.IExtractor specFactoryDescExtractor;
+        private readonly SpecLinkDesc.IExtractor specLinkDescExtractor;
+
+        public AutoSpecExtractor(
+            SpecFactoryDesc.IExtractor specFactoryDescExtractor,
+            SpecBuilderDesc.IExtractor specExtractorDescExtractor,
+            SpecLinkDesc.IExtractor specLinkDescExtractor
+        ) {
+            this.specFactoryDescExtractor = specFactoryDescExtractor;
+            this.specExtractorDescExtractor = specExtractorDescExtractor;
+            this.specLinkDescExtractor = specLinkDescExtractor;
+        }
+
+        public AutoSpecExtractor() : this(
+            new SpecFactoryDesc.Extractor(),
+            new SpecBuilderDesc.Extractor(),
+            new SpecLinkDesc.Extractor()) { }
+
+        public SpecDesc Extract(
+            TypeModel injectorType,
+            IReadOnlyList<QualifiedTypeModel> constructorTypes,
+            IReadOnlyList<QualifiedTypeModel> builderTypes,
+            ExtractorContext extractorContext
         ) {
             var specLocation = injectorType.typeSymbol.Locations.First();
             var specType = TypeHelpers.CreateConstructorSpecContainerType(injectorType);
-            var specInstantiationMode = SpecInstantiationMode.Static;
 
-            return InjectionException.TryAggregate(context.GenerationContext, aggregateException => {
-                IReadOnlyList<SpecFactoryDesc> factories = aggregateException.Aggregate(context.GenerationContext, () => constructorTypes
-                    .SelectCatching(context.GenerationContext, type => specFactoryDescExtractor.ExtractConstructorFactory(type, context))
-                    .ToImmutableList(),
-                    ImmutableList.Create<SpecFactoryDesc>);
+            return ExceptionAggregator.Try(
+                $"extracting auto specification for injector {injectorType}",
+                extractorContext.GenerationContext,
+                exceptionAggregator => {
+                    var specInstantiationMode = SpecInstantiationMode.Static;
 
-                IReadOnlyList<SpecBuilderDesc> builders = aggregateException.Aggregate(context.GenerationContext, () => builderTypes
-                    .SelectCatching(context.GenerationContext, type => specExtractorDescExtractor.ExtractDirectBuilder(type, context))
-                    .ToImmutableList(),
-                    ImmutableList.Create<SpecBuilderDesc>);
-                
-                var links = aggregateException.Aggregate(context.GenerationContext, () => constructorTypes
-                    .SelectCatching(context.GenerationContext, constructorType => {
-                        return constructorType.TypeModel.typeSymbol.GetLinkAttributes()
-                            .SelectCatching(context.GenerationContext, link => {
-                                var linkDesc = specLinkDescExtractor.Extract(link, specLocation, context);
-                                if (linkDesc.InputType != constructorType) {
-                                    throw new InjectionException(
-                                        context.GenerationContext,
-                                        Diagnostics.InvalidSpecification,
-                                        $"Auto constructed type {constructorType} can only link from itself. Found link with input type {linkDesc.InputType}.",
-                                        constructorType.TypeModel.typeSymbol.Locations.First());
-                                }
-                                return linkDesc;
-                            });
-                    })
-                    .SelectMany(flatten => flatten)
-                    .ToImmutableList(),
-                    ImmutableList.Create<SpecLinkDesc>);
-                
-                return new SpecDesc(
-                    specType,
-                    specInstantiationMode,
-                    factories,
-                    builders,
-                    links,
-                    specLocation);
-            });
+                    IReadOnlyList<SpecFactoryDesc> autoConstructorFactories = constructorTypes
+                        .SelectCatching(
+                            exceptionAggregator,
+                            constructorType => $"extracting auto constructor factory for type {constructorType}",
+                            constructorType =>
+                                specFactoryDescExtractor.ExtractAutoConstructorFactory(constructorType,
+                                    extractorContext))
+                        .ToImmutableList();
+
+                    IReadOnlyList<SpecLinkDesc> links = constructorTypes
+                        .SelectMany(constructorType => constructorType.TypeModel.typeSymbol.GetAllLinkAttributes()
+                            .SelectCatching(
+                                exceptionAggregator,
+                                link => $"extracting link for auto constructor type {constructorType}",
+                                link => specLinkDescExtractor
+                                    .Extract(link, specLocation, extractorContext)
+                                    .Also(it => {
+                                        if (it.InputType != constructorType) {
+                                            throw new InjectionException(
+                                                $"Auto constructed type {constructorType} must link to itself. Found link with input type {it.InputType}.",
+                                                Diagnostics.InvalidSpecification,
+                                                constructorType.TypeModel.typeSymbol.Locations.First(),
+                                                extractorContext.GenerationContext);
+                                        }
+                                    })))
+                        .ToImmutableList();
+
+                    IReadOnlyList<SpecBuilderDesc> autoBuilders = builderTypes
+                        .SelectCatching(
+                            exceptionAggregator,
+                            builderType => $"extracting auto builder for type {builderType}",
+                            builderType => specExtractorDescExtractor.ExtractAutoBuilder(builderType, extractorContext))
+                        .ToImmutableList();
+
+                    return new SpecDesc(
+                        specType,
+                        specInstantiationMode,
+                        autoConstructorFactories,
+                        autoBuilders,
+                        links,
+                        specLocation);
+                });
         }
     }
 }

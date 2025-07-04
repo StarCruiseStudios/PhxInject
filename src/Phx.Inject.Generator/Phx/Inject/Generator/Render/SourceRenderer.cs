@@ -8,6 +8,7 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Project.Templates;
 
@@ -21,24 +22,28 @@ internal class SourceRenderer {
         this.generatorSettings = generatorSettings;
         this.writerFactory = writerFactory;
     }
-    
-    public SourceRenderer(GeneratorSettings generatorSettings) 
-    : this(generatorSettings, new RenderWriter.Factory(generatorSettings)) { }
+
+    public SourceRenderer(GeneratorSettings generatorSettings)
+        : this(generatorSettings, new RenderWriter.Factory(generatorSettings)) { }
 
     public void Render(
         IReadOnlyList<(TypeModel, IRenderTemplate)> templates,
         GeneratorExecutionContext context
     ) {
         var renderContext = new RenderContext(generatorSettings, context);
-        InjectionException.Try(() => {
-            templates.SelectCatching(context, t => {
-                var (classType, template) = t;
-                var fileName = $"{classType.QualifiedName}.{generatorSettings.GeneratedFileExtension}";
-                context.Log($"Rendering source for {fileName}");
-                context.AddSource(fileName, writerFactory.Use(writer => template.Render(writer, renderContext)));
-                return fileName;
+        ExceptionAggregator.Try("rendering source templates",
+            context,
+            exceptionAggregator => {
+                templates.SelectCatching(exceptionAggregator,
+                    t => t.ToString(),
+                    t => {
+                        var (classType, template) = t;
+                        var fileName = $"{classType.QualifiedName}.{generatorSettings.GeneratedFileExtension}";
+                        context.Log($"Rendering source for {fileName}");
+                        context.AddSource(fileName,
+                            writerFactory.Use(writer => template.Render(writer, renderContext)));
+                        return fileName;
+                    });
             });
-        }, "rendering source templates",
-        context);
     }
 }

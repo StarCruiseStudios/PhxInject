@@ -41,7 +41,7 @@ internal record DependencyDesc(
     public interface IExtractor {
         DependencyDesc Extract(
             ITypeSymbol dependencyInterfaceSymbol,
-            DescGenerationContext context
+            ExtractorContext context
         );
     }
 
@@ -52,9 +52,11 @@ internal record DependencyDesc(
             this.dependencyProviderDescExtractor = dependencyProviderDescExtractor;
         }
 
+        public Extractor() : this(new DependencyProviderDesc.Extractor()) { }
+
         public DependencyDesc Extract(
             ITypeSymbol dependencyInterfaceSymbol,
-            DescGenerationContext context
+            ExtractorContext context
         ) {
             var dependencyInterfaceLocation = dependencyInterfaceSymbol.Locations.First();
             var dependencyInterfaceType = TypeModel.FromTypeSymbol(dependencyInterfaceSymbol);

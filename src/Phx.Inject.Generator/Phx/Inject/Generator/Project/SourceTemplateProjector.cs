@@ -9,6 +9,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Map.Definitions;
 using Phx.Inject.Generator.Project.Templates;
@@ -20,7 +21,9 @@ internal class SourceTemplateProjector {
         IReadOnlyList<InjectionContextDef> injectionContextDefs,
         GeneratorExecutionContext context
     ) {
-        return InjectionException.Try(context, () => {
+        return ExceptionAggregator.Try("constructing source templates.",
+            context,
+            exceptionAggregator => {
                 IReadOnlyList<InjectorDef> injectorDefs = injectionContextDefs
                     .Select(injectionContextDef => injectionContextDef.Injector)
                     .ToImmutableList();
@@ -29,67 +32,70 @@ internal class SourceTemplateProjector {
                     injector => injector.InjectorInterfaceType,
                     context);
 
-                return injectionContextDefs.SelectCatching(context, injectionContextDef => {
-                        var specDefMap = CreateTypeMap(
-                            injectionContextDef.SpecContainers,
-                            spec => spec.SpecificationType,
-                            context);
-                        var dependencyDefMap = CreateTypeMap(
-                            injectionContextDef.DependencyImplementations,
-                            dep => dep.DependencyInterfaceType,
-                            context);
+                return injectionContextDefs.SelectCatching("constructing injection templates",
+                        t => t.ToString(),
+                        context,
+                        injectionContextDef => {
+                            var specDefMap = CreateTypeMap(
+                                injectionContextDef.SpecContainers,
+                                spec => spec.SpecificationType,
+                                context);
+                            var dependencyDefMap = CreateTypeMap(
+                                injectionContextDef.DependencyImplementations,
+                                dep => dep.DependencyInterfaceType,
+                                context);
 
-                        var templateGenerationContext = new TemplateGenerationContext(
-                            injectionContextDef.Injector,
-                            injectorDefMap,
-                            specDefMap,
-                            dependencyDefMap,
-                            context);
+                            var templateGenerationContext = new TemplateGenerationContext(
+                                injectionContextDef.Injector,
+                                injectorDefMap,
+                                specDefMap,
+                                dependencyDefMap,
+                                context);
 
-                        var templates = new List<(TypeModel, IRenderTemplate)>();
-                        var injectorDef = injectionContextDef.Injector;
-                        templates.Add(
-                            (
-                                injectorDef.InjectorType,
-                                new InjectorProjector().Project(
-                                    injectorDef,
-                                    templateGenerationContext)
-                            ));
-                        context.Log($"Generated injector {injectorDef.InjectorType}.");
-
-                        var specContainerPresenter = new SpecContainerProjector();
-                        foreach (var specContainerDef in injectionContextDef.SpecContainers) {
+                            var templates = new List<(TypeModel, IRenderTemplate)>();
+                            var injectorDef = injectionContextDef.Injector;
                             templates.Add(
                                 (
-                                    specContainerDef.SpecContainerType,
-                                    specContainerPresenter.Project(
-                                        specContainerDef,
+                                    injectorDef.InjectorType,
+                                    new InjectorProjector().Project(
+                                        injectorDef,
                                         templateGenerationContext)
                                 ));
-                            context.Log(
-                                $"Generated spec container {specContainerDef.SpecContainerType} for injector {injectorDef.InjectorType}.");
-                        }
+                            context.Log($"Generated injector {injectorDef.InjectorType}.");
 
-                        var dependencyImplementationPresenter
-                            = new DependencyImplementationProjector();
-                        foreach (var dependency in injectionContextDef
-                            .DependencyImplementations) {
-                            templates.Add(
-                                (
-                                    dependency.DependencyImplementationType,
-                                    dependencyImplementationPresenter.Construct(
-                                        dependency,
-                                        templateGenerationContext)
-                                ));
-                            context.Log(
-                                $"Generated dependency implementation {dependency.DependencyImplementationType} for injector {injectorDef.InjectorType}.");
-                        }
+                            var specContainerPresenter = new SpecContainerProjector();
+                            foreach (var specContainerDef in injectionContextDef.SpecContainers) {
+                                templates.Add(
+                                    (
+                                        specContainerDef.SpecContainerType,
+                                        specContainerPresenter.Project(
+                                            specContainerDef,
+                                            templateGenerationContext)
+                                    ));
+                                context.Log(
+                                    $"Generated spec container {specContainerDef.SpecContainerType} for injector {injectorDef.InjectorType}.");
+                            }
 
-                        return templates;
-                    }).SelectMany(flatten => flatten)
+                            var dependencyImplementationPresenter
+                                = new DependencyImplementationProjector();
+                            foreach (var dependency in injectionContextDef
+                                .DependencyImplementations) {
+                                templates.Add(
+                                    (
+                                        dependency.DependencyImplementationType,
+                                        dependencyImplementationPresenter.Construct(
+                                            dependency,
+                                            templateGenerationContext)
+                                    ));
+                                context.Log(
+                                    $"Generated dependency implementation {dependency.DependencyImplementationType} for injector {injectorDef.InjectorType}.");
+                            }
+
+                            return templates;
+                        })
+                    .SelectMany(flatten => flatten)
                     .ToImmutableList();
-            },
-            "constructing source templates.");
+            });
     }
 
     private static IReadOnlyDictionary<TypeModel, T> CreateTypeMap<T>(
@@ -102,10 +108,11 @@ internal class SourceTemplateProjector {
             var key = extractKey(value);
             if (map.ContainsKey(key)) {
                 throw new InjectionException(
-                    context,
-                    Diagnostics.InvalidSpecification,
                     $"{typeof(T).Name} with {key} is already defined.",
-                    value.Location);
+                    Diagnostics.InvalidSpecification,
+                    value.Location,
+                    context
+                );
             }
 
             map.Add(key, value);

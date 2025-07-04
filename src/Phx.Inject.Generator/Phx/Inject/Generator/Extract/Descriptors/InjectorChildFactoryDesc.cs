@@ -9,6 +9,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
@@ -22,28 +23,27 @@ internal record InjectorChildFactoryDesc(
     public interface IExtractor {
         InjectorChildFactoryDesc? Extract(
             IMethodSymbol childInjectorMethod,
-            DescGenerationContext context
+            ExtractorContext context
         );
     }
 
     public class Extractor : IExtractor {
         public InjectorChildFactoryDesc? Extract(
             IMethodSymbol childInjectorMethod,
-            DescGenerationContext context
+            ExtractorContext context
         ) {
             var childInjectorLocation = childInjectorMethod.Locations.First();
 
-            if (!childInjectorMethod.GetChildInjectorAttributes().Any()) {
+            if (childInjectorMethod.TryGetChildInjectorAttribute().GetOrThrow(context.GenerationContext) == null) {
                 // This is not an injector child factory.
                 return null;
             }
 
             if (childInjectorMethod.ReturnsVoid) {
-                throw new InjectionException(
-                    context.GenerationContext,
+                throw new InjectionException($"Injector child factory {childInjectorMethod.Name} must return a type.",
                     Diagnostics.InvalidSpecification,
-                    $"Injector child factory {childInjectorMethod.Name} must return a type.",
-                    childInjectorLocation);
+                    childInjectorLocation,
+                    context.GenerationContext);
             }
 
             IReadOnlyList<TypeModel> parameters = childInjectorMethod.Parameters

@@ -9,39 +9,53 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Render;
 
 namespace Phx.Inject.Common;
 
 internal static class MetadataHelpers {
-    public static IReadOnlyList<ITypeSymbol> GetTypeSymbolsFromDeclarations(
-        IEnumerable<TypeDeclarationSyntax> syntaxNodes,
+    public static IResult<ITypeSymbol> ExpectTypeSymbolFromDeclaration(
+        TypeDeclarationSyntax syntaxNode,
         GeneratorExecutionContext context
     ) {
-        return syntaxNodes.Select(syntaxNode => {
-                var semanticModel = context.Compilation.GetSemanticModel(syntaxNode.SyntaxTree);
-                return semanticModel.GetDeclaredSymbol(syntaxNode) as ITypeSymbol;
-            })
-            .Where(symbol => symbol != null)
-            .Select(symbol => symbol!)
-            .ToImmutableList();
+        var symbol = context.Compilation
+            .GetSemanticModel(syntaxNode.SyntaxTree)
+            .GetDeclaredSymbol(syntaxNode);
+        return Result.FromNullable(
+            symbol as ITypeSymbol,
+            $"Expected a type declaration, but found {symbol?.Kind.ToString() ?? "null"} for {syntaxNode.Identifier.Text}.",
+            syntaxNode.GetLocation(),
+            Diagnostics.InternalError);
     }
 
-    public static IReadOnlyList<ITypeSymbol> GetDependencyTypes(ISymbol injectorSymbol) {
-        var dependencyAttributes = injectorSymbol.GetDependencyAttributes();
-        return dependencyAttributes.SelectMany(attributeData => {
-                return attributeData.ConstructorArguments
+    public static IResult<ITypeSymbol?> TryGetDependencyType(ISymbol symbol) {
+        return symbol.TryGetDependencyAttribute()
+            .Map(attributeData => {
+                if (attributeData == null) {
+                    return Result.Ok<ITypeSymbol?>(null);
+                }
+
+                var constructorArgument = attributeData.ConstructorArguments
                     .Where(argument => argument.Kind == TypedConstantKind.Type)
                     .Select(argument => argument.Value)
                     .OfType<ITypeSymbol>();
-            })
-            .ToImmutableList();
+
+                return constructorArgument.Count() == 1
+                    ? Result.Ok(constructorArgument.Single())
+                    : Result.Error<ITypeSymbol?>(
+                        $"DependencyAttribute for symbol {symbol.Name} must provide a dependency type.",
+                        symbol.Locations.First(),
+                        Diagnostics.InvalidSpecification);
+            });
     }
 
-    public static IReadOnlyList<QualifiedTypeModel> GetMethodParametersQualifiedTypes(IMethodSymbol methodSymbol, GeneratorExecutionContext context) {
+    public static IReadOnlyList<QualifiedTypeModel> TryGetMethodParametersQualifiedTypes(
+        IMethodSymbol methodSymbol,
+        GeneratorExecutionContext context) {
         return methodSymbol.Parameters.Select(parameter => {
-                var qualifier = GetQualifier(parameter, context);
+                var qualifier = TryGetQualifier(parameter, context).GetOrThrow(context);
                 return new QualifiedTypeModel(
                     TypeModel.FromTypeSymbol(parameter.Type),
                     qualifier);
@@ -49,7 +63,9 @@ internal static class MetadataHelpers {
             .ToImmutableList();
     }
 
-    public static IReadOnlyList<QualifiedTypeModel> GetConstructorParameterQualifiedTypes(ITypeSymbol type, GeneratorExecutionContext context) {
+    public static IReadOnlyList<QualifiedTypeModel> TryGetConstructorParameterQualifiedTypes(
+        ITypeSymbol type,
+        GeneratorExecutionContext context) {
         var typeLocation = type.Locations.First();
 
         if (type.IsStatic || type.IsAbstract || type.TypeKind == TypeKind.Interface) {
@@ -63,27 +79,21 @@ internal static class MetadataHelpers {
             .ToImmutableList();
         if (constructors.Count != 1) {
             throw new InjectionException(
-                context,
-                Diagnostics.InvalidSpecification,
                 $"Auto injected type '{type.Name}' must contain exactly one public constructor",
-                typeLocation);
+                Diagnostics.InvalidSpecification,
+                typeLocation,
+                context);
         }
 
         var constructorMethod = constructors.Single();
 
-        return GetMethodParametersQualifiedTypes(constructorMethod, context);
+        return TryGetMethodParametersQualifiedTypes(constructorMethod, context);
     }
 
-    public static string GetGeneratedInjectorClassName(ITypeSymbol injectorInterfaceSymbol, GeneratorExecutionContext context) {
-        var injectorAttribute = injectorInterfaceSymbol.GetInjectorAttribute(context);
-        if (injectorAttribute == null) {
-            throw new InjectionException(
-                context,
-                Diagnostics.InternalError,
-                $"Injector type {injectorInterfaceSymbol.Name} must have one Injector attribute.",
-                injectorInterfaceSymbol.Locations.First());
-        }
-
+    public static string GetGeneratedInjectorClassName(
+        ITypeSymbol injectorInterfaceSymbol,
+        GeneratorExecutionContext context) {
+        var injectorAttribute = injectorInterfaceSymbol.ExpectInjectorAttribute().GetOrThrow(context);
         var generatedClassName = injectorAttribute.ConstructorArguments
             .FirstOrDefault(argument => argument.Kind != TypedConstantKind.Array)
             .Value as string;
@@ -97,16 +107,10 @@ internal static class MetadataHelpers {
         return generatedClassName;
     }
 
-    public static IReadOnlyList<ITypeSymbol> GetInjectorSpecificationTypes(ISymbol injectorInterfaceSymbol, GeneratorExecutionContext context) {
-        var injectorAttribute = injectorInterfaceSymbol.GetInjectorAttribute(context);
-        if (injectorAttribute == null) {
-            throw new InjectionException(
-                context,
-                Diagnostics.InternalError,
-                $"Injector type {injectorInterfaceSymbol.Name} must have one Injector attribute.",
-                injectorInterfaceSymbol.Locations.First());
-        }
-
+    public static IReadOnlyList<ITypeSymbol> TryGetInjectorSpecificationTypes(
+        ISymbol injectorInterfaceSymbol,
+        GeneratorExecutionContext context) {
+        var injectorAttribute = injectorInterfaceSymbol.ExpectInjectorAttribute().GetOrThrow(context);
         return injectorAttribute.ConstructorArguments
             .Where(argument => argument.Kind == TypedConstantKind.Array)
             .SelectMany(argument => argument.Values)
@@ -128,30 +132,34 @@ internal static class MetadataHelpers {
         return fabricationModes.Count switch {
             0 => SpecFactoryMethodFabricationMode.Recurrent, // The default
             1 => fabricationModes.Single(),
-            _ => throw new InjectionException(
-                context,
+            _ => throw new InjectionException((string)"Factories can only have a single fabrication mode.",
                 Diagnostics.InternalError,
-                "Factories can only have a single fabrication mode.",
-                location)
+                location,
+                context)
         };
     }
-    
-    public static GeneratorSettings GetGeneratorSettings(AttributeData phxInjectAttribute, GeneratorExecutionContext context) {
+
+    public static GeneratorSettings GetGeneratorSettings(AttributeData phxInjectAttribute) {
         var tabSize = phxInjectAttribute.NamedArguments
             .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.TabSize))
-            .Value.Value is int value ? value : 4;
+            .Value.Value is int value
+            ? value
+            : 4;
 
         var generatedFileExtension = phxInjectAttribute.NamedArguments
-            .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.GeneratedFileExtension))
-            .Value.Value as string ?? "generated.cs";
+                .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.GeneratedFileExtension))
+                .Value.Value as string
+            ?? "generated.cs";
 
         var nullableEnabled = phxInjectAttribute.NamedArguments
-            .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.NullableEnabled))
-            .Value.Value as bool? ?? true;
+                .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.NullableEnabled))
+                .Value.Value as bool?
+            ?? true;
 
         var allowConstructorFactories = phxInjectAttribute.NamedArguments
-            .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.AllowConstructorFactories))
-            .Value.Value as bool? ?? true;
+                .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.AllowConstructorFactories))
+                .Value.Value as bool?
+            ?? true;
 
         return new GeneratorSettings(
             tabSize,
@@ -161,43 +169,49 @@ internal static class MetadataHelpers {
         );
     }
 
-    public static string GetQualifier(ISymbol symbol, GeneratorExecutionContext context) {
-        var labelAttributes = symbol.GetLabelAttributes();
-        var qualifierAttributes = symbol.GetQualifierAttributes();
-        var numLabels = labelAttributes.Count();
-        var numQualifiers = qualifierAttributes.Count();
-
-        if (numLabels + numQualifiers > 1) {
-            throw new InjectionException(
-                context,
-                Diagnostics.InvalidSpecification,
-                $"Symbol {symbol.Name} can only have one Label or Qualifier attribute. Found {numLabels + numQualifiers}.",
-                symbol.Locations.First());
+    public static IResult<string> TryGetQualifier(ISymbol symbol, GeneratorExecutionContext context) {
+        var labelAttributeResult = symbol.TryGetLabelAttribute();
+        if (!labelAttributeResult.IsOk) {
+            return labelAttributeResult.MapError<string>();
         }
 
-        if (numLabels > 0) {
-            IReadOnlyList<string> labels = labelAttributes.Single()
+        var qualifierAttributeResult = symbol.TryGetQualifierAttribute();
+        if (!qualifierAttributeResult.IsOk) {
+            return qualifierAttributeResult.MapError<string>();
+        }
+
+        var labelAttribute = labelAttributeResult.GetValue();
+        var qualifierAttribute = qualifierAttributeResult.GetValue();
+
+        if (labelAttribute != null) {
+            if (qualifierAttribute != null) {
+                return Result.Error<string>(
+                    $"Symbol {symbol.Name} can only have one Label or Qualifier attribute.",
+                    symbol.Locations.First(),
+                    Diagnostics.InvalidSpecification);
+            }
+
+            IReadOnlyList<string> labels = labelAttribute
                 .ConstructorArguments.Where(argument => argument.Type!.Name == "String")
                 .Select(argument => (string)argument.Value!)
                 .ToImmutableList();
             return labels.Any()
-                ? labels.Single()
-                : throw new InjectionException(
-                    context,
-                    Diagnostics.InternalError,
-                    $"Label for symbol {symbol.Name} must have exactly one label value.",
-                    symbol.Locations.First()); // This should never happen
+                ? Result.Ok(labels.Single())
+                : Result.Error<string>(
+                    $"LabelAttribute for symbol {symbol.Name} must provide a label value.",
+                    symbol.Locations.First(),
+                    Diagnostics.InvalidSpecification);
         }
 
-        if (numQualifiers > 0) {
-            return qualifierAttributes.Single()
-                .AttributeClass!.ToString();
-        }
-
-        return QualifiedTypeModel.NoQualifier;
+        return Result.Ok(
+            qualifierAttribute != null
+                ? qualifierAttribute.AttributeClass!.ToString()
+                : QualifiedTypeModel.NoQualifier);
     }
 
-    public static IReadOnlyDictionary<string, QualifiedTypeModel> GetRequiredPropertyQualifiedTypes(ITypeSymbol type, GeneratorExecutionContext context) {
+    public static IReadOnlyDictionary<string, QualifiedTypeModel> GetRequiredPropertyQualifiedTypes(
+        ITypeSymbol type,
+        GeneratorExecutionContext context) {
         return type.GetMembers()
             .OfType<IPropertySymbol>()
             .Where(p => p.SetMethod != null && p.SetMethod.DeclaredAccessibility == Accessibility.Public)
@@ -206,15 +220,17 @@ internal static class MetadataHelpers {
                 property => property.Name,
                 property => new QualifiedTypeModel(
                     TypeModel.FromTypeSymbol(property.Type),
-                    GetQualifier(property, context)
+                    TryGetQualifier(property, context).GetOrThrow(context)
                 )
             );
     }
 
-    public static IReadOnlyList<IMethodSymbol> GetDirectBuilderMethods(ITypeSymbol type, GeneratorExecutionContext context) {
+    public static IReadOnlyList<IMethodSymbol> GetDirectBuilderMethods(
+        ITypeSymbol type,
+        GeneratorExecutionContext context) {
         return type.GetMembers()
             .OfType<IMethodSymbol>()
-            .Where(m => m.GetBuilderAttribute(context) != null)
+            .Where(m => m.TryGetBuilderAttribute().GetOrThrow(context) != null)
             .ToImmutableList();
     }
 }

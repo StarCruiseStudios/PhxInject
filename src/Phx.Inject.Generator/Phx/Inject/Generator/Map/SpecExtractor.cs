@@ -7,44 +7,31 @@
 // -----------------------------------------------------------------------------
 
 using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Extract;
 using Phx.Inject.Generator.Extract.Descriptors;
-using Phx.Inject.Generator.Map;
 
-namespace Phx.Inject.Generator.Extract;
+namespace Phx.Inject.Generator.Map;
 
-internal interface ISpecExtractor {
+internal interface ISpecDefMapper {
     SpecDesc? ExtractConstructorSpecForContext(
-        Map.DefGenerationContext context
-    );
-    IReadOnlyList<SpecDesc> Extract(
-        IEnumerable<TypeDeclarationSyntax> syntaxNodes,
-        DescGenerationContext context
+        DefGenerationContext context
     );
 }
 
-internal class SpecExtractor : ISpecExtractor {
-    private readonly SpecDesc.IExtractor specDescExtractor;
+internal class SpecDefMapper : ISpecDefMapper {
+    private readonly SpecDesc.IAutoSpecExtractor autoSpecExtractor;
 
-    public SpecExtractor(
-        SpecDesc.IExtractor specDescExtractor
+    public SpecDefMapper(
+        SpecDesc.IAutoSpecExtractor autoSpecExtractor
     ) {
-        this.specDescExtractor = specDescExtractor;
+        this.autoSpecExtractor = autoSpecExtractor;
     }
 
-    public SpecExtractor() : this(
-        new SpecDesc.Extractor()
+    public SpecDefMapper() : this(
+        new SpecDesc.AutoSpecExtractor()
     ) { }
-
-    private HashSet<QualifiedTypeModel> GetAutoConstructorParameterTypes(QualifiedTypeModel type, Map.DefGenerationContext context) {
-        var results = new HashSet<QualifiedTypeModel>();
-        results.UnionWith(MetadataHelpers.GetConstructorParameterQualifiedTypes(type.TypeModel.typeSymbol, context.GenerationContext));
-        results.UnionWith(MetadataHelpers.GetRequiredPropertyQualifiedTypes(type.TypeModel.typeSymbol, context.GenerationContext).Values);
-        return results;
-    }
 
     public SpecDesc? ExtractConstructorSpecForContext(
         DefGenerationContext context
@@ -122,41 +109,24 @@ internal class SpecExtractor : ISpecExtractor {
 
         var needsConstructorSpec = autoFactoryTypes.Any() || autoBuilderTypes.Any();
         return needsConstructorSpec
-            ? specDescExtractor.ExtractConstructorSpec(
+            ? autoSpecExtractor.Extract(
                 context.Injector.InjectorType,
                 autoFactoryTypes,
                 autoBuilderTypes,
-                new DescGenerationContext(context.GenerationContext))
+                new ExtractorContext(context.GenerationContext))
             : null;
     }
-    
-    public IReadOnlyList<SpecDesc> Extract(
-        IEnumerable<TypeDeclarationSyntax> syntaxNodes,
-        DescGenerationContext context
-    ) {
-        return MetadataHelpers.GetTypeSymbolsFromDeclarations(syntaxNodes, context.GenerationContext)
-            .Where(symbol => IsSpecSymbol(symbol, context.GenerationContext))
-            .SelectCatching(context.GenerationContext, symbol => specDescExtractor.Extract(symbol, context))
-            .ToImmutableList();
-    }
 
-    private static bool IsSpecSymbol(ITypeSymbol symbol, GeneratorExecutionContext context) {
-        var specificationAttribute = symbol.GetSpecificationAttribute(context);
-        if (specificationAttribute == null) {
-            return false;
-        }
-
-        var isStaticSpecification = symbol.TypeKind == TypeKind.Class && symbol.IsStatic;
-        var isInterfaceSpecification = symbol.TypeKind == TypeKind.Interface;
-
-        if (!isStaticSpecification && !isInterfaceSpecification) {
-            throw new InjectionException(
-                context,
-                Diagnostics.InvalidSpecification,
-                $"Specification type {symbol.Name} must be a static class or interface.",
-                symbol.Locations.First());
-        }
-
-        return true;
+    private HashSet<QualifiedTypeModel> GetAutoConstructorParameterTypes(
+        QualifiedTypeModel type,
+        DefGenerationContext context) {
+        var results = new HashSet<QualifiedTypeModel>();
+        results.UnionWith(
+            MetadataHelpers.TryGetConstructorParameterQualifiedTypes(type.TypeModel.typeSymbol,
+                context.GenerationContext));
+        results.UnionWith(MetadataHelpers
+            .GetRequiredPropertyQualifiedTypes(type.TypeModel.typeSymbol, context.GenerationContext)
+            .Values);
+        return results;
     }
 }

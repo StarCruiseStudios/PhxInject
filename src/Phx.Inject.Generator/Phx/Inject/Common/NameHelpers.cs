@@ -9,6 +9,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Extract.Descriptors;
 
@@ -38,10 +39,10 @@ internal static class NameHelpers {
             SpecFactoryMemberType.Reference => new StringBuilder("RefFac_"),
             SpecFactoryMemberType.Constructor => new StringBuilder("CtorFac_"),
             _ => throw new InjectionException(
-                context,
-                Diagnostics.InternalError,
                 $"Unhandled Spec Factory Member Type {factory.SpecFactoryMemberType}.",
-                factory.Location)
+                Diagnostics.InternalError,
+                factory.Location,
+                context)
         };
 
         sb.Append(factory.ReturnType.AsVariableName().StartUppercase())
@@ -57,10 +58,10 @@ internal static class NameHelpers {
             SpecBuilderMemberType.Reference => new StringBuilder("RefBld_"),
             SpecBuilderMemberType.Direct => new StringBuilder("DirBld_"),
             _ => throw new InjectionException(
-                context,
-                Diagnostics.InternalError,
                 $"Unhandled Spec Builder Member Type {builder.SpecBuilderMemberType}.",
-                builder.Location)
+                Diagnostics.InternalError,
+                builder.Location,
+                context)
         };
 
         sb.Append(builder.BuiltType.AsVariableName().StartUppercase())

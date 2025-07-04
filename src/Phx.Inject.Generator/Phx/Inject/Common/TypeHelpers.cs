@@ -8,6 +8,7 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 
 namespace Phx.Inject.Common;
@@ -20,45 +21,69 @@ internal static class TypeHelpers {
     public const string DictionaryTypeName = "System.Collections.Generic.IReadOnlyDictionary";
 
     public static readonly IImmutableSet<string> MultiBindTypes = ImmutableHashSet.CreateRange(new[] {
-        ListTypeName,
-        HashSetTypeName,
-        DictionaryTypeName
+        ListTypeName, HashSetTypeName, DictionaryTypeName
     });
-    
-    public static bool IsInjectorSymbol(ITypeSymbol symbol, GeneratorExecutionContext context) {
-        var injectorAttribute = symbol.GetInjectorAttribute(context);
-        if (injectorAttribute == null) {
-            return false;
-        }
 
-        if (symbol.TypeKind != TypeKind.Interface) {
-            throw new InjectionException(
-                context,
-                Diagnostics.InvalidSpecification,
-                $"Injector type {symbol.Name} must be an interface.",
-                symbol.Locations.First());
-        }
-
-        return true;
+    public static IResult<bool> IsPhxInjectSettingsSymbol(ITypeSymbol symbol) {
+        return symbol.TryGetPhxInjectAttribute()
+            .Map(attributeData => attributeData == null
+                ? Result.Ok(false)
+                : symbol is { TypeKind: TypeKind.Class }
+                    ? Result.Ok(true)
+                    : Result.Error<bool>(
+                        $"PhxInject settings type {symbol.Name} must be a class.",
+                        symbol.Locations.First(),
+                        Diagnostics.InvalidSpecification));
     }
-    
-    public static bool IsPhxInjectSettingsSymbol(ITypeSymbol symbol, GeneratorExecutionContext context) {
-        var settingsAttribute = symbol.GetPhxInjectAttribute(context);
-        if (settingsAttribute == null) {
-            return false;
-        }
 
-        if (symbol.TypeKind != TypeKind.Class) {
-            throw new InjectionException(
-                context,
-                Diagnostics.InvalidSpecification,
-                $"PhxInject Settings type {symbol.Name} must be class.",
-                symbol.Locations.First());
-        }
+    public static IResult<bool> IsInjectorSymbol(ITypeSymbol symbol) {
+        return symbol.TryGetInjectorAttribute()
+            .Map(attributeData => {
+                if (attributeData == null) {
+                    Result.Ok(false);
+                }
 
-        return true;
+                var isInterface = symbol is { TypeKind: TypeKind.Interface };
+
+                return isInterface
+                    ? Result.Ok(true)
+                    : Result.Error<bool>(
+                        $"Injector type {symbol.Name} must be an interface.",
+                        symbol.Locations.First(),
+                        Diagnostics.InvalidSpecification);
+            });
     }
-    
+
+    public static IResult<bool> IsSpecSymbol(ITypeSymbol symbol) {
+        return symbol.TryGetSpecificationAttribute()
+            .Map(attributeData => {
+                if (attributeData == null) {
+                    Result.Ok(false);
+                }
+
+                var isStaticSpecification = symbol is { TypeKind: TypeKind.Class, IsStatic: true };
+                var isInterfaceSpecification = symbol.TypeKind == TypeKind.Interface;
+
+                return isStaticSpecification || isInterfaceSpecification
+                    ? Result.Ok(true)
+                    : Result.Error<bool>(
+                        $"Specification type {symbol.Name} must be a static class or interface.",
+                        symbol.Locations.First(),
+                        Diagnostics.InvalidSpecification);
+            });
+    }
+
+    public static IResult<bool> IsDependencySymbol(ITypeSymbol symbol) {
+        var isInterface = symbol is { TypeKind: TypeKind.Interface };
+
+        return isInterface
+            ? Result.Ok(true)
+            : Result.Error<bool>(
+                $"Dependency type {symbol.Name} must be an interface.",
+                symbol.Locations.First(),
+                Diagnostics.InvalidSpecification);
+    }
+
     public static bool IsAutoFactoryEligible(QualifiedTypeModel type) {
         var typeSymbol = type.TypeModel.typeSymbol;
         var isVisible = typeSymbol.DeclaredAccessibility == Accessibility.Public
@@ -70,14 +95,18 @@ internal static class TypeHelpers {
             && type.TypeModel.TypeArguments.Count == 0;
     }
 
-    public static void ValidatePartialType(QualifiedTypeModel returnType, bool isPartial, Location location, GeneratorExecutionContext context) {
+    public static void ValidatePartialType(
+        QualifiedTypeModel returnType,
+        bool isPartial,
+        Location location,
+        GeneratorExecutionContext context) {
         if (isPartial) {
             if (!MultiBindTypes.Contains(returnType.TypeModel.QualifiedBaseTypeName)) {
                 throw new InjectionException(
-                    context,
-                    Diagnostics.InvalidSpecification,
                     "Partial factories must return a IReadOnlyList, ISet, or IReadOnlyDictionary.",
-                    location);
+                    Diagnostics.InvalidSpecification,
+                    location,
+                    context);
             }
         }
     }

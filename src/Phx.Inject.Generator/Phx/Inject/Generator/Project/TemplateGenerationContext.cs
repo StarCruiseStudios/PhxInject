@@ -8,6 +8,7 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Map.Definitions;
 
@@ -26,11 +27,10 @@ internal record TemplateGenerationContext(
             return injector;
         }
 
-        throw new InjectionException(
-            GenerationContext,
+        throw new InjectionException($"Cannot find required injector type {type}.",
             Diagnostics.IncompleteSpecification,
-            $"Cannot find required injector type {type}.",
-            location);
+            location,
+            GenerationContext);
     }
 
     public SpecContainerDef GetSpecContainer(TypeModel type, Location location) {
@@ -38,11 +38,10 @@ internal record TemplateGenerationContext(
             return spec;
         }
 
-        throw new InjectionException(
-            GenerationContext,
+        throw new InjectionException($"Cannot find required specification container type {type}.",
             Diagnostics.IncompleteSpecification,
-            $"Cannot find required specification container type {type}.",
-            location);
+            location,
+            GenerationContext);
     }
 
     public DependencyImplementationDef GetDependency(TypeModel type, Location location) {
@@ -50,10 +49,9 @@ internal record TemplateGenerationContext(
             return dep;
         }
 
-        throw new InjectionException(
-            GenerationContext,
+        throw new InjectionException($"Cannot find required dependency type {type}.",
             Diagnostics.IncompleteSpecification,
-            $"Cannot find required dependency type {type}.",
-            location);
+            location,
+            GenerationContext);
     }
 }

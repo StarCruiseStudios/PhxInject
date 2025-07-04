@@ -16,16 +16,25 @@ namespace Phx.Inject.Tests {
             return this;
         }
 
+        internal Phx.Inject.Tests.Data.Model.IntLeaf RefFac_IntLeaf_GetIntLeaf(
+                Phx.Inject.Tests.GeneratedBuilderReferenceInjector.SpecContainerCollection specContainers
+        ) {
+            return intLeaf ??= Phx.Inject.Tests.BuilderReferenceSpec.GetIntLeaf(
+                specContainers.GeneratedBuilderReferenceInjector_BuilderReferenceSpec.PropFac_Int32_IntValue(specContainers));
+        }
+
         internal System.Int32 PropFac_Int32_IntValue(
                 Phx.Inject.Tests.GeneratedBuilderReferenceInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.BuilderReferenceSpec.IntValue;
         }
 
-        internal Phx.Inject.Tests.Data.Model.IntLeaf RefFac_IntLeaf_GetIntLeaf(
+        internal void RefBld_Field_TestBuilderReferenceObject_BuildBuilderReferenceTypeField(
+                Phx.Inject.Tests.Data.Model.TestBuilderReferenceObject target,
                 Phx.Inject.Tests.GeneratedBuilderReferenceInjector.SpecContainerCollection specContainers
         ) {
-            return intLeaf ??= Phx.Inject.Tests.BuilderReferenceSpec.GetIntLeaf(
+            Phx.Inject.Tests.BuilderReferenceSpec.BuildBuilderReferenceTypeField(
+                target,
                 specContainers.GeneratedBuilderReferenceInjector_BuilderReferenceSpec.PropFac_Int32_IntValue(specContainers));
         }
 
@@ -34,15 +43,6 @@ namespace Phx.Inject.Tests {
                 Phx.Inject.Tests.GeneratedBuilderReferenceInjector.SpecContainerCollection specContainers
         ) {
             Phx.Inject.Tests.BuilderReferenceSpec.BuildBuilderReferenceType(
-                target,
-                specContainers.GeneratedBuilderReferenceInjector_BuilderReferenceSpec.PropFac_Int32_IntValue(specContainers));
-        }
-
-        internal void RefBld_Field_TestBuilderReferenceObject_BuildBuilderReferenceTypeField(
-                Phx.Inject.Tests.Data.Model.TestBuilderReferenceObject target,
-                Phx.Inject.Tests.GeneratedBuilderReferenceInjector.SpecContainerCollection specContainers
-        ) {
-            Phx.Inject.Tests.BuilderReferenceSpec.BuildBuilderReferenceTypeField(
                 target,
                 specContainers.GeneratedBuilderReferenceInjector_BuilderReferenceSpec.PropFac_Int32_IntValue(specContainers));
         }

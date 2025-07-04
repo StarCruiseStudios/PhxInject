@@ -9,6 +9,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Map.Definitions;
 
@@ -153,7 +154,7 @@ internal record InjectorTemplate(
         string PropertyName,
         string? ConstructorArgumentName
     );
-    
+
     public interface IProjector {
         InjectorTemplate Project(
             InjectorDef injectorDef,
@@ -259,11 +260,11 @@ internal record InjectorTemplate(
                                 missingDependencies.Select(dep => dep.ToString()));
 
                             throw new InjectionException(
-                                context.GenerationContext,
-                                Diagnostics.InvalidSpecification,
                                 $"Child Injector factory must contain parameters for each of the child injector's constructed specification types: {constructedSpecificationsString}."
                                 + $" Missing: {missingDependenciesString}.",
-                                factory.Location);
+                                Diagnostics.InvalidSpecification,
+                                factory.Location,
+                                context.GenerationContext);
                         }
 
                         IReadOnlyList<TypeModel> unusedParameters = factory.Parameters.Where(paramType =>
@@ -274,10 +275,10 @@ internal record InjectorTemplate(
                             var unusedParametersString = string.Join(",",
                                 unusedParameters.Select(dep => dep.ToString()));
                             throw new InjectionException(
-                                context.GenerationContext,
-                                Diagnostics.InvalidSpecification,
                                 $"Child Injector factory contains unused parameters: {unusedParametersString}.",
-                                factory.Location);
+                                Diagnostics.InvalidSpecification,
+                                factory.Location,
+                                context.GenerationContext);
                         }
 
                         // Use factory.Parameters instead of childInjector.ConstructedSpecifications

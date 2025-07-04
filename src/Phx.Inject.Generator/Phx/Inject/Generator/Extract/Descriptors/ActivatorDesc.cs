@@ -8,6 +8,7 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
@@ -20,14 +21,14 @@ internal record ActivatorDesc(
     public interface IExtractor {
         ActivatorDesc? Extract(
             IMethodSymbol builderMethod,
-            DescGenerationContext context
+            ExtractorContext context
         );
     }
 
     public class Extractor : IExtractor {
         public ActivatorDesc? Extract(
             IMethodSymbol builderMethod,
-            DescGenerationContext context
+            ExtractorContext context
         ) {
             var builderLocation = builderMethod.Locations.First();
 
@@ -38,14 +39,15 @@ internal record ActivatorDesc(
 
             if (builderMethod.Parameters.Length != 1) {
                 throw new InjectionException(
-                    context.GenerationContext,
+                    (string)$"Injector builder {builderMethod.Name} must have exactly 1 parameter.",
                     Diagnostics.InvalidSpecification,
-                    $"Injector builder {builderMethod.Name} must have exactly 1 parameter.",
-                    builderLocation);
+                    builderLocation,
+                    context.GenerationContext);
             }
 
             var builtType = TypeModel.FromTypeSymbol(builderMethod.Parameters[0].Type);
-            var qualifier = MetadataHelpers.GetQualifier(builderMethod, context.GenerationContext);
+            var qualifier = MetadataHelpers.TryGetQualifier(builderMethod, context.GenerationContext)
+                .GetOrThrow(context.GenerationContext);
             return new ActivatorDesc(
                 new QualifiedTypeModel(builtType, qualifier),
                 builderMethod.Name,

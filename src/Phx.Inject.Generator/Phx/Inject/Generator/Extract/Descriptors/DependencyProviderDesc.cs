@@ -8,6 +8,7 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
@@ -21,42 +22,41 @@ internal record DependencyProviderDesc(
     public interface IExtractor {
         DependencyProviderDesc Extract(
             IMethodSymbol providerMethod,
-            DescGenerationContext context
+            ExtractorContext context
         );
     }
 
     public class Extractor : IExtractor {
         public DependencyProviderDesc Extract(
             IMethodSymbol providerMethod,
-            DescGenerationContext context
+            ExtractorContext context
         ) {
             var providerLocation = providerMethod.Locations.First();
 
             if (providerMethod.ReturnsVoid) {
-                throw new InjectionException(
-                    context.GenerationContext,
+                throw new InjectionException($"Dependency provider {providerMethod.Name} must have a return type.",
                     Diagnostics.InvalidSpecification,
-                    $"Dependency provider {providerMethod.Name} must have a return type.",
-                    providerLocation);
+                    providerLocation,
+                    context.GenerationContext);
             }
 
             if (providerMethod.Parameters.Length > 0) {
-                throw new InjectionException(
-                    context.GenerationContext,
+                throw new InjectionException($"Dependency provider {providerMethod.Name} must not have any parameters.",
                     Diagnostics.InvalidSpecification,
-                    $"Dependency provider {providerMethod.Name} must not have any parameters.",
-                    providerLocation);
+                    providerLocation,
+                    context.GenerationContext);
             }
 
-            var partialAttributes = providerMethod.GetPartialAttributes();
+            var partialAttributes = providerMethod.TryGetPartialAttribute().GetOrThrow(context.GenerationContext);
 
-            var qualifier = MetadataHelpers.GetQualifier(providerMethod, context.GenerationContext);
+            var qualifier = MetadataHelpers.TryGetQualifier(providerMethod, context.GenerationContext)
+                .GetOrThrow(context.GenerationContext);
             var returnTypeModel = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
             var returnType = new QualifiedTypeModel(
                 returnTypeModel,
                 qualifier);
 
-            var isPartial = partialAttributes.Any();
+            var isPartial = partialAttributes != null;
             TypeHelpers.ValidatePartialType(returnType, isPartial, providerLocation, context.GenerationContext);
 
             return new DependencyProviderDesc(
@@ -64,11 +64,6 @@ internal record DependencyProviderDesc(
                 providerMethod.Name,
                 isPartial,
                 providerLocation);
-        }
-
-        private static bool GetIsPartial(ISymbol factorySymbol) {
-            var partialAttributes = factorySymbol.GetPartialAttributes();
-            return partialAttributes.Any();
         }
     }
 }
