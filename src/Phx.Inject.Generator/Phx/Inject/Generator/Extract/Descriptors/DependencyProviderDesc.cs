@@ -31,33 +31,34 @@ internal record DependencyProviderDesc(
             IMethodSymbol providerMethod,
             ExtractorContext extractorCtx
         ) {
+            var currentCtx = extractorCtx.GetChildContext(providerMethod);
             var providerLocation = providerMethod.Locations.First();
 
             if (providerMethod.ReturnsVoid) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Dependency provider {providerMethod.Name} must have a return type.",
                     providerLocation,
-                    extractorCtx);
+                    currentCtx);
             }
 
             if (providerMethod.Parameters.Length > 0) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Dependency provider {providerMethod.Name} must not have any parameters.",
                     providerLocation,
-                    extractorCtx);
+                    currentCtx);
             }
 
-            var partialAttributes = providerMethod.TryGetPartialAttribute().GetOrThrow(extractorCtx);
+            var partialAttributes = providerMethod.TryGetPartialAttribute().GetOrThrow(currentCtx);
 
             var qualifier = MetadataHelpers.TryGetQualifier(providerMethod)
-                .GetOrThrow(extractorCtx);
+                .GetOrThrow(currentCtx);
             var returnTypeModel = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
             var returnType = new QualifiedTypeModel(
                 returnTypeModel,
                 qualifier);
 
             var isPartial = partialAttributes != null;
-            TypeHelpers.ValidatePartialType(returnType, isPartial, providerLocation, extractorCtx);
+            TypeHelpers.ValidatePartialType(returnType, isPartial, providerLocation, currentCtx);
 
             return new DependencyProviderDesc(
                 returnType,

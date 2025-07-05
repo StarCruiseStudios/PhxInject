@@ -23,7 +23,7 @@ internal record ExtractorContext : IGeneratorContext {
         ExecutionContext = executionCtx;
     }
 
-    public ExtractorContext GetChildContext(ISymbol? symbol, Location location) {
+    public ExtractorContext GetChildContext(ISymbol symbol) {
         return new ExtractorContext(ExecutionContext) {
             Symbol = symbol,
             ParentContext = this

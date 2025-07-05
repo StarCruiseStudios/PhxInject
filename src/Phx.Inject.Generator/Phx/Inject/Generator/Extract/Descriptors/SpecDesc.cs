@@ -49,7 +49,7 @@ internal record SpecDesc(
         public SpecDesc Extract(ITypeSymbol specSymbol, ExtractorContext extractorContext) {
             var specLocation = specSymbol.Locations.First();
             var specType = TypeModel.FromTypeSymbol(specSymbol);
-            var context = extractorContext.GetChildContext(specSymbol, specLocation);
+            var context = extractorContext.GetChildContext(specSymbol);
 
             return ExceptionAggregator.Try(
                 $"extracting specification {specType}",
@@ -165,7 +165,7 @@ internal record SpecDesc(
         ) {
             var specLocation = injectorType.typeSymbol.Locations.First();
             var specType = TypeHelpers.CreateConstructorSpecContainerType(injectorType);
-            var currentCtx = extractorCtx.GetChildContext(injectorType.typeSymbol, specLocation);
+            var currentCtx = extractorCtx.GetChildContext(injectorType.typeSymbol);
 
             return ExceptionAggregator.Try(
                 $"extracting auto specification for injector {injectorType}",

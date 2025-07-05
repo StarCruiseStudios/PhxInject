@@ -15,9 +15,10 @@ internal class InjectionException : Exception {
     public Diagnostic Diagnostic { get; }
 
     public InjectionException(
+        string message,
         Diagnostic diagnostic,
         IGeneratorContext generatorContext
-    ) : base(diagnostic.GetMessage()) {
+    ) : base(message) {
         Diagnostic = diagnostic;
         generatorContext.ExecutionContext.ReportDiagnostic(Diagnostic);
     }

@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Generator.Abstract;
-using Phx.Inject.Generator.Extract;
+using Phx.Inject.Generator.Extract.Descriptors;
 using Phx.Inject.Generator.Map;
 using Phx.Inject.Generator.Project;
 using Phx.Inject.Generator.Render;
@@ -49,7 +49,7 @@ internal class SourceGenerator : ISourceGenerator {
                     IReadOnlyList<ITypeSymbol> settingsSymbols = syntaxReceiver.PhxInjectSettingsCandidates
                         .SelectCatching(
                             exceptionAggregator,
-                            syntaxNode => $"extracting PhxInject settings from {syntaxNode.Identifier.Text}",
+                            syntaxNode => $"reading PhxInject settings from {syntaxNode.Identifier.Text}",
                             syntaxNode => {
                                 var settingsSymbol = MetadataHelpers
                                     .ExpectTypeSymbolFromDeclaration(syntaxNode, generatorCtx)
@@ -75,7 +75,7 @@ internal class SourceGenerator : ISourceGenerator {
                     };
 
                     // Extract: Syntax declarations to descriptors.
-                    var sourceDesc = new SourceExtractor()
+                    var sourceDesc = new SourceDesc.Extractor()
                         .Extract(syntaxReceiver, generatorCtx);
 
                     // Map: Descriptors to defs.

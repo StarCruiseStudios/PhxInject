@@ -30,6 +30,7 @@ internal record ActivatorDesc(
             IMethodSymbol builderMethod,
             ExtractorContext extractorCtx
         ) {
+            var currentCtx = extractorCtx.GetChildContext(builderMethod);
             var builderLocation = builderMethod.Locations.First();
 
             if (!builderMethod.ReturnsVoid) {
@@ -41,12 +42,12 @@ internal record ActivatorDesc(
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Injector builder {builderMethod.Name} must have exactly 1 parameter.",
                     builderLocation,
-                    extractorCtx);
+                    currentCtx);
             }
 
             var builtType = TypeModel.FromTypeSymbol(builderMethod.Parameters[0].Type);
             var qualifier = MetadataHelpers.TryGetQualifier(builderMethod)
-                .GetOrThrow(extractorCtx);
+                .GetOrThrow(currentCtx);
             return new ActivatorDesc(
                 new QualifiedTypeModel(builtType, qualifier),
                 builderMethod.Name,

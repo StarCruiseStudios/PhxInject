@@ -11,7 +11,7 @@ using Phx.Inject.Generator;
 namespace Phx.Inject.Common.Exceptions;
 
 internal interface IExceptionAggregator {
-    T Aggregate<T>(string message, Func<T> func, Func<T> defaultValue);
+    T Aggregate<T>(string message, Func<T> func, Func<Exception, T> defaultValue);
     IReadOnlyList<R> AggregateMany<T, R>(IEnumerable<T> elements, Func<T, string> elementDescription, Func<T, R> func);
     void Aggregate(string message, Action action);
 }
@@ -29,14 +29,14 @@ internal sealed class ExceptionAggregator : IExceptionAggregator {
         this.generatorContext = generatorContext;
     }
 
-    public T Aggregate<T>(string message, Func<T> func, Func<T> defaultValue) {
+    public T Aggregate<T>(string message, Func<T> func, Func<Exception, T> defaultValue) {
         try {
             return func();
         } catch (Exception e) {
-            exceptions.Add(e.AsInjectionException(message, generatorContext));
+            var ie = e.AsInjectionException(message, generatorContext);
+            exceptions.Add(ie);
+            return defaultValue(ie);
         }
-
-        return defaultValue();
     }
 
     public void Aggregate(string message, Action action) {
@@ -80,13 +80,12 @@ internal sealed class ExceptionAggregator : IExceptionAggregator {
             aggregateException.Aggregate(
                 description,
                 () => func(aggregateException),
-                () => aggregateException.Throw<T>(generatorCtx));
+                e => aggregateException.Throw<T>(generatorCtx));
 
-        if (aggregateException.exceptions.Count > 0) {
-            aggregateException.Throw<T>(generatorCtx);
-        }
-
-        return result;
+        return aggregateException.exceptions.Count switch {
+            0 => result,
+            _ => aggregateException.Throw<T>(generatorCtx)
+        };
     }
 
     public static void Try(

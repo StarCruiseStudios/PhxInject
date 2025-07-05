@@ -16,10 +16,12 @@ internal sealed class AggregateInjectionException : InjectionException {
     public IReadOnlyList<InjectionException> Exceptions { get; }
 
     internal AggregateInjectionException(
+        string message,
         Diagnostic diagnostic,
         IEnumerable<InjectionException> exceptions,
         IGeneratorContext generatorContext
     ) : base(
+        message,
         diagnostic,
         generatorContext
     ) {

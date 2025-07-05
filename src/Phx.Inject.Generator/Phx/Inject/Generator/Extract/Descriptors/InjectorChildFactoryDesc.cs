@@ -32,9 +32,10 @@ internal record InjectorChildFactoryDesc(
             IMethodSymbol childInjectorMethod,
             ExtractorContext extractorCtx
         ) {
+            var currentCtx = extractorCtx.GetChildContext(childInjectorMethod);
             var childInjectorLocation = childInjectorMethod.Locations.First();
 
-            if (childInjectorMethod.TryGetChildInjectorAttribute().GetOrThrow(extractorCtx) == null) {
+            if (childInjectorMethod.TryGetChildInjectorAttribute().GetOrThrow(currentCtx) == null) {
                 // This is not an injector child factory.
                 return null;
             }
@@ -43,7 +44,7 @@ internal record InjectorChildFactoryDesc(
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Injector child factory {childInjectorMethod.Name} must return a type.",
                     childInjectorLocation,
-                    extractorCtx);
+                    currentCtx);
             }
 
             IReadOnlyList<TypeModel> parameters = childInjectorMethod.Parameters

@@ -64,10 +64,12 @@ internal static class Diagnostics {
             IReadOnlyList<InjectionException> exceptions,
             IGeneratorContext generatorExecutionContext
         ) {
+            var msg = string.Join("\n -> ", exceptions.Select(it => it.Message));
             return new AggregateInjectionException(
+                message,
                 CreateDiagnostic(
-                    message,
-                    generatorExecutionContext.GetFrame(),
+                    message + "\n -> " + msg,
+                    null,
                     generatorExecutionContext.GetLocation()),
                 exceptions,
                 generatorExecutionContext);
@@ -93,6 +95,7 @@ internal static class Diagnostics {
             IGeneratorContext generatorExecutionContext
         ) {
             return new InjectionException(
+                message,
                 CreateDiagnostic(
                     message,
                     generatorExecutionContext.GetFrame(),

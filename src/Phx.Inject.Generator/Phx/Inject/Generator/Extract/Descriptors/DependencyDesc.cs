@@ -41,7 +41,7 @@ internal record DependencyDesc(
     public interface IExtractor {
         DependencyDesc Extract(
             ITypeSymbol dependencyInterfaceSymbol,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         );
     }
 
@@ -56,15 +56,16 @@ internal record DependencyDesc(
 
         public DependencyDesc Extract(
             ITypeSymbol dependencyInterfaceSymbol,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         ) {
+            var currentCtx = extractorCtx.GetChildContext(dependencyInterfaceSymbol);
             var dependencyInterfaceLocation = dependencyInterfaceSymbol.Locations.First();
             var dependencyInterfaceType = TypeModel.FromTypeSymbol(dependencyInterfaceSymbol);
 
             IReadOnlyList<DependencyProviderDesc> providers = dependencyInterfaceSymbol
                 .GetMembers()
                 .OfType<IMethodSymbol>()
-                .Select(method => dependencyProviderDescExtractor.Extract(method, context))
+                .Select(method => dependencyProviderDescExtractor.Extract(method, currentCtx))
                 .ToImmutableList();
 
             return new DependencyDesc(

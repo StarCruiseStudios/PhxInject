@@ -55,21 +55,19 @@ internal record InjectorDesc(
             ITypeSymbol injectorInterfaceSymbol,
             ExtractorContext extractorCtx
         ) {
-            var injectorLocation = injectorInterfaceSymbol.Locations.First();
-            var currentCtx = extractorCtx.GetChildContext(injectorInterfaceSymbol, injectorLocation);
-
-            var injectorInterfaceType = TypeModel.FromTypeSymbol(injectorInterfaceSymbol);
-            var generatedInjectorTypeName =
-                MetadataHelpers.GetGeneratedInjectorClassName(injectorInterfaceSymbol, extractorCtx);
-            var injectorType = injectorInterfaceType with {
-                BaseTypeName = generatedInjectorTypeName,
-                TypeArguments = ImmutableList<TypeModel>.Empty
-            };
-
+            var currentCtx = extractorCtx.GetChildContext(injectorInterfaceSymbol);
             return ExceptionAggregator.Try(
-                "extracting injector",
+                $"extracting injector for type {injectorInterfaceSymbol.Name}",
                 currentCtx,
                 exceptionAggregator => {
+                    var injectorLocation = injectorInterfaceSymbol.Locations.First();
+                    var injectorInterfaceType = TypeModel.FromTypeSymbol(injectorInterfaceSymbol);
+                    var generatedInjectorTypeName =
+                        MetadataHelpers.GetGeneratedInjectorClassName(injectorInterfaceSymbol, currentCtx);
+                    var injectorType = injectorInterfaceType with {
+                        BaseTypeName = generatedInjectorTypeName,
+                        TypeArguments = ImmutableList<TypeModel>.Empty
+                    };
                     IReadOnlyList<TypeModel> dependencyInterfaceTypes =
                         MetadataHelpers.TryGetDependencyType(injectorInterfaceSymbol)
                             .GetOrThrow(currentCtx)

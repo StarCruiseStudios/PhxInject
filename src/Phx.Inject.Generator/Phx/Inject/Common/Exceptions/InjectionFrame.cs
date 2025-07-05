@@ -22,7 +22,7 @@ internal static class IInjectionFrameExtensions {
         var injectionFrame = frame;
         while (injectionFrame is { Symbol: not null }) {
             sb.AppendLine()
-                .Append($" - at {injectionFrame}");
+                .Append($"|   at {injectionFrame}");
             injectionFrame = injectionFrame.Parent;
         }
 
