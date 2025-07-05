@@ -32,7 +32,7 @@ internal record SpecLinkDesc(
             ExtractorContext extractorCtx
         ) {
             if (linkAttribute.ConstructorArguments.Length != 2) {
-                throw Diagnostics.InternalError.AsException(
+                throw Diagnostics.InternalError.AsFatalException(
                     "Link attribute must have only an input and return type specified.",
                     linkLocation,
                     extractorCtx);

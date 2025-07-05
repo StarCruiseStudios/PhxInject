@@ -85,7 +85,7 @@ internal record DefGenerationContext : IGeneratorContext {
         Location location
     ) {
         if (FactoryRegistrations.Count == 0) {
-            throw Diagnostics.InternalError.AsException(
+            throw Diagnostics.InternalError.AsFatalException(
                 $"Cannot search factory for type {returnedType} before factory registrations are created  while generating injection for type {Injector.InjectorInterfaceType}.",
                 location,
                 this);
@@ -134,7 +134,7 @@ internal record DefGenerationContext : IGeneratorContext {
         Location location
     ) {
         if (BuilderRegistrations.Count == 0) {
-            throw Diagnostics.InternalError.AsException(
+            throw Diagnostics.InternalError.AsFatalException(
                 $"Cannot search for builder for type {builtType} before builder registrations are created  while generating injection for type {Injector.InjectorInterfaceType}.",
                 location,
                 this);

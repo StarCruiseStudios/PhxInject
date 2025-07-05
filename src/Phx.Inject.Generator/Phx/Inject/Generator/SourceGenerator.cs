@@ -6,9 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Generator.Abstract;
 using Phx.Inject.Generator.Extract.Descriptors;
@@ -20,14 +18,6 @@ namespace Phx.Inject.Generator;
 
 [Generator]
 internal class SourceGenerator : ISourceGenerator {
-    private readonly GeneratorSettings generatorSettings;
-
-    public SourceGenerator() : this(new GeneratorSettings()) { }
-
-    public SourceGenerator(GeneratorSettings generatorSettings) {
-        this.generatorSettings = generatorSettings;
-    }
-
     public void Initialize(GeneratorInitializationContext context) {
         context.RegisterForSyntaxNotifications(() => new SourceSyntaxReceiver());
     }
@@ -41,42 +31,16 @@ internal class SourceGenerator : ISourceGenerator {
                 exceptionAggregator => {
                     // Abstract: Source code to syntax declarations.
                     var syntaxReceiver = generatorCtx.ExecutionContext.SyntaxReceiver as SourceSyntaxReceiver
-                        ?? throw Diagnostics.UnexpectedError.AsException(
+                        ?? throw Diagnostics.UnexpectedError.AsFatalException(
                             $"Incorrect Syntax Receiver {generatorCtx.ExecutionContext.SyntaxReceiver}.",
                             Location.None,
                             generatorCtx);
 
-                    IReadOnlyList<ITypeSymbol> settingsSymbols = syntaxReceiver.PhxInjectSettingsCandidates
-                        .SelectCatching(
-                            exceptionAggregator,
-                            syntaxNode => $"reading PhxInject settings from {syntaxNode.Identifier.Text}",
-                            syntaxNode => {
-                                var settingsSymbol = MetadataHelpers
-                                    .ExpectTypeSymbolFromDeclaration(syntaxNode, generatorCtx)
-                                    .GetOrThrow(generatorCtx);
-                                return TypeHelpers.IsPhxInjectSettingsSymbol(settingsSymbol)
-                                    .GetOrThrow(generatorCtx)
-                                    ? settingsSymbol
-                                    : null;
-                            })
-                        .OfType<ITypeSymbol>()
-                        .ToImmutableList();
-
-                    var settings = settingsSymbols.Count switch {
-                        0 => generatorSettings,
-                        1 => MetadataHelpers.GetGeneratorSettings(settingsSymbols.First()
-                            .ExpectPhxInjectAttribute()
-                            .GetOrThrow(generatorCtx)),
-                        _ => Result.Error<GeneratorSettings>(
-                                $"Only one PhxInject settings can be specified. Found {settingsSymbols.Count} on types [{string.Join(", ", settingsSymbols.Select(it => it.Name))}].",
-                                Location.None,
-                                Diagnostics.UnexpectedError)
-                            .GetOrThrow(generatorCtx)
-                    };
-
                     // Extract: Syntax declarations to descriptors.
+                    var settings = new GeneratorSettings.Extractor()
+                        .Extract(syntaxReceiver, exceptionAggregator, generatorCtx);
                     var sourceDesc = new SourceDesc.Extractor()
-                        .Extract(syntaxReceiver, generatorCtx);
+                        .Extract(syntaxReceiver, exceptionAggregator, generatorCtx);
 
                     // Map: Descriptors to defs.
                     var injectionContextDefs = new SourceDefMapper(settings)

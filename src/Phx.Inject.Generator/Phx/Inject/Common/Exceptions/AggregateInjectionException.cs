@@ -12,7 +12,7 @@ using Phx.Inject.Generator;
 
 namespace Phx.Inject.Common.Exceptions;
 
-internal sealed class AggregateInjectionException : InjectionException {
+internal sealed class AggregateInjectionException : FatalInjectionException {
     public IReadOnlyList<InjectionException> Exceptions { get; }
 
     internal AggregateInjectionException(

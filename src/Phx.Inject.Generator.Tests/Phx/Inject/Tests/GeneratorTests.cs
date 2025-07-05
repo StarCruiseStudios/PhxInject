@@ -75,8 +75,7 @@ public class GeneratorTests : LoggingTestClass {
     }
 
     private Compilation CompileCode() {
-        var renderSettings = new GeneratorSettings();
-        var generator = Given("A source generator.", () => new SourceGenerator(renderSettings));
+        var generator = Given("A source generator.", () => new SourceGenerator());
         var rootDirectory = Given("A directory with source files.", () => TestFiles.RootDirectory);
 
         var compilation = When(

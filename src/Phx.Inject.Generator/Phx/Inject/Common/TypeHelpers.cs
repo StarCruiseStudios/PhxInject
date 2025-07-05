@@ -25,18 +25,6 @@ internal static class TypeHelpers {
         ListTypeName, HashSetTypeName, DictionaryTypeName
     });
 
-    public static IResult<bool> IsPhxInjectSettingsSymbol(ITypeSymbol symbol) {
-        return symbol.TryGetPhxInjectAttribute()
-            .Map(attributeData => attributeData == null
-                ? Result.Ok(false)
-                : symbol is { TypeKind: TypeKind.Class }
-                    ? Result.Ok(true)
-                    : Result.Error<bool>(
-                        $"PhxInject settings type {symbol.Name} must be a class.",
-                        symbol.Locations.First(),
-                        Diagnostics.InvalidSpecification));
-    }
-
     public static IResult<bool> IsInjectorSymbol(ITypeSymbol symbol) {
         return symbol.TryGetInjectorAttribute()
             .Map(attributeData => {

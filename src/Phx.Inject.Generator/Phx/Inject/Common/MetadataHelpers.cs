@@ -132,14 +132,15 @@ internal static class MetadataHelpers {
         return fabricationModes.Count switch {
             0 => SpecFactoryMethodFabricationMode.Recurrent, // The default
             1 => fabricationModes.Single(),
-            _ => throw Diagnostics.InternalError.AsException(
+            _ => throw Diagnostics.InternalError.AsFatalException(
                 "Factories can only have a single fabrication mode.",
                 location,
                 generatorCtx)
         };
     }
 
-    public static GeneratorSettings GetGeneratorSettings(AttributeData phxInjectAttribute) {
+    public static GeneratorSettings GetGeneratorSettings(ITypeSymbol settingsType, AttributeData phxInjectAttribute) {
+        var name = $"{settingsType.ContainingNamespace}.{settingsType.Name}";
         var tabSize = phxInjectAttribute.NamedArguments
             .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.TabSize))
             .Value.Value is int value
@@ -162,6 +163,8 @@ internal static class MetadataHelpers {
             ?? true;
 
         return new GeneratorSettings(
+            name,
+            settingsType.Locations.First(),
             tabSize,
             generatedFileExtension,
             nullableEnabled,

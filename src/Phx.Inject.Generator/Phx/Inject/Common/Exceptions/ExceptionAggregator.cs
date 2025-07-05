@@ -6,6 +6,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator;
 
 namespace Phx.Inject.Common.Exceptions;
@@ -82,10 +83,9 @@ internal sealed class ExceptionAggregator : IExceptionAggregator {
                 () => func(aggregateException),
                 e => aggregateException.Throw<T>(generatorCtx));
 
-        return aggregateException.exceptions.Count switch {
-            0 => result,
-            _ => aggregateException.Throw<T>(generatorCtx)
-        };
+        return aggregateException.exceptions.OfType<FatalInjectionException>().Any()
+            ? aggregateException.Throw<T>(generatorCtx)
+            : result;
     }
 
     public static void Try(
@@ -120,7 +120,7 @@ internal static class ExceptionAggregatorExtensions {
         IGeneratorContext generatorContext
     ) {
         return e as InjectionException
-            ?? Diagnostics.UnexpectedError.AsException(
+            ?? Diagnostics.UnexpectedError.AsFatalException(
                 $"Unexpected error while {message}: {e}",
                 generatorContext.GetLocation(),
                 generatorContext);

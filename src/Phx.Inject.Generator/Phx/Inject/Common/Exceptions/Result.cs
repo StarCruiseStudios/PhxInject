@@ -16,6 +16,7 @@ internal interface IResult<out T> {
 
     T GetValue();
     T GetOrThrow(IGeneratorContext generatorContext);
+    T GetOrThrowFatal(IGeneratorContext generatorContext);
     IResult<R> Map<R>(Func<T, IResult<R>> mapFunc);
     IResult<R> MapError<R>();
 }
@@ -62,6 +63,9 @@ internal static class Result {
         public T GetOrThrow(IGeneratorContext generatorContext) {
             return value;
         }
+        public T GetOrThrowFatal(IGeneratorContext generatorContext) {
+            return value;
+        }
 
         public IResult<R> Map<R>(Func<T, IResult<R>> mapFunc) {
             return mapFunc(value);
@@ -92,6 +96,10 @@ internal static class Result {
 
         public T GetOrThrow(IGeneratorContext generatorContext) {
             throw diagnosticData.AsException(message, location, generatorContext);
+        }
+
+        public T GetOrThrowFatal(IGeneratorContext generatorContext) {
+            throw diagnosticData.AsFatalException(message, location, generatorContext);
         }
 
         public IResult<R> Map<R>(Func<T, IResult<R>> mapFunc) {

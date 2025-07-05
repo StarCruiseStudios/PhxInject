@@ -45,10 +45,6 @@ internal static class AttributeHelpers {
         return TryGetSingleAttribute(symbol, PhxInjectAttributeClassName);
     }
 
-    public static IResult<AttributeData> ExpectPhxInjectAttribute(this ISymbol symbol) {
-        return ExpectSingleAttribute(symbol, PhxInjectAttributeClassName);
-    }
-
     public static IResult<AttributeData?> TryGetInjectorAttribute(this ISymbol symbol) {
         return TryGetSingleAttribute(symbol, InjectorAttributeClassName);
     }
@@ -85,16 +81,8 @@ internal static class AttributeHelpers {
         return TryGetSingleAttribute(symbol, FactoryReferenceAttributeClassName);
     }
 
-    public static IResult<bool> HasBuilderAttribute(this ISymbol symbol) {
-        return TryGetBuilderAttribute(symbol).Map(it => Result.Ok(it is not null));
-    }
-
     public static IResult<AttributeData?> TryGetBuilderAttribute(this ISymbol symbol) {
         return TryGetSingleAttribute(symbol, BuilderAttributeClassName);
-    }
-
-    public static IResult<bool> HasBuilderReferenceAttribute(this ISymbol symbol) {
-        return TryGetBuilderReferenceAttribute(symbol).Map(it => Result.Ok(it is not null));
     }
 
     public static IResult<AttributeData?> TryGetBuilderReferenceAttribute(this ISymbol symbol) {

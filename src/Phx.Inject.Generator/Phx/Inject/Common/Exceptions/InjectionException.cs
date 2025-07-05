@@ -11,6 +11,14 @@ using Phx.Inject.Generator;
 
 namespace Phx.Inject.Common.Exceptions;
 
+internal class FatalInjectionException : InjectionException {
+    public FatalInjectionException(
+        string message,
+        Diagnostic diagnostic,
+        IGeneratorContext generatorContext
+    ) : base(message, diagnostic, generatorContext) { }
+}
+
 internal class InjectionException : Exception {
     public Diagnostic Diagnostic { get; }
 

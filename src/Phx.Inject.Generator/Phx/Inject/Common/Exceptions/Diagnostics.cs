@@ -21,13 +21,13 @@ internal static class Diagnostics {
         InjectionCategory,
         DiagnosticSeverity.Info);
 
-    public static readonly DiagnosticData UnexpectedError = new(
+    public static readonly FatalDiagnosticData UnexpectedError = new(
         PhxInjectIdPrefix + "0001",
         "An unexpected error occurred.",
         InjectionCategory,
         DiagnosticSeverity.Error);
 
-    public static readonly DiagnosticData InternalError = new(
+    public static readonly FatalDiagnosticData InternalError = new(
         PhxInjectIdPrefix + "0002",
         "An internal error occurred while generating injection.",
         InjectionCategory,
@@ -75,6 +75,19 @@ internal static class Diagnostics {
                 generatorExecutionContext);
         }
     }
+    
+    internal sealed class FatalDiagnosticData : DiagnosticData {
+        public FatalDiagnosticData(
+            string Id,
+            string Title,
+            string Category,
+            DiagnosticSeverity Severity
+        ) : base(Id, Title, Category, Severity) { }
+
+        public override InjectionException AsException(string message, Location location, IGeneratorContext generatorExecutionContext) {
+            return AsFatalException(message, location, generatorExecutionContext);
+        }
+    }
 
     internal class DiagnosticData {
         public string Id { get; }
@@ -89,12 +102,26 @@ internal static class Diagnostics {
             this.Severity = Severity;
         }
 
-        public InjectionException AsException(
+        public virtual InjectionException AsException(
             string message,
             Location location,
             IGeneratorContext generatorExecutionContext
         ) {
             return new InjectionException(
+                message,
+                CreateDiagnostic(
+                    message,
+                    generatorExecutionContext.GetFrame(),
+                    location),
+                generatorExecutionContext);
+        }
+        
+        public virtual InjectionException AsFatalException(
+            string message,
+            Location location,
+            IGeneratorContext generatorExecutionContext
+        ) {
+            return new FatalInjectionException(
                 message,
                 CreateDiagnostic(
                     message,

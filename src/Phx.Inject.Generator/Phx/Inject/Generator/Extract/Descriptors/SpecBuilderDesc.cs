@@ -169,11 +169,11 @@ internal record SpecBuilderDesc(
             Location builderLocation,
             IGeneratorContext context
         ) {
-            if (!builderSymbol.HasBuilderAttribute().GetOrThrow(context)) {
+            if (builderSymbol.TryGetBuilderAttribute().GetOrThrow(context) == null) {
                 return false;
             }
 
-            if (builderSymbol.HasBuilderReferenceAttribute().GetOrThrow(context)) {
+            if (builderSymbol.TryGetBuilderReferenceAttribute().GetOrThrow(context) != null) {
                 // Cannot be a builder and a builder reference.
                 throw Diagnostics.InvalidSpecification.AsException(
                     "Method cannot have both Builder and BuilderReference attributes.",
@@ -199,11 +199,11 @@ internal record SpecBuilderDesc(
             Location builderReferenceLocation,
             IGeneratorContext generatorCtx
         ) {
-            if (!builderReferenceSymbol.HasBuilderReferenceAttribute().GetOrThrow(generatorCtx)) {
+            if (builderReferenceSymbol.TryGetBuilderReferenceAttribute().GetOrThrow(generatorCtx) == null) {
                 return false;
             }
 
-            if (builderReferenceSymbol.HasBuilderAttribute().GetOrThrow(generatorCtx)) {
+            if (builderReferenceSymbol.TryGetBuilderAttribute().GetOrThrow(generatorCtx) != null) {
                 // Cannot be a builder and a builder reference.
                 throw Diagnostics.InvalidSpecification.AsException(
                     "Property or Field cannot have both Builder and BuilderReference attributes.",
