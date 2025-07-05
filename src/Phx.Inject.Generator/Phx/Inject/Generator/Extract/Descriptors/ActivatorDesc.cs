@@ -21,14 +21,14 @@ internal record ActivatorDesc(
     public interface IExtractor {
         ActivatorDesc? Extract(
             IMethodSymbol builderMethod,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         );
     }
 
     public class Extractor : IExtractor {
         public ActivatorDesc? Extract(
             IMethodSymbol builderMethod,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         ) {
             var builderLocation = builderMethod.Locations.First();
 
@@ -41,12 +41,12 @@ internal record ActivatorDesc(
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Injector builder {builderMethod.Name} must have exactly 1 parameter.",
                     builderLocation,
-                    context.GenerationContext);
+                    extractorCtx);
             }
 
             var builtType = TypeModel.FromTypeSymbol(builderMethod.Parameters[0].Type);
-            var qualifier = MetadataHelpers.TryGetQualifier(builderMethod, context.GenerationContext)
-                .GetOrThrow(context.GenerationContext);
+            var qualifier = MetadataHelpers.TryGetQualifier(builderMethod)
+                .GetOrThrow(extractorCtx);
             return new ActivatorDesc(
                 new QualifiedTypeModel(builtType, qualifier),
                 builderMethod.Name,

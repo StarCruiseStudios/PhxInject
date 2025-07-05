@@ -10,4 +10,23 @@ using Microsoft.CodeAnalysis;
 
 namespace Phx.Inject.Generator.Extract;
 
-internal record ExtractorContext(GeneratorExecutionContext GenerationContext);
+internal record ExtractorContext : IGeneratorContext {
+    public ISymbol? Symbol { get; private init; }
+    public IGeneratorContext? ParentContext { get; private init; }
+    public GeneratorExecutionContext ExecutionContext { get; }
+    
+    public ExtractorContext(
+        GeneratorExecutionContext executionCtx
+    ) {
+        Symbol = null;
+        ParentContext = null;
+        ExecutionContext = executionCtx;
+    }
+
+    public ExtractorContext GetChildContext(ISymbol? symbol, Location location) {
+        return new ExtractorContext(ExecutionContext) {
+            Symbol = symbol,
+            ParentContext = this
+        };
+    }
+}

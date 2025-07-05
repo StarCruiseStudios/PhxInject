@@ -7,14 +7,15 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator;
 
 namespace Phx.Inject.Common.Exceptions;
 
-public interface IResult<out T> {
+internal interface IResult<out T> {
     bool IsOk { get; }
 
     T GetValue();
-    T GetOrThrow(GeneratorExecutionContext generatorExecutionContext);
+    T GetOrThrow(IGeneratorContext generatorContext);
     IResult<R> Map<R>(Func<T, IResult<R>> mapFunc);
     IResult<R> MapError<R>();
 }
@@ -58,7 +59,7 @@ internal static class Result {
             return value;
         }
 
-        public T GetOrThrow(GeneratorExecutionContext generatorExecutionContext) {
+        public T GetOrThrow(IGeneratorContext generatorContext) {
             return value;
         }
 
@@ -89,8 +90,8 @@ internal static class Result {
             throw new InvalidOperationException("Cannot get value from an Error result.");
         }
 
-        public T GetOrThrow(GeneratorExecutionContext generatorExecutionContext) {
-            throw diagnosticData.AsException(message, location, generatorExecutionContext);
+        public T GetOrThrow(IGeneratorContext generatorContext) {
+            throw diagnosticData.AsException(message, location, generatorContext);
         }
 
         public IResult<R> Map<R>(Func<T, IResult<R>> mapFunc) {

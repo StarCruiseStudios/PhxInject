@@ -13,10 +13,24 @@ using Phx.Inject.Generator.Render;
 namespace Phx.Inject.Generator.Project.Templates;
 
 internal interface IRenderTemplate : ISourceCodeElement {
-    void Render(IRenderWriter writer, RenderContext context);
+    void Render(IRenderWriter writer, RenderContext renderCtx);
 }
 
-internal record RenderContext(
-    GeneratorSettings generatorSettings,
-    GeneratorExecutionContext GenerationContext
-);
+internal record RenderContext : IGeneratorContext {
+    public GeneratorSettings GeneratorSettings { get; }
+    public ISymbol? Symbol { get; private init; }
+    public IGeneratorContext? ParentContext { get; }
+    public GeneratorExecutionContext ExecutionContext { get; }
+    
+    public RenderContext(
+        GeneratorSettings generatorSettings,
+        ISymbol? symbol,
+        RenderContext? parentCtx,
+        GeneratorExecutionContext executionCtx
+    ) {
+        GeneratorSettings = generatorSettings;
+        Symbol = symbol;
+        ParentContext = parentCtx;
+        ExecutionContext = executionCtx;
+    }
+}

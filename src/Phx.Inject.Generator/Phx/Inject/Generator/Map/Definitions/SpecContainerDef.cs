@@ -23,18 +23,18 @@ internal record SpecContainerDef(
     Location Location
 ) : IDefinition {
     public interface IMapper {
-        SpecContainerDef Map(SpecDesc specDesc, DefGenerationContext context);
+        SpecContainerDef Map(SpecDesc specDesc, DefGenerationContext defGenerationCtx);
     }
 
     public class Mapper : IMapper {
-        public SpecContainerDef Map(SpecDesc specDesc, DefGenerationContext context) {
+        public SpecContainerDef Map(SpecDesc specDesc, DefGenerationContext defGenerationCtx) {
             var specContainerType = TypeHelpers.CreateSpecContainerType(
-                context.Injector.InjectorType,
+                defGenerationCtx.Injector.InjectorType,
                 specDesc.SpecType);
 
             IReadOnlyList<SpecContainerFactoryDef> factories = specDesc.Factories.Select(factory => {
                     IReadOnlyList<SpecContainerFactoryInvocationDef> arguments = factory.Parameters.Select(parameter =>
-                            context.GetSpecContainerFactoryInvocation(
+                            defGenerationCtx.GetSpecContainerFactoryInvocation(
                                 parameter,
                                 factory.Location))
                         .ToImmutableList();
@@ -43,12 +43,12 @@ internal record SpecContainerDef(
                         .Select(property =>
                             new SpecContainerFactoryRequiredPropertyDef(
                                 property.PropertyName,
-                                context.GetSpecContainerFactoryInvocation(
+                                defGenerationCtx.GetSpecContainerFactoryInvocation(
                                     property.PropertyType,
                                     factory.Location),
                                 factory.Location))
                         .ToImmutableList();
-                    var specContainerFactoryMethodName = factory.GetSpecContainerFactoryName(context.GenerationContext);
+                    var specContainerFactoryMethodName = factory.GetSpecContainerFactoryName(defGenerationCtx);
 
                     return new SpecContainerFactoryDef(
                         factory.ReturnType,
@@ -64,11 +64,11 @@ internal record SpecContainerDef(
 
             IReadOnlyList<SpecContainerBuilderDef> builders = specDesc.Builders.Select(builder => {
                     IReadOnlyList<SpecContainerFactoryInvocationDef> arguments = builder.Parameters.Select(parameter =>
-                            context.GetSpecContainerFactoryInvocation(
+                            defGenerationCtx.GetSpecContainerFactoryInvocation(
                                 parameter,
                                 builder.Location))
                         .ToImmutableList();
-                    var specContainerBuilderMethodName = builder.GetSpecContainerBuilderName(context.GenerationContext);
+                    var specContainerBuilderMethodName = builder.GetSpecContainerBuilderName(defGenerationCtx);
 
                     return new SpecContainerBuilderDef(
                         builder.BuiltType.TypeModel,

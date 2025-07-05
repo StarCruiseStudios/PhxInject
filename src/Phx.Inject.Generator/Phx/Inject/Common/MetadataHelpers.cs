@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator;
 using Phx.Inject.Generator.Render;
 
 namespace Phx.Inject.Common;
@@ -18,9 +19,9 @@ namespace Phx.Inject.Common;
 internal static class MetadataHelpers {
     public static IResult<ITypeSymbol> ExpectTypeSymbolFromDeclaration(
         TypeDeclarationSyntax syntaxNode,
-        GeneratorExecutionContext context
+        IGeneratorContext generatorCtx
     ) {
-        var symbol = context.Compilation
+        var symbol = generatorCtx.ExecutionContext.Compilation
             .GetSemanticModel(syntaxNode.SyntaxTree)
             .GetDeclaredSymbol(syntaxNode);
         return Result.FromNullable(
@@ -53,9 +54,9 @@ internal static class MetadataHelpers {
 
     public static IReadOnlyList<QualifiedTypeModel> TryGetMethodParametersQualifiedTypes(
         IMethodSymbol methodSymbol,
-        GeneratorExecutionContext context) {
+        IGeneratorContext generatorCtx) {
         return methodSymbol.Parameters.Select(parameter => {
-                var qualifier = TryGetQualifier(parameter, context).GetOrThrow(context);
+                var qualifier = TryGetQualifier(parameter).GetOrThrow(generatorCtx);
                 return new QualifiedTypeModel(
                     TypeModel.FromTypeSymbol(parameter.Type),
                     qualifier);
@@ -65,7 +66,7 @@ internal static class MetadataHelpers {
 
     public static IReadOnlyList<QualifiedTypeModel> TryGetConstructorParameterQualifiedTypes(
         ITypeSymbol type,
-        GeneratorExecutionContext context) {
+        IGeneratorContext generatorCtx) {
         var typeLocation = type.Locations.First();
 
         if (type.IsStatic || type.IsAbstract || type.TypeKind == TypeKind.Interface) {
@@ -81,18 +82,18 @@ internal static class MetadataHelpers {
             throw Diagnostics.InvalidSpecification.AsException(
                 $"Auto injected type '{type.Name}' must contain exactly one public constructor",
                 typeLocation,
-                context);
+                generatorCtx);
         }
 
         var constructorMethod = constructors.Single();
 
-        return TryGetMethodParametersQualifiedTypes(constructorMethod, context);
+        return TryGetMethodParametersQualifiedTypes(constructorMethod, generatorCtx);
     }
 
     public static string GetGeneratedInjectorClassName(
         ITypeSymbol injectorInterfaceSymbol,
-        GeneratorExecutionContext context) {
-        var injectorAttribute = injectorInterfaceSymbol.ExpectInjectorAttribute().GetOrThrow(context);
+        IGeneratorContext generatorCtx) {
+        var injectorAttribute = injectorInterfaceSymbol.ExpectInjectorAttribute().GetOrThrow(generatorCtx);
         var generatedClassName = injectorAttribute.ConstructorArguments
             .FirstOrDefault(argument => argument.Kind != TypedConstantKind.Array)
             .Value as string;
@@ -108,8 +109,8 @@ internal static class MetadataHelpers {
 
     public static IReadOnlyList<ITypeSymbol> TryGetInjectorSpecificationTypes(
         ISymbol injectorInterfaceSymbol,
-        GeneratorExecutionContext context) {
-        var injectorAttribute = injectorInterfaceSymbol.ExpectInjectorAttribute().GetOrThrow(context);
+        IGeneratorContext generatorCtx) {
+        var injectorAttribute = injectorInterfaceSymbol.ExpectInjectorAttribute().GetOrThrow(generatorCtx);
         return injectorAttribute.ConstructorArguments
             .Where(argument => argument.Kind == TypedConstantKind.Array)
             .SelectMany(argument => argument.Values)
@@ -121,7 +122,7 @@ internal static class MetadataHelpers {
     public static SpecFactoryMethodFabricationMode GetFactoryFabricationMode(
         AttributeData factoryAttribute,
         Location location,
-        GeneratorExecutionContext context
+        IGeneratorContext generatorCtx
     ) {
         IReadOnlyList<SpecFactoryMethodFabricationMode> fabricationModes = factoryAttribute.ConstructorArguments
             .Where(argument => argument.Type!.Name == "FabricationMode")
@@ -134,7 +135,7 @@ internal static class MetadataHelpers {
             _ => throw Diagnostics.InternalError.AsException(
                 "Factories can only have a single fabrication mode.",
                 location,
-                context)
+                generatorCtx)
         };
     }
 
@@ -168,7 +169,7 @@ internal static class MetadataHelpers {
         );
     }
 
-    public static IResult<string> TryGetQualifier(ISymbol symbol, GeneratorExecutionContext context) {
+    public static IResult<string> TryGetQualifier(ISymbol symbol) {
         var labelAttributeResult = symbol.TryGetLabelAttribute();
         if (!labelAttributeResult.IsOk) {
             return labelAttributeResult.MapError<string>();
@@ -210,7 +211,7 @@ internal static class MetadataHelpers {
 
     public static IReadOnlyDictionary<string, QualifiedTypeModel> GetRequiredPropertyQualifiedTypes(
         ITypeSymbol type,
-        GeneratorExecutionContext context) {
+        IGeneratorContext generatorCtx) {
         return type.GetMembers()
             .OfType<IPropertySymbol>()
             .Where(p => p.SetMethod != null && p.SetMethod.DeclaredAccessibility == Accessibility.Public)
@@ -219,17 +220,17 @@ internal static class MetadataHelpers {
                 property => property.Name,
                 property => new QualifiedTypeModel(
                     TypeModel.FromTypeSymbol(property.Type),
-                    TryGetQualifier(property, context).GetOrThrow(context)
+                    TryGetQualifier(property).GetOrThrow(generatorCtx)
                 )
             );
     }
 
     public static IReadOnlyList<IMethodSymbol> GetDirectBuilderMethods(
         ITypeSymbol type,
-        GeneratorExecutionContext context) {
+        IGeneratorContext generatorCtx) {
         return type.GetMembers()
             .OfType<IMethodSymbol>()
-            .Where(m => m.TryGetBuilderAttribute().GetOrThrow(context) != null)
+            .Where(m => m.TryGetBuilderAttribute().GetOrThrow(generatorCtx) != null)
             .ToImmutableList();
     }
 }

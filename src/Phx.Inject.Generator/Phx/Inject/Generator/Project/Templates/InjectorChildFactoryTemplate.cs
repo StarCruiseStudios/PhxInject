@@ -18,7 +18,7 @@ internal record InjectorChildFactoryTemplate(
     IEnumerable<IInjectorChildConstructorArgumentTemplate> ChildConstructorArguments,
     Location Location
 ) : IInjectorMemberTemplate {
-    public void Render(IRenderWriter writer, RenderContext context) {
+    public void Render(IRenderWriter writer, RenderContext renderCtx) {
         writer.Append($"public {ChildInterfaceTypeQualifiedName} {MethodName}(");
 
         if (ConstructorParameters.Any()) {
@@ -40,7 +40,7 @@ internal record InjectorChildFactoryTemplate(
                 CloseWithNewline: false))) {
             foreach (var arg in ChildConstructorArguments) {
                 var elementWriter = collectionWriter.GetElementWriter();
-                arg.Render(elementWriter, context);
+                arg.Render(elementWriter, renderCtx);
             }
         }
 

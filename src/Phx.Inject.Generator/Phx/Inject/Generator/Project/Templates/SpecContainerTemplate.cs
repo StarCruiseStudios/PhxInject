@@ -22,7 +22,7 @@ internal record SpecContainerTemplate(
     IEnumerable<ISpecContainerMemberTemplate> MemberTemplates,
     Location Location
 ) : IRenderTemplate {
-    public void Render(IRenderWriter writer, RenderContext context) {
+    public void Render(IRenderWriter writer, RenderContext renderCtx) {
         var hasContainerScopedReferences = InstanceHolders.Any(it => it.isContainerScoped);
 
         //  internal class SpecContainerClassName {
@@ -151,20 +151,20 @@ internal record SpecContainerTemplate(
         //      }
         foreach (var memberTemplate in MemberTemplates) {
             writer.AppendBlankLine();
-            memberTemplate.Render(writer, context);
+            memberTemplate.Render(writer, renderCtx);
         }
 
         //  }
         writer.DecreaseIndent(1)
             .AppendLine("}");
     }
-    
+
     public record SpecContainerInstanceHolder(
         string InstanceQualifiedType,
         string ReferenceName,
         bool isContainerScoped
     );
-    
+
     public interface IProjector {
         SpecContainerTemplate Project(
             SpecContainerDef specContainerDef,

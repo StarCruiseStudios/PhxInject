@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator;
 
 namespace Phx.Inject.Common.Exceptions;
 
@@ -15,9 +16,9 @@ internal class InjectionException : Exception {
 
     public InjectionException(
         Diagnostic diagnostic,
-        GeneratorExecutionContext generatorContext
+        IGeneratorContext generatorContext
     ) : base(diagnostic.GetMessage()) {
         Diagnostic = diagnostic;
-        generatorContext.ReportDiagnostic(Diagnostic);
+        generatorContext.ExecutionContext.ReportDiagnostic(Diagnostic);
     }
 }

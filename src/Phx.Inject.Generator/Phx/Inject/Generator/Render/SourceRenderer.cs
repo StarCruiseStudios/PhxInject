@@ -7,7 +7,6 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Project.Templates;
@@ -28,21 +27,20 @@ internal class SourceRenderer {
 
     public void Render(
         IReadOnlyList<(TypeModel, IRenderTemplate)> templates,
-        GeneratorExecutionContext context
+        IGeneratorContext generatorCtx
     ) {
-        var renderContext = new RenderContext(generatorSettings, context);
+        var renderContext = new RenderContext(generatorSettings,null, null, generatorCtx.ExecutionContext);
         ExceptionAggregator.Try(
             "rendering source templates",
-            Location.None,
-            context,
+            generatorCtx,
             exceptionAggregator => {
                 templates.SelectCatching(exceptionAggregator,
                     t => t.ToString(),
                     t => {
                         var (classType, template) = t;
                         var fileName = $"{classType.QualifiedName}.{generatorSettings.GeneratedFileExtension}";
-                        context.Log($"Rendering source for {fileName}");
-                        context.AddSource(fileName,
+                        generatorCtx.Log($"Rendering source for {fileName}");
+                        generatorCtx.ExecutionContext.AddSource(fileName,
                             writerFactory.Use(writer => template.Render(writer, renderContext)));
                         return fileName;
                     });

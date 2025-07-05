@@ -22,14 +22,14 @@ internal record DependencyProviderDesc(
     public interface IExtractor {
         DependencyProviderDesc Extract(
             IMethodSymbol providerMethod,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         );
     }
 
     public class Extractor : IExtractor {
         public DependencyProviderDesc Extract(
             IMethodSymbol providerMethod,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         ) {
             var providerLocation = providerMethod.Locations.First();
 
@@ -37,27 +37,27 @@ internal record DependencyProviderDesc(
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Dependency provider {providerMethod.Name} must have a return type.",
                     providerLocation,
-                    context.GenerationContext);
+                    extractorCtx);
             }
 
             if (providerMethod.Parameters.Length > 0) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Dependency provider {providerMethod.Name} must not have any parameters.",
                     providerLocation,
-                    context.GenerationContext);
+                    extractorCtx);
             }
 
-            var partialAttributes = providerMethod.TryGetPartialAttribute().GetOrThrow(context.GenerationContext);
+            var partialAttributes = providerMethod.TryGetPartialAttribute().GetOrThrow(extractorCtx);
 
-            var qualifier = MetadataHelpers.TryGetQualifier(providerMethod, context.GenerationContext)
-                .GetOrThrow(context.GenerationContext);
+            var qualifier = MetadataHelpers.TryGetQualifier(providerMethod)
+                .GetOrThrow(extractorCtx);
             var returnTypeModel = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
             var returnType = new QualifiedTypeModel(
                 returnTypeModel,
                 qualifier);
 
             var isPartial = partialAttributes != null;
-            TypeHelpers.ValidatePartialType(returnType, isPartial, providerLocation, context.GenerationContext);
+            TypeHelpers.ValidatePartialType(returnType, isPartial, providerLocation, extractorCtx);
 
             return new DependencyProviderDesc(
                 returnType,

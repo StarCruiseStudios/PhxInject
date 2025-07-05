@@ -16,11 +16,11 @@ internal record DependencyProviderMethodTemplate(
     SpecContainerFactoryInvocationTemplate FactoryInvocationTemplate,
     Location Location
 ) : IRenderTemplate {
-    public void Render(IRenderWriter writer, RenderContext context) {
+    public void Render(IRenderWriter writer, RenderContext renderCtx) {
         writer.AppendLine($"public {ReturnTypeQualifiedName} {ProviderMethodName}() {{")
             .IncreaseIndent(1)
             .Append("return ");
-        FactoryInvocationTemplate.Render(writer, context);
+        FactoryInvocationTemplate.Render(writer, renderCtx);
         writer.AppendLine(";")
             .DecreaseIndent(1)
             .AppendLine("}");

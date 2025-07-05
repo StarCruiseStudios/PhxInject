@@ -32,19 +32,19 @@ internal class SourceGenerator : ISourceGenerator {
         context.RegisterForSyntaxNotifications(() => new SourceSyntaxReceiver());
     }
 
-    public void Execute(GeneratorExecutionContext generatorContext) {
+    public void Execute(GeneratorExecutionContext executionCtx) {
+        var generatorCtx = new GeneratorContext(executionCtx);
         try {
             ExceptionAggregator.Try(
                 "generating injection types",
-                Location.None,
-                generatorContext,
+                generatorCtx,
                 exceptionAggregator => {
                     // Abstract: Source code to syntax declarations.
-                    var syntaxReceiver = generatorContext.SyntaxReceiver as SourceSyntaxReceiver
+                    var syntaxReceiver = generatorCtx.ExecutionContext.SyntaxReceiver as SourceSyntaxReceiver
                         ?? throw Diagnostics.UnexpectedError.AsException(
-                            $"Incorrect Syntax Receiver {generatorContext.SyntaxReceiver}.",
+                            $"Incorrect Syntax Receiver {generatorCtx.ExecutionContext.SyntaxReceiver}.",
                             Location.None,
-                            generatorContext);
+                            generatorCtx);
 
                     IReadOnlyList<ITypeSymbol> settingsSymbols = syntaxReceiver.PhxInjectSettingsCandidates
                         .SelectCatching(
@@ -52,10 +52,10 @@ internal class SourceGenerator : ISourceGenerator {
                             syntaxNode => $"extracting PhxInject settings from {syntaxNode.Identifier.Text}",
                             syntaxNode => {
                                 var settingsSymbol = MetadataHelpers
-                                    .ExpectTypeSymbolFromDeclaration(syntaxNode, generatorContext)
-                                    .GetOrThrow(generatorContext);
+                                    .ExpectTypeSymbolFromDeclaration(syntaxNode, generatorCtx)
+                                    .GetOrThrow(generatorCtx);
                                 return TypeHelpers.IsPhxInjectSettingsSymbol(settingsSymbol)
-                                    .GetOrThrow(generatorContext)
+                                    .GetOrThrow(generatorCtx)
                                     ? settingsSymbol
                                     : null;
                             })
@@ -66,31 +66,33 @@ internal class SourceGenerator : ISourceGenerator {
                         0 => generatorSettings,
                         1 => MetadataHelpers.GetGeneratorSettings(settingsSymbols.First()
                             .ExpectPhxInjectAttribute()
-                            .GetOrThrow(generatorContext)),
+                            .GetOrThrow(generatorCtx)),
                         _ => Result.Error<GeneratorSettings>(
                                 $"Only one PhxInject settings can be specified. Found {settingsSymbols.Count} on types [{string.Join(", ", settingsSymbols.Select(it => it.Name))}].",
                                 Location.None,
                                 Diagnostics.UnexpectedError)
-                            .GetOrThrow(generatorContext)
+                            .GetOrThrow(generatorCtx)
                     };
 
                     // Extract: Syntax declarations to descriptors.
-                    var sourceDesc = new SourceExtractor().Extract(syntaxReceiver, generatorContext);
+                    var sourceDesc = new SourceExtractor()
+                        .Extract(syntaxReceiver, generatorCtx);
 
                     // Map: Descriptors to defs.
                     var injectionContextDefs = new SourceDefMapper(settings)
-                        .Map(sourceDesc, generatorContext);
+                        .Map(sourceDesc, generatorCtx);
 
                     // Project: Defs to templates.
-                    var templates = new SourceTemplateProjector().Project(
-                        injectionContextDefs,
-                        generatorContext);
+                    var templates = new SourceTemplateProjector()
+                        .Project(injectionContextDefs, generatorCtx);
 
                     // Render: Templates to generated source.
-                    new SourceRenderer(settings).Render(templates, generatorContext);
+                    new SourceRenderer(settings)
+                        .Render(templates, generatorCtx);
                 });
         } catch (InjectionException) {
             // Ignore injection exceptions to allow partial generation to complete.
+            // They are already reported as diagnostics.
         }
     }
 }

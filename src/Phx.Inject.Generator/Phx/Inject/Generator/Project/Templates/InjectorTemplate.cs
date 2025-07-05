@@ -25,7 +25,7 @@ internal record InjectorTemplate(
     IEnumerable<IInjectorMemberTemplate> InjectorMemberTemplates,
     Location Location
 ) : IRenderTemplate {
-    public void Render(IRenderWriter writer, RenderContext context) {
+    public void Render(IRenderWriter writer, RenderContext renderCtx) {
         //  internal partial class InjectorClassName : InjectorInterfaceQualifiedName {
         writer.AppendLine($"internal partial class {InjectorClassName} : {InjectorInterfaceQualifiedName} {{")
             .IncreaseIndent(1);
@@ -141,7 +141,7 @@ internal record InjectorTemplate(
         //      }
         foreach (var memberTemplate in InjectorMemberTemplates) {
             writer.AppendBlankLine();
-            memberTemplate.Render(writer, context);
+            memberTemplate.Render(writer, renderCtx);
         }
 
         // }
@@ -158,7 +158,7 @@ internal record InjectorTemplate(
     public interface IProjector {
         InjectorTemplate Project(
             InjectorDef injectorDef,
-            TemplateGenerationContext context
+            TemplateGenerationContext templateGenerationCtx
         );
     }
 
@@ -167,9 +167,10 @@ internal record InjectorTemplate(
 
         public InjectorTemplate Project(
             InjectorDef injectorDef,
-            TemplateGenerationContext context
+            TemplateGenerationContext templateGenerationCtx
         ) {
-            IReadOnlyList<SpecContainerDef> specContainers = context.SpecContainers.Values.ToImmutableList();
+            IReadOnlyList<SpecContainerDef> specContainers =
+                templateGenerationCtx.SpecContainers.Values.ToImmutableList();
             IReadOnlyList<InjectorSpecContainerCollectionProperty> specContainerProperties = specContainers
                 .Select(specContainer => {
                     var constructorArgument = specContainer.SpecInstantiationMode == SpecInstantiationMode.Static
@@ -243,7 +244,7 @@ internal record InjectorTemplate(
                     }))
                 .Concat(
                     injectorDef.ChildFactories.Select(factory => {
-                        var childInjector = context.GetInjector(
+                        var childInjector = templateGenerationCtx.GetInjector(
                             factory.InjectorChildInterfaceType,
                             factory.Location);
                         var childTypeQualifiedName = childInjector.InjectorType.QualifiedName;
@@ -262,7 +263,7 @@ internal record InjectorTemplate(
                             throw Diagnostics.InvalidSpecification.AsException(
                                 $"Child Injector factory must contain parameters for each of the child injector's constructed specification types: {constructedSpecificationsString}. Missing: {missingDependenciesString}.",
                                 factory.Location,
-                                context.GenerationContext);
+                                templateGenerationCtx);
                         }
 
                         IReadOnlyList<TypeModel> unusedParameters = factory.Parameters.Where(paramType =>
@@ -275,7 +276,7 @@ internal record InjectorTemplate(
                             throw Diagnostics.InvalidSpecification.AsException(
                                 $"Child Injector factory contains unused parameters: {unusedParametersString}.",
                                 factory.Location,
-                                context.GenerationContext);
+                                templateGenerationCtx);
                         }
 
                         // Use factory.Parameters instead of childInjector.ConstructedSpecifications
@@ -297,7 +298,7 @@ internal record InjectorTemplate(
                             childInjector.Dependencies
                                 .Select(dependencyInterfaceType => {
                                     var dependencyImplementation =
-                                        context.GetDependency(
+                                        templateGenerationCtx.GetDependency(
                                             dependencyInterfaceType,
                                             childInjector.Location);
                                     var dependencyImplementationQualifiedName =

@@ -16,15 +16,37 @@ using Phx.Inject.Generator.Map.Definitions;
 
 namespace Phx.Inject.Generator.Map;
 
-internal record DefGenerationContext(
-    InjectorDesc Injector,
-    IReadOnlyDictionary<TypeModel, InjectorDesc> Injectors,
-    IReadOnlyDictionary<TypeModel, SpecDesc> Specifications,
-    IReadOnlyDictionary<TypeModel, DependencyDesc> Dependencies,
-    IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> FactoryRegistrations,
-    IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> BuilderRegistrations,
-    GeneratorExecutionContext GenerationContext
-) {
+internal record DefGenerationContext : IGeneratorContext {
+    public InjectorDesc Injector { get; }
+    public IReadOnlyDictionary<TypeModel, InjectorDesc> Injectors { get; }
+    public IReadOnlyDictionary<TypeModel, SpecDesc> Specifications { get; }
+    public IReadOnlyDictionary<TypeModel, DependencyDesc> Dependencies { get; }
+    public IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> FactoryRegistrations { get; set; }
+    public IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> BuilderRegistrations { get; set; }
+    public ISymbol? Symbol { get; private init; }
+    public IGeneratorContext? ParentContext { get; private init; }
+    public GeneratorExecutionContext ExecutionContext { get; }
+    
+    public DefGenerationContext(
+        InjectorDesc injector,
+        IReadOnlyDictionary<TypeModel, InjectorDesc> injectors,
+        IReadOnlyDictionary<TypeModel, SpecDesc> specifications,
+        IReadOnlyDictionary<TypeModel, DependencyDesc> dependencies,
+        IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> factoryRegistrations,
+        IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations,
+        GeneratorExecutionContext executionCtx
+    ) {
+        Injector = injector;
+        Injectors = injectors;
+        Specifications = specifications;
+        Dependencies = dependencies;
+        FactoryRegistrations = factoryRegistrations;
+        BuilderRegistrations = builderRegistrations;
+        Symbol = null;
+        ParentContext = null;
+        ExecutionContext = executionCtx;
+    }
+
     public InjectorDesc GetInjector(TypeModel type, Location location) {
         if (Injectors.TryGetValue(type, out var injector)) {
             return injector;
@@ -33,7 +55,7 @@ internal record DefGenerationContext(
         throw Diagnostics.IncompleteSpecification.AsException(
             $"Cannot find required injector type {type} while generating injection for type {Injector.InjectorInterfaceType}.",
             location,
-            GenerationContext);
+            this);
     }
 
     public SpecDesc GetSpec(TypeModel type, Location location) {
@@ -44,7 +66,7 @@ internal record DefGenerationContext(
         throw Diagnostics.IncompleteSpecification.AsException(
             $"Cannot find required specification type {type} while generating injection for type {Injector.InjectorInterfaceType}.",
             location,
-            GenerationContext);
+            this);
     }
 
     public DependencyDesc GetDependency(TypeModel type, Location location) {
@@ -55,7 +77,7 @@ internal record DefGenerationContext(
         throw Diagnostics.IncompleteSpecification.AsException(
             $"Cannot find required dependency type {type} while generating injection for type {Injector.InjectorInterfaceType}.",
             location,
-            GenerationContext);
+            this);
     }
 
     public SpecContainerFactoryInvocationDef GetSpecContainerFactoryInvocation(
@@ -66,7 +88,7 @@ internal record DefGenerationContext(
             throw Diagnostics.InternalError.AsException(
                 $"Cannot search factory for type {returnedType} before factory registrations are created  while generating injection for type {Injector.InjectorInterfaceType}.",
                 location,
-                GenerationContext);
+                this);
         }
 
         TypeModel? runtimeFactoryProvidedType = null;
@@ -87,7 +109,7 @@ internal record DefGenerationContext(
                         reg.Specification.SpecType);
                     return new SpecContainerFactorySingleInvocationDef(
                         specContainerType,
-                        reg.FactoryDesc.GetSpecContainerFactoryName(GenerationContext),
+                        reg.FactoryDesc.GetSpecContainerFactoryName(this),
                         reg.FactoryDesc.Location
                     );
                 })
@@ -103,7 +125,7 @@ internal record DefGenerationContext(
         throw Diagnostics.IncompleteSpecification.AsException(
             $"Cannot find factory for type {factoryType} while generating injection for type {Injector.InjectorInterfaceType}.",
             location,
-            GenerationContext);
+            this);
     }
 
     public SpecContainerBuilderInvocationDef GetSpecContainerBuilderInvocation(
@@ -115,7 +137,7 @@ internal record DefGenerationContext(
             throw Diagnostics.InternalError.AsException(
                 $"Cannot search for builder for type {builtType} before builder registrations are created  while generating injection for type {Injector.InjectorInterfaceType}.",
                 location,
-                GenerationContext);
+                this);
         }
 
         var key = RegistrationIdentifier.FromQualifiedTypeModel(builtType);
@@ -125,13 +147,28 @@ internal record DefGenerationContext(
                 builderRegistration.Specification.SpecType);
             return new SpecContainerBuilderInvocationDef(
                 specContainerType,
-                builderRegistration.BuilderDesc.GetSpecContainerBuilderName(GenerationContext),
+                builderRegistration.BuilderDesc.GetSpecContainerBuilderName(this),
                 builderRegistration.BuilderDesc.Location);
         }
 
         throw Diagnostics.IncompleteSpecification.AsException(
             $"Cannot find builder for type {builtType} while generating injection for type {Injector.InjectorInterfaceType}.",
             location,
-            GenerationContext);
+            this);
+    }
+
+    public DefGenerationContext GetChildContext(ISymbol? symbol) {
+        return new DefGenerationContext(
+            Injector,
+            Injectors,
+            Specifications,
+            Dependencies,
+            FactoryRegistrations,
+            BuilderRegistrations,
+            ExecutionContext
+        ) {
+            Symbol = symbol,
+            ParentContext = this
+        };
     }
 }

@@ -27,7 +27,7 @@ internal record InjectorDesc(
     public interface IExtractor {
         InjectorDesc Extract(
             ITypeSymbol injectorInterfaceSymbol,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         );
     }
 
@@ -53,12 +53,14 @@ internal record InjectorDesc(
 
         public InjectorDesc Extract(
             ITypeSymbol injectorInterfaceSymbol,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         ) {
             var injectorLocation = injectorInterfaceSymbol.Locations.First();
+            var currentCtx = extractorCtx.GetChildContext(injectorInterfaceSymbol, injectorLocation);
+
             var injectorInterfaceType = TypeModel.FromTypeSymbol(injectorInterfaceSymbol);
             var generatedInjectorTypeName =
-                MetadataHelpers.GetGeneratedInjectorClassName(injectorInterfaceSymbol, context.GenerationContext);
+                MetadataHelpers.GetGeneratedInjectorClassName(injectorInterfaceSymbol, extractorCtx);
             var injectorType = injectorInterfaceType with {
                 BaseTypeName = generatedInjectorTypeName,
                 TypeArguments = ImmutableList<TypeModel>.Empty
@@ -66,18 +68,17 @@ internal record InjectorDesc(
 
             return ExceptionAggregator.Try(
                 "extracting injector",
-                injectorLocation,
-                context.GenerationContext,
+                currentCtx,
                 exceptionAggregator => {
                     IReadOnlyList<TypeModel> dependencyInterfaceTypes =
                         MetadataHelpers.TryGetDependencyType(injectorInterfaceSymbol)
-                            .GetOrThrow(context.GenerationContext)
+                            .GetOrThrow(currentCtx)
                             .Let(dependencyInterfaceSymbol => dependencyInterfaceSymbol != null
                                 ? ImmutableList.Create(TypeModel.FromTypeSymbol(dependencyInterfaceSymbol))
                                 : ImmutableList<TypeModel>.Empty);
 
                     IReadOnlyList<TypeModel> specificationTypes = MetadataHelpers
-                        .TryGetInjectorSpecificationTypes(injectorInterfaceSymbol, context.GenerationContext)
+                        .TryGetInjectorSpecificationTypes(injectorInterfaceSymbol, currentCtx)
                         .Select(TypeModel.FromTypeSymbol)
                         .Concat(dependencyInterfaceTypes)
                         .ToImmutableList();
@@ -91,7 +92,7 @@ internal record InjectorDesc(
                         .SelectCatching(
                             exceptionAggregator,
                             methodSymbol => $"extracting injector provider method {injectorType}.{methodSymbol.Name}",
-                            methodSymbol => injectorProviderDescriptionExtractor.Extract(methodSymbol, context))
+                            methodSymbol => injectorProviderDescriptionExtractor.Extract(methodSymbol, currentCtx))
                         .Where(provider => provider != null)
                         .Select(provider => provider!)
                         .ToImmutableList();
@@ -100,7 +101,7 @@ internal record InjectorDesc(
                         .SelectCatching(
                             exceptionAggregator,
                             methodSymbol => $"extracting injector activator {injectorType}.{methodSymbol.Name}",
-                            method => activatorDescExtractor.Extract(method, context))
+                            method => activatorDescExtractor.Extract(method, currentCtx))
                         .Where(builder => builder != null)
                         .Select(builder => builder!)
                         .ToImmutableList();
@@ -109,7 +110,7 @@ internal record InjectorDesc(
                         .SelectCatching(
                             exceptionAggregator,
                             methodSymbol => $"extracting injector child factory {injectorType}.{methodSymbol.Name}",
-                            methodSymbol => injectorChildFactoryDescExtractor.Extract(methodSymbol, context))
+                            methodSymbol => injectorChildFactoryDescExtractor.Extract(methodSymbol, currentCtx))
                         .Where(childFactory => childFactory != null)
                         .Select(childFactory => childFactory!)
                         .ToImmutableList();

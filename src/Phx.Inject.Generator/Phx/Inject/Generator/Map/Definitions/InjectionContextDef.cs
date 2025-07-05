@@ -8,7 +8,6 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Generator.Extract.Descriptors;
 
@@ -23,7 +22,7 @@ internal record InjectionContextDef(
     public interface IMapper {
         InjectionContextDef Map(
             InjectorDesc injectorDesc,
-            DefGenerationContext context
+            DefGenerationContext defGenerationCtx
         );
     }
 
@@ -49,12 +48,12 @@ internal record InjectionContextDef(
 
         public InjectionContextDef Map(
             InjectorDesc injectorDesc,
-            DefGenerationContext context
+            DefGenerationContext defGenerationCtx
         ) {
             var factoryRegistrations = new Dictionary<RegistrationIdentifier, List<FactoryRegistration>>();
             var builderRegistrations = new Dictionary<RegistrationIdentifier, BuilderRegistration>();
 
-            IReadOnlyList<SpecDesc> specDescs = context.Specifications.Values.ToImmutableList();
+            IReadOnlyList<SpecDesc> specDescs = defGenerationCtx.Specifications.Values.ToImmutableList();
 
             // Create a registration for all of the spec descriptors' factory and builder methods.
             foreach (var specDesc in specDescs) {
@@ -66,7 +65,7 @@ internal record InjectionContextDef(
                             throw Diagnostics.InvalidSpecification.AsException(
                                 $"Factory for type {factory.ReturnType} must be unique or all factories must be partial.",
                                 factory.Location,
-                                context.GenerationContext);
+                                defGenerationCtx);
                         }
                     } else {
                         registrationList = new List<FactoryRegistration>();
@@ -97,12 +96,12 @@ internal record InjectionContextDef(
                         throw Diagnostics.IncompleteSpecification.AsException(
                             $"Cannot find factory for type {link.InputType} required by link in specification {specDesc.SpecType}.",
                             link.Location,
-                            context.GenerationContext);
+                            defGenerationCtx);
                     }
                 }
             }
 
-            var generationContext = context with {
+            var generationContext = defGenerationCtx with {
                 FactoryRegistrations = factoryRegistrations,
                 BuilderRegistrations = builderRegistrations
             };

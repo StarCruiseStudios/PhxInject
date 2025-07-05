@@ -23,18 +23,18 @@ internal record InjectorChildFactoryDesc(
     public interface IExtractor {
         InjectorChildFactoryDesc? Extract(
             IMethodSymbol childInjectorMethod,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         );
     }
 
     public class Extractor : IExtractor {
         public InjectorChildFactoryDesc? Extract(
             IMethodSymbol childInjectorMethod,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         ) {
             var childInjectorLocation = childInjectorMethod.Locations.First();
 
-            if (childInjectorMethod.TryGetChildInjectorAttribute().GetOrThrow(context.GenerationContext) == null) {
+            if (childInjectorMethod.TryGetChildInjectorAttribute().GetOrThrow(extractorCtx) == null) {
                 // This is not an injector child factory.
                 return null;
             }
@@ -43,7 +43,7 @@ internal record InjectorChildFactoryDesc(
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Injector child factory {childInjectorMethod.Name} must return a type.",
                     childInjectorLocation,
-                    context.GenerationContext);
+                    extractorCtx);
             }
 
             IReadOnlyList<TypeModel> parameters = childInjectorMethod.Parameters

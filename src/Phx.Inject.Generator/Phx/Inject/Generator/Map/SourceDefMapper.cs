@@ -7,8 +7,6 @@
 // -----------------------------------------------------------------------------
 
 using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Extract.Descriptors;
@@ -31,25 +29,24 @@ internal class SourceDefMapper {
 
     public IReadOnlyList<InjectionContextDef> Map(
         SourceDesc sourceDesc,
-        GeneratorExecutionContext context
+        IGeneratorContext generatorCtx
     ) {
         return ExceptionAggregator.Try(
             "mapping source definition",
-            Location.None,
-            context,
+            generatorCtx,
             exceptionAggregator => {
                 var injectorDescMap = CreateTypeMap(
                     sourceDesc.injectorDescs,
                     injector => injector.InjectorInterfaceType,
-                    context);
+                    generatorCtx);
                 var specDescMap = CreateTypeMap(
                     sourceDesc.GetAllSpecDescs(),
                     spec => spec.SpecType,
-                    context);
+                    generatorCtx);
                 var dependencyDescMap = CreateTypeMap(
                     sourceDesc.dependencyDescs,
                     dep => dep.DependencyInterfaceType,
-                    context);
+                    generatorCtx);
 
                 return sourceDesc.injectorDescs.SelectCatching(
                         exceptionAggregator,
@@ -61,26 +58,10 @@ internal class SourceDefMapper {
                                     throw Diagnostics.IncompleteSpecification.AsException(
                                         $"Cannot find required specification type {spec} while generating injection for type {injectorDesc.InjectorInterfaceType}.",
                                         injectorDesc.Location,
-                                        context);
+                                        generatorCtx);
                                 }
 
                                 injectorSpecDescMap.Add(spec, specDesc);
-                            }
-
-                            if (generatorSettings.AllowConstructorFactories) {
-                                var constructorSpec = specDefMapper.ExtractConstructorSpecForContext(
-                                    new DefGenerationContext(
-                                        injectorDesc,
-                                        injectorDescMap,
-                                        injectorSpecDescMap,
-                                        dependencyDescMap,
-                                        ImmutableDictionary<RegistrationIdentifier, List<FactoryRegistration>>.Empty,
-                                        ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
-                                        context));
-
-                                if (constructorSpec != null) {
-                                    injectorSpecDescMap.Add(constructorSpec.SpecType, constructorSpec);
-                                }
                             }
 
                             var defGenerationContext = new DefGenerationContext(
@@ -90,7 +71,16 @@ internal class SourceDefMapper {
                                 dependencyDescMap,
                                 ImmutableDictionary<RegistrationIdentifier, List<FactoryRegistration>>.Empty,
                                 ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
-                                context);
+                                generatorCtx.ExecutionContext);
+
+                            if (generatorSettings.AllowConstructorFactories) {
+                                var constructorSpec =
+                                    specDefMapper.ExtractConstructorSpecForContext(defGenerationContext);
+
+                                if (constructorSpec != null) {
+                                    injectorSpecDescMap.Add(constructorSpec.SpecType, constructorSpec);
+                                }
+                            }
 
                             return new InjectionDefMapper().Map(defGenerationContext);
                         })
@@ -101,7 +91,7 @@ internal class SourceDefMapper {
     private static IReadOnlyDictionary<TypeModel, T> CreateTypeMap<T>(
         IEnumerable<T> values,
         Func<T, TypeModel> extractKey,
-        GeneratorExecutionContext context
+        IGeneratorContext generatorCtx
     ) where T : ISourceCodeElement {
         var map = new Dictionary<TypeModel, T>();
         foreach (var value in values) {
@@ -110,7 +100,7 @@ internal class SourceDefMapper {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"{typeof(T).Name} with {key} is already defined.",
                     value.Location,
-                    context);
+                    generatorCtx);
             }
 
             map.Add(key, value);

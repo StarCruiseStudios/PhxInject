@@ -16,7 +16,7 @@ namespace Phx.Inject.Generator.Map;
 
 internal interface ISpecDefMapper {
     SpecDesc? ExtractConstructorSpecForContext(
-        DefGenerationContext context
+        DefGenerationContext defGenerationCtx
     );
 }
 
@@ -34,7 +34,7 @@ internal class SpecDefMapper : ISpecDefMapper {
     ) { }
 
     public SpecDesc? ExtractConstructorSpecForContext(
-        DefGenerationContext context
+        DefGenerationContext defGenerationCtx
     ) {
         var providedTypes = new HashSet<QualifiedTypeModel>();
         var neededTypes = new HashSet<QualifiedTypeModel>();
@@ -42,7 +42,7 @@ internal class SpecDefMapper : ISpecDefMapper {
         var providedBuilders = new HashSet<QualifiedTypeModel>();
         var neededBuilders = new HashSet<QualifiedTypeModel>();
 
-        foreach (var provider in context.Injector.Providers) {
+        foreach (var provider in defGenerationCtx.Injector.Providers) {
             if (provider.ProvidedType.TypeModel.QualifiedBaseTypeName == TypeHelpers.FactoryTypeName) {
                 neededTypes.Add(new QualifiedTypeModel(
                     provider.ProvidedType.TypeModel.TypeArguments[0],
@@ -52,11 +52,11 @@ internal class SpecDefMapper : ISpecDefMapper {
             }
         }
 
-        foreach (var builder in context.Injector.Builders) {
+        foreach (var builder in defGenerationCtx.Injector.Builders) {
             neededBuilders.Add(builder.BuiltType);
         }
 
-        foreach (var specDesc in context.Specifications.Values) {
+        foreach (var specDesc in defGenerationCtx.Specifications.Values) {
             foreach (var factory in specDesc.Factories) {
                 providedTypes.Add(factory.ReturnType);
 
@@ -94,7 +94,7 @@ internal class SpecDefMapper : ISpecDefMapper {
         while (typeSearchQueue.Count > 0) {
             var type = typeSearchQueue.Dequeue();
             if (!providedTypes.Contains(type)) {
-                foreach (var parameterType in GetAutoConstructorParameterTypes(type, context)) {
+                foreach (var parameterType in GetAutoConstructorParameterTypes(type, defGenerationCtx)) {
                     if (neededTypes.Add(parameterType)) {
                         typeSearchQueue.Enqueue(parameterType);
                     }
@@ -110,22 +110,22 @@ internal class SpecDefMapper : ISpecDefMapper {
         var needsConstructorSpec = autoFactoryTypes.Any() || autoBuilderTypes.Any();
         return needsConstructorSpec
             ? autoSpecExtractor.Extract(
-                context.Injector.InjectorType,
+                defGenerationCtx.Injector.InjectorType,
                 autoFactoryTypes,
                 autoBuilderTypes,
-                new ExtractorContext(context.GenerationContext))
+                new ExtractorContext(defGenerationCtx.ExecutionContext))
             : null;
     }
 
     private HashSet<QualifiedTypeModel> GetAutoConstructorParameterTypes(
         QualifiedTypeModel type,
-        DefGenerationContext context) {
+        DefGenerationContext defGenerationCtx) {
         var results = new HashSet<QualifiedTypeModel>();
         results.UnionWith(
             MetadataHelpers.TryGetConstructorParameterQualifiedTypes(type.TypeModel.typeSymbol,
-                context.GenerationContext));
+                defGenerationCtx));
         results.UnionWith(MetadataHelpers
-            .GetRequiredPropertyQualifiedTypes(type.TypeModel.typeSymbol, context.GenerationContext)
+            .GetRequiredPropertyQualifiedTypes(type.TypeModel.typeSymbol, defGenerationCtx)
             .Values);
         return results;
     }

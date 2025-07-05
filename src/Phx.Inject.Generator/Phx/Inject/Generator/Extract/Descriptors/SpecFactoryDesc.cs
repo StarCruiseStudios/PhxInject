@@ -27,10 +27,10 @@ internal record SpecFactoryDesc(
     private static bool TryGetConstructorFactoryFabricationMode(
         ITypeSymbol constructorFactoryType,
         Location constructorFactoryLocation,
-        ExtractorContext context,
+        ExtractorContext extractorCtx,
         out SpecFactoryMethodFabricationMode fabricationMode
     ) {
-        var factoryAttribute = constructorFactoryType.TryGetFactoryAttribute().GetOrThrow(context.GenerationContext);
+        var factoryAttribute = constructorFactoryType.TryGetFactoryAttribute().GetOrThrow(extractorCtx);
         if (factoryAttribute == null) {
             // This is an implicit constructor factory.
             fabricationMode = SpecFactoryMethodFabricationMode.Recurrent;
@@ -40,17 +40,17 @@ internal record SpecFactoryDesc(
         fabricationMode = MetadataHelpers.GetFactoryFabricationMode(
             factoryAttribute,
             constructorFactoryLocation,
-            context.GenerationContext);
+            extractorCtx);
         return true;
     }
 
     private static bool TryGetFactoryFabricationMode(
         ISymbol factorySymbol,
         Location factoryLocation,
-        ExtractorContext context,
+        ExtractorContext extractorCtx,
         out SpecFactoryMethodFabricationMode fabricationMode
     ) {
-        var factoryAttribute = factorySymbol.TryGetFactoryAttribute().GetOrThrow(context.GenerationContext);
+        var factoryAttribute = factorySymbol.TryGetFactoryAttribute().GetOrThrow(extractorCtx);
         if (factoryAttribute == null) {
             // This is not a factory method.
             fabricationMode = SpecFactoryMethodFabricationMode.Recurrent;
@@ -58,30 +58,30 @@ internal record SpecFactoryDesc(
         }
 
         var factoryReferenceAttribute =
-            factorySymbol.TryGetFactoryReferenceAttribute().GetOrThrow(context.GenerationContext);
+            factorySymbol.TryGetFactoryReferenceAttribute().GetOrThrow(extractorCtx);
         if (factoryReferenceAttribute != null) {
             // Cannot be a factory and a factory reference.
             throw Diagnostics.InvalidSpecification.AsException(
                 "Method or Property cannot have both Factory and FactoryReference attributes.",
                 factoryLocation,
-                context.GenerationContext);
+                extractorCtx);
         }
 
         fabricationMode = MetadataHelpers.GetFactoryFabricationMode(
             factoryAttribute,
             factoryLocation,
-            context.GenerationContext);
+            extractorCtx);
         return true;
     }
 
     private static bool TryGetFactoryReferenceFabricationMode(
         ISymbol factoryReferenceSymbol,
         Location factoryReferenceLocation,
-        ExtractorContext context,
+        ExtractorContext extractorCtx,
         out SpecFactoryMethodFabricationMode fabricationMode
     ) {
         var factoryReferenceAttribute =
-            factoryReferenceSymbol.TryGetFactoryReferenceAttribute().GetOrThrow(context.GenerationContext);
+            factoryReferenceSymbol.TryGetFactoryReferenceAttribute().GetOrThrow(extractorCtx);
 
         if (factoryReferenceAttribute == null) {
             // This is not a factory reference.
@@ -89,19 +89,19 @@ internal record SpecFactoryDesc(
             return false;
         }
 
-        var factoryAttribute = factoryReferenceSymbol.TryGetFactoryAttribute().GetOrThrow(context.GenerationContext);
+        var factoryAttribute = factoryReferenceSymbol.TryGetFactoryAttribute().GetOrThrow(extractorCtx);
         if (factoryAttribute != null) {
             // Cannot be a factory and a factory reference.
             throw Diagnostics.InvalidSpecification.AsException(
                 "Property or Field cannot have both Factory and FactoryReference attributes.",
                 factoryReferenceLocation,
-                context.GenerationContext);
+                extractorCtx);
         }
 
         fabricationMode = MetadataHelpers.GetFactoryFabricationMode(
             factoryReferenceAttribute,
             factoryReferenceLocation,
-            context.GenerationContext);
+            extractorCtx);
         return true;
     }
 
@@ -109,7 +109,7 @@ internal record SpecFactoryDesc(
         ISymbol factoryReferenceSymbol,
         ITypeSymbol factoryReferenceTypeSymbol,
         Location factoryReferenceLocation,
-        ExtractorContext context,
+        ExtractorContext extractorCtx,
         out QualifiedTypeModel returnType,
         out IEnumerable<QualifiedTypeModel> parameterTypes
     ) {
@@ -119,13 +119,13 @@ internal record SpecFactoryDesc(
             throw Diagnostics.InvalidSpecification.AsException(
                 "Factory reference must be a field or property of type Func<>.",
                 factoryReferenceLocation,
-                context.GenerationContext);
+                extractorCtx);
         }
 
         var typeArguments = referenceTypeSymbol.TypeArguments;
 
-        var qualifier = MetadataHelpers.TryGetQualifier(factoryReferenceSymbol, context.GenerationContext)
-            .GetOrThrow(context.GenerationContext);
+        var qualifier = MetadataHelpers.TryGetQualifier(factoryReferenceSymbol)
+            .GetOrThrow(extractorCtx);
         var returnTypeModel = TypeModel.FromTypeSymbol(typeArguments[typeArguments.Length - 1]);
         returnType = new QualifiedTypeModel(
             returnTypeModel,
@@ -147,42 +147,46 @@ internal record SpecFactoryDesc(
     public interface IExtractor {
         SpecFactoryDesc ExtractAutoConstructorFactory(
             QualifiedTypeModel factoryType,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         );
         SpecFactoryDesc? ExtractFactory(
             IMethodSymbol factoryMethod,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         );
         SpecFactoryDesc? ExtractFactory(
             IPropertySymbol factoryProperty,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         );
         SpecFactoryDesc? ExtractFactoryReference(
             IPropertySymbol factoryReferenceProperty,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         );
         SpecFactoryDesc? ExtractFactoryReference(
             IFieldSymbol factoryReferenceField,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         );
     }
 
     public class Extractor : IExtractor {
         public SpecFactoryDesc ExtractAutoConstructorFactory(
             QualifiedTypeModel factoryType,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         ) {
             var factorySymbol = factoryType.TypeModel.typeSymbol;
             var factoryLocation = factorySymbol.Locations.First();
-            TryGetConstructorFactoryFabricationMode(factorySymbol, factoryLocation, context, out var fabricationMode);
+            TryGetConstructorFactoryFabricationMode(
+                factorySymbol,
+                factoryLocation,
+                extractorCtx,
+                out var fabricationMode);
 
             var constructorParameterTypes =
-                MetadataHelpers.TryGetConstructorParameterQualifiedTypes(factorySymbol, context.GenerationContext);
+                MetadataHelpers.TryGetConstructorParameterQualifiedTypes(factorySymbol, extractorCtx);
             var requiredProperties = MetadataHelpers
-                .GetRequiredPropertyQualifiedTypes(factorySymbol, context.GenerationContext)
+                .GetRequiredPropertyQualifiedTypes(factorySymbol, extractorCtx)
                 .Select(property => new SpecFactoryRequiredPropertyDesc(property.Value, property.Key, factoryLocation));
-            var qualifier = MetadataHelpers.TryGetQualifier(factorySymbol, context.GenerationContext)
-                .GetOrThrow(context.GenerationContext);
+            var qualifier = MetadataHelpers.TryGetQualifier(factorySymbol)
+                .GetOrThrow(extractorCtx);
             var returnType = factoryType with {
                 Qualifier = qualifier
             };
@@ -200,26 +204,26 @@ internal record SpecFactoryDesc(
 
         public SpecFactoryDesc? ExtractFactory(
             IMethodSymbol factoryMethod,
-            ExtractorContext context) {
+            ExtractorContext extractorCtx) {
             var factoryLocation = factoryMethod.Locations.First();
 
-            if (!TryGetFactoryFabricationMode(factoryMethod, factoryLocation, context, out var fabricationMode)) {
+            if (!TryGetFactoryFabricationMode(factoryMethod, factoryLocation, extractorCtx, out var fabricationMode)) {
                 // This is not a factory.
                 return null;
             }
 
             var methodParameterTypes =
-                MetadataHelpers.TryGetMethodParametersQualifiedTypes(factoryMethod, context.GenerationContext);
+                MetadataHelpers.TryGetMethodParametersQualifiedTypes(factoryMethod, extractorCtx);
 
-            var qualifier = MetadataHelpers.TryGetQualifier(factoryMethod, context.GenerationContext)
-                .GetOrThrow(context.GenerationContext);
+            var qualifier = MetadataHelpers.TryGetQualifier(factoryMethod)
+                .GetOrThrow(extractorCtx);
             var returnTypeModel = TypeModel.FromTypeSymbol(factoryMethod.ReturnType);
             var returnType = new QualifiedTypeModel(
                 returnTypeModel,
                 qualifier);
 
-            var isPartial = GetIsPartial(factoryMethod).GetOrThrow(context.GenerationContext);
-            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryLocation, context.GenerationContext);
+            var isPartial = GetIsPartial(factoryMethod).GetOrThrow(extractorCtx);
+            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryLocation, extractorCtx);
 
             return new SpecFactoryDesc(
                 returnType,
@@ -234,25 +238,29 @@ internal record SpecFactoryDesc(
 
         public SpecFactoryDesc? ExtractFactory(
             IPropertySymbol factoryProperty,
-            ExtractorContext context) {
+            ExtractorContext extractorCtx) {
             var factoryLocation = factoryProperty.Locations.First();
 
-            if (!TryGetFactoryFabricationMode(factoryProperty, factoryLocation, context, out var fabricationMode)) {
+            if (!TryGetFactoryFabricationMode(
+                factoryProperty,
+                factoryLocation,
+                extractorCtx,
+                out var fabricationMode)) {
                 // This is not a factory.
                 return null;
             }
 
             var methodParameterTypes = ImmutableList.Create<QualifiedTypeModel>();
 
-            var qualifier = MetadataHelpers.TryGetQualifier(factoryProperty, context.GenerationContext)
-                .GetOrThrow(context.GenerationContext);
+            var qualifier = MetadataHelpers.TryGetQualifier(factoryProperty)
+                .GetOrThrow(extractorCtx);
             var returnTypeModel = TypeModel.FromTypeSymbol(factoryProperty.Type);
             var returnType = new QualifiedTypeModel(
                 returnTypeModel,
                 qualifier);
 
-            var isPartial = GetIsPartial(factoryProperty).GetOrThrow(context.GenerationContext);
-            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryLocation, context.GenerationContext);
+            var isPartial = GetIsPartial(factoryProperty).GetOrThrow(extractorCtx);
+            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryLocation, extractorCtx);
 
             return new SpecFactoryDesc(
                 returnType,
@@ -267,11 +275,11 @@ internal record SpecFactoryDesc(
 
         public SpecFactoryDesc? ExtractFactoryReference(
             IPropertySymbol factoryReferenceProperty,
-            ExtractorContext context) {
+            ExtractorContext extractorCtx) {
             var factoryReferenceLocation = factoryReferenceProperty.Locations.First();
             if (!TryGetFactoryReferenceFabricationMode(factoryReferenceProperty,
                 factoryReferenceLocation,
-                context,
+                extractorCtx,
                 out var fabricationMode)) {
                 // This is not a factory reference.
                 return null;
@@ -281,11 +289,11 @@ internal record SpecFactoryDesc(
                 factoryReferenceProperty,
                 factoryReferenceProperty.Type,
                 factoryReferenceLocation,
-                context,
+                extractorCtx,
                 out var returnType,
                 out var parameterTypes);
-            var isPartial = GetIsPartial(factoryReferenceProperty).GetOrThrow(context.GenerationContext);
-            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryReferenceLocation, context.GenerationContext);
+            var isPartial = GetIsPartial(factoryReferenceProperty).GetOrThrow(extractorCtx);
+            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryReferenceLocation, extractorCtx);
 
             return new SpecFactoryDesc(
                 returnType,
@@ -300,11 +308,11 @@ internal record SpecFactoryDesc(
 
         public SpecFactoryDesc? ExtractFactoryReference(
             IFieldSymbol factoryReferenceField,
-            ExtractorContext context) {
+            ExtractorContext extractorCtx) {
             var factoryReferenceLocation = factoryReferenceField.Locations.First();
             if (!TryGetFactoryReferenceFabricationMode(factoryReferenceField,
                 factoryReferenceLocation,
-                context,
+                extractorCtx,
                 out var fabricationMode)) {
                 // This is not a factory reference.
                 return null;
@@ -314,11 +322,11 @@ internal record SpecFactoryDesc(
                 factoryReferenceField,
                 factoryReferenceField.Type,
                 factoryReferenceLocation,
-                context,
+                extractorCtx,
                 out var returnType,
                 out var parameterTypes);
-            var isPartial = GetIsPartial(factoryReferenceField).GetOrThrow(context.GenerationContext);
-            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryReferenceLocation, context.GenerationContext);
+            var isPartial = GetIsPartial(factoryReferenceField).GetOrThrow(extractorCtx);
+            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryReferenceLocation, extractorCtx);
 
             return new SpecFactoryDesc(
                 returnType,

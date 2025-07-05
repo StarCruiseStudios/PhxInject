@@ -7,7 +7,6 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 
@@ -22,7 +21,7 @@ internal record SpecLinkDesc(
         SpecLinkDesc Extract(
             AttributeData linkAttribute,
             Location linkLocation,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         );
     }
 
@@ -30,13 +29,13 @@ internal record SpecLinkDesc(
         public SpecLinkDesc Extract(
             AttributeData linkAttribute,
             Location linkLocation,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         ) {
             if (linkAttribute.ConstructorArguments.Length != 2) {
                 throw Diagnostics.InternalError.AsException(
                     "Link attribute must have only an input and return type specified.",
                     linkLocation,
-                    context.GenerationContext);
+                    extractorCtx);
             }
 
             var inputTypeArgument = linkAttribute.ConstructorArguments[0].Value as ITypeSymbol;
@@ -46,7 +45,7 @@ internal record SpecLinkDesc(
                 throw Diagnostics.InvalidSpecification.AsException(
                     "Link attribute must specify non-null types.",
                     linkLocation,
-                    context.GenerationContext);
+                    extractorCtx);
             }
 
             var inputType = TypeModel.FromTypeSymbol(inputTypeArgument);

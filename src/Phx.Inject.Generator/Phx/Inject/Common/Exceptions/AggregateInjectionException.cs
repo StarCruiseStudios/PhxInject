@@ -8,6 +8,7 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator;
 
 namespace Phx.Inject.Common.Exceptions;
 
@@ -15,12 +16,11 @@ internal sealed class AggregateInjectionException : InjectionException {
     public IReadOnlyList<InjectionException> Exceptions { get; }
 
     internal AggregateInjectionException(
-        string message,
-        Location location,
+        Diagnostic diagnostic,
         IEnumerable<InjectionException> exceptions,
-        GeneratorExecutionContext generatorContext
+        IGeneratorContext generatorContext
     ) : base(
-        Diagnostics.AggregateError.CreateDiagnostic(message, location),
+        diagnostic,
         generatorContext
     ) {
         Exceptions = exceptions.ToImmutableList();

@@ -8,7 +8,6 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Map.Definitions;
@@ -19,12 +18,11 @@ namespace Phx.Inject.Generator.Project;
 internal class SourceTemplateProjector {
     public IReadOnlyList<(TypeModel, IRenderTemplate)> Project(
         IReadOnlyList<InjectionContextDef> injectionContextDefs,
-        GeneratorExecutionContext context
+        IGeneratorContext generatorCtx
     ) {
         return ExceptionAggregator.Try(
             "constructing source templates.",
-            Location.None,
-            context,
+            generatorCtx,
             exceptionAggregator => {
                 IReadOnlyList<InjectorDef> injectorDefs = injectionContextDefs
                     .Select(injectionContextDef => injectionContextDef.Injector)
@@ -32,27 +30,30 @@ internal class SourceTemplateProjector {
                 var injectorDefMap = CreateTypeMap(
                     injectorDefs,
                     injector => injector.InjectorInterfaceType,
-                    context);
+                    generatorCtx);
 
                 return injectionContextDefs.SelectCatching(
-                    exceptionAggregator,
-                    injectionContextDef => $"constructing injection templates for {injectionContextDef.Injector.InjectorInterfaceType}.",
+                        exceptionAggregator,
+                        injectionContextDef =>
+                            $"constructing injection templates for {injectionContextDef.Injector.InjectorInterfaceType}.",
                         injectionContextDef => {
                             var specDefMap = CreateTypeMap(
                                 injectionContextDef.SpecContainers,
                                 spec => spec.SpecificationType,
-                                context);
+                                generatorCtx);
                             var dependencyDefMap = CreateTypeMap(
                                 injectionContextDef.DependencyImplementations,
                                 dep => dep.DependencyInterfaceType,
-                                context);
+                                generatorCtx);
 
                             var templateGenerationContext = new TemplateGenerationContext(
                                 injectionContextDef.Injector,
                                 injectorDefMap,
                                 specDefMap,
                                 dependencyDefMap,
-                                context);
+                                null,
+                                null,
+                                generatorCtx.ExecutionContext);
 
                             var templates = new List<(TypeModel, IRenderTemplate)>();
                             var injectorDef = injectionContextDef.Injector;
@@ -63,7 +64,7 @@ internal class SourceTemplateProjector {
                                         injectorDef,
                                         templateGenerationContext)
                                 ));
-                            context.Log($"Generated injector {injectorDef.InjectorType}.");
+                            generatorCtx.Log($"Generated injector {injectorDef.InjectorType}.");
 
                             var specContainerPresenter = new SpecContainerProjector();
                             foreach (var specContainerDef in injectionContextDef.SpecContainers) {
@@ -74,7 +75,7 @@ internal class SourceTemplateProjector {
                                             specContainerDef,
                                             templateGenerationContext)
                                     ));
-                                context.Log(
+                                generatorCtx.Log(
                                     $"Generated spec container {specContainerDef.SpecContainerType} for injector {injectorDef.InjectorType}.");
                             }
 
@@ -89,7 +90,7 @@ internal class SourceTemplateProjector {
                                             dependency,
                                             templateGenerationContext)
                                     ));
-                                context.Log(
+                                generatorCtx.Log(
                                     $"Generated dependency implementation {dependency.DependencyImplementationType} for injector {injectorDef.InjectorType}.");
                             }
 
@@ -103,7 +104,7 @@ internal class SourceTemplateProjector {
     private static IReadOnlyDictionary<TypeModel, T> CreateTypeMap<T>(
         IEnumerable<T> values,
         Func<T, TypeModel> extractKey,
-        GeneratorExecutionContext context
+        IGeneratorContext generatorCtx
     ) where T : ISourceCodeElement {
         var map = new Dictionary<TypeModel, T>();
         foreach (var value in values) {
@@ -112,7 +113,7 @@ internal class SourceTemplateProjector {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"{typeof(T).Name} with {key} is already defined.",
                     value.Location,
-                    context
+                    generatorCtx
                 );
             }
 

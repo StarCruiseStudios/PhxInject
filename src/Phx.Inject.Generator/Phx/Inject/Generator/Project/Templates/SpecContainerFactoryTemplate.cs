@@ -7,7 +7,6 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 
@@ -28,7 +27,7 @@ internal record SpecContainerFactoryTemplate(
     IEnumerable<RequiredPropertyTemplate> RequiredProperties,
     Location Location
 ) : ISpecContainerMemberTemplate {
-    public void Render(IRenderWriter writer, RenderContext context) {
+    public void Render(IRenderWriter writer, RenderContext renderCtx) {
         var specContainerCollectionArgName = startNewContainer
             ? "parentSpecContainer"
             : SpecContainerCollectionReferenceName;
@@ -68,7 +67,7 @@ internal record SpecContainerFactoryTemplate(
                         }
 
                         isFirst = false;
-                        argument.Render(writer, context);
+                        argument.Render(writer, renderCtx);
                     }
 
                     writer.AppendLine(");")
@@ -93,7 +92,7 @@ internal record SpecContainerFactoryTemplate(
                         }
 
                         isFirst = false;
-                        argument.Render(writer, context);
+                        argument.Render(writer, renderCtx);
                     }
 
                     if (numRequiredProperties > 0) {
@@ -121,7 +120,7 @@ internal record SpecContainerFactoryTemplate(
 
                         writer.Append(property.PropertyName)
                             .Append(" = ");
-                        property.PropertyValue.Render(writer, context);
+                        property.PropertyValue.Render(writer, renderCtx);
                     }
 
                     writer.DecreaseIndent(1)
@@ -141,7 +140,7 @@ internal record SpecContainerFactoryTemplate(
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Unhandled Spec Factory Member Type {SpecFactoryMemberType}.",
                     Location,
-                    context.GenerationContext);
+                    renderCtx);
         }
 
         writer.DecreaseIndent(1)

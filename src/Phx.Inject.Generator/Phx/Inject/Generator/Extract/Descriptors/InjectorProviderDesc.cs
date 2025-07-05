@@ -21,14 +21,14 @@ internal record InjectorProviderDesc(
     public interface IExtractor {
         InjectorProviderDesc? Extract(
             IMethodSymbol providerMethod,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         );
     }
 
     public class Extractor : IExtractor {
         public InjectorProviderDesc? Extract(
             IMethodSymbol providerMethod,
-            ExtractorContext context
+            ExtractorContext extractorCtx
         ) {
             var providerLocation = providerMethod.Locations.First();
 
@@ -37,7 +37,7 @@ internal record InjectorProviderDesc(
                 return null;
             }
 
-            if (providerMethod.TryGetChildInjectorAttribute().GetOrThrow(context.GenerationContext) != null) {
+            if (providerMethod.TryGetChildInjectorAttribute().GetOrThrow(extractorCtx) != null) {
                 // This is an injector child factory, not a provider.
                 return null;
             }
@@ -46,12 +46,12 @@ internal record InjectorProviderDesc(
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Injector provider {providerMethod.Name} must not have any parameters.",
                     providerLocation,
-                    context.GenerationContext);
+                    extractorCtx);
             }
 
             var returnType = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
-            var qualifier = MetadataHelpers.TryGetQualifier(providerMethod, context.GenerationContext)
-                .GetOrThrow(context.GenerationContext);
+            var qualifier = MetadataHelpers.TryGetQualifier(providerMethod)
+                .GetOrThrow(extractorCtx);
             return new InjectorProviderDesc(
                 new QualifiedTypeModel(returnType, qualifier),
                 providerMethod.Name,

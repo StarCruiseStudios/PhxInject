@@ -17,10 +17,10 @@ internal record ActivatorTemplate(
     SpecContainerBuilderInvocationTemplate SpecContainerBuilderInvocation,
     Location Location
 ) : IInjectorMemberTemplate {
-    public void Render(IRenderWriter writer, RenderContext context) {
+    public void Render(IRenderWriter writer, RenderContext renderCtx) {
         writer.AppendLine($"public void {MethodName}({BuiltTypeQualifiedName} {BuilderTargetName}) {{")
             .IncreaseIndent(1);
-        SpecContainerBuilderInvocation.Render(writer, context);
+        SpecContainerBuilderInvocation.Render(writer, renderCtx);
         writer.AppendLine(";")
             .DecreaseIndent(1)
             .AppendLine("}");

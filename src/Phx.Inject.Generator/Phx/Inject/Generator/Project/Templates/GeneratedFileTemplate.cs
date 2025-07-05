@@ -15,7 +15,7 @@ internal record GeneratedFileTemplate(
     IRenderTemplate FileContentTemplate,
     Location Location
 ) : IRenderTemplate {
-    public void Render(IRenderWriter writer, RenderContext context) {
+    public void Render(IRenderWriter writer, RenderContext renderCtx) {
         var assemblyVersion = typeof(GeneratedFileTemplate).Assembly.GetName().Version.ToString();
 
         writer
@@ -35,7 +35,7 @@ internal record GeneratedFileTemplate(
         writer.AppendLine($"namespace {NamespaceName} {{")
             .IncreaseIndent(1);
 
-        FileContentTemplate.Render(writer, context);
+        FileContentTemplate.Render(writer, renderCtx);
 
         writer
             .DecreaseIndent(1)

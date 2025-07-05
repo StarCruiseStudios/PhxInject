@@ -7,21 +7,39 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Map.Definitions;
 
 namespace Phx.Inject.Generator.Project;
 
-internal record TemplateGenerationContext(
-    InjectorDef Injector,
-    IReadOnlyDictionary<TypeModel, InjectorDef> Injectors,
-    IReadOnlyDictionary<TypeModel, SpecContainerDef> SpecContainers,
-    IReadOnlyDictionary<TypeModel, DependencyImplementationDef>
-        DependencyImplementations,
-    GeneratorExecutionContext GenerationContext
-) {
+internal record TemplateGenerationContext : IGeneratorContext {
+    public InjectorDef Injector { get; }
+    public IReadOnlyDictionary<TypeModel, InjectorDef> Injectors { get; }
+    public IReadOnlyDictionary<TypeModel, SpecContainerDef> SpecContainers { get; }
+    public IReadOnlyDictionary<TypeModel, DependencyImplementationDef> DependencyImplementations { get; }
+    public ISymbol? Symbol { get; private init; }
+    public IGeneratorContext? ParentContext { get; }
+    public GeneratorExecutionContext ExecutionContext { get; }
+    
+    public TemplateGenerationContext(
+        InjectorDef injector,
+        IReadOnlyDictionary<TypeModel, InjectorDef> injectors,
+        IReadOnlyDictionary<TypeModel, SpecContainerDef> specContainers,
+        IReadOnlyDictionary<TypeModel, DependencyImplementationDef> dependencyImplementations,
+        ISymbol? symbol,
+        TemplateGenerationContext? parentCtx,
+        GeneratorExecutionContext executionCtx
+    ) {
+        Symbol = symbol;
+        Injector = injector;
+        Injectors = injectors;
+        SpecContainers = specContainers;
+        DependencyImplementations = dependencyImplementations;
+        ParentContext = parentCtx;
+        ExecutionContext = executionCtx;
+    }
+
     public InjectorDef GetInjector(TypeModel type, Location location) {
         if (Injectors.TryGetValue(type, out var injector)) {
             return injector;
@@ -30,7 +48,7 @@ internal record TemplateGenerationContext(
         throw Diagnostics.IncompleteSpecification.AsException(
             $"Cannot find required injector type {type}.",
             location,
-            GenerationContext);
+            this);
     }
 
     public SpecContainerDef GetSpecContainer(TypeModel type, Location location) {
@@ -41,7 +59,7 @@ internal record TemplateGenerationContext(
         throw Diagnostics.IncompleteSpecification.AsException(
             $"Cannot find required specification container type {type}.",
             location,
-            GenerationContext);
+            this);
     }
 
     public DependencyImplementationDef GetDependency(TypeModel type, Location location) {
@@ -52,6 +70,6 @@ internal record TemplateGenerationContext(
         throw Diagnostics.IncompleteSpecification.AsException(
             $"Cannot find required dependency type {type}.",
             location,
-            GenerationContext);
+            this);
     }
 }

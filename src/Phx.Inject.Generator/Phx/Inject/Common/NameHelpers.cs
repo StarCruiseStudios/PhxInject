@@ -8,9 +8,9 @@
 
 using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator;
 using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Common;
@@ -32,7 +32,7 @@ internal static class NameHelpers {
         return $"{injectorType.BaseTypeName}.{SpecContainerCollectionTypeName}";
     }
 
-    public static string GetSpecContainerFactoryName(this SpecFactoryDesc factory, GeneratorExecutionContext context) {
+    public static string GetSpecContainerFactoryName(this SpecFactoryDesc factory, IGeneratorContext context) {
         var sb = factory.SpecFactoryMemberType switch {
             SpecFactoryMemberType.Method => new StringBuilder("Fac_"),
             SpecFactoryMemberType.Property => new StringBuilder("PropFac_"),
@@ -51,7 +51,7 @@ internal static class NameHelpers {
         return sb.ToString();
     }
 
-    public static string GetSpecContainerBuilderName(this SpecBuilderDesc builder, GeneratorExecutionContext context) {
+    public static string GetSpecContainerBuilderName(this SpecBuilderDesc builder, IGeneratorContext context) {
         var sb = builder.SpecBuilderMemberType switch {
             SpecBuilderMemberType.Method => new StringBuilder("Bld_"),
             SpecBuilderMemberType.Reference => new StringBuilder("RefBld_"),

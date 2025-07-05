@@ -17,13 +17,13 @@ internal record SpecContainerFactoryInvocationTemplate(
     string? runtimeFactoryProvidedTypeQualifiedName,
     Location Location
 ) : IRenderTemplate {
-    public void Render(IRenderWriter writer, RenderContext context) {
+    public void Render(IRenderWriter writer, RenderContext renderCtx) {
         if (runtimeFactoryProvidedTypeQualifiedName != null) {
             writer.Append($"new {TypeHelpers.FactoryTypeName}<{runtimeFactoryProvidedTypeQualifiedName}>(() => ");
         }
 
         if (FactoryInvocationTemplates.Count == 1) {
-            FactoryInvocationTemplates[0].Render(writer, context);
+            FactoryInvocationTemplates[0].Render(writer, renderCtx);
         } else {
             writer.Append($"{TypeHelpers.InjectionUtilTypeName}.Combine<{multiBindQualifiedTypeArgs}> (");
             writer.IncreaseIndent(1);
@@ -36,7 +36,7 @@ internal record SpecContainerFactoryInvocationTemplate(
                 }
 
                 isFirst = false;
-                factoryInvocationTemplate.Render(writer, context);
+                factoryInvocationTemplate.Render(writer, renderCtx);
             }
 
             writer.DecreaseIndent(1);

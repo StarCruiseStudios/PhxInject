@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator;
 
 namespace Phx.Inject.Common;
 
@@ -99,13 +100,13 @@ internal static class TypeHelpers {
         QualifiedTypeModel returnType,
         bool isPartial,
         Location location,
-        GeneratorExecutionContext context) {
+        IGeneratorContext generatorCtx) {
         if (isPartial) {
             if (!MultiBindTypes.Contains(returnType.TypeModel.QualifiedBaseTypeName)) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     "Partial factories must return a IReadOnlyList, ISet, or IReadOnlyDictionary.",
                     location,
-                    context);
+                    generatorCtx);
             }
         }
     }
