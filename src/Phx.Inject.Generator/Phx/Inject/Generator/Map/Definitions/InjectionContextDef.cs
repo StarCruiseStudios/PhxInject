@@ -95,7 +95,7 @@ internal record InjectionContextDef(
             }
 
             foreach (var factoryRegistration in factoryRegistrations.Values) {
-                if (factoryRegistration.Count > 1 || !factoryRegistration.All(it => it.FactoryDesc.isPartial)) {
+                if (factoryRegistration.Count > 1 && !factoryRegistration.All(it => it.FactoryDesc.isPartial)) {
                     ExceptionAggregator.Try("registering factories",
                         defGenerationCtx,
                         exceptionAggregator => {
