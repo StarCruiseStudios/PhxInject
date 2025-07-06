@@ -115,7 +115,7 @@ internal record SpecFactoryDesc(
 
         var typeArguments = referenceTypeSymbol.TypeArguments;
 
-        var qualifier = MetadataHelpers.TryGetQualifier(factoryReferenceSymbol)
+        var qualifier = MetadataHelpers.GetQualifier(factoryReferenceSymbol)
             .GetOrThrow(extractorCtx);
         var returnTypeModel = TypeModel.FromTypeSymbol(typeArguments[typeArguments.Length - 1]);
         returnType = new QualifiedTypeModel(
@@ -128,11 +128,6 @@ internal record SpecFactoryDesc(
                 .Select(typeArgument => TypeModel.FromTypeSymbol(typeArgument))
                 .Select(typeModel => new QualifiedTypeModel(typeModel, NoQualifier.Instance))
                 .ToImmutableList();
-    }
-
-    private static IResult<bool> GetIsPartial(ISymbol factorySymbol) {
-        var partialAttributes = factorySymbol.TryGetPartialAttribute();
-        return partialAttributes.Map(it => Result.Ok(it != null));
     }
 
     public interface IExtractor {
@@ -177,7 +172,7 @@ internal record SpecFactoryDesc(
             var requiredProperties = MetadataHelpers
                 .GetRequiredPropertyQualifiedTypes(constructorSymbol, currentCtx)
                 .Select(property => new SpecFactoryRequiredPropertyDesc(property.Value, property.Key, constructorLocation));
-            var qualifier = MetadataHelpers.TryGetQualifier(constructorSymbol)
+            var qualifier = MetadataHelpers.GetQualifier(constructorSymbol)
                 .GetOrThrow(currentCtx);
             var returnType = constructorType with {
                 Qualifier = qualifier
@@ -209,15 +204,17 @@ internal record SpecFactoryDesc(
             var methodParameterTypes =
                 MetadataHelpers.TryGetMethodParametersQualifiedTypes(factoryMethod, currentCtx);
 
-            var qualifier = MetadataHelpers.TryGetQualifier(factoryMethod)
+            var qualifier = MetadataHelpers.GetQualifier(factoryMethod)
                 .GetOrThrow(currentCtx);
             var returnTypeModel = TypeModel.FromTypeSymbol(factoryMethod.ReturnType);
             var returnType = new QualifiedTypeModel(
                 returnTypeModel,
                 qualifier);
 
-            var isPartial = GetIsPartial(factoryMethod).GetOrThrow(currentCtx);
-            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryLocation, currentCtx);
+            var isPartial = factoryMethod.TryGetPartialAttribute().GetOrThrow(currentCtx) != null;
+            if (isPartial) {
+                TypeModel.RequirePartialType(returnType.TypeModel, factoryLocation, currentCtx);
+            }
 
             return new SpecFactoryDesc(
                 returnType,
@@ -249,15 +246,17 @@ internal record SpecFactoryDesc(
 
             var methodParameterTypes = ImmutableList.Create<QualifiedTypeModel>();
 
-            var qualifier = MetadataHelpers.TryGetQualifier(factoryProperty)
+            var qualifier = MetadataHelpers.GetQualifier(factoryProperty)
                 .GetOrThrow(currentCtx);
             var returnTypeModel = TypeModel.FromTypeSymbol(factoryProperty.Type);
             var returnType = new QualifiedTypeModel(
                 returnTypeModel,
                 qualifier);
 
-            var isPartial = GetIsPartial(factoryProperty).GetOrThrow(currentCtx);
-            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryLocation, currentCtx);
+            var isPartial = factoryProperty.TryGetPartialAttribute().GetOrThrow(currentCtx) != null;
+            if (isPartial) {
+                TypeModel.RequirePartialType(returnType.TypeModel, factoryLocation, currentCtx);
+            }
 
             return new SpecFactoryDesc(
                 returnType,
@@ -292,9 +291,12 @@ internal record SpecFactoryDesc(
                 currentCtx,
                 out var returnType,
                 out var parameterTypes);
-            var isPartial = GetIsPartial(factoryReferenceProperty).GetOrThrow(currentCtx);
-            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryReferenceLocation, currentCtx);
-
+            
+            var isPartial = factoryReferenceProperty.TryGetPartialAttribute().GetOrThrow(currentCtx) != null;
+            if (isPartial) {
+                TypeModel.RequirePartialType(returnType.TypeModel, factoryReferenceLocation, currentCtx);
+            }
+            
             return new SpecFactoryDesc(
                 returnType,
                 factoryReferenceProperty.Name,
@@ -328,8 +330,11 @@ internal record SpecFactoryDesc(
                 currentCtx,
                 out var returnType,
                 out var parameterTypes);
-            var isPartial = GetIsPartial(factoryReferenceField).GetOrThrow(currentCtx);
-            TypeHelpers.ValidatePartialType(returnType, isPartial, factoryReferenceLocation, currentCtx);
+            
+            var isPartial = factoryReferenceField.TryGetPartialAttribute().GetOrThrow(currentCtx) != null;
+            if (isPartial) {
+                TypeModel.RequirePartialType(returnType.TypeModel, factoryReferenceLocation, currentCtx);
+            }
 
             return new SpecFactoryDesc(
                 returnType,

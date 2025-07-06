@@ -1,9 +1,9 @@
 ﻿// -----------------------------------------------------------------------------
-//  <copyright file="AttributeHelpers.cs" company="Star Cruise Studios LLC">
-//      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
-//      Licensed under the Apache License, Version 2.0.
-//      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
-//  </copyright>
+// <copyright file="AttributeHelpers.cs" company="Star Cruise Studios LLC">
+//     Copyright (c) 2025 Star Cruise Studios LLC. All rights reserved.
+//     Licensed under the Apache License, Version 2.0.
+//     See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
+// </copyright>
 // -----------------------------------------------------------------------------
 
 using System.Collections.Immutable;
@@ -15,56 +15,31 @@ using Phx.Inject.Generator.Extract.Descriptors;
 namespace Phx.Inject.Common;
 
 internal static class AttributeHelpers {
-    public const string PhxInjectNamespace = "Phx.Inject";
-    public const string InjectorAttributeShortName = "Injector";
-    public const string InjectorAttributeBaseName = nameof(InjectorAttribute);
-    public const string PhxInjectAttributeShortName = "PhxInject";
-    public const string PhxInjectAttributeBaseName = nameof(PhxInjectAttribute);
-    public const string SpecificationAttributeShortName = "Specification";
-    public const string SpecificationAttributeBaseName = nameof(SpecificationAttribute);
-
-    public const string AttributeClassName = $"System.{nameof(Attribute)}";
-    public const string BuilderAttributeClassName = $"{PhxInjectNamespace}.{nameof(BuilderAttribute)}";
-    public const string BuilderReferenceAttributeClassName = $"{PhxInjectNamespace}.{nameof(BuilderReferenceAttribute)}";
-    public const string ChildInjectorAttributeClassName = $"{PhxInjectNamespace}.{nameof(ChildInjectorAttribute)}";
-    public const string DependencyAttributeClassName = $"{PhxInjectNamespace}.{nameof(DependencyAttribute)}";
-    public const string FabricationModeClassName = $"{PhxInjectNamespace}.{nameof(FabricationMode)}";
-    public const string FactoryAttributeClassName = $"{PhxInjectNamespace}.{nameof(FactoryAttribute)}";
-    public const string FactoryReferenceAttributeClassName = $"{PhxInjectNamespace}.{nameof(FactoryReferenceAttribute)}";
-    public const string InjectorAttributeClassName = $"{PhxInjectNamespace}.{nameof(InjectorAttribute)}";
-    public const string LabelAttributeClassName = $"{PhxInjectNamespace}.{nameof(LabelAttribute)}";
-    public const string LinkAttributeClassName = $"{PhxInjectNamespace}.{nameof(LinkAttribute)}";
-    public const string PartialAttributeClassName = $"{PhxInjectNamespace}.{nameof(PartialAttribute)}";
-    public const string PhxInjectAttributeClassName = $"{PhxInjectNamespace}.{nameof(PhxInjectAttribute)}";
-    public const string QualifierAttributeClassName = $"{PhxInjectNamespace}.{nameof(QualifierAttribute)}";
-    public const string SpecificationAttributeClassName = $"{PhxInjectNamespace}.{nameof(SpecificationAttribute)}";
-    public const string StringClassName = $"string";
-
     public static IResult<PhxInjectAttributeDesc?> TryGetPhxInjectAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, PhxInjectAttributeClassName)
+        return TryGetSingleAttribute(symbol, TypeNames.PhxInjectAttributeClassName)
             .MapNullable(it => {
                 var tabSize = it.NamedArguments
                     .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.TabSize))
                     .Value.Value as int?;
 
                 var generatedFileExtension = it.NamedArguments
-                        .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.GeneratedFileExtension))
-                        .Value.Value as string;
+                    .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.GeneratedFileExtension))
+                    .Value.Value as string;
 
                 var nullableEnabled = it.NamedArguments
-                        .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.NullableEnabled))
-                        .Value.Value as bool?;
+                    .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.NullableEnabled))
+                    .Value.Value as bool?;
 
                 var allowConstructorFactories = it.NamedArguments
-                        .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.AllowConstructorFactories))
-                        .Value.Value as bool?;
+                    .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.AllowConstructorFactories))
+                    .Value.Value as bool?;
                 
                 return Result.Ok(new PhxInjectAttributeDesc(tabSize, generatedFileExtension, nullableEnabled, allowConstructorFactories, symbol, it));
             });
     }
 
     public static IResult<InjectorAttributeDesc?> TryGetInjectorAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, InjectorAttributeClassName)
+        return TryGetSingleAttribute(symbol, TypeNames.InjectorAttributeClassName)
             .MapNullable(it => {
                 var generatedClassName = it.ConstructorArguments
                     .FirstOrDefault(argument => argument.Kind != TypedConstantKind.Array)
@@ -83,20 +58,20 @@ internal static class AttributeHelpers {
 
     public static IResult<InjectorAttributeDesc> ExpectInjectorAttribute(this ISymbol symbol) {
         return symbol.TryGetInjectorAttribute()
-                .Map(attributeData => Result.ErrorIfNull(
-                    attributeData,
-                    $"Expected type {symbol.Name} to have one {InjectorAttributeClassName}.",
-                    symbol.Locations.First(),
-                    Diagnostics.InvalidSpecification));
+            .Map(attributeData => Result.ErrorIfNull(
+                attributeData,
+                $"Expected type {symbol.Name} to have one {TypeNames.InjectorAttributeClassName}.",
+                symbol.Locations.First(),
+                Diagnostics.InvalidSpecification));
     }
 
     public static IResult<SpecificationAttributeDesc?> TryGetSpecificationAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, SpecificationAttributeClassName)
+        return TryGetSingleAttribute(symbol, TypeNames.SpecificationAttributeClassName)
             .MapNullable(it => Result.Ok(new SpecificationAttributeDesc(symbol, it)));
     }
 
     public static IResult<DependencyAttributeDesc?> TryGetDependencyAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, DependencyAttributeClassName)
+        return TryGetSingleAttribute(symbol, TypeNames.DependencyAttributeClassName)
             .MapNullable(it => {
                 var constructorArgument = it.ConstructorArguments
                     .Where(argument => argument.Kind == TypedConstantKind.Type)
@@ -116,9 +91,9 @@ internal static class AttributeHelpers {
     }
 
     public static IResult<LabelAttributeDesc?> TryGetLabelAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, LabelAttributeClassName)
+        return TryGetSingleAttribute(symbol, TypeNames.LabelAttributeClassName)
             .MapNullable(it => {
-                var labels = it.ConstructorArguments.Where(argument => argument.Type!.ToString() == StringClassName)
+                var labels = it.ConstructorArguments.Where(argument => argument.Type!.ToString() == TypeNames.StringClassName)
                     .Select(argument => (string)argument.Value!)
                     .ToImmutableList();
 
@@ -134,30 +109,30 @@ internal static class AttributeHelpers {
     }
 
     public static IResult<QualifierAttributeDesc?> TryGetQualifierAttribute(this ISymbol symbol) {
-        return TryGetSingleAttributedAttribute(symbol, QualifierAttributeClassName)
+        return TryGetSingleAttributedAttribute(symbol, TypeNames.QualifierAttributeClassName)
             .MapNullable(it => Result.Ok(new QualifierAttributeDesc(symbol, it)));
     }
     
     public static IResult<QualifierAttributeDesc?> TryGetQualifierAttributeFromAttributeType(this INamedTypeSymbol attributeTypeSymbol, AttributeDesc attribute) {
-        if (attributeTypeSymbol.BaseType?.ToString() != AttributeClassName) {
+        if (attributeTypeSymbol.BaseType?.ToString() != TypeNames.AttributeClassName) {
             return Result.Error<QualifierAttributeDesc?>(
                 $"Expected qualifier type {attributeTypeSymbol.Name} to be an Attribute type.",
                 attribute.Location,
                 Diagnostics.InvalidSpecification);
         }
                 
-        return TryGetSingleAttribute(attributeTypeSymbol, QualifierAttributeClassName)
+        return TryGetSingleAttribute(attributeTypeSymbol, TypeNames.QualifierAttributeClassName)
             .Map(it => it == null
-                    ? Result.Error<AttributeData?>(
-                        $"Expected attribute type {attributeTypeSymbol.Name} to have one {QualifierAttributeClassName}.",
-                        attribute.Location,
-                        Diagnostics.InvalidSpecification)
-                    : Result.Ok(it))
+                ? Result.Error<AttributeData?>(
+                    $"Expected attribute type {attributeTypeSymbol.Name} to have one {TypeNames.QualifierAttributeClassName}.",
+                    attribute.Location,
+                    Diagnostics.InvalidSpecification)
+                : Result.Ok(it))
             .MapNullable(it => Result.Ok(new QualifierAttributeDesc(attribute.AttributedSymbol, attributeTypeSymbol)));
     }
 
     public static IReadOnlyList<IResult<LinkAttributeDesc>> GetAllLinkAttributes(this ISymbol symbol) {
-        return TryGetAttributes(symbol, LinkAttributeClassName)
+        return TryGetAttributes(symbol, TypeNames.LinkAttributeClassName)
             .Select(it => {
                 if (it.ConstructorArguments.Length != 2) {
                     return Result.Error<LinkAttributeDesc>(
@@ -219,10 +194,10 @@ internal static class AttributeHelpers {
     }
 
     public static IResult<FactoryAttributeDesc?> TryGetFactoryAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, FactoryAttributeClassName)
+        return TryGetSingleAttribute(symbol, TypeNames.FactoryAttributeClassName)
             .MapNullable(it => {
                 IReadOnlyList<FactoryFabricationMode> fabricationModes = it.ConstructorArguments
-                    .Where(argument => argument.Type!.ToString() == FabricationModeClassName)
+                    .Where(argument => argument.Type!.ToString() == TypeNames.FabricationModeClassName)
                     .Select(argument => (FactoryFabricationMode)argument.Value!)
                     .ToImmutableList();
 
@@ -243,10 +218,10 @@ internal static class AttributeHelpers {
     }
 
     public static IResult<FactoryReferenceAttributeDesc?> TryGetFactoryReferenceAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, FactoryReferenceAttributeClassName)
+        return TryGetSingleAttribute(symbol, TypeNames.FactoryReferenceAttributeClassName)
             .MapNullable(it => {
                 IReadOnlyList<FactoryFabricationMode> fabricationModes = it.ConstructorArguments
-                    .Where(argument => argument.Type!.ToString() == FabricationModeClassName)
+                    .Where(argument => argument.Type!.ToString() == TypeNames.FabricationModeClassName)
                     .Select(argument => (FactoryFabricationMode)argument.Value!)
                     .ToImmutableList();
 
@@ -267,22 +242,22 @@ internal static class AttributeHelpers {
     }
 
     public static IResult<BuilderAttributeDesc?> TryGetBuilderAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, BuilderAttributeClassName)
+        return TryGetSingleAttribute(symbol, TypeNames.BuilderAttributeClassName)
             .MapNullable(it => Result.Ok(new BuilderAttributeDesc(symbol, it)));
     }
 
     public static IResult<BuilderReferenceAttributeDesc?> TryGetBuilderReferenceAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, BuilderReferenceAttributeClassName)
+        return TryGetSingleAttribute(symbol, TypeNames.BuilderReferenceAttributeClassName)
             .MapNullable(it => Result.Ok(new BuilderReferenceAttributeDesc(symbol, it)));
     }
 
     public static IResult<ChildInjectorAttributeDesc?> TryGetChildInjectorAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, ChildInjectorAttributeClassName)
+        return TryGetSingleAttribute(symbol, TypeNames.ChildInjectorAttributeClassName)
             .MapNullable(it => Result.Ok(new ChildInjectorAttributeDesc(symbol, it)));
     }
 
     public static IResult<PartialAttributeDesc?> TryGetPartialAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, PartialAttributeClassName)
+        return TryGetSingleAttribute(symbol, TypeNames.PartialAttributeClassName)
             .MapNullable(it => Result.Ok(new PartialAttributeDesc(symbol, it)));
     }
 

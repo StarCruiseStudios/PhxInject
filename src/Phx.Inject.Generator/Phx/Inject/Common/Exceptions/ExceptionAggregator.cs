@@ -91,15 +91,17 @@ internal sealed class ExceptionAggregator : IExceptionAggregator {
     public static void Try(
         string description,
         IGeneratorContext generatorCtx,
-        Action<IExceptionAggregator> action
+        params Action<IExceptionAggregator>[] actions
     ) {
-        var aggregateException = new ExceptionAggregator(
+        var aggregator = new ExceptionAggregator(
             $"One or more errors error occurred while {description}.",
             generatorCtx);
-        aggregateException.Aggregate(description, () => action(aggregateException));
-
-        if (aggregateException.exceptions.Count > 0) {
-            aggregateException.Throw<object>(generatorCtx);
+        foreach (var action in actions) {
+            aggregator.Aggregate(description, () => action(aggregator));
+        }
+        
+        if (aggregator.exceptions.Count > 0) {
+            aggregator.Throw<object>(generatorCtx);
         }
     }
 }

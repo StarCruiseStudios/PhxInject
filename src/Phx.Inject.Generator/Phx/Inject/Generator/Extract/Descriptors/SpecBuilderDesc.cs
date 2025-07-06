@@ -46,7 +46,7 @@ internal record SpecBuilderDesc(
                     context);
             }
 
-            var qualifier = MetadataHelpers.TryGetQualifier(builderMethod)
+            var qualifier = MetadataHelpers.GetQualifier(builderMethod)
                 .GetOrThrow(context);
             // Use the qualifier from the method, not the parameter.
             var builtType = methodParameterTypes[0] with {
@@ -68,7 +68,7 @@ internal record SpecBuilderDesc(
             var builderLocation = builderType.TypeModel.typeSymbol.Locations.First();
             IReadOnlyList<IMethodSymbol> builderMethods = MetadataHelpers
                 .GetDirectBuilderMethods(builderType.TypeModel.typeSymbol, context)
-                .Where(b => Equals(MetadataHelpers.TryGetQualifier(b)
+                .Where(b => Equals(MetadataHelpers.GetQualifier(b)
                     .GetOrThrow(context), builderType.Qualifier))
                 .Where(b => ValidateBuilder(b, builderLocation, context))
                 .ToImmutableList();
@@ -242,7 +242,7 @@ internal record SpecBuilderDesc(
 
             IReadOnlyList<ITypeSymbol> typeArguments = referenceTypeSymbol.TypeArguments;
 
-            var qualifier = MetadataHelpers.TryGetQualifier(builderReferenceSymbol)
+            var qualifier = MetadataHelpers.GetQualifier(builderReferenceSymbol)
                 .GetOrThrow(extractorCtx);
             var returnTypeModel = TypeModel.FromTypeSymbol(typeArguments[0]);
             builtType = new QualifiedTypeModel(

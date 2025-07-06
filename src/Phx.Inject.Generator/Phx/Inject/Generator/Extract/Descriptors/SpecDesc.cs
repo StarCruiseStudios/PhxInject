@@ -164,7 +164,7 @@ internal record SpecDesc(
             ExtractorContext extractorCtx
         ) {
             var specLocation = injectorType.typeSymbol.Locations.First();
-            var specType = TypeHelpers.CreateConstructorSpecContainerType(injectorType);
+            var specType = MetadataHelpers.CreateConstructorSpecContainerType(injectorType);
             var currentCtx = extractorCtx.GetChildContext(injectorType.typeSymbol);
 
             return ExceptionAggregator.Try(

@@ -51,7 +51,7 @@ internal record InjectorProviderDesc(
             }
 
             var returnType = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
-            var qualifier = MetadataHelpers.TryGetQualifier(providerMethod)
+            var qualifier = MetadataHelpers.GetQualifier(providerMethod)
                 .GetOrThrow(currentCtx);
             return new InjectorProviderDesc(
                 new QualifiedTypeModel(returnType, qualifier),

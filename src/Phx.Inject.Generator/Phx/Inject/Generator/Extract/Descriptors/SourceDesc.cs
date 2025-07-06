@@ -61,7 +61,7 @@ internal record SourceDesc(
                             var injectorSymbol = MetadataHelpers
                                 .ExpectTypeSymbolFromDeclaration(syntaxNode, extractorCtx)
                                 .GetOrThrow(extractorCtx);
-                            return TypeHelpers.IsInjectorSymbol(injectorSymbol).GetOrThrow(extractorCtx)
+                            return MetadataHelpers.IsInjectorSymbol(injectorSymbol).GetOrThrow(extractorCtx)
                                 ? injectorDescExtractor.Extract(injectorSymbol, extractorCtx)
                                 : null;
                         })
@@ -77,7 +77,7 @@ internal record SourceDesc(
                             var specificationSymbol = MetadataHelpers
                                 .ExpectTypeSymbolFromDeclaration(syntaxNode, extractorCtx)
                                 .GetOrThrow(extractorCtx);
-                            return TypeHelpers.IsSpecSymbol(specificationSymbol).GetOrThrow(extractorCtx)
+                            return MetadataHelpers.IsSpecSymbol(specificationSymbol).GetOrThrow(extractorCtx)
                                 ? specDescExtractor.Extract(specificationSymbol, extractorCtx)
                                 : null;
                         })
@@ -93,7 +93,7 @@ internal record SourceDesc(
                             var injectorSymbol = MetadataHelpers
                                 .ExpectTypeSymbolFromDeclaration(syntaxNode, extractorCtx)
                                 .GetOrThrow(extractorCtx);
-                            if (!TypeHelpers.IsInjectorSymbol(injectorSymbol).GetOrThrow(extractorCtx)) {
+                            if (!MetadataHelpers.IsInjectorSymbol(injectorSymbol).GetOrThrow(extractorCtx)) {
                                 return null;
                             }
 
@@ -103,7 +103,7 @@ internal record SourceDesc(
                                 return null;
                             }
 
-                            return TypeHelpers.IsDependencySymbol(dependencySymbol).GetOrThrow(extractorCtx)
+                            return MetadataHelpers.IsDependencySymbol(dependencySymbol).GetOrThrow(extractorCtx)
                                 ? dependencyDescExtractor.Extract(dependencySymbol, extractorCtx)
                                 : null;
                         })

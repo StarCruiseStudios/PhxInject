@@ -44,12 +44,12 @@ internal record ActivatorDesc(
                     builderLocation,
                     currentCtx);
             }
-
-            var builtType = TypeModel.FromTypeSymbol(builderMethod.Parameters[0].Type);
-            var qualifier = MetadataHelpers.TryGetQualifier(builderMethod)
-                .GetOrThrow(currentCtx);
+            
+            var qualifier = builderMethod.GetQualifier().GetOrThrow(currentCtx);
+            var builtType = builderMethod.Parameters[0].Type.ToQualifiedTypeModel(qualifier);
+            
             return new ActivatorDesc(
-                new QualifiedTypeModel(builtType, qualifier),
+                builtType,
                 builderMethod.Name,
                 builderLocation);
         }

@@ -9,6 +9,8 @@
 using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Generator;
 
 namespace Phx.Inject.Common.Model;
 
@@ -50,18 +52,41 @@ internal record TypeModel(
     public override int GetHashCode() {
         return NamespacedName.GetHashCode();
     }
+    
+    private static readonly IImmutableSet<string> MultiBindTypes = ImmutableHashSet.CreateRange(new[] {
+        TypeNames.IReadOnlyListClassName, TypeNames.ISetClassName, TypeNames.IReadOnlyDictionaryClassName
+    });
+    
+    public static void RequirePartialType(TypeModel typeModel, Location declarationLocation, IGeneratorContext generatorCtx) {
+        ExceptionAggregator.Try("Validating partial type",
+            generatorCtx,
+            _ => {
+                if (!MultiBindTypes.Contains(typeModel.NamespacedBaseTypeName)) {
+                    throw Diagnostics.InvalidSpecification.AsException(
+                        $"Partial factories must return one of [{string.Join(", ", MultiBindTypes)}].",
+                        declarationLocation,
+                        generatorCtx);
+                }
+            });
+    }
 
     public static TypeModel FromTypeSymbol(ITypeSymbol typeSymbol) {
+        return typeSymbol.ToTypeModel();
+    }
+}
+
+internal static class TypeSymbolExtensions {
+    public static TypeModel ToTypeModel(this ITypeSymbol typeSymbol) {
         var name = typeSymbol.Name;
 
         IReadOnlyList<TypeModel> typeArguments = typeSymbol is INamedTypeSymbol namedTypeSymbol
             ? namedTypeSymbol.TypeArguments
-                .Select(argumentType => FromTypeSymbol(argumentType))
+                .Select(argumentType => argumentType.ToTypeModel())
                 .ToImmutableList()
             : ImmutableList<TypeModel>.Empty;
 
         if (typeSymbol.ContainingType != null) {
-            var containingType = FromTypeSymbol(typeSymbol.ContainingType);
+            var containingType = typeSymbol.ContainingType.ToTypeModel();
             name = $"{containingType.TypeName}.{name}";
         }
 
@@ -70,5 +95,11 @@ internal record TypeModel(
             name,
             typeArguments,
             typeSymbol);
+    }
+
+    public static QualifiedTypeModel ToQualifiedTypeModel(this ITypeSymbol typeSymbol, IQualifier qualifier) {
+        return new QualifiedTypeModel(
+            typeSymbol.ToTypeModel(),
+            qualifier);
     }
 }

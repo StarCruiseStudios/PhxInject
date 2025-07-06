@@ -51,22 +51,22 @@ internal static class MemberDeclarationSyntaxExtensions {
     public static bool HasInjectorAttribute(this MemberDeclarationSyntax memberDeclaration) {
         return HasAttribute(memberDeclaration,
             it =>
-                it is AttributeHelpers.InjectorAttributeShortName
-                    or AttributeHelpers.InjectorAttributeBaseName);
+                it is TypeNames.InjectorAttributeShortName
+                    or TypeNames.InjectorAttributeBaseName);
     }
     
     public static bool HasPhxInjectAttribute(this MemberDeclarationSyntax memberDeclaration) {
         return HasAttribute(memberDeclaration,
             it =>
-                it is AttributeHelpers.PhxInjectAttributeShortName
-                    or AttributeHelpers.PhxInjectAttributeBaseName);
+                it is TypeNames.PhxInjectAttributeShortName
+                    or TypeNames.PhxInjectAttributeBaseName);
     }
 
     public static bool HasSpecificationAttribute(this MemberDeclarationSyntax memberDeclaration) {
         return HasAttribute(memberDeclaration,
             it =>
-                it is AttributeHelpers.SpecificationAttributeShortName
-                    or AttributeHelpers.SpecificationAttributeBaseName);
+                it is TypeNames.SpecificationAttributeShortName
+                    or TypeNames.SpecificationAttributeBaseName);
     }
     
     private static bool HasAttribute(MemberDeclarationSyntax memberDeclaration, Func<string, bool> predicate) {

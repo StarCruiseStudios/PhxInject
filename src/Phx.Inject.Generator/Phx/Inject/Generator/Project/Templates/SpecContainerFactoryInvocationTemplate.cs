@@ -19,13 +19,13 @@ internal record SpecContainerFactoryInvocationTemplate(
 ) : IRenderTemplate {
     public void Render(IRenderWriter writer, RenderContext renderCtx) {
         if (runtimeFactoryProvidedTypeQualifiedName != null) {
-            writer.Append($"new {TypeHelpers.FactoryTypeName}<{runtimeFactoryProvidedTypeQualifiedName}>(() => ");
+            writer.Append($"new {TypeNames.FactoryClassName}<{runtimeFactoryProvidedTypeQualifiedName}>(() => ");
         }
 
         if (FactoryInvocationTemplates.Count == 1) {
             FactoryInvocationTemplates[0].Render(writer, renderCtx);
         } else {
-            writer.Append($"{TypeHelpers.InjectionUtilTypeName}.Combine<{multiBindQualifiedTypeArgs}> (");
+            writer.Append($"{TypeNames.InjectionUtilClassName}.{nameof(InjectionUtil.Combine)}<{multiBindQualifiedTypeArgs}> (");
             writer.IncreaseIndent(1);
             writer.AppendLine();
             var isFirst = true;

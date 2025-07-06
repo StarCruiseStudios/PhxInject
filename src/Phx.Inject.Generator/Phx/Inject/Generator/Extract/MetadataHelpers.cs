@@ -9,12 +9,11 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Generator;
-using Phx.Inject.Generator.Render;
 
-namespace Phx.Inject.Common;
+namespace Phx.Inject.Generator.Extract;
 
 internal static class MetadataHelpers {
     public static IResult<ITypeSymbol> ExpectTypeSymbolFromDeclaration(
@@ -40,7 +39,7 @@ internal static class MetadataHelpers {
         IMethodSymbol methodSymbol,
         IGeneratorContext generatorCtx) {
         return methodSymbol.Parameters.Select(parameter => {
-                var qualifier = TryGetQualifier(parameter).GetOrThrow(generatorCtx);
+                var qualifier = GetQualifier(parameter).GetOrThrow(generatorCtx);
                 return new QualifiedTypeModel(
                     TypeModel.FromTypeSymbol(parameter.Type),
                     qualifier);
@@ -89,7 +88,7 @@ internal static class MetadataHelpers {
         return injectorAttribute.Specifications;
     }
 
-    public static IResult<IQualifier> TryGetQualifier(ISymbol symbol) {
+    public static IResult<IQualifier> GetQualifier(this ISymbol symbol) {
         var labelAttributeResult = symbol.TryGetLabelAttribute();
         if (!labelAttributeResult.IsOk) {
             return labelAttributeResult.MapError<IQualifier>();
@@ -119,6 +118,62 @@ internal static class MetadataHelpers {
                 :  Result.Ok<IQualifier>(NoQualifier.Instance);
     }
 
+    public static IResult<bool> IsInjectorSymbol(ITypeSymbol symbol) {
+        return symbol.TryGetInjectorAttribute()
+            .Map(attributeData => {
+                if (attributeData == null) {
+                    Result.Ok(false);
+                }
+
+                var isInterface = symbol is { TypeKind: TypeKind.Interface };
+
+                return isInterface
+                    ? Result.Ok(true)
+                    : Result.Error<bool>(
+                        $"Injector type {symbol.Name} must be an interface.",
+                        symbol.Locations.First(),
+                        Diagnostics.InvalidSpecification);
+            });
+    }
+
+    public static IResult<bool> IsSpecSymbol(ITypeSymbol symbol) {
+        return symbol.TryGetSpecificationAttribute()
+            .Map(specificationAttribute => {
+                if (specificationAttribute == null) {
+                    Result.Ok(false);
+                }
+
+                var isStaticSpecification = symbol is { TypeKind: TypeKind.Class, IsStatic: true };
+                var isInterfaceSpecification = symbol.TypeKind == TypeKind.Interface;
+
+                return isStaticSpecification || isInterfaceSpecification
+                    ? Result.Ok(true)
+                    : Result.Error<bool>(
+                        $"Specification type {symbol.Name} must be a static class or interface.",
+                        symbol.Locations.First(),
+                        Diagnostics.InvalidSpecification);
+            });
+    }
+
+    public static IResult<bool> IsDependencySymbol(ITypeSymbol symbol) {
+        var isInterface = symbol is { TypeKind: TypeKind.Interface };
+
+        return isInterface
+            ? Result.Ok(true)
+            : Result.Error<bool>(
+                $"Dependency type {symbol.Name} must be an interface.",
+                symbol.Locations.First(),
+                Diagnostics.InvalidSpecification);
+    }
+    
+    public static TypeModel CreateConstructorSpecContainerType(TypeModel injectorType) {
+        var specContainerTypeName = NameHelpers.GetAppendedClassName(injectorType, "ConstructorFactories");
+        return injectorType with {
+            BaseTypeName = specContainerTypeName,
+            TypeArguments = ImmutableList<TypeModel>.Empty
+        };
+    }
+    
     public static IReadOnlyDictionary<string, QualifiedTypeModel> GetRequiredPropertyQualifiedTypes(
         ITypeSymbol type,
         IGeneratorContext generatorCtx) {
@@ -130,7 +185,7 @@ internal static class MetadataHelpers {
                 property => property.Name,
                 property => new QualifiedTypeModel(
                     TypeModel.FromTypeSymbol(property.Type),
-                    TryGetQualifier(property).GetOrThrow(generatorCtx)
+                    GetQualifier(property).GetOrThrow(generatorCtx)
                 )
             );
     }
