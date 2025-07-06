@@ -16,6 +16,30 @@ public class LinkAttribute : Attribute {
 
     /// <summary> The dependency key for the type exposed by the link. </summary>
     public Type Output { get; }
+    
+    /// <summary>
+    /// An optional <see cref="LabelAttribute"/> qualifier for the input type. Cannot be specified at the same time as
+    /// <see cref="InputQualifier"/>.
+    /// </summary>
+    public string? InputLabel { get; set; } = null;
+    
+    /// <summary>
+    /// An optional <see cref="QualifierAttribute"/> qualifier for the input type. Cannot be specified at the same time as
+    /// <see cref="InputLabel"/>.
+    /// </summary>
+    public Type? InputQualifier { get; set; } = null;
+    
+    /// <summary>
+    /// An optional <see cref="LabelAttribute"/> qualifier for the output type. Cannot be specified at the same time as
+    /// <see cref="OutputQualifier"/>.
+    /// </summary>
+    public string? OutputLabel { get; set; } = null;
+    
+    /// <summary>
+    /// An optional <see cref="QualifierAttribute"/> qualifier for the output type. Cannot be specified at the same time as
+    /// <see cref="OutputLabel"/>.
+    /// </summary>
+    public Type? OutputQualifier { get; set; } = null;
 
     /// <summary> Initializes a new instance of the <see cref="LinkAttribute"/> class. </summary>
     /// <param name="input"> The dependency key for the type consumed by the link. </param>

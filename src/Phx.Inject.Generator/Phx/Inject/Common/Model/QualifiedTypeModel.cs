@@ -15,6 +15,6 @@ internal record QualifiedTypeModel(
     public override string ToString() {
         return Qualifier is NoQualifier
             ? TypeModel.ToString()
-            : $"[{Qualifier.Identifier}] {TypeModel}";
+            : $"[{Qualifier}] {TypeModel}";
     }
 }

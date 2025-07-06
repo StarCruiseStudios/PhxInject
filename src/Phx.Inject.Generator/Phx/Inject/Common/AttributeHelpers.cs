@@ -23,18 +23,14 @@ internal static class AttributeHelpers {
     public const string SpecificationAttributeShortName = "Specification";
     public const string SpecificationAttributeBaseName = nameof(SpecificationAttribute);
 
+    public const string AttributeClassName = $"System.{nameof(Attribute)}";
     public const string BuilderAttributeClassName = $"{PhxInjectNamespace}.{nameof(BuilderAttribute)}";
-
-    public const string BuilderReferenceAttributeClassName =
-        $"{PhxInjectNamespace}.{nameof(BuilderReferenceAttribute)}";
-
+    public const string BuilderReferenceAttributeClassName = $"{PhxInjectNamespace}.{nameof(BuilderReferenceAttribute)}";
     public const string ChildInjectorAttributeClassName = $"{PhxInjectNamespace}.{nameof(ChildInjectorAttribute)}";
     public const string DependencyAttributeClassName = $"{PhxInjectNamespace}.{nameof(DependencyAttribute)}";
+    public const string FabricationModeClassName = $"{PhxInjectNamespace}.{nameof(FabricationMode)}";
     public const string FactoryAttributeClassName = $"{PhxInjectNamespace}.{nameof(FactoryAttribute)}";
-
-    public const string FactoryReferenceAttributeClassName =
-        $"{PhxInjectNamespace}.{nameof(FactoryReferenceAttribute)}";
-
+    public const string FactoryReferenceAttributeClassName = $"{PhxInjectNamespace}.{nameof(FactoryReferenceAttribute)}";
     public const string InjectorAttributeClassName = $"{PhxInjectNamespace}.{nameof(InjectorAttribute)}";
     public const string LabelAttributeClassName = $"{PhxInjectNamespace}.{nameof(LabelAttribute)}";
     public const string LinkAttributeClassName = $"{PhxInjectNamespace}.{nameof(LinkAttribute)}";
@@ -42,6 +38,7 @@ internal static class AttributeHelpers {
     public const string PhxInjectAttributeClassName = $"{PhxInjectNamespace}.{nameof(PhxInjectAttribute)}";
     public const string QualifierAttributeClassName = $"{PhxInjectNamespace}.{nameof(QualifierAttribute)}";
     public const string SpecificationAttributeClassName = $"{PhxInjectNamespace}.{nameof(SpecificationAttribute)}";
+    public const string StringClassName = $"string";
 
     public static IResult<PhxInjectAttributeDesc?> TryGetPhxInjectAttribute(this ISymbol symbol) {
         return TryGetSingleAttribute(symbol, PhxInjectAttributeClassName)
@@ -109,8 +106,8 @@ internal static class AttributeHelpers {
 
                 if (constructorArgument.Count != 1) {
                     return Result.Error<DependencyAttributeDesc?>(
-                        $"DependencyAttribute for symbol {symbol.Name} must provide a dependency type.",
-                        symbol.Locations.First(),
+                        $"Dependency for symbol {symbol.Name} must provide a dependency type.",
+                        it.GetLocation() ?? symbol.Locations.First(),
                         Diagnostics.InvalidSpecification);
                 }
                 
@@ -121,7 +118,7 @@ internal static class AttributeHelpers {
     public static IResult<LabelAttributeDesc?> TryGetLabelAttribute(this ISymbol symbol) {
         return TryGetSingleAttribute(symbol, LabelAttributeClassName)
             .MapNullable(it => {
-                var labels = it.ConstructorArguments.Where(argument => argument.Type!.Name == "String")
+                var labels = it.ConstructorArguments.Where(argument => argument.Type!.ToString() == StringClassName)
                     .Select(argument => (string)argument.Value!)
                     .ToImmutableList();
 
@@ -130,8 +127,8 @@ internal static class AttributeHelpers {
                 }
                 
                 return Result.Error<LabelAttributeDesc?>(
-                    $"LabelAttribute for symbol {symbol.Name} must provide one label value.",
-                    symbol.Locations.First(),
+                    $"Label for symbol {symbol.Name} must provide one label value.",
+                    it.GetLocation() ?? symbol.Locations.First(),
                     Diagnostics.InvalidSpecification);
             });
     }
@@ -140,6 +137,24 @@ internal static class AttributeHelpers {
         return TryGetSingleAttributedAttribute(symbol, QualifierAttributeClassName)
             .MapNullable(it => Result.Ok(new QualifierAttributeDesc(symbol, it)));
     }
+    
+    public static IResult<QualifierAttributeDesc?> TryGetQualifierAttributeFromAttributeType(this INamedTypeSymbol attributeTypeSymbol, AttributeDesc attribute) {
+        if (attributeTypeSymbol.BaseType?.ToString() != AttributeClassName) {
+            return Result.Error<QualifierAttributeDesc?>(
+                $"Expected qualifier type {attributeTypeSymbol.Name} to be an Attribute type.",
+                attribute.Location,
+                Diagnostics.InvalidSpecification);
+        }
+                
+        return TryGetSingleAttribute(attributeTypeSymbol, QualifierAttributeClassName)
+            .Map(it => it == null
+                    ? Result.Error<AttributeData?>(
+                        $"Expected attribute type {attributeTypeSymbol.Name} to have one {QualifierAttributeClassName}.",
+                        attribute.Location,
+                        Diagnostics.InvalidSpecification)
+                    : Result.Ok(it))
+            .MapNullable(it => Result.Ok(new QualifierAttributeDesc(attribute.AttributedSymbol, attributeTypeSymbol)));
+    }
 
     public static IReadOnlyList<IResult<LinkAttributeDesc>> GetAllLinkAttributes(this ISymbol symbol) {
         return TryGetAttributes(symbol, LinkAttributeClassName)
@@ -147,7 +162,7 @@ internal static class AttributeHelpers {
                 if (it.ConstructorArguments.Length != 2) {
                     return Result.Error<LinkAttributeDesc>(
                         "Link attribute must have only an input and return type specified.",
-                        symbol.Locations.First(),
+                        it.GetLocation() ?? symbol.Locations.First(),
                         Diagnostics.InternalError);
                 }
 
@@ -157,11 +172,49 @@ internal static class AttributeHelpers {
                 if (inputTypeArgument == null || returnTypeArgument == null) {
                     return Result.Error<LinkAttributeDesc>(
                         "Link attribute must specify non-null types.",
-                        symbol.Locations.First(),
+                        it.GetLocation() ?? symbol.Locations.First(),
                         Diagnostics.InvalidSpecification);
                 }
+                
+                var inputLabel = it.NamedArguments
+                    .FirstOrDefault(arg => arg.Key == nameof(LinkAttribute.InputLabel))
+                    .Value.Value as string;
 
-                return Result.Ok(new LinkAttributeDesc(inputTypeArgument, returnTypeArgument, symbol, it));
+                var inputQualifier = it.NamedArguments
+                    .FirstOrDefault(arg => arg.Key == nameof(LinkAttribute.InputQualifier))
+                    .Value.Value as INamedTypeSymbol;
+
+                var outputLabel = it.NamedArguments
+                    .FirstOrDefault(arg => arg.Key == nameof(LinkAttribute.OutputLabel))
+                    .Value.Value as string;
+
+                var outputQualifier = it.NamedArguments
+                    .FirstOrDefault(arg => arg.Key == nameof(LinkAttribute.OutputQualifier))
+                    .Value.Value as INamedTypeSymbol;
+                
+                if (inputLabel != null && inputQualifier != null) {
+                    return Result.Error<LinkAttributeDesc>(
+                        "Link attribute cannot specify both input label and qualifier.",
+                        it.GetLocation() ?? symbol.Locations.First(),
+                        Diagnostics.InvalidSpecification);
+                }
+                
+                if (outputLabel != null && outputQualifier != null) {
+                    return Result.Error<LinkAttributeDesc>(
+                        "Link attribute cannot specify both input label and qualifier.",
+                        it.GetLocation() ?? symbol.Locations.First(),
+                        Diagnostics.InvalidSpecification);
+                }
+                
+                return Result.Ok(new LinkAttributeDesc(
+                    inputTypeArgument, 
+                    returnTypeArgument, 
+                    inputQualifier, 
+                    inputLabel, 
+                    outputQualifier, 
+                    outputLabel, 
+                    symbol, 
+                    it));
             }).ToImmutableList();
     }
 
@@ -169,7 +222,7 @@ internal static class AttributeHelpers {
         return TryGetSingleAttribute(symbol, FactoryAttributeClassName)
             .MapNullable(it => {
                 IReadOnlyList<FactoryFabricationMode> fabricationModes = it.ConstructorArguments
-                    .Where(argument => argument.Type!.Name == "FabricationMode")
+                    .Where(argument => argument.Type!.ToString() == FabricationModeClassName)
                     .Select(argument => (FactoryFabricationMode)argument.Value!)
                     .ToImmutableList();
 
@@ -178,7 +231,7 @@ internal static class AttributeHelpers {
                     case > 1:
                         return Result.Error<FactoryAttributeDesc?>(
                             "Factories can only have a single fabrication mode.",
-                            symbol.Locations.First(),
+                            it.GetLocation() ?? symbol.Locations.First(),
                             Diagnostics.InternalError);
                     case 1:
                         fabricationMode = fabricationModes.Single();
@@ -193,7 +246,7 @@ internal static class AttributeHelpers {
         return TryGetSingleAttribute(symbol, FactoryReferenceAttributeClassName)
             .MapNullable(it => {
                 IReadOnlyList<FactoryFabricationMode> fabricationModes = it.ConstructorArguments
-                    .Where(argument => argument.Type!.Name == "FabricationMode")
+                    .Where(argument => argument.Type!.ToString() == FabricationModeClassName)
                     .Select(argument => (FactoryFabricationMode)argument.Value!)
                     .ToImmutableList();
 
@@ -202,7 +255,7 @@ internal static class AttributeHelpers {
                     case > 1:
                         return Result.Error<FactoryReferenceAttributeDesc?>(
                             "Factory references can only have a single fabrication mode.",
-                            symbol.Locations.First(),
+                            it.GetLocation() ?? symbol.Locations.First(),
                             Diagnostics.InternalError);
                     case 1:
                         fabricationMode = fabricationModes.Single();
@@ -239,16 +292,6 @@ internal static class AttributeHelpers {
             .ToImmutableList();
     }
 
-    private static IResult<IReadOnlyList<AttributeData>> ExpectAttributes(ISymbol symbol, string attributeClassName) {
-        var result = TryGetAttributes(symbol, attributeClassName);
-        return result.Any()
-            ? Result.Ok(result)
-            : Result.Error<IReadOnlyList<AttributeData>>(
-                $"Expected type {symbol.Name} to have at least one {attributeClassName}.",
-                symbol.Locations.First(),
-                Diagnostics.InvalidSpecification);
-    }
-
     private static IResult<AttributeData?> TryGetSingleAttribute(ISymbol symbol, string attributeClassName) {
         var attributes = TryGetAttributes(symbol, attributeClassName);
         return attributes.Count switch {
@@ -259,16 +302,7 @@ internal static class AttributeHelpers {
             _ => Result.Ok<AttributeData?>(attributes.SingleOrDefault())
         };
     }
-
-    private static IResult<AttributeData> ExpectSingleAttribute(ISymbol symbol, string attributeClassName) {
-        return TryGetSingleAttribute(symbol, attributeClassName)
-            .Map(attributeData => Result.ErrorIfNull(
-                attributeData,
-                $"Expected type {symbol.Name} to have one {attributeClassName}.",
-                symbol.Locations.First(),
-                Diagnostics.InvalidSpecification));
-    }
-
+    
     private static IReadOnlyList<AttributeData> TryGetAttributedAttributes(
         ISymbol symbol,
         string parentAttributeClassName) {
@@ -288,5 +322,9 @@ internal static class AttributeHelpers {
                 Diagnostics.InvalidSpecification),
             _ => Result.Ok<AttributeData?>(attributes.SingleOrDefault())
         };
+    }
+
+    public static Location? GetLocation(this AttributeData attributeData) {
+        return attributeData.ApplicationSyntaxReference?.GetSyntax().GetLocation();
     }
 }

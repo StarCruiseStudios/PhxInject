@@ -16,15 +16,21 @@ internal interface IQualifier {
 }
 
 internal class LabelQualifier : IQualifier {
+    private readonly string baseIdentifier;
     public string Identifier { get; }
 
     public LabelQualifier(string qualifier) {
+        baseIdentifier = qualifier;
         Identifier = "L_" + qualifier;
+    }
+
+    public override string ToString() {
+        return $"\"{baseIdentifier}\"";
     }
 
     public override bool Equals(object? obj) {
         return obj is LabelQualifier qualifier
-            && Identifier.Equals(qualifier.Identifier);
+            && baseIdentifier.Equals(qualifier.baseIdentifier);
     }
 
     public override int GetHashCode() {
@@ -54,6 +60,10 @@ internal class AttributeQualifier : IQualifier {
     public AttributeQualifier(QualifierAttributeDesc attribute) {
         Attribute = attribute;
         Identifier = "A_" + attribute.AttributeTypeSymbol;
+    }
+
+    public override string ToString() {
+        return $"@{Attribute.AttributeTypeSymbol.Name}";
     }
 
     public override bool Equals(object? obj) {

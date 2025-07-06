@@ -12,12 +12,16 @@ namespace Phx.Inject.Tests.Data;
 
 [Specification]
 [Link(typeof(IntLeaf), typeof(ILeaf))]
+[Link(typeof(ILeaf), typeof(ILeaf), OutputQualifier = typeof(QualifierAAttribute))]
+[Link(typeof(ILeaf), typeof(ILeaf), InputQualifier = typeof(QualifierAAttribute), OutputLabel = LabelA)]
+[Link(typeof(ILeaf), typeof(ILeaf), InputLabel = LabelA, OutputLabel = LabelB)]
 public static class CommonTestValueSpecification {
     public const int IntValue = 10;
     public const int LabelAIntValue = 20;
     public const int QualifierAIntValue = 20;
     public const string LabelAStringValue = "LabelAStringValue";
     public const string LabelA = "LabelA";
+    public const string LabelB = "LabelB";
 
     [Factory]
     internal static int GetInt() {

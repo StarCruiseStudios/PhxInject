@@ -7,7 +7,7 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Common;
 using Phx.Inject.Common.Model;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
@@ -34,9 +34,27 @@ internal record SpecLinkDesc(
             var inputType = TypeModel.FromTypeSymbol(link.InputType);
             var returnType = TypeModel.FromTypeSymbol(link.OutputType);
 
+            var inputQualifierAttribute = link.InputQualifier?
+                .TryGetQualifierAttributeFromAttributeType(link)
+                .GetOrThrow(extractorCtx);
+            IQualifier inputQualifier = inputQualifierAttribute != null
+                ? new AttributeQualifier(inputQualifierAttribute)
+                : link.InputLabel != null
+                    ? new LabelQualifier(link.InputLabel)
+                    : NoQualifier.Instance;
+            
+            var outputQualifierAttribute = link.OutputQualifier?
+                .TryGetQualifierAttributeFromAttributeType(link)
+                .GetOrThrow(extractorCtx);
+            IQualifier outputQualifier = outputQualifierAttribute != null
+                ? new AttributeQualifier(outputQualifierAttribute)
+                : link.OutputLabel != null
+                    ? new LabelQualifier(link.OutputLabel)
+                    : NoQualifier.Instance;
+
             return new SpecLinkDesc(
-                new QualifiedTypeModel(inputType, NoQualifier.Instance),
-                new QualifiedTypeModel(returnType, NoQualifier.Instance),
+                new QualifiedTypeModel(inputType, inputQualifier),
+                new QualifiedTypeModel(returnType, outputQualifier),
                 linkLocation);
         }
     }

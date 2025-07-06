@@ -32,6 +32,18 @@ namespace Phx.Inject.Tests {
         public Phx.Inject.Tests.Data.Model.ILeaf GetLinkedType() {
             return specContainers.LinkTestInjector_LinkTestInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers);
         }
+
+        public Phx.Inject.Tests.Data.Model.ILeaf GetQualifiedLinkedType() {
+            return specContainers.LinkTestInjector_LinkTestInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers);
+        }
+
+        public Phx.Inject.Tests.Data.Model.ILeaf GetDoubleLinkedType() {
+            return specContainers.LinkTestInjector_LinkTestInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers);
+        }
+
+        public Phx.Inject.Tests.Data.Model.ILeaf GetTripleLinkedType() {
+            return specContainers.LinkTestInjector_LinkTestInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers);
+        }
     }
 }
 #nullable restore

@@ -21,6 +21,15 @@ using static CommonTestValueSpecification;
     typeof(CommonTestValueSpecification))]
 public interface ILinkTestInjector {
     ILeaf GetLinkedType();
+    
+    [QualifierA]
+    ILeaf GetQualifiedLinkedType();
+    
+    [Label(LabelA)]
+    ILeaf GetDoubleLinkedType();
+    
+    [Label(LabelB)]
+    ILeaf GetTripleLinkedType();
 }
 
 public class LinkTests : LoggingTestClass {
@@ -34,5 +43,26 @@ public class LinkTests : LoggingTestClass {
         Then("The expected value was injected",
             IntValue,
             expected => Verify.That((value as IntLeaf)!.Value.IsEqualTo(expected)));
+    }
+    [Test]
+    public void LinksCanBeUsedToAccessQualifiedInjectedValues() {
+        ILinkTestInjector injector = Given("A test injector", () => new LinkTestInjector());
+
+        var qualifiedValue = When("Getting a qualified linked value", () => injector.GetQualifiedLinkedType());
+        var doubleLinkedValue = When("Getting a double linked value", () => injector.GetDoubleLinkedType());
+        var tripleLinkedValue = When("Getting a triple linked value", () => injector.GetTripleLinkedType());
+
+        Then("The expected type was injected", () => Verify.That(qualifiedValue.IsType<IntLeaf>()));
+        Then("The expected double linked type was injected", () => Verify.That(doubleLinkedValue.IsType<IntLeaf>()));
+        Then("The expected triple linked type was injected", () => Verify.That(tripleLinkedValue.IsType<IntLeaf>()));
+        Then("The expected value was injected",
+            IntValue,
+            expected => Verify.That((qualifiedValue as IntLeaf)!.Value.IsEqualTo(expected)));
+        Then("The expected double linked value was injected",
+            IntValue,
+            expected => Verify.That((doubleLinkedValue as IntLeaf)!.Value.IsEqualTo(expected)));
+        Then("The expected triple linked value was injected",
+            IntValue,
+            expected => Verify.That((tripleLinkedValue as IntLeaf)!.Value.IsEqualTo(expected)));
     }
 }

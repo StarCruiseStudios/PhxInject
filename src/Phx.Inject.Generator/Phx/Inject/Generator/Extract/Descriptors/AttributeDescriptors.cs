@@ -6,12 +6,14 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common;
 using Phx.Inject.Common.Model;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
-internal interface IAttributeDesc {
+internal interface IAttributeDesc: IDescriptor {
     ISymbol AttributedSymbol { get; }
     INamedTypeSymbol AttributeTypeSymbol { get; }
     AttributeData AttributeData { get; }
@@ -21,11 +23,28 @@ internal abstract class AttributeDesc : IAttributeDesc {
     public ISymbol AttributedSymbol { get; }
     public INamedTypeSymbol AttributeTypeSymbol { get; }
     public AttributeData AttributeData { get; }
+    public Location Location { get; }
 
-    protected AttributeDesc(ISymbol attributedSymbol,AttributeData attributeData) {
+    protected AttributeDesc(ISymbol attributedSymbol, AttributeData attributeData) {
         AttributedSymbol = attributedSymbol;
         AttributeTypeSymbol = attributeData.AttributeClass!;
         AttributeData = attributeData;
+        Location = attributeData.GetLocation() ?? attributedSymbol.Locations.First();
+    }
+
+    protected AttributeDesc(ISymbol attributedSymbol, INamedTypeSymbol attributeTypeSymbol) {
+        AttributedSymbol = attributedSymbol;
+        AttributeTypeSymbol = attributeTypeSymbol;
+        AttributeData = new EmptyAttributeData();
+        Location = attributedSymbol.Locations.First();
+    }
+    
+    private class EmptyAttributeData : AttributeData {
+        protected override INamedTypeSymbol? CommonAttributeClass { get; } = null;
+        protected override IMethodSymbol? CommonAttributeConstructor { get; } = null;
+        protected override SyntaxReference? CommonApplicationSyntaxReference { get; } = null;
+        protected override ImmutableArray<TypedConstant> CommonConstructorArguments { get; } = ImmutableArray<TypedConstant>.Empty;
+        protected override ImmutableArray<KeyValuePair<string, TypedConstant>> CommonNamedArguments { get; } = ImmutableArray<KeyValuePair<string, TypedConstant>>.Empty;
     }
 }
 
@@ -59,8 +78,8 @@ internal class FactoryAttributeDesc : AttributeDesc {
         FactoryFabricationMode fabricationMode,
         ISymbol attributedSymbol,
         AttributeData attributeData)
-        : base(attributedSymbol, attributeData
-    ) {
+        : base(attributedSymbol, attributeData)
+    {
         FabricationMode = fabricationMode;
         
     }
@@ -72,8 +91,8 @@ internal class FactoryReferenceAttributeDesc : AttributeDesc {
         FactoryFabricationMode fabricationMode,
         ISymbol attributedSymbol,
         AttributeData attributeData)
-        : base(attributedSymbol, attributeData
-    ) {
+        : base(attributedSymbol, attributeData)
+    {
         FabricationMode = fabricationMode;
     }
 }
@@ -86,8 +105,8 @@ internal class InjectorAttributeDesc : AttributeDesc {
         IReadOnlyList<ITypeSymbol> specifications,
         ISymbol attributedSymbol,
         AttributeData attributeData)
-        : base(attributedSymbol, attributeData
-    ) {
+        : base(attributedSymbol, attributeData)
+    {
         GeneratedClassName = generatedClassName;
         Specifications = specifications;
     }
@@ -100,16 +119,38 @@ internal class LabelAttributeDesc : AttributeDesc {
     {
         Label = label;
     }
+    
+    public LabelAttributeDesc(string label, ISymbol attributedSymbol, INamedTypeSymbol attributeTypeSymbol) 
+        : base(attributedSymbol, attributeTypeSymbol)
+    {
+        Label = label;
+    }
 }
 
 internal class LinkAttributeDesc : AttributeDesc {
     public ITypeSymbol InputType { get; }
     public ITypeSymbol OutputType { get; }
-    public LinkAttributeDesc(ITypeSymbol inputType, ITypeSymbol outputType, ISymbol attributedSymbol, AttributeData attributeData) 
-        : base(attributedSymbol, attributeData)
-    {
+    public INamedTypeSymbol? InputQualifier { get; }
+    public string? InputLabel { get; }
+    public INamedTypeSymbol? OutputQualifier { get; }
+    public string? OutputLabel { get; }
+    
+    public LinkAttributeDesc(
+        ITypeSymbol inputType, 
+        ITypeSymbol outputType, 
+        INamedTypeSymbol? inputQualifier,
+        string? inputLabel,
+        INamedTypeSymbol? outputQualifier,
+        string? outputLabel,
+        ISymbol attributedSymbol, 
+        AttributeData attributeData
+    ) : base(attributedSymbol, attributeData) {
         InputType = inputType;
         OutputType = outputType;
+        InputQualifier = inputQualifier;
+        InputLabel = inputLabel;
+        OutputQualifier = outputQualifier;
+        OutputLabel = outputLabel;
     }
 }
 
@@ -142,6 +183,9 @@ internal class PhxInjectAttributeDesc : AttributeDesc {
 internal class QualifierAttributeDesc : AttributeDesc {
     public QualifierAttributeDesc(ISymbol attributedSymbol, AttributeData attributeData) 
         : base(attributedSymbol, attributeData) { }
+    
+    public QualifierAttributeDesc(ISymbol attributedSymbol, INamedTypeSymbol attributeTypeSymbol) 
+        : base(attributedSymbol, attributeTypeSymbol) { }
 }
 
 internal class SpecificationAttributeDesc : AttributeDesc {
