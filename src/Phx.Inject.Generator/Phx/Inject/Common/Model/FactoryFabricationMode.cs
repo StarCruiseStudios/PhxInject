@@ -9,7 +9,7 @@
 namespace Phx.Inject.Common.Model;
 
 // These values must match Phx.Inject.FabricationMode to parse correctly.
-internal enum SpecFactoryMethodFabricationMode {
+internal enum FactoryFabricationMode {
     Scoped = 0,
     Recurrent = 1,
     Container = 2,

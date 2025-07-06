@@ -24,7 +24,7 @@ internal record DependencyDesc(
                 SpecFactoryMemberType.Method,
                 ImmutableList<QualifiedTypeModel>.Empty,
                 ImmutableList<SpecFactoryRequiredPropertyDesc>.Empty,
-                SpecFactoryMethodFabricationMode.Recurrent,
+                FactoryFabricationMode.Recurrent,
                 provider.isPartial,
                 provider.Location))
             .ToImmutableList();

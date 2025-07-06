@@ -194,15 +194,15 @@ internal record SpecContainerTemplate(
             // Create factory methods and instance holder declarations.
             foreach (var factoryMethod in specContainerDef.FactoryMethodDefs) {
                 string? instanceHolderReferenceName = null;
-                if (factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.Scoped
-                    || factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.ContainerScoped) {
+                if (factoryMethod.FabricationMode == FactoryFabricationMode.Scoped
+                    || factoryMethod.FabricationMode == FactoryFabricationMode.ContainerScoped) {
                     instanceHolderReferenceName = factoryMethod.ReturnType.GetVariableName();
                     instanceHolders.Add(
                         new SpecContainerInstanceHolder(
                             factoryMethod.ReturnType.TypeModel.NamespacedName,
                             instanceHolderReferenceName,
                             factoryMethod.FabricationMode
-                            == SpecFactoryMethodFabricationMode.ContainerScoped));
+                            == FactoryFabricationMode.ContainerScoped));
                 }
 
                 IReadOnlyList<SpecContainerFactoryInvocationTemplate> arguments = factoryMethod.Arguments
@@ -214,7 +214,7 @@ internal record SpecContainerTemplate(
                         createSpecContainerFactoryInvocationTemplate(property.Value)))
                     .ToImmutableList();
 
-                var startNewContainer = factoryMethod.FabricationMode == SpecFactoryMethodFabricationMode.Container;
+                var startNewContainer = factoryMethod.FabricationMode == FactoryFabricationMode.Container;
 
                 memberTemplates.Add(
                     new SpecContainerFactoryTemplate(

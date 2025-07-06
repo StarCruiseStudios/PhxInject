@@ -49,11 +49,11 @@ internal record SpecDesc(
         public SpecDesc Extract(ITypeSymbol specSymbol, ExtractorContext extractorContext) {
             var specLocation = specSymbol.Locations.First();
             var specType = TypeModel.FromTypeSymbol(specSymbol);
-            var context = extractorContext.GetChildContext(specSymbol);
+            var currentCtx = extractorContext.GetChildContext(specSymbol);
 
             return ExceptionAggregator.Try(
                 $"extracting specification {specType}",
-                context,
+                currentCtx,
                 exceptionAggregator => {
                     var specInstantiationMode = specSymbol.IsStatic
                         ? SpecInstantiationMode.Static
@@ -74,22 +74,22 @@ internal record SpecDesc(
                         .SelectCatching(
                             exceptionAggregator,
                             field => $"extracting specification factory reference field {specType}.{field.Name}",
-                            field => specFactoryDescExtractor.ExtractFactoryReference(field, context))
+                            field => specFactoryDescExtractor.ExtractFactoryReference(field, currentCtx))
                         .Concat(specProperties
                             .SelectCatching(
                                 exceptionAggregator,
                                 prop => $"extracting specification factory reference property {specType}.{prop.Name}",
-                                prop => specFactoryDescExtractor.ExtractFactoryReference(prop, context)))
+                                prop => specFactoryDescExtractor.ExtractFactoryReference(prop, currentCtx)))
                         .Concat(specProperties
                             .SelectCatching(
                                 exceptionAggregator,
                                 prop => $"extracting specification factory property {specType}.{prop.Name}",
-                                prop => specFactoryDescExtractor.ExtractFactory(prop, context)))
+                                prop => specFactoryDescExtractor.ExtractFactory(prop, currentCtx)))
                         .Concat(specMethods
                             .SelectCatching(
                                 exceptionAggregator,
                                 method => $"extracting specification factory method {specType}.{method.Name}",
-                                method => specFactoryDescExtractor.ExtractFactory(method, context)))
+                                method => specFactoryDescExtractor.ExtractFactory(method, currentCtx)))
                         .OfType<SpecFactoryDesc>()
                         .ToImmutableList();
 
@@ -97,17 +97,17 @@ internal record SpecDesc(
                         .SelectCatching(
                             exceptionAggregator,
                             field => $"extracting specification builder reference field {specType}.{field.Name}",
-                            field => specExtractorDescExtractor.ExtractBuilderReference(field, context))
+                            field => specExtractorDescExtractor.ExtractBuilderReference(field, currentCtx))
                         .Concat(specProperties
                             .SelectCatching(
                                 exceptionAggregator,
                                 prop => $"extracting specification builder reference property {specType}.{prop.Name}",
-                                prop => specExtractorDescExtractor.ExtractBuilderReference(prop, context)))
+                                prop => specExtractorDescExtractor.ExtractBuilderReference(prop, currentCtx)))
                         .Concat(specMethods
                             .SelectCatching(
                                 exceptionAggregator,
                                 method => $"extracting specification builder method {specType}.{method.Name}",
-                                method => specExtractorDescExtractor.ExtractBuilder(method, context)))
+                                method => specExtractorDescExtractor.ExtractBuilder(method, currentCtx)))
                         .OfType<SpecBuilderDesc>()
                         .ToImmutableList();
 
@@ -115,7 +115,7 @@ internal record SpecDesc(
                         .SelectCatching(
                             exceptionAggregator,
                             link => $"extracting specification link from {specType}",
-                            link => specLinkDescExtractor.Extract(link, specLocation, context))
+                            link => specLinkDescExtractor.Extract(link.GetOrThrow(currentCtx), specLocation, currentCtx))
                         .ToImmutableList();
 
                     return new SpecDesc(
@@ -187,7 +187,7 @@ internal record SpecDesc(
                                 exceptionAggregator,
                                 link => $"extracting link for auto constructor type {constructorType}",
                                 link => specLinkDescExtractor
-                                    .Extract(link, specLocation, currentCtx)
+                                    .Extract(link.GetOrThrow(currentCtx), specLocation, currentCtx)
                                     .Also(it => {
                                         if (it.InputType != constructorType) {
                                             throw Diagnostics.InvalidSpecification.AsException(

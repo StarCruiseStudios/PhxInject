@@ -19,7 +19,7 @@ internal record SpecLinkDesc(
 ) : IDescriptor {
     public interface IExtractor {
         SpecLinkDesc Extract(
-            AttributeData linkAttribute,
+            LinkAttributeDesc link,
             Location linkLocation,
             ExtractorContext extractorCtx
         );
@@ -27,29 +27,12 @@ internal record SpecLinkDesc(
 
     public class Extractor : IExtractor {
         public SpecLinkDesc Extract(
-            AttributeData linkAttribute,
+            LinkAttributeDesc link,
             Location linkLocation,
             ExtractorContext extractorCtx
         ) {
-            if (linkAttribute.ConstructorArguments.Length != 2) {
-                throw Diagnostics.InternalError.AsFatalException(
-                    "Link attribute must have only an input and return type specified.",
-                    linkLocation,
-                    extractorCtx);
-            }
-
-            var inputTypeArgument = linkAttribute.ConstructorArguments[0].Value as ITypeSymbol;
-            var returnTypeArgument = linkAttribute.ConstructorArguments[1].Value as ITypeSymbol;
-
-            if (inputTypeArgument == null || returnTypeArgument == null) {
-                throw Diagnostics.InvalidSpecification.AsException(
-                    "Link attribute must specify non-null types.",
-                    linkLocation,
-                    extractorCtx);
-            }
-
-            var inputType = TypeModel.FromTypeSymbol(inputTypeArgument);
-            var returnType = TypeModel.FromTypeSymbol(returnTypeArgument);
+            var inputType = TypeModel.FromTypeSymbol(link.InputType);
+            var returnType = TypeModel.FromTypeSymbol(link.OutputType);
 
             return new SpecLinkDesc(
                 new QualifiedTypeModel(inputType, NoQualifier.Instance),

@@ -45,8 +45,8 @@ internal static class TypeHelpers {
 
     public static IResult<bool> IsSpecSymbol(ITypeSymbol symbol) {
         return symbol.TryGetSpecificationAttribute()
-            .Map(attributeData => {
-                if (attributeData == null) {
+            .Map(specificationAttribute => {
+                if (specificationAttribute == null) {
                     Result.Ok(false);
                 }
 

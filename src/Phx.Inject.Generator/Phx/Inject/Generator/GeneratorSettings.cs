@@ -57,7 +57,16 @@ internal record GeneratorSettings(
                                 generatorCtx);
                         }
                         
-                        return MetadataHelpers.GetGeneratorSettings(settingsSymbol, settingsAttribute);
+                        var name = $"{settingsSymbol.ContainingNamespace}.{settingsSymbol.Name}";
+                        
+                        return new GeneratorSettings(
+                            name,
+                            settingsSymbol.Locations.First(),
+                            settingsAttribute.TabSize ?? 4,
+                            settingsAttribute.GeneratedFileExtension ?? "generated.cs",
+                            settingsAttribute.NullableEnabled ?? true,
+                            settingsAttribute.AllowConstructorFactories ?? true
+                        );
                     })
                 .OfType<GeneratorSettings>()
                 .ToImmutableList();

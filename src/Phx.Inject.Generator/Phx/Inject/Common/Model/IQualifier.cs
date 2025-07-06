@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Common.Model;
 
@@ -47,20 +48,23 @@ internal class NoQualifier : IQualifier {
 }
 
 internal class AttributeQualifier : IQualifier {
-    public AttributeData Attribute { get; }
+    public QualifierAttributeDesc Attribute { get; }
     public string Identifier { get; }
 
-    public AttributeQualifier(AttributeData attribute) {
+    public AttributeQualifier(QualifierAttributeDesc attribute) {
         Attribute = attribute;
-        Identifier = "A_" + attribute.AttributeClass!;
+        Identifier = "A_" + attribute.AttributeTypeSymbol;
     }
 
     public override bool Equals(object? obj) {
         return obj is AttributeQualifier qualifier
-            && Identifier.Equals(qualifier.Identifier);
+            && SymbolEqualityComparer.IncludeNullability.Equals(
+                Attribute.AttributeTypeSymbol,
+                qualifier.Attribute.AttributeTypeSymbol);
     }
 
     public override int GetHashCode() {
-        return (typeof(AttributeQualifier).GetHashCode() * 397) ^ Identifier.GetHashCode();
+        return (typeof(AttributeQualifier).GetHashCode() * 397) 
+            ^ SymbolEqualityComparer.IncludeNullability.GetHashCode(Attribute.AttributeTypeSymbol);
     }
 }

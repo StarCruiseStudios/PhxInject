@@ -9,6 +9,8 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Common;
 
@@ -41,65 +43,199 @@ internal static class AttributeHelpers {
     public const string QualifierAttributeClassName = $"{PhxInjectNamespace}.{nameof(QualifierAttribute)}";
     public const string SpecificationAttributeClassName = $"{PhxInjectNamespace}.{nameof(SpecificationAttribute)}";
 
-    public static IResult<AttributeData?> TryGetPhxInjectAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, PhxInjectAttributeClassName);
+    public static IResult<PhxInjectAttributeDesc?> TryGetPhxInjectAttribute(this ISymbol symbol) {
+        return TryGetSingleAttribute(symbol, PhxInjectAttributeClassName)
+            .MapNullable(it => {
+                var tabSize = it.NamedArguments
+                    .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.TabSize))
+                    .Value.Value as int?;
+
+                var generatedFileExtension = it.NamedArguments
+                        .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.GeneratedFileExtension))
+                        .Value.Value as string;
+
+                var nullableEnabled = it.NamedArguments
+                        .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.NullableEnabled))
+                        .Value.Value as bool?;
+
+                var allowConstructorFactories = it.NamedArguments
+                        .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.AllowConstructorFactories))
+                        .Value.Value as bool?;
+                
+                return Result.Ok(new PhxInjectAttributeDesc(tabSize, generatedFileExtension, nullableEnabled, allowConstructorFactories, symbol, it));
+            });
     }
 
-    public static IResult<AttributeData?> TryGetInjectorAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, InjectorAttributeClassName);
+    public static IResult<InjectorAttributeDesc?> TryGetInjectorAttribute(this ISymbol symbol) {
+        return TryGetSingleAttribute(symbol, InjectorAttributeClassName)
+            .MapNullable(it => {
+                var generatedClassName = it.ConstructorArguments
+                    .FirstOrDefault(argument => argument.Kind != TypedConstantKind.Array)
+                    .Value as string;
+
+                var specifications = it.ConstructorArguments
+                    .Where(argument => argument.Kind == TypedConstantKind.Array)
+                    .SelectMany(argument => argument.Values)
+                    .Where(type => type.Value is ITypeSymbol)
+                    .Select(type => (type.Value as ITypeSymbol)!)
+                    .ToImmutableList();
+                
+                return Result.Ok(new InjectorAttributeDesc(generatedClassName, specifications, symbol, it));
+            });
     }
 
-    public static IResult<AttributeData> ExpectInjectorAttribute(this ISymbol symbol) {
-        return ExpectSingleAttribute(symbol, InjectorAttributeClassName);
+    public static IResult<InjectorAttributeDesc> ExpectInjectorAttribute(this ISymbol symbol) {
+        return symbol.TryGetInjectorAttribute()
+                .Map(attributeData => Result.ErrorIfNull(
+                    attributeData,
+                    $"Expected type {symbol.Name} to have one {InjectorAttributeClassName}.",
+                    symbol.Locations.First(),
+                    Diagnostics.InvalidSpecification));
     }
 
-    public static IResult<AttributeData?> TryGetSpecificationAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, SpecificationAttributeClassName);
+    public static IResult<SpecificationAttributeDesc?> TryGetSpecificationAttribute(this ISymbol symbol) {
+        return TryGetSingleAttribute(symbol, SpecificationAttributeClassName)
+            .MapNullable(it => Result.Ok(new SpecificationAttributeDesc(symbol, it)));
     }
 
-    public static IResult<AttributeData?> TryGetDependencyAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, DependencyAttributeClassName);
+    public static IResult<DependencyAttributeDesc?> TryGetDependencyAttribute(this ISymbol symbol) {
+        return TryGetSingleAttribute(symbol, DependencyAttributeClassName)
+            .MapNullable(it => {
+                var constructorArgument = it.ConstructorArguments
+                    .Where(argument => argument.Kind == TypedConstantKind.Type)
+                    .Select(argument => argument.Value)
+                    .OfType<ITypeSymbol>()
+                    .ToImmutableList();
+
+                if (constructorArgument.Count != 1) {
+                    return Result.Error<DependencyAttributeDesc?>(
+                        $"DependencyAttribute for symbol {symbol.Name} must provide a dependency type.",
+                        symbol.Locations.First(),
+                        Diagnostics.InvalidSpecification);
+                }
+                
+                return Result.Ok(new DependencyAttributeDesc(constructorArgument.Single(), symbol, it));
+            });
     }
 
-    public static IResult<AttributeData?> TryGetLabelAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, LabelAttributeClassName);
+    public static IResult<LabelAttributeDesc?> TryGetLabelAttribute(this ISymbol symbol) {
+        return TryGetSingleAttribute(symbol, LabelAttributeClassName)
+            .MapNullable(it => {
+                var labels = it.ConstructorArguments.Where(argument => argument.Type!.Name == "String")
+                    .Select(argument => (string)argument.Value!)
+                    .ToImmutableList();
+
+                if (labels.Count == 1) {
+                    return Result.Ok(new LabelAttributeDesc(labels.Single(), symbol, it));
+                }
+                
+                return Result.Error<LabelAttributeDesc?>(
+                    $"LabelAttribute for symbol {symbol.Name} must provide one label value.",
+                    symbol.Locations.First(),
+                    Diagnostics.InvalidSpecification);
+            });
     }
 
-    public static IResult<AttributeData?> TryGetQualifierAttribute(this ISymbol symbol) {
-        return TryGetSingleAttributedAttribute(symbol, QualifierAttributeClassName);
+    public static IResult<QualifierAttributeDesc?> TryGetQualifierAttribute(this ISymbol symbol) {
+        return TryGetSingleAttributedAttribute(symbol, QualifierAttributeClassName)
+            .MapNullable(it => Result.Ok(new QualifierAttributeDesc(symbol, it)));
     }
 
-    public static IReadOnlyList<AttributeData> GetAllLinkAttributes(this ISymbol symbol) {
-        return TryGetAttributes(symbol, LinkAttributeClassName);
+    public static IReadOnlyList<IResult<LinkAttributeDesc>> GetAllLinkAttributes(this ISymbol symbol) {
+        return TryGetAttributes(symbol, LinkAttributeClassName)
+            .Select(it => {
+                if (it.ConstructorArguments.Length != 2) {
+                    return Result.Error<LinkAttributeDesc>(
+                        "Link attribute must have only an input and return type specified.",
+                        symbol.Locations.First(),
+                        Diagnostics.InternalError);
+                }
+
+                var inputTypeArgument = it.ConstructorArguments[0].Value as ITypeSymbol;
+                var returnTypeArgument = it.ConstructorArguments[1].Value as ITypeSymbol;
+
+                if (inputTypeArgument == null || returnTypeArgument == null) {
+                    return Result.Error<LinkAttributeDesc>(
+                        "Link attribute must specify non-null types.",
+                        symbol.Locations.First(),
+                        Diagnostics.InvalidSpecification);
+                }
+
+                return Result.Ok(new LinkAttributeDesc(inputTypeArgument, returnTypeArgument, symbol, it));
+            }).ToImmutableList();
     }
 
-    public static IResult<AttributeData?> TryGetFactoryAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, FactoryAttributeClassName);
+    public static IResult<FactoryAttributeDesc?> TryGetFactoryAttribute(this ISymbol symbol) {
+        return TryGetSingleAttribute(symbol, FactoryAttributeClassName)
+            .MapNullable(it => {
+                IReadOnlyList<FactoryFabricationMode> fabricationModes = it.ConstructorArguments
+                    .Where(argument => argument.Type!.Name == "FabricationMode")
+                    .Select(argument => (FactoryFabricationMode)argument.Value!)
+                    .ToImmutableList();
+
+                var fabricationMode = FactoryFabricationMode.Recurrent;
+                switch (fabricationModes.Count) {
+                    case > 1:
+                        return Result.Error<FactoryAttributeDesc?>(
+                            "Factories can only have a single fabrication mode.",
+                            symbol.Locations.First(),
+                            Diagnostics.InternalError);
+                    case 1:
+                        fabricationMode = fabricationModes.Single();
+                        break;
+                }
+
+                return Result.Ok(new FactoryAttributeDesc(fabricationMode, symbol, it));
+            });
     }
 
-    public static IResult<AttributeData?> TryGetFactoryReferenceAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, FactoryReferenceAttributeClassName);
+    public static IResult<FactoryReferenceAttributeDesc?> TryGetFactoryReferenceAttribute(this ISymbol symbol) {
+        return TryGetSingleAttribute(symbol, FactoryReferenceAttributeClassName)
+            .MapNullable(it => {
+                IReadOnlyList<FactoryFabricationMode> fabricationModes = it.ConstructorArguments
+                    .Where(argument => argument.Type!.Name == "FabricationMode")
+                    .Select(argument => (FactoryFabricationMode)argument.Value!)
+                    .ToImmutableList();
+
+                var fabricationMode = FactoryFabricationMode.Recurrent;
+                switch (fabricationModes.Count) {
+                    case > 1:
+                        return Result.Error<FactoryReferenceAttributeDesc?>(
+                            "Factory references can only have a single fabrication mode.",
+                            symbol.Locations.First(),
+                            Diagnostics.InternalError);
+                    case 1:
+                        fabricationMode = fabricationModes.Single();
+                        break;
+                }
+
+                return Result.Ok(new FactoryReferenceAttributeDesc(fabricationMode, symbol, it));
+            });
     }
 
-    public static IResult<AttributeData?> TryGetBuilderAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, BuilderAttributeClassName);
+    public static IResult<BuilderAttributeDesc?> TryGetBuilderAttribute(this ISymbol symbol) {
+        return TryGetSingleAttribute(symbol, BuilderAttributeClassName)
+            .MapNullable(it => Result.Ok(new BuilderAttributeDesc(symbol, it)));
     }
 
-    public static IResult<AttributeData?> TryGetBuilderReferenceAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, BuilderReferenceAttributeClassName);
+    public static IResult<BuilderReferenceAttributeDesc?> TryGetBuilderReferenceAttribute(this ISymbol symbol) {
+        return TryGetSingleAttribute(symbol, BuilderReferenceAttributeClassName)
+            .MapNullable(it => Result.Ok(new BuilderReferenceAttributeDesc(symbol, it)));
     }
 
-    public static IResult<AttributeData?> TryGetChildInjectorAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, ChildInjectorAttributeClassName);
+    public static IResult<ChildInjectorAttributeDesc?> TryGetChildInjectorAttribute(this ISymbol symbol) {
+        return TryGetSingleAttribute(symbol, ChildInjectorAttributeClassName)
+            .MapNullable(it => Result.Ok(new ChildInjectorAttributeDesc(symbol, it)));
     }
 
-    public static IResult<AttributeData?> TryGetPartialAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, PartialAttributeClassName);
+    public static IResult<PartialAttributeDesc?> TryGetPartialAttribute(this ISymbol symbol) {
+        return TryGetSingleAttribute(symbol, PartialAttributeClassName)
+            .MapNullable(it => Result.Ok(new PartialAttributeDesc(symbol, it)));
     }
 
     private static IReadOnlyList<AttributeData> TryGetAttributes(ISymbol symbol, string attributeClassName) {
         return symbol.GetAttributes()
-            .Where(attributeData => attributeData.AttributeClass!.ToString() == attributeClassName)
+            .Where(attributeData => attributeData.AttributeClass?.ToString() == attributeClassName)
             .ToImmutableList();
     }
 
@@ -126,7 +262,7 @@ internal static class AttributeHelpers {
 
     private static IResult<AttributeData> ExpectSingleAttribute(ISymbol symbol, string attributeClassName) {
         return TryGetSingleAttribute(symbol, attributeClassName)
-            .Map(attributeData => Result.FromNullable(
+            .Map(attributeData => Result.ErrorIfNull(
                 attributeData,
                 $"Expected type {symbol.Name} to have one {attributeClassName}.",
                 symbol.Locations.First(),

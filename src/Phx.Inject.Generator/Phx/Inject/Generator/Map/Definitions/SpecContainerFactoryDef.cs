@@ -16,7 +16,7 @@ internal record SpecContainerFactoryDef(
     string SpecContainerFactoryMethodName,
     string SpecFactoryMemberName,
     SpecFactoryMemberType SpecFactoryMemberType,
-    SpecFactoryMethodFabricationMode FabricationMode,
+    FactoryFabricationMode FabricationMode,
     IEnumerable<SpecContainerFactoryInvocationDef> Arguments,
     IEnumerable<SpecContainerFactoryRequiredPropertyDef> RequiredProperties,
     Location Location

@@ -20,7 +20,7 @@ internal record SpecFactoryDesc(
     SpecFactoryMemberType SpecFactoryMemberType,
     IEnumerable<QualifiedTypeModel> Parameters,
     IEnumerable<SpecFactoryRequiredPropertyDesc> RequiredProperties,
-    SpecFactoryMethodFabricationMode FabricationMode,
+    FactoryFabricationMode FabricationMode,
     bool isPartial,
     Location Location
 ) : IDescriptor {
@@ -28,19 +28,16 @@ internal record SpecFactoryDesc(
         ITypeSymbol constructorFactoryType,
         Location constructorFactoryLocation,
         ExtractorContext extractorCtx,
-        out SpecFactoryMethodFabricationMode fabricationMode
+        out FactoryFabricationMode fabricationMode
     ) {
         var factoryAttribute = constructorFactoryType.TryGetFactoryAttribute().GetOrThrow(extractorCtx);
         if (factoryAttribute == null) {
             // This is an implicit constructor factory.
-            fabricationMode = SpecFactoryMethodFabricationMode.Recurrent;
+            fabricationMode = FactoryFabricationMode.Recurrent;
             return false;
         }
 
-        fabricationMode = MetadataHelpers.GetFactoryFabricationMode(
-            factoryAttribute,
-            constructorFactoryLocation,
-            extractorCtx);
+        fabricationMode = factoryAttribute.FabricationMode;
         return true;
     }
 
@@ -48,12 +45,12 @@ internal record SpecFactoryDesc(
         ISymbol factorySymbol,
         Location factoryLocation,
         ExtractorContext extractorCtx,
-        out SpecFactoryMethodFabricationMode fabricationMode
+        out FactoryFabricationMode fabricationMode
     ) {
         var factoryAttribute = factorySymbol.TryGetFactoryAttribute().GetOrThrow(extractorCtx);
         if (factoryAttribute == null) {
             // This is not a factory method.
-            fabricationMode = SpecFactoryMethodFabricationMode.Recurrent;
+            fabricationMode = FactoryFabricationMode.Recurrent;
             return false;
         }
 
@@ -67,10 +64,7 @@ internal record SpecFactoryDesc(
                 extractorCtx);
         }
 
-        fabricationMode = MetadataHelpers.GetFactoryFabricationMode(
-            factoryAttribute,
-            factoryLocation,
-            extractorCtx);
+        fabricationMode = factoryAttribute.FabricationMode;
         return true;
     }
 
@@ -78,14 +72,14 @@ internal record SpecFactoryDesc(
         ISymbol factoryReferenceSymbol,
         Location factoryReferenceLocation,
         ExtractorContext extractorCtx,
-        out SpecFactoryMethodFabricationMode fabricationMode
+        out FactoryFabricationMode fabricationMode
     ) {
         var factoryReferenceAttribute =
             factoryReferenceSymbol.TryGetFactoryReferenceAttribute().GetOrThrow(extractorCtx);
 
         if (factoryReferenceAttribute == null) {
             // This is not a factory reference.
-            fabricationMode = SpecFactoryMethodFabricationMode.Recurrent;
+            fabricationMode = FactoryFabricationMode.Recurrent;
             return false;
         }
 
@@ -98,10 +92,7 @@ internal record SpecFactoryDesc(
                 extractorCtx);
         }
 
-        fabricationMode = MetadataHelpers.GetFactoryFabricationMode(
-            factoryReferenceAttribute,
-            factoryReferenceLocation,
-            extractorCtx);
+        fabricationMode = factoryReferenceAttribute.FabricationMode;
         return true;
     }
 
