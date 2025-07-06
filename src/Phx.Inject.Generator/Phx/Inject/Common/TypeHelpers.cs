@@ -90,7 +90,7 @@ internal static class TypeHelpers {
         Location location,
         IGeneratorContext generatorCtx) {
         if (isPartial) {
-            if (!MultiBindTypes.Contains(returnType.TypeModel.QualifiedBaseTypeName)) {
+            if (!MultiBindTypes.Contains(returnType.TypeModel.NamespacedBaseTypeName)) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     "Partial factories must return a IReadOnlyList, ISet, or IReadOnlyDictionary.",
                     location,
@@ -102,7 +102,7 @@ internal static class TypeHelpers {
     public static string GetQualifiedTypeArgs(QualifiedTypeModel type) {
         return string.Join(
             ", ",
-            type.TypeModel.TypeArguments.Select(arg => arg.QualifiedName));
+            type.TypeModel.TypeArguments.Select(arg => arg.NamespacedName));
     }
 
     public static TypeModel CreateSpecContainerType(TypeModel injectorType, TypeModel specType) {

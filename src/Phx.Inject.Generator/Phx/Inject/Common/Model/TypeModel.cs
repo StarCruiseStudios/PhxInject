@@ -23,7 +23,7 @@ internal record TypeModel(
             var builder = new StringBuilder(BaseTypeName);
             if (TypeArguments.Count > 0) {
                 builder.Append("<")
-                    .Append(string.Join(",", TypeArguments.Select(argumentType => argumentType.QualifiedName)))
+                    .Append(string.Join(",", TypeArguments.Select(argumentType => argumentType.NamespacedName)))
                     .Append(">");
             }
 
@@ -31,24 +31,24 @@ internal record TypeModel(
         }
     }
 
-    public string QualifiedBaseTypeName {
+    public string NamespacedBaseTypeName {
         get => $"{NamespaceName}.{BaseTypeName}";
     }
 
-    public string QualifiedName {
+    public string NamespacedName {
         get => $"{NamespaceName}.{TypeName}";
     }
 
     public virtual bool Equals(TypeModel? other) {
-        return QualifiedName == other?.QualifiedName;
+        return NamespacedName == other?.NamespacedName;
     }
 
     public override string ToString() {
-        return QualifiedName;
+        return NamespacedName;
     }
 
     public override int GetHashCode() {
-        return QualifiedName.GetHashCode();
+        return NamespacedName.GetHashCode();
     }
 
     public static TypeModel FromTypeSymbol(ITypeSymbol typeSymbol) {

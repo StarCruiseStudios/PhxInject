@@ -43,7 +43,7 @@ internal class SpecDefMapper : ISpecDefMapper {
         var neededBuilders = new HashSet<QualifiedTypeModel>();
 
         foreach (var provider in defGenerationCtx.Injector.Providers) {
-            if (provider.ProvidedType.TypeModel.QualifiedBaseTypeName == TypeHelpers.FactoryTypeName) {
+            if (provider.ProvidedType.TypeModel.NamespacedBaseTypeName == TypeHelpers.FactoryTypeName) {
                 neededTypes.Add(new QualifiedTypeModel(
                     provider.ProvidedType.TypeModel.TypeArguments[0],
                     provider.ProvidedType.Qualifier));
@@ -61,7 +61,7 @@ internal class SpecDefMapper : ISpecDefMapper {
                 providedTypes.Add(factory.ReturnType);
 
                 foreach (var parameterType in factory.Parameters) {
-                    if (parameterType.TypeModel.QualifiedBaseTypeName == TypeHelpers.FactoryTypeName) {
+                    if (parameterType.TypeModel.NamespacedBaseTypeName == TypeHelpers.FactoryTypeName) {
                         var factoryType = parameterType with {
                             TypeModel = parameterType.TypeModel.TypeArguments.Single()
                         };

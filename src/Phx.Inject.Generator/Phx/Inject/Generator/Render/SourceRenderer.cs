@@ -38,7 +38,7 @@ internal class SourceRenderer {
                     t => t.ToString(),
                     t => {
                         var (classType, template) = t;
-                        var fileName = $"{classType.QualifiedName}.{generatorSettings.GeneratedFileExtension}";
+                        var fileName = $"{classType.NamespacedName}.{generatorSettings.GeneratedFileExtension}";
                         generatorCtx.Log($"Rendering source for {fileName}");
                         generatorCtx.ExecutionContext.AddSource(fileName,
                             writerFactory.Use(writer => template.Render(writer, renderContext)));

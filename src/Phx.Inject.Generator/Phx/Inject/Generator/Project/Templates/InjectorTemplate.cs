@@ -177,7 +177,7 @@ internal record InjectorTemplate(
                         ? null
                         : specContainer.SpecificationType.GetVariableName();
                     return new InjectorSpecContainerCollectionProperty(
-                        specContainer.SpecContainerType.QualifiedName,
+                        specContainer.SpecContainerType.NamespacedName,
                         specContainer.SpecContainerType.GetPropertyName(),
                         constructorArgument);
                 })
@@ -187,7 +187,7 @@ internal record InjectorTemplate(
                     specContainer.SpecInstantiationMode == SpecInstantiationMode.Instantiated)
                 .Select(specContainer => specContainer.SpecificationType)
                 .Select(specType => new InjectorConstructorParameter(
-                    specType.QualifiedName,
+                    specType.NamespacedName,
                     specType.GetVariableName()))
                 .ToImmutableList();
 
@@ -215,11 +215,11 @@ internal record InjectorTemplate(
                     var factoryInvocation = new SpecContainerFactoryInvocationTemplate(
                         singleInvocationTemplates,
                         multiBindQualifiedTypeArgs,
-                        invocationDef.RuntimeFactoryProvidedType?.QualifiedName,
+                        invocationDef.RuntimeFactoryProvidedType?.NamespacedName,
                         invocationDef.Location);
 
                     return new InjectorProviderTemplate(
-                        provider.ProvidedType.TypeModel.QualifiedName,
+                        provider.ProvidedType.TypeModel.NamespacedName,
                         provider.InjectorProviderMethodName,
                         factoryInvocation,
                         provider.Location);
@@ -236,7 +236,7 @@ internal record InjectorTemplate(
                             invocationDef.Location);
 
                         return new ActivatorTemplate(
-                            builder.BuiltType.TypeModel.QualifiedName,
+                            builder.BuiltType.TypeModel.NamespacedName,
                             builder.ActivatorMethodName,
                             builderTargetName,
                             builderInvocation,
@@ -247,7 +247,7 @@ internal record InjectorTemplate(
                         var childInjector = templateGenerationCtx.GetInjector(
                             factory.InjectorChildInterfaceType,
                             factory.Location);
-                        var childTypeQualifiedName = childInjector.InjectorType.QualifiedName;
+                        var childTypeQualifiedName = childInjector.InjectorType.NamespacedName;
 
                         IReadOnlyList<TypeModel> missingDependencies =
                             childInjector.ConstructedSpecifications.Where(specType =>
@@ -284,7 +284,7 @@ internal record InjectorTemplate(
                         // above checks the two lists are otherwise identical.
                         IReadOnlyList<InjectorConstructorParameter> childConstructorParameters = factory.Parameters
                             .Select(specType => new InjectorConstructorParameter(
-                                specType.QualifiedName,
+                                specType.NamespacedName,
                                 specType.GetVariableName()))
                             .ToImmutableList();
 
@@ -304,7 +304,7 @@ internal record InjectorTemplate(
                                     var dependencyImplementationQualifiedName =
                                         dependencyImplementation
                                             .DependencyImplementationType
-                                            .QualifiedName;
+                                            .NamespacedName;
 
                                     return new
                                         InjectorChildDependencyConstructorArgumentTemplate(
@@ -321,7 +321,7 @@ internal record InjectorTemplate(
                             .ToImmutableList();
 
                         return new InjectorChildFactoryTemplate(
-                            factory.InjectorChildInterfaceType.QualifiedName,
+                            factory.InjectorChildInterfaceType.NamespacedName,
                             factory.InjectorChildFactoryMethodName,
                             childTypeQualifiedName,
                             childConstructorParameters,
@@ -332,7 +332,7 @@ internal record InjectorTemplate(
 
             return new InjectorTemplate(
                 injectorDef.InjectorType.TypeName,
-                injectorDef.InjectorInterfaceType.QualifiedName,
+                injectorDef.InjectorInterfaceType.NamespacedName,
                 NameHelpers.SpecContainerCollectionTypeName,
                 SpecContainerCollectionReferenceName,
                 specContainerProperties,

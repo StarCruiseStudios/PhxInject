@@ -184,7 +184,7 @@ internal record SpecContainerTemplate(
             string? constructedSpecInterfaceQualifiedType = null;
             string? constructedSpecificationReference = null;
             if (specContainerDef.SpecInstantiationMode == SpecInstantiationMode.Instantiated) {
-                constructedSpecInterfaceQualifiedType = specContainerDef.SpecificationType.QualifiedName;
+                constructedSpecInterfaceQualifiedType = specContainerDef.SpecificationType.NamespacedName;
                 constructedSpecificationReference = SpecReferenceName;
             }
 
@@ -199,7 +199,7 @@ internal record SpecContainerTemplate(
                     instanceHolderReferenceName = factoryMethod.ReturnType.GetVariableName();
                     instanceHolders.Add(
                         new SpecContainerInstanceHolder(
-                            factoryMethod.ReturnType.TypeModel.QualifiedName,
+                            factoryMethod.ReturnType.TypeModel.NamespacedName,
                             instanceHolderReferenceName,
                             factoryMethod.FabricationMode
                             == SpecFactoryMethodFabricationMode.ContainerScoped));
@@ -218,16 +218,16 @@ internal record SpecContainerTemplate(
 
                 memberTemplates.Add(
                     new SpecContainerFactoryTemplate(
-                        factoryMethod.ReturnType.TypeModel.QualifiedName,
+                        factoryMethod.ReturnType.TypeModel.NamespacedName,
                         factoryMethod.SpecContainerFactoryMethodName,
                         factoryMethod.SpecFactoryMemberName,
                         factoryMethod.SpecFactoryMemberType,
-                        context.Injector.SpecContainerCollectionType.QualifiedName,
+                        context.Injector.SpecContainerCollectionType.NamespacedName,
                         SpecContainerCollectionReferenceName,
                         instanceHolderReferenceName,
                         startNewContainer,
                         constructedSpecificationReference,
-                        specContainerDef.SpecificationType.QualifiedName,
+                        specContainerDef.SpecificationType.NamespacedName,
                         arguments,
                         requiredProperties,
                         specContainerDef.Location
@@ -260,23 +260,23 @@ internal record SpecContainerTemplate(
                         return new SpecContainerFactoryInvocationTemplate(
                             singleInvocationTemplates,
                             multiBindQualifiedTypeArgs,
-                            argument.RuntimeFactoryProvidedType?.QualifiedName,
+                            argument.RuntimeFactoryProvidedType?.NamespacedName,
                             argument.Location);
                     })
                     .ToImmutableList();
 
                 var specificationQualifiedType = constructedSpecificationReference
                     ?? (builderMethod.SpecBuilderMemberType == SpecBuilderMemberType.Direct
-                        ? builderMethod.BuiltType.QualifiedName
-                        : specContainerDef.SpecificationType.QualifiedName);
+                        ? builderMethod.BuiltType.NamespacedName
+                        : specContainerDef.SpecificationType.NamespacedName);
 
                 memberTemplates.Add(
                     new SpecContainerBuilderTemplate(
-                        builderMethod.BuiltType.QualifiedName,
+                        builderMethod.BuiltType.NamespacedName,
                         builderMethod.SpecContainerBuilderMethodName,
                         builderMethod.SpecBuilderMemberName,
                         BuiltInstanceReferenceName,
-                        context.Injector.SpecContainerCollectionType.QualifiedName,
+                        context.Injector.SpecContainerCollectionType.NamespacedName,
                         SpecContainerCollectionReferenceName,
                         specificationQualifiedType,
                         arguments,
@@ -316,7 +316,7 @@ internal record SpecContainerTemplate(
             return new SpecContainerFactoryInvocationTemplate(
                 singleInvocationTemplates,
                 multiBindQualifiedTypeArgs,
-                argument.RuntimeFactoryProvidedType?.QualifiedName,
+                argument.RuntimeFactoryProvidedType?.NamespacedName,
                 argument.Location);
         }
     }

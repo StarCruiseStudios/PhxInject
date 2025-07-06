@@ -93,7 +93,7 @@ internal record DefGenerationContext : IGeneratorContext {
 
         TypeModel? runtimeFactoryProvidedType = null;
         var factoryType = returnedType;
-        if (returnedType.TypeModel.QualifiedBaseTypeName == TypeHelpers.FactoryTypeName) {
+        if (returnedType.TypeModel.NamespacedBaseTypeName == TypeHelpers.FactoryTypeName) {
             factoryType = returnedType with {
                 TypeModel = returnedType.TypeModel.TypeArguments.Single()
             };

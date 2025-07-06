@@ -92,11 +92,11 @@ internal record DependencyImplementationTemplate(
                         var factoryInvocation = new SpecContainerFactoryInvocationTemplate(
                             singleInvocationTemplates,
                             multiBindQualifiedTypeArgs,
-                            provider.SpecContainerFactoryInvocation.RuntimeFactoryProvidedType?.QualifiedName,
+                            provider.SpecContainerFactoryInvocation.RuntimeFactoryProvidedType?.NamespacedName,
                             provider.Location);
 
                         return new DependencyProviderMethodTemplate(
-                            provider.ProvidedType.QualifiedName,
+                            provider.ProvidedType.NamespacedName,
                             provider.ProviderMethodName,
                             factoryInvocation,
                             provider.Location);
@@ -105,8 +105,8 @@ internal record DependencyImplementationTemplate(
 
             return new DependencyImplementationTemplate(
                 dependencyImplementationDef.DependencyImplementationType.TypeName,
-                dependencyImplementationDef.DependencyInterfaceType.QualifiedName,
-                context.Injector.SpecContainerCollectionType.QualifiedName,
+                dependencyImplementationDef.DependencyInterfaceType.NamespacedName,
+                context.Injector.SpecContainerCollectionType.NamespacedName,
                 specContainerCollectionReferenceName,
                 providerMethods,
                 dependencyImplementationDef.Location);
