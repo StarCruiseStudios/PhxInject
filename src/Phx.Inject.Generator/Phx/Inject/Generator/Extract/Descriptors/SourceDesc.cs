@@ -7,8 +7,8 @@
 // -----------------------------------------------------------------------------
 
 using System.Collections.Immutable;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Abstract;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
@@ -20,7 +20,7 @@ internal record SourceDesc(
 ) {
     public IReadOnlyList<SpecDesc> GetAllSpecDescs() {
         return dependencyDescs
-            .Select(dep => dep.GetSpecDesc())
+            .Select(dep => dep.InstantiatedSpecDesc)
             .Concat(specDescs)
             .ToImmutableList();
     }
@@ -103,8 +103,9 @@ internal record SourceDesc(
                                 return null;
                             }
 
+                            var injectorType = injectorSymbol.ToTypeModel();
                             return MetadataHelpers.IsDependencySymbol(dependencySymbol).GetOrThrow(extractorCtx)
-                                ? dependencyDescExtractor.Extract(dependencySymbol, extractorCtx)
+                                ? dependencyDescExtractor.Extract(dependencySymbol, injectorType, extractorCtx)
                                 : null;
                         })
                     .OfType<DependencyDesc>()

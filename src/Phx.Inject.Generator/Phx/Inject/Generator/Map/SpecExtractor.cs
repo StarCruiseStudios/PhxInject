@@ -122,10 +122,10 @@ internal class SpecDefMapper : ISpecDefMapper {
         DefGenerationContext defGenerationCtx) {
         var results = new HashSet<QualifiedTypeModel>();
         results.UnionWith(
-            MetadataHelpers.TryGetConstructorParameterQualifiedTypes(type.TypeModel.typeSymbol,
+            MetadataHelpers.TryGetConstructorParameterQualifiedTypes(type.TypeModel.TypeSymbol,
                 defGenerationCtx));
         results.UnionWith(MetadataHelpers
-            .GetRequiredPropertyQualifiedTypes(type.TypeModel.typeSymbol, defGenerationCtx)
+            .GetRequiredPropertyQualifiedTypes(type.TypeModel.TypeSymbol, defGenerationCtx)
             .Values);
         return results;
     }

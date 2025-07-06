@@ -14,7 +14,7 @@ namespace Phx.Inject.Common;
 
 internal static class TypeHelpers {
     public static bool IsAutoFactoryEligible(QualifiedTypeModel type) {
-        var typeSymbol = type.TypeModel.typeSymbol;
+        var typeSymbol = type.TypeModel.TypeSymbol;
         var isVisible = typeSymbol.DeclaredAccessibility == Accessibility.Public
             || typeSymbol.DeclaredAccessibility == Accessibility.Internal;
         return isVisible

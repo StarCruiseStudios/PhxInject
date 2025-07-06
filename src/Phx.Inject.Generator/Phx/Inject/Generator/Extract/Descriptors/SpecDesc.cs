@@ -19,9 +19,9 @@ internal record SpecDesc(
     SpecInstantiationMode InstantiationMode,
     IEnumerable<SpecFactoryDesc> Factories,
     IEnumerable<SpecBuilderDesc> Builders,
-    IEnumerable<SpecLinkDesc> Links,
-    Location Location
+    IEnumerable<SpecLinkDesc> Links
 ) : IDescriptor {
+    public Location Location => SpecType.Location;
     public interface IExtractor {
         SpecDesc Extract(ITypeSymbol specSymbol, ExtractorContext extractorContext);
     }
@@ -123,8 +123,7 @@ internal record SpecDesc(
                         specInstantiationMode,
                         factories,
                         builders,
-                        links,
-                        specLocation);
+                        links);
                 });
         }
     }
@@ -163,9 +162,9 @@ internal record SpecDesc(
             IReadOnlyList<QualifiedTypeModel> builderTypes,
             ExtractorContext extractorCtx
         ) {
-            var specLocation = injectorType.typeSymbol.Locations.First();
+            var specLocation = injectorType.TypeSymbol.Locations.First();
             var specType = MetadataHelpers.CreateConstructorSpecContainerType(injectorType);
-            var currentCtx = extractorCtx.GetChildContext(injectorType.typeSymbol);
+            var currentCtx = extractorCtx.GetChildContext(injectorType.TypeSymbol);
 
             return ExceptionAggregator.Try(
                 $"extracting auto specification for injector {injectorType}",
@@ -182,7 +181,7 @@ internal record SpecDesc(
                         .ToImmutableList();
 
                     IReadOnlyList<SpecLinkDesc> links = constructorTypes
-                        .SelectMany(constructorType => constructorType.TypeModel.typeSymbol.GetAllLinkAttributes()
+                        .SelectMany(constructorType => constructorType.TypeModel.TypeSymbol.GetAllLinkAttributes()
                             .SelectCatching(
                                 exceptionAggregator,
                                 link => $"extracting link for auto constructor type {constructorType}",
@@ -192,7 +191,7 @@ internal record SpecDesc(
                                         if (it.InputType != constructorType) {
                                             throw Diagnostics.InvalidSpecification.AsException(
                                                 $"Auto constructed type {constructorType} must link to itself. Found link with input type {it.InputType}.",
-                                                constructorType.TypeModel.typeSymbol.Locations.First(),
+                                                constructorType.TypeModel.TypeSymbol.Locations.First(),
                                                 currentCtx);
                                         }
                                     })))
@@ -210,8 +209,7 @@ internal record SpecDesc(
                         specInstantiationMode,
                         autoConstructorFactories,
                         autoBuilders,
-                        links,
-                        specLocation);
+                        links);
                 });
         }
     }

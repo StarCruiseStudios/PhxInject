@@ -158,8 +158,8 @@ internal record SpecFactoryDesc(
             QualifiedTypeModel constructorType,
             ExtractorContext extractorCtx
         ) {
-            var currentCtx = extractorCtx.GetChildContext(constructorType.TypeModel.typeSymbol);
-            var constructorSymbol = constructorType.TypeModel.typeSymbol;
+            var currentCtx = extractorCtx.GetChildContext(constructorType.TypeModel.TypeSymbol);
+            var constructorSymbol = constructorType.TypeModel.TypeSymbol;
             var constructorLocation = constructorSymbol.Locations.First();
             TryGetConstructorFactoryFabricationMode(
                 constructorSymbol,

@@ -18,8 +18,9 @@ internal record TypeModel(
     string NamespaceName,
     string BaseTypeName,
     IReadOnlyList<TypeModel> TypeArguments,
-    ITypeSymbol typeSymbol
+    ITypeSymbol TypeSymbol
 ) {
+    public Location Location => TypeSymbol.Locations.First();
     public string TypeName {
         get {
             var builder = new StringBuilder(BaseTypeName);

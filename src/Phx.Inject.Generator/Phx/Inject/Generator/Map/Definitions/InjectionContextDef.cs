@@ -57,7 +57,7 @@ internal record InjectionContextDef(
 
             // Create a registration for all of the spec descriptors' factory and builder methods.
             foreach (var specDesc in specDescs) {
-                var specCtx = defGenerationCtx.GetChildContext(specDesc.SpecType.typeSymbol);
+                var specCtx = defGenerationCtx.GetChildContext(specDesc.SpecType.TypeSymbol);
                 foreach (var factory in specDesc.Factories) {
                     var key = RegistrationIdentifier.FromQualifiedTypeModel(factory.ReturnType);
                     if (!factoryRegistrations.TryGetValue(key, out var registrationList)) {

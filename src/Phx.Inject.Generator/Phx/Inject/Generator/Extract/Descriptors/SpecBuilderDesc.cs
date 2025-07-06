@@ -65,9 +65,9 @@ internal record SpecBuilderDesc(
         }
 
         public SpecBuilderDesc ExtractAutoBuilder(QualifiedTypeModel builderType, ExtractorContext context) {
-            var builderLocation = builderType.TypeModel.typeSymbol.Locations.First();
+            var builderLocation = builderType.TypeModel.TypeSymbol.Locations.First();
             IReadOnlyList<IMethodSymbol> builderMethods = MetadataHelpers
-                .GetDirectBuilderMethods(builderType.TypeModel.typeSymbol, context)
+                .GetDirectBuilderMethods(builderType.TypeModel.TypeSymbol, context)
                 .Where(b => Equals(MetadataHelpers.GetQualifier(b)
                     .GetOrThrow(context), builderType.Qualifier))
                 .Where(b => ValidateBuilder(b, builderLocation, context))

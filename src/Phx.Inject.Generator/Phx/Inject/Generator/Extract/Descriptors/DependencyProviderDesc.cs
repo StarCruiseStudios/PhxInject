@@ -15,34 +15,34 @@ namespace Phx.Inject.Generator.Extract.Descriptors;
 
 internal record DependencyProviderDesc(
     IMethodSymbol Symbol,
+    TypeModel DependencyInterface,
     QualifiedTypeModel ProvidedType,
     PartialAttributeDesc? PartialAttribute
 ) : IDescriptor {
     public string ProviderMethodName => Symbol.Name;
     public bool IsPartial => PartialAttribute != null;
-    
     public Location Location => Symbol.Locations.First();
 
     public static void RequireDependencyProvider(
-        IMethodSymbol providerMethod,
+        IMethodSymbol symbol,
         IGeneratorContext generatorCtx
     ) {
         ExceptionAggregator.Try(
             "Validating dependency provider",
             generatorCtx,
             _ => {
-                if (providerMethod.ReturnsVoid) {
+                if (symbol.ReturnsVoid) {
                     throw Diagnostics.InvalidSpecification.AsException(
-                        $"Dependency provider {providerMethod.Name} must have a return type.",
-                        providerMethod.Locations.First(),
+                        $"Dependency provider {symbol.Name} must have a return type.",
+                        symbol.Locations.First(),
                         generatorCtx);
                 }
             },
             _ => {
-                if (providerMethod.Parameters.Length > 0) {
+                if (symbol.Parameters.Length > 0) {
                     throw Diagnostics.InvalidSpecification.AsException(
-                        $"Dependency provider {providerMethod.Name} must not have any parameters.",
-                        providerMethod.Locations.First(),
+                        $"Dependency provider {symbol.Name} must not have any parameters.",
+                        symbol.Locations.First(),
                         generatorCtx);
                 }
             });
@@ -50,27 +50,29 @@ internal record DependencyProviderDesc(
     
     public interface IExtractor {
         DependencyProviderDesc Extract(
-            IMethodSymbol providerMethod,
+            IMethodSymbol symbol,
+            TypeModel dependencyInterface,
             ExtractorContext extractorCtx
         );
     }
 
     public class Extractor : IExtractor {
         public DependencyProviderDesc Extract(
-            IMethodSymbol providerMethod,
+            IMethodSymbol symbol,
+            TypeModel dependencyInterface,
             ExtractorContext extractorCtx
         ) {
-            var currentCtx = extractorCtx.GetChildContext(providerMethod);
+            var currentCtx = extractorCtx.GetChildContext(symbol);
 
-            RequireDependencyProvider(providerMethod, currentCtx);
-            var qualifier = providerMethod.GetQualifier().GetOrThrow(currentCtx);
-            var returnType = providerMethod.ReturnType.ToQualifiedTypeModel(qualifier);
-            var partialAttribute = providerMethod.TryGetPartialAttribute().GetOrThrow(currentCtx);
+            RequireDependencyProvider(symbol, currentCtx);
+            var qualifier = symbol.GetQualifier().GetOrThrow(currentCtx);
+            var providedType = symbol.ReturnType.ToQualifiedTypeModel(qualifier);
+            var partialAttribute = symbol.TryGetPartialAttribute().GetOrThrow(currentCtx);
             if (partialAttribute != null) {
-                TypeModel.RequirePartialType(returnType.TypeModel, providerMethod.Locations.First(), currentCtx);
+                TypeModel.RequirePartialType(providedType.TypeModel, symbol.Locations.First(), currentCtx);
             }
 
-            return new DependencyProviderDesc(providerMethod, returnType, partialAttribute);
+            return new DependencyProviderDesc(symbol, dependencyInterface, providedType, partialAttribute);
         }
     }
 }
