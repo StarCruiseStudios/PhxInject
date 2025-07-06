@@ -21,19 +21,19 @@ namespace Phx.Inject.Tests.Data {
             return Phx.Inject.Tests.Data.CommonTestValueSpecification.GetInt();
         }
 
-        internal System.Int32 Fac_LabelA_Int32_GetIntLabelA(
+        internal System.Int32 Fac_L_LabelA_Int32_GetIntLabelA(
                 Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.Data.CommonTestValueSpecification.GetIntLabelA();
         }
 
-        internal System.String Fac_LabelA_String_GetStringLabelA(
+        internal System.String Fac_L_LabelA_String_GetStringLabelA(
                 Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.Data.CommonTestValueSpecification.GetStringLabelA();
         }
 
-        internal System.Int32 Fac_Phx_Inject_Tests_Data_Model_QualifierAAttribute_Int32_GetIntQualifierA(
+        internal System.Int32 Fac_A_Phx_Inject_Tests_Data_Model_QualifierAAttribute_Int32_GetIntQualifierA(
                 Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.Data.CommonTestValueSpecification.GetIntQualifierA();
@@ -63,13 +63,13 @@ namespace Phx.Inject.Tests.Data {
                 specContainers.AutoDependencyTestInjector_CommonTestValueSpecification.Fac_Int32_GetInt(specContainers));
         }
 
-        internal void Bld_LabelA_TestBuilderObject_BuildTestBuilderObjectLabelA(
+        internal void Bld_L_LabelA_TestBuilderObject_BuildTestBuilderObjectLabelA(
                 Phx.Inject.Tests.Data.Model.TestBuilderObject target,
                 Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
         ) {
             Phx.Inject.Tests.Data.CommonTestValueSpecification.BuildTestBuilderObjectLabelA(
                 target,
-                specContainers.AutoDependencyTestInjector_CommonTestValueSpecification.Fac_LabelA_Int32_GetIntLabelA(specContainers));
+                specContainers.AutoDependencyTestInjector_CommonTestValueSpecification.Fac_L_LabelA_Int32_GetIntLabelA(specContainers));
         }
     }
 }

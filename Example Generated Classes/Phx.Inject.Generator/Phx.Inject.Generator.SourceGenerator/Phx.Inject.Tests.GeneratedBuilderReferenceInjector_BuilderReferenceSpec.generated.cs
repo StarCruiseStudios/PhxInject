@@ -29,7 +29,7 @@ namespace Phx.Inject.Tests {
             return Phx.Inject.Tests.BuilderReferenceSpec.IntValue;
         }
 
-        internal void RefBld_Field_TestBuilderReferenceObject_BuildBuilderReferenceTypeField(
+        internal void RefBld_L_Field_TestBuilderReferenceObject_BuildBuilderReferenceTypeField(
                 Phx.Inject.Tests.Data.Model.TestBuilderReferenceObject target,
                 Phx.Inject.Tests.GeneratedBuilderReferenceInjector.SpecContainerCollection specContainers
         ) {

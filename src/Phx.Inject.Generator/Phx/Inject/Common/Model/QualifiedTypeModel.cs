@@ -10,13 +10,11 @@ namespace Phx.Inject.Common.Model;
 
 internal record QualifiedTypeModel(
     TypeModel TypeModel,
-    string Qualifier
+    IQualifier Qualifier
 ) {
-    public const string NoQualifier = "";
-
     public override string ToString() {
-        return string.IsNullOrEmpty(Qualifier)
+        return Qualifier is NoQualifier
             ? TypeModel.ToString()
-            : $"[{Qualifier}] {TypeModel}";
+            : $"[{Qualifier.Identifier}] {TypeModel}";
     }
 }

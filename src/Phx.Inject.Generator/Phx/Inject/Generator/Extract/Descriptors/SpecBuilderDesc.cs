@@ -68,9 +68,8 @@ internal record SpecBuilderDesc(
             var builderLocation = builderType.TypeModel.typeSymbol.Locations.First();
             IReadOnlyList<IMethodSymbol> builderMethods = MetadataHelpers
                 .GetDirectBuilderMethods(builderType.TypeModel.typeSymbol, context)
-                .Where(b => MetadataHelpers.TryGetQualifier(b)
-                        .GetOrThrow(context)
-                    == builderType.Qualifier)
+                .Where(b => Equals(MetadataHelpers.TryGetQualifier(b)
+                    .GetOrThrow(context), builderType.Qualifier))
                 .Where(b => ValidateBuilder(b, builderLocation, context))
                 .ToImmutableList();
 
@@ -254,7 +253,7 @@ internal record SpecBuilderDesc(
                 ? ImmutableList.Create<QualifiedTypeModel>()
                 : typeArguments.Skip(1)
                     .Select(typeArgument => TypeModel.FromTypeSymbol(typeArgument))
-                    .Select(typeModel => new QualifiedTypeModel(typeModel, QualifiedTypeModel.NoQualifier))
+                    .Select(typeModel => new QualifiedTypeModel(typeModel, NoQualifier.Instance))
                     .ToImmutableList();
         }
     }

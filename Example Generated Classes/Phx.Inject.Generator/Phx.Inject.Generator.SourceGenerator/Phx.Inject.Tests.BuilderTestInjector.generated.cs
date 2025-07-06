@@ -34,7 +34,7 @@ namespace Phx.Inject.Tests {
         }
 
         public void BuildTestBuilderLabelA(Phx.Inject.Tests.Data.Model.TestBuilderObject target) {
-            specContainers.BuilderTestInjector_CommonTestValueSpecification.Bld_LabelA_TestBuilderObject_BuildTestBuilderObjectLabelA(target, specContainers);
+            specContainers.BuilderTestInjector_CommonTestValueSpecification.Bld_L_LabelA_TestBuilderObject_BuildTestBuilderObjectLabelA(target, specContainers);
         }
     }
 }

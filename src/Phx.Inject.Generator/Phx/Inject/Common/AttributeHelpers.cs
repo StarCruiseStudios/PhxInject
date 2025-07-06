@@ -147,7 +147,7 @@ internal static class AttributeHelpers {
         var attributes = TryGetAttributedAttributes(symbol, parentAttributeClassName);
         return attributes.Count switch {
             > 1 => Result.Error<AttributeData?>(
-                $"Type {symbol.Name} can only have one {parentAttributeClassName}. Found {attributes.Count}.",
+                $"Type {symbol.Name} can only have one {parentAttributeClassName}. Found {attributes.Count}: [{string.Join(", ", attributes.Select(it => it.AttributeClass!.Name))}].",
                 symbol.Locations.First(),
                 Diagnostics.InvalidSpecification),
             _ => Result.Ok<AttributeData?>(attributes.SingleOrDefault())

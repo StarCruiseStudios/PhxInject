@@ -34,7 +34,7 @@ namespace Phx.Inject.Tests {
         }
 
         public Phx.Inject.Tests.Data.Model.Node GetNodeWithScoped() {
-            return specContainers.GeneratedContainerInjector_ContainerSpecification.Fac_WithScoped_Node_GetNode2(specContainers);
+            return specContainers.GeneratedContainerInjector_ContainerSpecification.Fac_L_WithScoped_Node_GetNode2(specContainers);
         }
 
         public System.Collections.Generic.IReadOnlyList<Phx.Inject.Tests.Data.Model.IntLeaf> GetIntLeaves() {

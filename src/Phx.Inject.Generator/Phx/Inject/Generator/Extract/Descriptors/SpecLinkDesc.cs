@@ -52,8 +52,8 @@ internal record SpecLinkDesc(
             var returnType = TypeModel.FromTypeSymbol(returnTypeArgument);
 
             return new SpecLinkDesc(
-                new QualifiedTypeModel(inputType, QualifiedTypeModel.NoQualifier),
-                new QualifiedTypeModel(returnType, QualifiedTypeModel.NoQualifier),
+                new QualifiedTypeModel(inputType, NoQualifier.Instance),
+                new QualifiedTypeModel(returnType, NoQualifier.Instance),
                 linkLocation);
         }
     }

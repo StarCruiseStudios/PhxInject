@@ -15,6 +15,6 @@ internal record RegistrationIdentifier(
     string Qualifier
 ) {
     public static RegistrationIdentifier FromQualifiedTypeModel(QualifiedTypeModel type) {
-        return new RegistrationIdentifier(type.TypeModel, type.Qualifier);
+        return new RegistrationIdentifier(type.TypeModel, type.Qualifier.Identifier);
     }
 }

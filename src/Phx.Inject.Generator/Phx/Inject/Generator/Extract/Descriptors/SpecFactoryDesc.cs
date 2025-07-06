@@ -135,7 +135,7 @@ internal record SpecFactoryDesc(
             ? ImmutableList.Create<QualifiedTypeModel>()
             : typeArguments.Take(typeArguments.Length - 1)
                 .Select(typeArgument => TypeModel.FromTypeSymbol(typeArgument))
-                .Select(typeModel => new QualifiedTypeModel(typeModel, QualifiedTypeModel.NoQualifier))
+                .Select(typeModel => new QualifiedTypeModel(typeModel, NoQualifier.Instance))
                 .ToImmutableList();
     }
 
@@ -146,7 +146,7 @@ internal record SpecFactoryDesc(
 
     public interface IExtractor {
         SpecFactoryDesc ExtractAutoConstructorFactory(
-            QualifiedTypeModel factoryType,
+            QualifiedTypeModel constructorType,
             ExtractorContext extractorCtx
         );
         SpecFactoryDesc? ExtractFactory(
@@ -169,38 +169,38 @@ internal record SpecFactoryDesc(
 
     public class Extractor : IExtractor {
         public SpecFactoryDesc ExtractAutoConstructorFactory(
-            QualifiedTypeModel factoryType,
+            QualifiedTypeModel constructorType,
             ExtractorContext extractorCtx
         ) {
-            var currentCtx = extractorCtx.GetChildContext(factoryType.TypeModel.typeSymbol);
-            var factorySymbol = factoryType.TypeModel.typeSymbol;
-            var factoryLocation = factorySymbol.Locations.First();
+            var currentCtx = extractorCtx.GetChildContext(constructorType.TypeModel.typeSymbol);
+            var constructorSymbol = constructorType.TypeModel.typeSymbol;
+            var constructorLocation = constructorSymbol.Locations.First();
             TryGetConstructorFactoryFabricationMode(
-                factorySymbol,
-                factoryLocation,
+                constructorSymbol,
+                constructorLocation,
                 currentCtx,
                 out var fabricationMode);
 
             var constructorParameterTypes =
-                MetadataHelpers.TryGetConstructorParameterQualifiedTypes(factorySymbol, currentCtx);
+                MetadataHelpers.TryGetConstructorParameterQualifiedTypes(constructorSymbol, currentCtx);
             var requiredProperties = MetadataHelpers
-                .GetRequiredPropertyQualifiedTypes(factorySymbol, currentCtx)
-                .Select(property => new SpecFactoryRequiredPropertyDesc(property.Value, property.Key, factoryLocation));
-            var qualifier = MetadataHelpers.TryGetQualifier(factorySymbol)
+                .GetRequiredPropertyQualifiedTypes(constructorSymbol, currentCtx)
+                .Select(property => new SpecFactoryRequiredPropertyDesc(property.Value, property.Key, constructorLocation));
+            var qualifier = MetadataHelpers.TryGetQualifier(constructorSymbol)
                 .GetOrThrow(currentCtx);
-            var returnType = factoryType with {
+            var returnType = constructorType with {
                 Qualifier = qualifier
             };
 
             return new SpecFactoryDesc(
                 returnType,
-                factoryType.TypeModel.GetVariableName(),
+                constructorType.TypeModel.GetVariableName(),
                 SpecFactoryMemberType.Constructor,
                 constructorParameterTypes,
                 requiredProperties,
                 fabricationMode,
                 false, // Constructor factories cannot be partial
-                factoryLocation);
+                constructorLocation);
         }
 
         public SpecFactoryDesc? ExtractFactory(

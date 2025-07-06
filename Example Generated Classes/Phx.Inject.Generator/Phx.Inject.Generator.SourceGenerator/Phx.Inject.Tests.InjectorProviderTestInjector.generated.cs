@@ -34,15 +34,15 @@ namespace Phx.Inject.Tests {
         }
 
         public System.Int32 GetLabelAInt() {
-            return specContainers.InjectorProviderTestInjector_CommonTestValueSpecification.Fac_LabelA_Int32_GetIntLabelA(specContainers);
+            return specContainers.InjectorProviderTestInjector_CommonTestValueSpecification.Fac_L_LabelA_Int32_GetIntLabelA(specContainers);
         }
 
         public System.String GetlabelAString() {
-            return specContainers.InjectorProviderTestInjector_CommonTestValueSpecification.Fac_LabelA_String_GetStringLabelA(specContainers);
+            return specContainers.InjectorProviderTestInjector_CommonTestValueSpecification.Fac_L_LabelA_String_GetStringLabelA(specContainers);
         }
 
         public System.Int32 GetIntQualifierA() {
-            return specContainers.InjectorProviderTestInjector_CommonTestValueSpecification.Fac_Phx_Inject_Tests_Data_Model_QualifierAAttribute_Int32_GetIntQualifierA(specContainers);
+            return specContainers.InjectorProviderTestInjector_CommonTestValueSpecification.Fac_A_Phx_Inject_Tests_Data_Model_QualifierAAttribute_Int32_GetIntQualifierA(specContainers);
         }
 
         public Phx.Inject.Tests.Data.Model.TestGenericObject<System.Int32> GetGenericObject() {

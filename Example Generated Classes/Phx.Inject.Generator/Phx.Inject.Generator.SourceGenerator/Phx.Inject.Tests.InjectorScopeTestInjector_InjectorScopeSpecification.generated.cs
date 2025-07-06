@@ -10,7 +10,7 @@
 #nullable enable
 namespace Phx.Inject.Tests {
     internal class InjectorScopeTestInjector_InjectorScopeSpecification {
-        private System.Int32? scoped_Int32;
+        private System.Int32? l_Scoped_Int32;
 
         internal InjectorScopeTestInjector_InjectorScopeSpecification CreateNewFrame() {
             return this;
@@ -22,16 +22,16 @@ namespace Phx.Inject.Tests {
             return Phx.Inject.Tests.InjectorScopeSpecification.GetIntDefault();
         }
 
-        internal System.Int32 Fac_Recurrent_Int32_GetIntRecurrent(
+        internal System.Int32 Fac_L_Recurrent_Int32_GetIntRecurrent(
                 Phx.Inject.Tests.InjectorScopeTestInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.InjectorScopeSpecification.GetIntRecurrent();
         }
 
-        internal System.Int32 Fac_Scoped_Int32_GetIntScoped(
+        internal System.Int32 Fac_L_Scoped_Int32_GetIntScoped(
                 Phx.Inject.Tests.InjectorScopeTestInjector.SpecContainerCollection specContainers
         ) {
-            return scoped_Int32 ??= Phx.Inject.Tests.InjectorScopeSpecification.GetIntScoped();
+            return l_Scoped_Int32 ??= Phx.Inject.Tests.InjectorScopeSpecification.GetIntScoped();
         }
     }
 }

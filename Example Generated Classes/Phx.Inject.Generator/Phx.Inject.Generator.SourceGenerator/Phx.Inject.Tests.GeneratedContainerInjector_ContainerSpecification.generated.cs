@@ -68,7 +68,7 @@ namespace Phx.Inject.Tests {
                 ));
         }
 
-        internal Phx.Inject.Tests.Data.Model.Node Fac_WithScoped_Node_GetNode2(
+        internal Phx.Inject.Tests.Data.Model.Node Fac_L_WithScoped_Node_GetNode2(
                 Phx.Inject.Tests.GeneratedContainerInjector.SpecContainerCollection parentSpecContainer
         ) {
             var specContainers = parentSpecContainer.CreateNewFrame();

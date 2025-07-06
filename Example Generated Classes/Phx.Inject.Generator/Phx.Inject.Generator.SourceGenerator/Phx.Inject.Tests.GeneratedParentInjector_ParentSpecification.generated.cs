@@ -15,13 +15,13 @@ namespace Phx.Inject.Tests {
             return this;
         }
 
-        internal Phx.Inject.Tests.Data.Model.ILeaf Fac_Left_ILeaf_GetLeftLeaf(
+        internal Phx.Inject.Tests.Data.Model.ILeaf Fac_L_Left_ILeaf_GetLeftLeaf(
                 Phx.Inject.Tests.GeneratedParentInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.ParentSpecification.GetLeftLeaf();
         }
 
-        internal Phx.Inject.Tests.Data.Model.ILeaf Fac_Right_ILeaf_GetRightLeaf(
+        internal Phx.Inject.Tests.Data.Model.ILeaf Fac_L_Right_ILeaf_GetRightLeaf(
                 Phx.Inject.Tests.GeneratedParentInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.ParentSpecification.GetRightLeaf();

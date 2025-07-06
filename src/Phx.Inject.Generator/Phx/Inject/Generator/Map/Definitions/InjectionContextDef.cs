@@ -57,17 +57,10 @@ internal record InjectionContextDef(
 
             // Create a registration for all of the spec descriptors' factory and builder methods.
             foreach (var specDesc in specDescs) {
+                var specCtx = defGenerationCtx.GetChildContext(specDesc.SpecType.typeSymbol);
                 foreach (var factory in specDesc.Factories) {
-                    List<FactoryRegistration> registrationList;
                     var key = RegistrationIdentifier.FromQualifiedTypeModel(factory.ReturnType);
-                    if (factoryRegistrations.TryGetValue(key, out registrationList)) {
-                        if (!registrationList.First().FactoryDesc.isPartial || !factory.isPartial) {
-                            throw Diagnostics.InvalidSpecification.AsException(
-                                $"Factory for type {factory.ReturnType} must be unique or all factories must be partial.",
-                                factory.Location,
-                                defGenerationCtx);
-                        }
-                    } else {
+                    if (!factoryRegistrations.TryGetValue(key, out var registrationList)) {
                         registrationList = new List<FactoryRegistration>();
                         factoryRegistrations.Add(key, registrationList);
                     }
@@ -100,6 +93,24 @@ internal record InjectionContextDef(
                     }
                 }
             }
+
+            foreach (var factoryRegistration in factoryRegistrations.Values) {
+                if (factoryRegistration.Count > 1 || !factoryRegistration.All(it => it.FactoryDesc.isPartial)) {
+                    ExceptionAggregator.Try("registering factories",
+                        defGenerationCtx,
+                        exceptionAggregator => {
+                            exceptionAggregator.AggregateMany<FactoryRegistration, FactoryRegistration>(
+                                factoryRegistration,
+                                registration => $"registering factory {registration.FactoryDesc.ReturnType}",
+                                registration => throw Diagnostics.InvalidSpecification.AsException(
+                                    $"Factory for type {registration.FactoryDesc.ReturnType} must be unique or all factories must be partial.",
+                                    registration.FactoryDesc.Location,
+                                    defGenerationCtx));
+                        });
+                }
+            }
+
+
 
             var generationContext = defGenerationCtx with {
                 FactoryRegistrations = factoryRegistrations,

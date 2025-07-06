@@ -119,9 +119,9 @@ internal static class NameHelpers {
     }
 
     private static string AsVariableName(this QualifiedTypeModel type) {
-        var referenceName = string.IsNullOrEmpty(type.Qualifier)
+        var referenceName = type.Qualifier is NoQualifier
             ? type.TypeModel.BaseTypeName
-            : $"{type.Qualifier}_{type.TypeModel.BaseTypeName}";
+            : $"{type.Qualifier.Identifier}_{type.TypeModel.BaseTypeName}";
         return referenceName.AsValidIdentifier();
     }
 }

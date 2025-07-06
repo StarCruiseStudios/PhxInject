@@ -17,11 +17,11 @@ namespace Phx.Inject.Tests {
         }
 
         public Phx.Inject.Tests.Data.Model.ILeaf GetLeftLeaf() {
-            return specContainers.GeneratedParentInjector_ParentSpecification.Fac_Left_ILeaf_GetLeftLeaf(specContainers);
+            return specContainers.GeneratedParentInjector_ParentSpecification.Fac_L_Left_ILeaf_GetLeftLeaf(specContainers);
         }
 
         public Phx.Inject.Tests.Data.Model.ILeaf GetRightLeaf() {
-            return specContainers.GeneratedParentInjector_ParentSpecification.Fac_Right_ILeaf_GetRightLeaf(specContainers);
+            return specContainers.GeneratedParentInjector_ParentSpecification.Fac_L_Right_ILeaf_GetRightLeaf(specContainers);
         }
     }
 }

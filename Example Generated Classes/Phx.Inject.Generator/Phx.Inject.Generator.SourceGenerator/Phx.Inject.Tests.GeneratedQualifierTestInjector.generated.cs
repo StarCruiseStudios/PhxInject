@@ -27,11 +27,11 @@ namespace Phx.Inject.Tests {
         }
 
         public Phx.Inject.Tests.Data.Model.ILeaf GetAttributeNamedLeafA() {
-            return specContainers.GeneratedQualifierTestInjector_QualifierSpecification.Fac_Phx_Inject_Tests_Data_Model_QualifierAAttribute_ILeaf_GetAttributeNamedLeafA(specContainers);
+            return specContainers.GeneratedQualifierTestInjector_QualifierSpecification.Fac_A_Phx_Inject_Tests_Data_Model_QualifierAAttribute_ILeaf_GetAttributeNamedLeafA(specContainers);
         }
 
         public Phx.Inject.Tests.Data.Model.ILeaf GetAttributeNamedLeafB() {
-            return specContainers.GeneratedQualifierTestInjector_QualifierSpecification.Fac_Phx_Inject_Tests_Data_Model_QualifierBAttribute_ILeaf_GetAttributeNamedLeafB(specContainers);
+            return specContainers.GeneratedQualifierTestInjector_QualifierSpecification.Fac_A_Phx_Inject_Tests_Data_Model_QualifierBAttribute_ILeaf_GetAttributeNamedLeafB(specContainers);
         }
     }
 }

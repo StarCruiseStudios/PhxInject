@@ -31,7 +31,7 @@ namespace Phx.Inject.Tests {
         }
 
         public void BuildField(Phx.Inject.Tests.Data.Model.TestBuilderReferenceObject target) {
-            specContainers.GeneratedBuilderReferenceInjector_BuilderReferenceSpec.RefBld_Field_TestBuilderReferenceObject_BuildBuilderReferenceTypeField(target, specContainers);
+            specContainers.GeneratedBuilderReferenceInjector_BuilderReferenceSpec.RefBld_L_Field_TestBuilderReferenceObject_BuildBuilderReferenceTypeField(target, specContainers);
         }
     }
 }

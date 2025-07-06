@@ -35,11 +35,11 @@ namespace Phx.Inject.Tests {
         }
 
         public Phx.Inject.Tests.Data.Model.LeafFactory GetLabeledLeafFactory() {
-            return specContainers.GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification.Fac_LabeledLeaf_LeafFactory_GetLabeledLeafFactory(specContainers);
+            return specContainers.GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification.Fac_L_LabeledLeaf_LeafFactory_GetLabeledLeafFactory(specContainers);
         }
 
         public Phx.Inject.Factory<Phx.Inject.Tests.Data.Model.ILeaf> GetLabeledLeafRuntimeFactory() {
-            return new Phx.Inject.Factory<Phx.Inject.Tests.Data.Model.ILeaf>(() => specContainers.GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification.Fac_LabeledLeaf_ILeaf_GetLabeledLeaf(specContainers));
+            return new Phx.Inject.Factory<Phx.Inject.Tests.Data.Model.ILeaf>(() => specContainers.GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification.Fac_L_LabeledLeaf_ILeaf_GetLabeledLeaf(specContainers));
         }
     }
 }

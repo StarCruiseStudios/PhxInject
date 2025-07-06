@@ -42,7 +42,7 @@ namespace Phx.Inject.Tests {
         }
 
         public void BuildLabeledAutoBuilderType(Phx.Inject.Tests.Data.Model.AutoBuilderType target) {
-            specContainers.AutoDependencyTestInjector_AutoDependencyTestInjector_ConstructorFactories.DirBld_AutoBuilderType_AutoBuilderType_BuildCustomLabel(target, specContainers);
+            specContainers.AutoDependencyTestInjector_AutoDependencyTestInjector_ConstructorFactories.DirBld_L_AutoBuilderType_AutoBuilderType_BuildCustomLabel(target, specContainers);
         }
     }
 }

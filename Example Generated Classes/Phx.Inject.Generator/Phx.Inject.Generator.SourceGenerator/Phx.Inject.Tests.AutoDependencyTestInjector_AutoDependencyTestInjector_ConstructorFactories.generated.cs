@@ -64,7 +64,7 @@ namespace Phx.Inject.Tests {
                 specContainers.AutoDependencyTestInjector_CommonTestValueSpecification.Fac_Int32_GetInt(specContainers));
         }
 
-        internal void DirBld_AutoBuilderType_AutoBuilderType_BuildCustomLabel(
+        internal void DirBld_L_AutoBuilderType_AutoBuilderType_BuildCustomLabel(
                 Phx.Inject.Tests.Data.Model.AutoBuilderType target,
                 Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
         ) {

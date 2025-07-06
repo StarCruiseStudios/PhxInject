@@ -172,15 +172,15 @@ internal static class MetadataHelpers {
         );
     }
 
-    public static IResult<string> TryGetQualifier(ISymbol symbol) {
+    public static IResult<IQualifier> TryGetQualifier(ISymbol symbol) {
         var labelAttributeResult = symbol.TryGetLabelAttribute();
         if (!labelAttributeResult.IsOk) {
-            return labelAttributeResult.MapError<string>();
+            return labelAttributeResult.MapError<IQualifier>();
         }
 
         var qualifierAttributeResult = symbol.TryGetQualifierAttribute();
         if (!qualifierAttributeResult.IsOk) {
-            return qualifierAttributeResult.MapError<string>();
+            return qualifierAttributeResult.MapError<IQualifier>();
         }
 
         var labelAttribute = labelAttributeResult.GetValue();
@@ -188,7 +188,7 @@ internal static class MetadataHelpers {
 
         if (labelAttribute != null) {
             if (qualifierAttribute != null) {
-                return Result.Error<string>(
+                return Result.Error<IQualifier>(
                     $"Symbol {symbol.Name} can only have one Label or Qualifier attribute.",
                     symbol.Locations.First(),
                     Diagnostics.InvalidSpecification);
@@ -199,17 +199,17 @@ internal static class MetadataHelpers {
                 .Select(argument => (string)argument.Value!)
                 .ToImmutableList();
             return labels.Any()
-                ? Result.Ok(labels.Single())
-                : Result.Error<string>(
+                ? Result.Ok(new LabelQualifier(labels.Single()))
+                : Result.Error<IQualifier>(
                     $"LabelAttribute for symbol {symbol.Name} must provide a label value.",
                     symbol.Locations.First(),
                     Diagnostics.InvalidSpecification);
         }
 
-        return Result.Ok(
+        return Result.Ok<IQualifier>(
             qualifierAttribute != null
-                ? qualifierAttribute.AttributeClass!.ToString()
-                : QualifiedTypeModel.NoQualifier);
+                ? new AttributeQualifier(qualifierAttribute)
+                : NoQualifier.Instance);
     }
 
     public static IReadOnlyDictionary<string, QualifiedTypeModel> GetRequiredPropertyQualifiedTypes(

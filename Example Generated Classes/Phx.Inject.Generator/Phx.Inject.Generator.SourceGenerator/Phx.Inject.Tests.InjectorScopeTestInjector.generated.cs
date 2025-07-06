@@ -31,11 +31,11 @@ namespace Phx.Inject.Tests {
         }
 
         public System.Int32 GetIntRecurrent() {
-            return specContainers.InjectorScopeTestInjector_InjectorScopeSpecification.Fac_Recurrent_Int32_GetIntRecurrent(specContainers);
+            return specContainers.InjectorScopeTestInjector_InjectorScopeSpecification.Fac_L_Recurrent_Int32_GetIntRecurrent(specContainers);
         }
 
         public System.Int32 GetIntScoped() {
-            return specContainers.InjectorScopeTestInjector_InjectorScopeSpecification.Fac_Scoped_Int32_GetIntScoped(specContainers);
+            return specContainers.InjectorScopeTestInjector_InjectorScopeSpecification.Fac_L_Scoped_Int32_GetIntScoped(specContainers);
         }
     }
 }
