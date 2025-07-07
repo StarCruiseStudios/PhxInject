@@ -6,85 +6,33 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-
-using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
-using Phx.Inject.Common.Exceptions;
-using Phx.Inject.Generator.Abstract;
-using Phx.Inject.Generator.Extract;
+using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator;
 
-internal record GeneratorSettings(
-    string Name,
-    Location Location,
-    int TabSize = 4,
-    string GeneratedFileExtension = "generated.cs",
-    bool NullableEnabled = true,
-    bool AllowConstructorFactories = true
-) {
-    public interface IExtractor {
-        GeneratorSettings Extract(SourceSyntaxReceiver syntaxReceiver, IExceptionAggregator exceptionAggregator, IGeneratorContext generatorCtx);
-    }
+internal class GeneratorSettings {
+    public string Name { get; }
+    public Location Location { get; }
+    public int TabSize { get; }
+    public string GeneratedFileExtension { get; }
+    public bool NullableEnabled { get; }
+    public bool AllowConstructorFactories { get; }
+    public PhxInjectAttributeMetadata? Metadata { get; }
 
-    public class Extractor : IExtractor {
-        public GeneratorSettings Extract(
-            SourceSyntaxReceiver syntaxReceiver,
-            IExceptionAggregator exceptionAggregator,
-            IGeneratorContext generatorCtx
-        ) {
-            var extractorCtx = new ExtractorContext(generatorCtx.ExecutionContext);
-            IReadOnlyList<GeneratorSettings> injectSettings = syntaxReceiver.PhxInjectSettingsCandidates
-                .SelectCatching(
-                    exceptionAggregator,
-                    syntaxNode => $"extracting PhxInject settings from {syntaxNode.Identifier.Text}",
-                    syntaxNode => {
-                        var settingsSymbol = MetadataHelpers
-                            .ExpectTypeSymbolFromDeclaration(syntaxNode, extractorCtx)
-                            .GetOrThrow(extractorCtx);
-
-                        var settingsAttribute =
-                            settingsSymbol.TryGetPhxInjectAttribute().GetOrThrow(extractorCtx);
-                        if (settingsAttribute == null) {
-                            return null;
-                        }
-
-                        if (settingsSymbol is not { TypeKind: TypeKind.Class }) {
-                            throw Diagnostics.InvalidSpecification.AsException(
-                                $"PhxInject settings type {settingsSymbol.Name} must be a class.",
-                                settingsSymbol.Locations.First(),
-                                generatorCtx);
-                        }
-                        
-                        var name = $"{settingsSymbol.ContainingNamespace}.{settingsSymbol.Name}";
-                        
-                        return new GeneratorSettings(
-                            name,
-                            settingsSymbol.Locations.First(),
-                            settingsAttribute.TabSize ?? 4,
-                            settingsAttribute.GeneratedFileExtension ?? "generated.cs",
-                            settingsAttribute.NullableEnabled ?? true,
-                            settingsAttribute.AllowConstructorFactories ?? true
-                        );
-                    })
-                .OfType<GeneratorSettings>()
-                .ToImmutableList();
-            extractorCtx.Log($"Discovered {injectSettings.Count} inject settings.");
-
-            var settings = injectSettings.Count switch {
-                1 => injectSettings.First(),
-                _ => injectSettings.SelectCatching<GeneratorSettings, GeneratorSettings>(
-                    exceptionAggregator,
-                    settings => $"extracting PhxInject settings {settings.Name}",
-                    settings => throw Diagnostics.InvalidSpecification.AsException(
-                        $"Only one PhxInject settings can be specified. Found {injectSettings.Count} on types [{string.Join(", ", injectSettings.Select(it => it.Name))}].",
-                        settings.Location,
-                        generatorCtx)).FirstOrDefault() ?? new GeneratorSettings("Default", Location.None)
-            };
-
-            extractorCtx.Log($"Using settings: {settings}");
-            return settings;
-        }
+    public GeneratorSettings(
+        int? tabSize = null,
+        string? generatedFileExtension = null,
+        bool? nullableEnabled = null,
+        bool? allowConstructorFactories = null,
+        PhxInjectAttributeMetadata? metadata = null
+    ) {
+        Name = metadata?.AttributedSymbol.ToString() ?? "Default";
+        Location = metadata?.Location ?? Location.None;
+        TabSize = tabSize ?? PhxInjectAttribute.DefaultTabSize;
+        GeneratedFileExtension = generatedFileExtension ?? PhxInjectAttribute.DefaultGeneratedFileExtension;
+        NullableEnabled = nullableEnabled ?? PhxInjectAttribute.DefaultNullableEnabled;
+        AllowConstructorFactories = allowConstructorFactories ?? PhxInjectAttribute.DefaultAllowConstructorFactories;
+        Metadata = metadata;
     }
 }

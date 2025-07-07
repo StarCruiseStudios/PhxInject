@@ -8,6 +8,7 @@
 
 using System.Text;
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Util;
 
 namespace Phx.Inject.Common.Exceptions;
 
@@ -31,20 +32,20 @@ internal static class IInjectionFrameExtensions {
 }
 
 internal class InjectionFrame : IInjectionFrame {
-    public ISymbol? Symbol { get; }
-    public IInjectionFrame? Parent { get; }
-    
     public InjectionFrame(ISymbol? symbol, IInjectionFrame? parent) {
         Symbol = symbol;
         Parent = parent;
     }
+    public ISymbol? Symbol { get; }
+    public IInjectionFrame? Parent { get; }
 
     public override string ToString() {
         return Symbol?.Let(it => {
                 var location = it.Locations.First();
                 var typeName = it.ContainingNamespace + "." + it.Name;
 
-                return $"{Path.GetFileName(location.GetLineSpan().Path)}({location.GetLineSpan().StartLinePosition}) [{typeName}]";
+                return
+                    $"{Path.GetFileName(location.GetLineSpan().Path)}({location.GetLineSpan().StartLinePosition}) [{typeName}]";
             })
             ?? "[Injection]";
     }

@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
@@ -21,7 +22,10 @@ internal record SpecDesc(
     IEnumerable<SpecBuilderDesc> Builders,
     IEnumerable<SpecLinkDesc> Links
 ) : IDescriptor {
-    public Location Location => SpecType.Location;
+    public Location Location {
+        get => SpecType.Location;
+    }
+
     public interface IExtractor {
         SpecDesc Extract(ITypeSymbol specSymbol, ExtractorContext extractorContext);
     }
@@ -115,7 +119,9 @@ internal record SpecDesc(
                         .SelectCatching(
                             exceptionAggregator,
                             link => $"extracting specification link from {specType}",
-                            link => specLinkDescExtractor.Extract(link.GetOrThrow(currentCtx), specLocation, currentCtx))
+                            link => specLinkDescExtractor.Extract(link.GetOrThrow(currentCtx),
+                                specLocation,
+                                currentCtx))
                         .ToImmutableList();
 
                     return new SpecDesc(

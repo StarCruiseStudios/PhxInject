@@ -7,9 +7,9 @@
 // -----------------------------------------------------------------------------
 
 using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Generator.Abstract;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
@@ -26,13 +26,17 @@ internal record SourceDesc(
     }
 
     public interface IExtractor {
-        SourceDesc Extract(SourceSyntaxReceiver syntaxReceiver, IExceptionAggregator exceptionAggregator, IGeneratorContext generatorCtx);
+        SourceDesc Extract(
+            IReadOnlyList<ITypeSymbol> injectorCandidates,
+            IReadOnlyList<ITypeSymbol> specificationCandidates,
+            IExceptionAggregator exceptionAggregator,
+            IGeneratorContext generatorCtx);
     }
 
     public class Extractor : IExtractor {
+        private readonly DependencyDesc.IExtractor dependencyDescExtractor;
         private readonly InjectorDesc.IExtractor injectorDescExtractor;
         private readonly SpecDesc.IExtractor specDescExtractor;
-        private readonly DependencyDesc.IExtractor dependencyDescExtractor;
 
         public Extractor(
             InjectorDesc.IExtractor injectorDescExtractor,
@@ -50,73 +54,66 @@ internal record SourceDesc(
             new DependencyDesc.Extractor()
         ) { }
 
-        public SourceDesc Extract(SourceSyntaxReceiver syntaxReceiver, IExceptionAggregator exceptionAggregator, IGeneratorContext generatorCtx) {
+        public SourceDesc Extract(
+            IReadOnlyList<ITypeSymbol> injectorCandidates,
+            IReadOnlyList<ITypeSymbol> specificationCandidates,
+            IExceptionAggregator exceptionAggregator,
+            IGeneratorContext generatorCtx
+        ) {
             var extractorCtx = new ExtractorContext(generatorCtx.ExecutionContext);
-            
-                IReadOnlyList<InjectorDesc> injectorDescs = syntaxReceiver.InjectorCandidates
-                    .SelectCatching(
-                        exceptionAggregator,
-                        syntaxNode => $"extracting injector from {syntaxNode.Identifier.Text}",
-                        syntaxNode => {
-                            var injectorSymbol = MetadataHelpers
-                                .ExpectTypeSymbolFromDeclaration(syntaxNode, extractorCtx)
-                                .GetOrThrow(extractorCtx);
-                            return MetadataHelpers.IsInjectorSymbol(injectorSymbol).GetOrThrow(extractorCtx)
-                                ? injectorDescExtractor.Extract(injectorSymbol, extractorCtx)
-                                : null;
-                        })
-                    .OfType<InjectorDesc>()
-                    .ToImmutableList();
-                extractorCtx.Log($"Discovered {injectorDescs.Count} injector types.");
 
-                IReadOnlyList<SpecDesc> specDescs = syntaxReceiver.SpecificationCandidates
-                    .SelectCatching(
-                        exceptionAggregator,
-                        syntaxNode => $"extracting specification from {syntaxNode.Identifier.Text}",
-                        syntaxNode => {
-                            var specificationSymbol = MetadataHelpers
-                                .ExpectTypeSymbolFromDeclaration(syntaxNode, extractorCtx)
-                                .GetOrThrow(extractorCtx);
-                            return MetadataHelpers.IsSpecSymbol(specificationSymbol).GetOrThrow(extractorCtx)
-                                ? specDescExtractor.Extract(specificationSymbol, extractorCtx)
-                                : null;
-                        })
-                    .OfType<SpecDesc>()
-                    .ToImmutableList();
-                extractorCtx.Log($"Discovered {specDescs.Count} specification types.");
+            IReadOnlyList<InjectorDesc> injectorDescs = injectorCandidates
+                .SelectCatching(
+                    exceptionAggregator,
+                    injectorTypeSymbol => $"extracting injector from {injectorTypeSymbol}",
+                    injectorTypeSymbol => MetadataHelpers.IsInjectorSymbol(injectorTypeSymbol).GetOrThrow(extractorCtx)
+                        ? injectorDescExtractor.Extract(injectorTypeSymbol, extractorCtx)
+                        : null)
+                .OfType<InjectorDesc>()
+                .ToImmutableList();
+            extractorCtx.Log($"Discovered {injectorDescs.Count} injector types.");
 
-                IReadOnlyList<DependencyDesc> dependencyDescs = syntaxReceiver.InjectorCandidates
-                    .SelectCatching(
-                        exceptionAggregator,
-                        syntaxNode => $"extracting dependencies from injector {syntaxNode.Identifier.Text}",
-                        syntaxNode => {
-                            var injectorSymbol = MetadataHelpers
-                                .ExpectTypeSymbolFromDeclaration(syntaxNode, extractorCtx)
-                                .GetOrThrow(extractorCtx);
-                            if (!MetadataHelpers.IsInjectorSymbol(injectorSymbol).GetOrThrow(extractorCtx)) {
-                                return null;
-                            }
+            IReadOnlyList<SpecDesc> specDescs = specificationCandidates
+                .SelectCatching(
+                    exceptionAggregator,
+                    specificationTypeSymbol => $"extracting specification from {specificationTypeSymbol}",
+                    specificationTypeSymbol =>
+                        MetadataHelpers.IsSpecSymbol(specificationTypeSymbol).GetOrThrow(extractorCtx)
+                            ? specDescExtractor.Extract(specificationTypeSymbol, extractorCtx)
+                            : null)
+                .OfType<SpecDesc>()
+                .ToImmutableList();
+            extractorCtx.Log($"Discovered {specDescs.Count} specification types.");
 
-                            var dependencySymbol = MetadataHelpers.TryGetDependencyType(injectorSymbol)
-                                .GetOrThrow(extractorCtx);
-                            if (dependencySymbol == null) {
-                                return null;
-                            }
+            IReadOnlyList<DependencyDesc> dependencyDescs = injectorCandidates
+                .SelectCatching(
+                    exceptionAggregator,
+                    injectorTypeSymbol => $"extracting dependencies from injector {injectorTypeSymbol}",
+                    injectorTypeSymbol => {
+                        if (!MetadataHelpers.IsInjectorSymbol(injectorTypeSymbol).GetOrThrow(extractorCtx)) {
+                            return null;
+                        }
 
-                            var injectorType = injectorSymbol.ToTypeModel();
-                            return MetadataHelpers.IsDependencySymbol(dependencySymbol).GetOrThrow(extractorCtx)
-                                ? dependencyDescExtractor.Extract(dependencySymbol, injectorType, extractorCtx)
-                                : null;
-                        })
-                    .OfType<DependencyDesc>()
-                    .ToImmutableList();
-                extractorCtx.Log($"Discovered {dependencyDescs.Count} dependency types.");
+                        var dependencySymbol = MetadataHelpers.TryGetDependencyType(injectorTypeSymbol)
+                            .GetOrThrow(extractorCtx);
+                        if (dependencySymbol == null) {
+                            return null;
+                        }
 
-                return new SourceDesc(
-                    injectorDescs,
-                    specDescs,
-                    dependencyDescs
-                );
+                        var injectorType = injectorTypeSymbol.ToTypeModel();
+                        return MetadataHelpers.IsDependencySymbol(dependencySymbol).GetOrThrow(extractorCtx)
+                            ? dependencyDescExtractor.Extract(dependencySymbol, injectorType, extractorCtx)
+                            : null;
+                    })
+                .OfType<DependencyDesc>()
+                .ToImmutableList();
+            extractorCtx.Log($"Discovered {dependencyDescs.Count} dependency types.");
+
+            return new SourceDesc(
+                injectorDescs,
+                specDescs,
+                dependencyDescs
+            );
         }
     }
 }

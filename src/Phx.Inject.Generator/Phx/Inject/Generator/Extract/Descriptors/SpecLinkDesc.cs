@@ -42,7 +42,7 @@ internal record SpecLinkDesc(
                 : link.InputLabel != null
                     ? new LabelQualifier(link.InputLabel)
                     : NoQualifier.Instance;
-            
+
             var outputQualifierAttribute = link.OutputQualifier?
                 .TryGetQualifierAttributeFromAttributeType(link)
                 .GetOrThrow(extractorCtx);

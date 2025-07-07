@@ -8,9 +8,9 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
@@ -105,11 +105,11 @@ internal record InjectorDesc(
                         .ToImmutableList();
 
                     IReadOnlyList<InjectorChildFactoryDesc> childFactories = injectorMethods
+                        .Where(injectorChildFactoryDescExtractor.IsInjectorChildFactory)
                         .SelectCatching(
                             exceptionAggregator,
                             methodSymbol => $"extracting injector child factory {injectorType}.{methodSymbol.Name}",
                             methodSymbol => injectorChildFactoryDescExtractor.Extract(methodSymbol, currentCtx))
-                        .Where(childFactory => childFactory != null)
                         .Select(childFactory => childFactory!)
                         .ToImmutableList();
 

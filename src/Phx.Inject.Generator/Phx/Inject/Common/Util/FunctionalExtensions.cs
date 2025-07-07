@@ -6,7 +6,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Common;
+namespace Phx.Inject.Common.Util;
 
 public static class FunctionalExtensions {
     public static TResult Let<T, TResult>(this T self, Func<T, TResult> func) {

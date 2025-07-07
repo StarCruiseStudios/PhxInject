@@ -8,9 +8,8 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
-using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
@@ -21,31 +20,39 @@ internal record InjectorChildFactoryDesc(
     Location Location
 ) : IDescriptor {
     public interface IExtractor {
-        InjectorChildFactoryDesc? Extract(
+        bool IsInjectorChildFactory(IMethodSymbol childInjectorMethod);
+        InjectorChildFactoryDesc Extract(
             IMethodSymbol childInjectorMethod,
             ExtractorContext extractorCtx
         );
     }
 
     public class Extractor : IExtractor {
-        public InjectorChildFactoryDesc? Extract(
+        private readonly ChildInjectorAttributeMetadata.IExtractor childInjectorAttributeExtractor;
+        public Extractor(
+            ChildInjectorAttributeMetadata.IExtractor childInjectorAttributeExtractor
+        ) {
+            this.childInjectorAttributeExtractor = childInjectorAttributeExtractor;
+        }
+
+        public Extractor() : this(
+            new ChildInjectorAttributeMetadata.Extractor()
+        ) { }
+
+        public bool IsInjectorChildFactory(IMethodSymbol childInjectorMethod) {
+            return childInjectorAttributeExtractor.CanExtract(childInjectorMethod);
+        }
+
+        public InjectorChildFactoryDesc Extract(
             IMethodSymbol childInjectorMethod,
             ExtractorContext extractorCtx
         ) {
             var currentCtx = extractorCtx.GetChildContext(childInjectorMethod);
             var childInjectorLocation = childInjectorMethod.Locations.First();
 
-            if (childInjectorMethod.TryGetChildInjectorAttribute().GetOrThrow(currentCtx) == null) {
-                // This is not an injector child factory.
-                return null;
-            }
-
-            if (childInjectorMethod.ReturnsVoid) {
-                throw Diagnostics.InvalidSpecification.AsException(
-                    $"Injector child factory {childInjectorMethod.Name} must return a type.",
-                    childInjectorLocation,
-                    currentCtx);
-            }
+            var childInjectorAttribute =
+                childInjectorAttributeExtractor.Extract(childInjectorMethod).GetOrThrow(currentCtx);
+            childInjectorAttributeExtractor.ValidateAttributedType(childInjectorMethod, currentCtx);
 
             IReadOnlyList<TypeModel> parameters = childInjectorMethod.Parameters
                 .Select(parameter => TypeModel.FromTypeSymbol(parameter.Type))

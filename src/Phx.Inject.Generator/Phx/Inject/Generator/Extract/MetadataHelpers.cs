@@ -8,7 +8,6 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
@@ -16,20 +15,6 @@ using Phx.Inject.Common.Model;
 namespace Phx.Inject.Generator.Extract;
 
 internal static class MetadataHelpers {
-    public static IResult<ITypeSymbol> ExpectTypeSymbolFromDeclaration(
-        TypeDeclarationSyntax syntaxNode,
-        IGeneratorContext generatorCtx
-    ) {
-        var symbol = generatorCtx.ExecutionContext.Compilation
-            .GetSemanticModel(syntaxNode.SyntaxTree)
-            .GetDeclaredSymbol(syntaxNode);
-        return Result.ErrorIfNull(
-            symbol as ITypeSymbol,
-            $"Expected a type declaration, but found {symbol?.Kind.ToString() ?? "null"} for {syntaxNode.Identifier.Text}.",
-            syntaxNode.GetLocation(),
-            Diagnostics.InternalError);
-    }
-
     public static IResult<ITypeSymbol?> TryGetDependencyType(ISymbol symbol) {
         return symbol.TryGetDependencyAttribute()
             .MapNullable(dependencyAttribute => Result.Ok(dependencyAttribute.DependencyType));
@@ -114,8 +99,8 @@ internal static class MetadataHelpers {
         }
 
         return qualifierAttribute != null
-                ?  Result.Ok<IQualifier>(new AttributeQualifier(qualifierAttribute))
-                :  Result.Ok<IQualifier>(NoQualifier.Instance);
+            ? Result.Ok<IQualifier>(new AttributeQualifier(qualifierAttribute))
+            : Result.Ok<IQualifier>(NoQualifier.Instance);
     }
 
     public static IResult<bool> IsInjectorSymbol(ITypeSymbol symbol) {
@@ -165,7 +150,7 @@ internal static class MetadataHelpers {
                 symbol.Locations.First(),
                 Diagnostics.InvalidSpecification);
     }
-    
+
     public static TypeModel CreateConstructorSpecContainerType(TypeModel injectorType) {
         var specContainerTypeName = NameHelpers.GetAppendedClassName(injectorType, "ConstructorFactories");
         return injectorType with {
@@ -173,7 +158,7 @@ internal static class MetadataHelpers {
             TypeArguments = ImmutableList<TypeModel>.Empty
         };
     }
-    
+
     public static IReadOnlyDictionary<string, QualifiedTypeModel> GetRequiredPropertyQualifiedTypes(
         ITypeSymbol type,
         IGeneratorContext generatorCtx) {

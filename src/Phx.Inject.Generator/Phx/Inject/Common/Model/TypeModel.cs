@@ -9,8 +9,6 @@
 using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common.Exceptions;
-using Phx.Inject.Generator;
 
 namespace Phx.Inject.Common.Model;
 
@@ -20,7 +18,14 @@ internal record TypeModel(
     IReadOnlyList<TypeModel> TypeArguments,
     ITypeSymbol TypeSymbol
 ) {
-    public Location Location => TypeSymbol.Locations.First();
+    private static readonly IImmutableSet<string> MultiBindTypes = ImmutableHashSet.CreateRange(new[] {
+        TypeNames.IReadOnlyListClassName, TypeNames.ISetClassName, TypeNames.IReadOnlyDictionaryClassName
+    });
+
+    public Location Location {
+        get => TypeSymbol.Locations.First();
+    }
+
     public string TypeName {
         get {
             var builder = new StringBuilder(BaseTypeName);
@@ -52,23 +57,6 @@ internal record TypeModel(
 
     public override int GetHashCode() {
         return NamespacedName.GetHashCode();
-    }
-    
-    private static readonly IImmutableSet<string> MultiBindTypes = ImmutableHashSet.CreateRange(new[] {
-        TypeNames.IReadOnlyListClassName, TypeNames.ISetClassName, TypeNames.IReadOnlyDictionaryClassName
-    });
-    
-    public static void RequirePartialType(TypeModel typeModel, Location declarationLocation, IGeneratorContext generatorCtx) {
-        ExceptionAggregator.Try("Validating partial type",
-            generatorCtx,
-            _ => {
-                if (!MultiBindTypes.Contains(typeModel.NamespacedBaseTypeName)) {
-                    throw Diagnostics.InvalidSpecification.AsException(
-                        $"Partial factories must return one of [{string.Join(", ", MultiBindTypes)}].",
-                        declarationLocation,
-                        generatorCtx);
-                }
-            });
     }
 
     public static TypeModel FromTypeSymbol(ITypeSymbol typeSymbol) {

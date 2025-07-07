@@ -6,10 +6,13 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Generator.Abstract;
 using Phx.Inject.Generator.Extract.Descriptors;
+using Phx.Inject.Generator.Extract.Metadata;
 using Phx.Inject.Generator.Map;
 using Phx.Inject.Generator.Project;
 using Phx.Inject.Generator.Render;
@@ -18,6 +21,16 @@ namespace Phx.Inject.Generator;
 
 [Generator]
 internal class SourceGenerator : ISourceGenerator {
+    public const string PhxInjectNamespace = "Phx.Inject";
+
+    private readonly PhxInjectSettingsMetadata.IExtractor phxInjectSettingsExtractor;
+
+    public SourceGenerator(PhxInjectSettingsMetadata.IExtractor phxInjectSettingsExtractor) {
+        this.phxInjectSettingsExtractor = phxInjectSettingsExtractor;
+    }
+
+    public SourceGenerator() : this(new PhxInjectSettingsMetadata.Extractor()) { }
+
     public void Initialize(GeneratorInitializationContext context) {
         context.RegisterForSyntaxNotifications(() => new SourceSyntaxReceiver());
     }
@@ -31,16 +44,37 @@ internal class SourceGenerator : ISourceGenerator {
                 exceptionAggregator => {
                     // Abstract: Source code to syntax declarations.
                     var syntaxReceiver = generatorCtx.ExecutionContext.SyntaxReceiver as SourceSyntaxReceiver
-                        ?? throw Diagnostics.UnexpectedError.AsFatalException(
+                        ?? throw Diagnostics.InternalError.AsFatalException(
                             $"Incorrect Syntax Receiver {generatorCtx.ExecutionContext.SyntaxReceiver}.",
                             Location.None,
                             generatorCtx);
 
                     // Extract: Syntax declarations to descriptors.
-                    var settings = new GeneratorSettings.Extractor()
-                        .Extract(syntaxReceiver, exceptionAggregator, generatorCtx);
+                    IReadOnlyList<ITypeSymbol> settingsCandidates = syntaxReceiver.PhxInjectSettingsCandidates
+                        .SelectCatching(
+                            exceptionAggregator,
+                            syntaxNode => $"extracting PhxInject settings from syntax {syntaxNode.Identifier.Text}",
+                            syntaxNode => ExpectTypeSymbolFromDeclaration(syntaxNode, generatorCtx))
+                        .ToImmutableList();
+
+                    IReadOnlyList<ITypeSymbol> injectorCandidates = syntaxReceiver.InjectorCandidates
+                        .SelectCatching(
+                            exceptionAggregator,
+                            syntaxNode => $"extracting injectors from syntax {syntaxNode.Identifier.Text}",
+                            syntaxNode => ExpectTypeSymbolFromDeclaration(syntaxNode, generatorCtx))
+                        .ToImmutableList();
+
+                    IReadOnlyList<ITypeSymbol> specificationCandidates = syntaxReceiver.SpecificationCandidates
+                        .SelectCatching(
+                            exceptionAggregator,
+                            syntaxNode => $"extracting specifications from syntax {syntaxNode.Identifier.Text}",
+                            syntaxNode => ExpectTypeSymbolFromDeclaration(syntaxNode, generatorCtx))
+                        .ToImmutableList();
+
+                    var settings = phxInjectSettingsExtractor
+                        .Extract(settingsCandidates, exceptionAggregator, generatorCtx);
                     var sourceDesc = new SourceDesc.Extractor()
-                        .Extract(syntaxReceiver, exceptionAggregator, generatorCtx);
+                        .Extract(injectorCandidates, specificationCandidates, exceptionAggregator, generatorCtx);
 
                     // Map: Descriptors to defs.
                     var injectionContextDefs = new SourceDefMapper(settings)
@@ -58,5 +92,18 @@ internal class SourceGenerator : ISourceGenerator {
             // Ignore injection exceptions to allow partial generation to complete.
             // They are already reported as diagnostics.
         }
+    }
+    private static ITypeSymbol ExpectTypeSymbolFromDeclaration(
+        TypeDeclarationSyntax syntaxNode,
+        IGeneratorContext generatorCtx
+    ) {
+        var symbol = generatorCtx.ExecutionContext.Compilation
+            .GetSemanticModel(syntaxNode.SyntaxTree)
+            .GetDeclaredSymbol(syntaxNode);
+        return symbol as ITypeSymbol
+            ?? throw Diagnostics.InternalError.AsException(
+                $"Expected a type declaration, but found {symbol?.Kind.ToString() ?? "null"} for {syntaxNode.Identifier.Text}.",
+                syntaxNode.GetLocation(),
+                generatorCtx);
     }
 }

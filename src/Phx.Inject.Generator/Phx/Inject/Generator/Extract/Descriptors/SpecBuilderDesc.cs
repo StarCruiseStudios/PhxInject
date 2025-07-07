@@ -8,9 +8,9 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
@@ -29,6 +29,22 @@ internal record SpecBuilderDesc(
     }
 
     public class Extractor : IExtractor {
+        private readonly BuilderAttributeMetadata.IExtractor builderAttributeExtractor;
+
+        private readonly BuilderReferenceAttributeMetadata.IExtractor builderReferenceAttributeExtractor;
+        public Extractor(
+            BuilderAttributeMetadata.IExtractor builderAttributeExtractor,
+            BuilderReferenceAttributeMetadata.IExtractor builderReferenceAttributeExtractor
+        ) {
+            this.builderAttributeExtractor = builderAttributeExtractor;
+            this.builderReferenceAttributeExtractor = builderReferenceAttributeExtractor;
+        }
+
+        public Extractor() : this(
+            new BuilderAttributeMetadata.Extractor(),
+            new BuilderReferenceAttributeMetadata.Extractor()
+        ) { }
+
         public SpecBuilderDesc? ExtractBuilder(IMethodSymbol builderMethod, ExtractorContext context) {
             var builderLocation = builderMethod.Locations.First();
 
@@ -46,7 +62,7 @@ internal record SpecBuilderDesc(
                     context);
             }
 
-            var qualifier = MetadataHelpers.GetQualifier(builderMethod)
+            var qualifier = builderMethod.GetQualifier()
                 .GetOrThrow(context);
             // Use the qualifier from the method, not the parameter.
             var builtType = methodParameterTypes[0] with {
@@ -68,8 +84,9 @@ internal record SpecBuilderDesc(
             var builderLocation = builderType.TypeModel.TypeSymbol.Locations.First();
             IReadOnlyList<IMethodSymbol> builderMethods = MetadataHelpers
                 .GetDirectBuilderMethods(builderType.TypeModel.TypeSymbol, context)
-                .Where(b => Equals(MetadataHelpers.GetQualifier(b)
-                    .GetOrThrow(context), builderType.Qualifier))
+                .Where(b => Equals(b.GetQualifier()
+                        .GetOrThrow(context),
+                    builderType.Qualifier))
                 .Where(b => ValidateBuilder(b, builderLocation, context))
                 .ToImmutableList();
 
@@ -163,16 +180,16 @@ internal record SpecBuilderDesc(
                 builderReferenceLocation);
         }
 
-        private static bool ValidateBuilder(
+        private bool ValidateBuilder(
             ISymbol builderSymbol,
             Location builderLocation,
             IGeneratorContext context
         ) {
-            if (builderSymbol.TryGetBuilderAttribute().GetOrThrow(context) == null) {
+            if (!builderAttributeExtractor.CanExtract(builderSymbol)) {
                 return false;
             }
 
-            if (builderSymbol.TryGetBuilderReferenceAttribute().GetOrThrow(context) != null) {
+            if (builderReferenceAttributeExtractor.CanExtract(builderSymbol)) {
                 // Cannot be a builder and a builder reference.
                 throw Diagnostics.InvalidSpecification.AsException(
                     "Method cannot have both Builder and BuilderReference attributes.",
@@ -180,29 +197,21 @@ internal record SpecBuilderDesc(
                     context);
             }
 
-            if (!builderSymbol.IsStatic
-                || (builderSymbol.DeclaredAccessibility != Accessibility.Public
-                    && builderSymbol.DeclaredAccessibility != Accessibility.Internal)) {
-                return Result.Error<bool>(
-                        "Builders must be public or internal static methods.",
-                        builderSymbol.Locations.First(),
-                        Diagnostics.InvalidSpecification)
-                    .GetOrThrow(context);
-            }
+            builderAttributeExtractor.ValidateAttributedType(builderSymbol, context);
 
             return true;
         }
 
-        private static bool ValidateBuilderReference(
+        private bool ValidateBuilderReference(
             ISymbol builderReferenceSymbol,
             Location builderReferenceLocation,
             IGeneratorContext generatorCtx
         ) {
-            if (builderReferenceSymbol.TryGetBuilderReferenceAttribute().GetOrThrow(generatorCtx) == null) {
+            if (!builderReferenceAttributeExtractor.CanExtract(builderReferenceSymbol)) {
                 return false;
             }
 
-            if (builderReferenceSymbol.TryGetBuilderAttribute().GetOrThrow(generatorCtx) != null) {
+            if (builderAttributeExtractor.CanExtract(builderReferenceSymbol)) {
                 // Cannot be a builder and a builder reference.
                 throw Diagnostics.InvalidSpecification.AsException(
                     "Property or Field cannot have both Builder and BuilderReference attributes.",
@@ -210,15 +219,7 @@ internal record SpecBuilderDesc(
                     generatorCtx);
             }
 
-            if (!builderReferenceSymbol.IsStatic
-                || (builderReferenceSymbol.DeclaredAccessibility != Accessibility.Public
-                    && builderReferenceSymbol.DeclaredAccessibility != Accessibility.Internal)) {
-                return Result.Error<bool>(
-                        "Builders references must be public or internal static methods.",
-                        builderReferenceSymbol.Locations.First(),
-                        Diagnostics.InvalidSpecification)
-                    .GetOrThrow(generatorCtx);
-            }
+            builderReferenceAttributeExtractor.ValidateAttributedType(builderReferenceSymbol, generatorCtx);
 
             return true;
         }
@@ -242,7 +243,7 @@ internal record SpecBuilderDesc(
 
             IReadOnlyList<ITypeSymbol> typeArguments = referenceTypeSymbol.TypeArguments;
 
-            var qualifier = MetadataHelpers.GetQualifier(builderReferenceSymbol)
+            var qualifier = builderReferenceSymbol.GetQualifier()
                 .GetOrThrow(extractorCtx);
             var returnTypeModel = TypeModel.FromTypeSymbol(typeArguments[0]);
             builtType = new QualifiedTypeModel(

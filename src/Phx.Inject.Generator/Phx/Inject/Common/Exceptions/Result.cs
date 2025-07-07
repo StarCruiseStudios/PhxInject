@@ -44,7 +44,7 @@ internal static class Result {
             ? new ErrorResult<T>(message, location, diagnosticData)
             : new OkResult<T>(value);
     }
-    
+
     public static IResult<R?> MapNullable<T, R>(
         this IResult<T?> result,
         Func<T, IResult<R>> mapFunc
@@ -53,7 +53,16 @@ internal static class Result {
             ? Ok<R?>(null)
             : mapFunc(value));
     }
-    
+
+    public static IResult<T> ErrorIfNull<T>(
+        this IResult<T?> result,
+        string message,
+        Location location,
+        Diagnostics.DiagnosticData diagnosticData
+    ) where T : class? {
+        return result.Map(value => ErrorIfNull(value, message, location, diagnosticData));
+    }
+
     private class OkResult<T> : IResult<T> {
         private readonly T value;
 

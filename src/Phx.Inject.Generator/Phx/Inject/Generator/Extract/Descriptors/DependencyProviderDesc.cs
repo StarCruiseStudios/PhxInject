@@ -7,9 +7,10 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
@@ -17,11 +18,19 @@ internal record DependencyProviderDesc(
     IMethodSymbol Symbol,
     TypeModel DependencyInterface,
     QualifiedTypeModel ProvidedType,
-    PartialAttributeDesc? PartialAttribute
+    PartialAttributeMetadata? PartialAttribute
 ) : IDescriptor {
-    public string ProviderMethodName => Symbol.Name;
-    public bool IsPartial => PartialAttribute != null;
-    public Location Location => Symbol.Locations.First();
+    public string ProviderMethodName {
+        get => Symbol.Name;
+    }
+
+    public bool IsPartial {
+        get => PartialAttribute != null;
+    }
+
+    public Location Location {
+        get => Symbol.Locations.First();
+    }
 
     public static void RequireDependencyProvider(
         IMethodSymbol symbol,
@@ -47,7 +56,7 @@ internal record DependencyProviderDesc(
                 }
             });
     }
-    
+
     public interface IExtractor {
         DependencyProviderDesc Extract(
             IMethodSymbol symbol,
@@ -57,6 +66,17 @@ internal record DependencyProviderDesc(
     }
 
     public class Extractor : IExtractor {
+        private readonly PartialAttributeMetadata.IExtractor partialAttributeExtractor;
+        public Extractor(
+            PartialAttributeMetadata.IExtractor partialAttributeExtractor
+        ) {
+            this.partialAttributeExtractor = partialAttributeExtractor;
+        }
+
+        public Extractor() : this(
+            new PartialAttributeMetadata.Extractor()
+        ) { }
+
         public DependencyProviderDesc Extract(
             IMethodSymbol symbol,
             TypeModel dependencyInterface,
@@ -67,10 +87,13 @@ internal record DependencyProviderDesc(
             RequireDependencyProvider(symbol, currentCtx);
             var qualifier = symbol.GetQualifier().GetOrThrow(currentCtx);
             var providedType = symbol.ReturnType.ToQualifiedTypeModel(qualifier);
-            var partialAttribute = symbol.TryGetPartialAttribute().GetOrThrow(currentCtx);
-            if (partialAttribute != null) {
-                TypeModel.RequirePartialType(providedType.TypeModel, symbol.Locations.First(), currentCtx);
-            }
+            var partialAttribute = partialAttributeExtractor.CanExtract(symbol)
+                ? partialAttributeExtractor.Extract(symbol)
+                    .GetOrThrow(currentCtx)
+                    .Also(_ => partialAttributeExtractor.ValidateAttributedType(symbol,
+                        providedType.TypeModel,
+                        currentCtx))
+                : null;
 
             return new DependencyProviderDesc(symbol, dependencyInterface, providedType, partialAttribute);
         }

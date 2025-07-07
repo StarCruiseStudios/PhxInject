@@ -7,9 +7,9 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
@@ -26,6 +26,17 @@ internal record InjectorProviderDesc(
     }
 
     public class Extractor : IExtractor {
+        private readonly ChildInjectorAttributeMetadata.IExtractor childInjectorAttributeExtractor;
+        public Extractor(
+            ChildInjectorAttributeMetadata.IExtractor childInjectorAttributeExtractor
+        ) {
+            this.childInjectorAttributeExtractor = childInjectorAttributeExtractor;
+        }
+
+        public Extractor() : this(
+            new ChildInjectorAttributeMetadata.Extractor()
+        ) { }
+
         public InjectorProviderDesc? Extract(
             IMethodSymbol providerMethod,
             ExtractorContext extractorCtx
@@ -38,7 +49,7 @@ internal record InjectorProviderDesc(
                 return null;
             }
 
-            if (providerMethod.TryGetChildInjectorAttribute().GetOrThrow(currentCtx) != null) {
+            if (childInjectorAttributeExtractor.CanExtract(providerMethod)) {
                 // This is an injector child factory, not a provider.
                 return null;
             }
@@ -51,7 +62,7 @@ internal record InjectorProviderDesc(
             }
 
             var returnType = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
-            var qualifier = MetadataHelpers.GetQualifier(providerMethod)
+            var qualifier = providerMethod.GetQualifier()
                 .GetOrThrow(currentCtx);
             return new InjectorProviderDesc(
                 new QualifiedTypeModel(returnType, qualifier),

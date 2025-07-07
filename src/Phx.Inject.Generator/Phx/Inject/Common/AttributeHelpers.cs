@@ -11,36 +11,17 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Extract.Descriptors;
+using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Common;
 
 internal static class AttributeHelpers {
-    public static IResult<PhxInjectAttributeDesc?> TryGetPhxInjectAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, TypeNames.PhxInjectAttributeClassName)
-            .MapNullable(it => {
-                var tabSize = it.NamedArguments
-                    .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.TabSize))
-                    .Value.Value as int?;
-
-                var generatedFileExtension = it.NamedArguments
-                    .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.GeneratedFileExtension))
-                    .Value.Value as string;
-
-                var nullableEnabled = it.NamedArguments
-                    .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.NullableEnabled))
-                    .Value.Value as bool?;
-
-                var allowConstructorFactories = it.NamedArguments
-                    .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.AllowConstructorFactories))
-                    .Value.Value as bool?;
-                
-                return Result.Ok(new PhxInjectAttributeDesc(tabSize, generatedFileExtension, nullableEnabled, allowConstructorFactories, symbol, it));
-            });
-    }
+    private static readonly AttributeHelper helper = new();
 
     public static IResult<InjectorAttributeDesc?> TryGetInjectorAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, TypeNames.InjectorAttributeClassName)
-            .MapNullable(it => {
+        return helper.TryGetSingleAttribute(symbol,
+            TypeNames.InjectorAttributeClassName,
+            it => {
                 var generatedClassName = it.ConstructorArguments
                     .FirstOrDefault(argument => argument.Kind != TypedConstantKind.Array)
                     .Value as string;
@@ -51,7 +32,7 @@ internal static class AttributeHelpers {
                     .Where(type => type.Value is ITypeSymbol)
                     .Select(type => (type.Value as ITypeSymbol)!)
                     .ToImmutableList();
-                
+
                 return Result.Ok(new InjectorAttributeDesc(generatedClassName, specifications, symbol, it));
             });
     }
@@ -85,7 +66,7 @@ internal static class AttributeHelpers {
                         it.GetLocation() ?? symbol.Locations.First(),
                         Diagnostics.InvalidSpecification);
                 }
-                
+
                 return Result.Ok(new DependencyAttributeDesc(constructorArgument.Single(), symbol, it));
             });
     }
@@ -93,14 +74,15 @@ internal static class AttributeHelpers {
     public static IResult<LabelAttributeDesc?> TryGetLabelAttribute(this ISymbol symbol) {
         return TryGetSingleAttribute(symbol, TypeNames.LabelAttributeClassName)
             .MapNullable(it => {
-                var labels = it.ConstructorArguments.Where(argument => argument.Type!.ToString() == TypeNames.StringClassName)
+                var labels = it.ConstructorArguments
+                    .Where(argument => argument.Type!.ToString() == TypeNames.StringClassName)
                     .Select(argument => (string)argument.Value!)
                     .ToImmutableList();
 
                 if (labels.Count == 1) {
                     return Result.Ok(new LabelAttributeDesc(labels.Single(), symbol, it));
                 }
-                
+
                 return Result.Error<LabelAttributeDesc?>(
                     $"Label for symbol {symbol.Name} must provide one label value.",
                     it.GetLocation() ?? symbol.Locations.First(),
@@ -112,15 +94,17 @@ internal static class AttributeHelpers {
         return TryGetSingleAttributedAttribute(symbol, TypeNames.QualifierAttributeClassName)
             .MapNullable(it => Result.Ok(new QualifierAttributeDesc(symbol, it)));
     }
-    
-    public static IResult<QualifierAttributeDesc?> TryGetQualifierAttributeFromAttributeType(this INamedTypeSymbol attributeTypeSymbol, AttributeDesc attribute) {
+
+    public static IResult<QualifierAttributeDesc?> TryGetQualifierAttributeFromAttributeType(
+        this INamedTypeSymbol attributeTypeSymbol,
+        AttributeDesc attribute) {
         if (attributeTypeSymbol.BaseType?.ToString() != TypeNames.AttributeClassName) {
             return Result.Error<QualifierAttributeDesc?>(
                 $"Expected qualifier type {attributeTypeSymbol.Name} to be an Attribute type.",
                 attribute.Location,
                 Diagnostics.InvalidSpecification);
         }
-                
+
         return TryGetSingleAttribute(attributeTypeSymbol, TypeNames.QualifierAttributeClassName)
             .Map(it => it == null
                 ? Result.Error<AttributeData?>(
@@ -150,7 +134,7 @@ internal static class AttributeHelpers {
                         it.GetLocation() ?? symbol.Locations.First(),
                         Diagnostics.InvalidSpecification);
                 }
-                
+
                 var inputLabel = it.NamedArguments
                     .FirstOrDefault(arg => arg.Key == nameof(LinkAttribute.InputLabel))
                     .Value.Value as string;
@@ -166,31 +150,32 @@ internal static class AttributeHelpers {
                 var outputQualifier = it.NamedArguments
                     .FirstOrDefault(arg => arg.Key == nameof(LinkAttribute.OutputQualifier))
                     .Value.Value as INamedTypeSymbol;
-                
+
                 if (inputLabel != null && inputQualifier != null) {
                     return Result.Error<LinkAttributeDesc>(
                         "Link attribute cannot specify both input label and qualifier.",
                         it.GetLocation() ?? symbol.Locations.First(),
                         Diagnostics.InvalidSpecification);
                 }
-                
+
                 if (outputLabel != null && outputQualifier != null) {
                     return Result.Error<LinkAttributeDesc>(
                         "Link attribute cannot specify both input label and qualifier.",
                         it.GetLocation() ?? symbol.Locations.First(),
                         Diagnostics.InvalidSpecification);
                 }
-                
+
                 return Result.Ok(new LinkAttributeDesc(
-                    inputTypeArgument, 
-                    returnTypeArgument, 
-                    inputQualifier, 
-                    inputLabel, 
-                    outputQualifier, 
-                    outputLabel, 
-                    symbol, 
+                    inputTypeArgument,
+                    returnTypeArgument,
+                    inputQualifier,
+                    inputLabel,
+                    outputQualifier,
+                    outputLabel,
+                    symbol,
                     it));
-            }).ToImmutableList();
+            })
+            .ToImmutableList();
     }
 
     public static IResult<FactoryAttributeDesc?> TryGetFactoryAttribute(this ISymbol symbol) {
@@ -241,24 +226,9 @@ internal static class AttributeHelpers {
             });
     }
 
-    public static IResult<BuilderAttributeDesc?> TryGetBuilderAttribute(this ISymbol symbol) {
+    public static IResult<BuilderAttributeMetadata?> TryGetBuilderAttribute(this ISymbol symbol) {
         return TryGetSingleAttribute(symbol, TypeNames.BuilderAttributeClassName)
-            .MapNullable(it => Result.Ok(new BuilderAttributeDesc(symbol, it)));
-    }
-
-    public static IResult<BuilderReferenceAttributeDesc?> TryGetBuilderReferenceAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, TypeNames.BuilderReferenceAttributeClassName)
-            .MapNullable(it => Result.Ok(new BuilderReferenceAttributeDesc(symbol, it)));
-    }
-
-    public static IResult<ChildInjectorAttributeDesc?> TryGetChildInjectorAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, TypeNames.ChildInjectorAttributeClassName)
-            .MapNullable(it => Result.Ok(new ChildInjectorAttributeDesc(symbol, it)));
-    }
-
-    public static IResult<PartialAttributeDesc?> TryGetPartialAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, TypeNames.PartialAttributeClassName)
-            .MapNullable(it => Result.Ok(new PartialAttributeDesc(symbol, it)));
+            .MapNullable(it => Result.Ok(new BuilderAttributeMetadata(symbol, it)));
     }
 
     private static IReadOnlyList<AttributeData> TryGetAttributes(ISymbol symbol, string attributeClassName) {
@@ -277,7 +247,7 @@ internal static class AttributeHelpers {
             _ => Result.Ok<AttributeData?>(attributes.SingleOrDefault())
         };
     }
-    
+
     private static IReadOnlyList<AttributeData> TryGetAttributedAttributes(
         ISymbol symbol,
         string parentAttributeClassName) {
@@ -301,5 +271,68 @@ internal static class AttributeHelpers {
 
     public static Location? GetLocation(this AttributeData attributeData) {
         return attributeData.ApplicationSyntaxReference?.GetSyntax().GetLocation();
+    }
+}
+
+internal interface IAttributeHelper {
+    bool HasAttribute(ISymbol symbol, string attributeClassName);
+    IReadOnlyList<IResult<T>> GetAttributes<T>(
+        ISymbol symbol,
+        string attributeClassName,
+        Func<AttributeData, IResult<T>> create);
+    IResult<T?> TryGetSingleAttribute<T>(
+        ISymbol symbol,
+        string attributeClassName,
+        Func<AttributeData, IResult<T?>> create
+    ) where T : class?;
+    IResult<T> ExpectSingleAttribute<T>(
+        ISymbol symbol,
+        string attributeClassName,
+        Func<AttributeData, IResult<T>> create
+    ) where T : class?;
+}
+
+internal class AttributeHelper : IAttributeHelper {
+    public bool HasAttribute(ISymbol symbol, string attributeClassName) {
+        return symbol.GetAttributes()
+            .Any(attributeData => attributeData.AttributeClass?.ToString() == attributeClassName);
+    }
+
+    public IReadOnlyList<IResult<T>> GetAttributes<T>(
+        ISymbol symbol,
+        string attributeClassName,
+        Func<AttributeData, IResult<T>> create) {
+        return symbol.GetAttributes()
+            .Where(attributeData => attributeData.AttributeClass?.ToString() == attributeClassName)
+            .Select(create)
+            .ToImmutableList();
+    }
+
+    public IResult<T?> TryGetSingleAttribute<T>(
+        ISymbol symbol,
+        string attributeClassName,
+        Func<AttributeData, IResult<T?>> create
+    ) where T : class? {
+        var attributes = GetAttributes(symbol, attributeClassName, create);
+        return attributes.Count switch {
+            1 => attributes.Single(),
+            > 1 => Result.Error<T?>(
+                $"Type {symbol.Name} can only have one {attributeClassName}. Found {attributes.Count}.",
+                symbol.Locations.First(),
+                Diagnostics.InvalidSpecification),
+            _ => Result.Ok<T?>(null)
+        };
+    }
+
+    public IResult<T> ExpectSingleAttribute<T>(
+        ISymbol symbol,
+        string attributeClassName,
+        Func<AttributeData, IResult<T>> create
+    ) where T : class? {
+        var attribute = TryGetSingleAttribute(symbol, attributeClassName, create);
+        return attribute.ErrorIfNull(
+            $"Type {symbol.Name} must have an {attributeClassName}.",
+            symbol.Locations.First(),
+            Diagnostics.InvalidSpecification);
     }
 }

@@ -8,7 +8,6 @@
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Phx.Inject.Common;
 
 namespace Phx.Inject.Generator.Abstract;
 
@@ -36,7 +35,7 @@ internal class SourceSyntaxReceiver : ISyntaxReceiver {
                 if (classDeclaration.HasSpecificationAttribute()) {
                     SpecificationCandidates.Add(classDeclaration);
                 }
-                
+
                 // Track all classes with the phx inject attribute as settings candidates.
                 if (classDeclaration.HasPhxInjectAttribute()) {
                     PhxInjectSettingsCandidates.Add(classDeclaration);
@@ -48,27 +47,34 @@ internal class SourceSyntaxReceiver : ISyntaxReceiver {
 }
 
 internal static class MemberDeclarationSyntaxExtensions {
+    public const string InjectorAttributeShortName = "Injector";
+    public const string InjectorAttributeBaseName = nameof(InjectorAttribute);
+    public const string PhxInjectAttributeShortName = "PhxInject";
+    public const string PhxInjectAttributeBaseName = nameof(PhxInjectAttribute);
+    public const string SpecificationAttributeShortName = "Specification";
+    public const string SpecificationAttributeBaseName = nameof(SpecificationAttribute);
+
     public static bool HasInjectorAttribute(this MemberDeclarationSyntax memberDeclaration) {
         return HasAttribute(memberDeclaration,
             it =>
-                it is TypeNames.InjectorAttributeShortName
-                    or TypeNames.InjectorAttributeBaseName);
+                it is InjectorAttributeShortName
+                    or InjectorAttributeBaseName);
     }
-    
+
     public static bool HasPhxInjectAttribute(this MemberDeclarationSyntax memberDeclaration) {
         return HasAttribute(memberDeclaration,
             it =>
-                it is TypeNames.PhxInjectAttributeShortName
-                    or TypeNames.PhxInjectAttributeBaseName);
+                it is PhxInjectAttributeShortName
+                    or PhxInjectAttributeBaseName);
     }
 
     public static bool HasSpecificationAttribute(this MemberDeclarationSyntax memberDeclaration) {
         return HasAttribute(memberDeclaration,
             it =>
-                it is TypeNames.SpecificationAttributeShortName
-                    or TypeNames.SpecificationAttributeBaseName);
+                it is SpecificationAttributeShortName
+                    or SpecificationAttributeBaseName);
     }
-    
+
     private static bool HasAttribute(MemberDeclarationSyntax memberDeclaration, Func<string, bool> predicate) {
         return memberDeclaration.AttributeLists
             .Any(attributeList => attributeList.Attributes
