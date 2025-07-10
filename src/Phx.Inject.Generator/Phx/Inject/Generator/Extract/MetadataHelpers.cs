@@ -15,11 +15,6 @@ using Phx.Inject.Common.Model;
 namespace Phx.Inject.Generator.Extract;
 
 internal static class MetadataHelpers {
-    public static IResult<ITypeSymbol?> TryGetDependencyType(ISymbol symbol) {
-        return symbol.TryGetDependencyAttribute()
-            .MapNullable(dependencyAttribute => Result.Ok(dependencyAttribute.DependencyType));
-    }
-
     public static IReadOnlyList<QualifiedTypeModel> TryGetMethodParametersQualifiedTypes(
         IMethodSymbol methodSymbol,
         IGeneratorContext generatorCtx) {
@@ -58,21 +53,6 @@ internal static class MetadataHelpers {
         return TryGetMethodParametersQualifiedTypes(constructorMethod, generatorCtx);
     }
 
-    public static string GetGeneratedInjectorClassName(
-        ITypeSymbol injectorInterfaceSymbol,
-        IGeneratorContext generatorCtx) {
-        var injectorAttribute = injectorInterfaceSymbol.ExpectInjectorAttribute().GetOrThrow(generatorCtx);
-        return injectorAttribute.GeneratedClassName?.AsValidIdentifier().StartUppercase()
-            ?? TypeModel.FromTypeSymbol(injectorInterfaceSymbol).GetInjectorClassName();
-    }
-
-    public static IReadOnlyList<ITypeSymbol> TryGetInjectorSpecificationTypes(
-        ISymbol injectorInterfaceSymbol,
-        IGeneratorContext generatorCtx) {
-        var injectorAttribute = injectorInterfaceSymbol.ExpectInjectorAttribute().GetOrThrow(generatorCtx);
-        return injectorAttribute.Specifications;
-    }
-
     public static IResult<IQualifier> GetQualifier(this ISymbol symbol) {
         var labelAttributeResult = symbol.TryGetLabelAttribute();
         if (!labelAttributeResult.IsOk) {
@@ -101,24 +81,6 @@ internal static class MetadataHelpers {
         return qualifierAttribute != null
             ? Result.Ok<IQualifier>(new AttributeQualifier(qualifierAttribute))
             : Result.Ok<IQualifier>(NoQualifier.Instance);
-    }
-
-    public static IResult<bool> IsInjectorSymbol(ITypeSymbol symbol) {
-        return symbol.TryGetInjectorAttribute()
-            .Map(attributeData => {
-                if (attributeData == null) {
-                    Result.Ok(false);
-                }
-
-                var isInterface = symbol is { TypeKind: TypeKind.Interface };
-
-                return isInterface
-                    ? Result.Ok(true)
-                    : Result.Error<bool>(
-                        $"Injector type {symbol.Name} must be an interface.",
-                        symbol.Locations.First(),
-                        Diagnostics.InvalidSpecification);
-            });
     }
 
     public static IResult<bool> IsSpecSymbol(ITypeSymbol symbol) {

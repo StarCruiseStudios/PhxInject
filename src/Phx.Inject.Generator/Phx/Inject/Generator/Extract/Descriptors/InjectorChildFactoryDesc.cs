@@ -36,7 +36,7 @@ internal record InjectorChildFactoryDesc(
         }
 
         public Extractor() : this(
-            new ChildInjectorAttributeMetadata.Extractor()
+            ChildInjectorAttributeMetadata.Extractor.Instance
         ) { }
 
         public bool IsInjectorChildFactory(IMethodSymbol childInjectorMethod) {
@@ -51,8 +51,7 @@ internal record InjectorChildFactoryDesc(
             var childInjectorLocation = childInjectorMethod.Locations.First();
 
             var childInjectorAttribute =
-                childInjectorAttributeExtractor.Extract(childInjectorMethod).GetOrThrow(currentCtx);
-            childInjectorAttributeExtractor.ValidateAttributedType(childInjectorMethod, currentCtx);
+                childInjectorAttributeExtractor.Expect(childInjectorMethod, currentCtx);
 
             IReadOnlyList<TypeModel> parameters = childInjectorMethod.Parameters
                 .Select(parameter => TypeModel.FromTypeSymbol(parameter.Type))

@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Map.Definitions;
 
 namespace Phx.Inject.Generator.Project.Templates;
@@ -294,30 +295,27 @@ internal record InjectorTemplate(
                                     parameter.ParameterName,
                                     parameter.ParameterName,
                                     childInjector.Location));
-                        var dependencyConstructorArgs =
-                            childInjector.Dependencies
-                                .Select(dependencyInterfaceType => {
-                                    var dependencyImplementation =
-                                        templateGenerationCtx.GetDependency(
-                                            dependencyInterfaceType,
-                                            childInjector.Location);
-                                    var dependencyImplementationQualifiedName =
-                                        dependencyImplementation
-                                            .DependencyImplementationType
-                                            .NamespacedName;
+                        var dependencyConstructorArg = childInjector.Dependency?.Let(dependencyInterfaceType => {
+                            var dependencyImplementation =
+                                templateGenerationCtx.GetDependency(
+                                    dependencyInterfaceType,
+                                    childInjector.Location);
+                            var dependencyImplementationQualifiedName =
+                                dependencyImplementation
+                                    .DependencyImplementationType
+                                    .NamespacedName;
 
-                                    return new
-                                        InjectorChildDependencyConstructorArgumentTemplate(
-                                            dependencyInterfaceType
-                                                .GetVariableName(),
-                                            dependencyImplementationQualifiedName,
-                                            SpecContainerCollectionReferenceName,
-                                            childInjector.Location);
-                                });
+                            return new
+                                InjectorChildDependencyConstructorArgumentTemplate(
+                                    dependencyInterfaceType
+                                        .GetVariableName(),
+                                    dependencyImplementationQualifiedName,
+                                    SpecContainerCollectionReferenceName,
+                                    childInjector.Location);
+                        });
 
                         IReadOnlyList<IInjectorChildConstructorArgumentTemplate> args = specConstructorArgs
-                            .Concat<IInjectorChildConstructorArgumentTemplate>(
-                                dependencyConstructorArgs)
+                            .AppendIfNotNull<IInjectorChildConstructorArgumentTemplate>(dependencyConstructorArg)
                             .ToImmutableList();
 
                         return new InjectorChildFactoryTemplate(

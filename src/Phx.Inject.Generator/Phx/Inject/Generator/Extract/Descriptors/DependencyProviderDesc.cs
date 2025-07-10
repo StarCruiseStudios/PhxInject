@@ -74,7 +74,7 @@ internal record DependencyProviderDesc(
         }
 
         public Extractor() : this(
-            new PartialAttributeMetadata.Extractor()
+            PartialAttributeMetadata.Extractor.Instance
         ) { }
 
         public DependencyProviderDesc Extract(

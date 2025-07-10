@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
@@ -21,6 +22,10 @@ internal interface IAttributeDesc : IDescriptor {
 }
 
 internal abstract class AttributeDesc : IAttributeDesc {
+    public Location AttributedLocation {
+        get => AttributedSymbol.Locations.First();
+    }
+
     protected AttributeDesc(ISymbol attributedSymbol, AttributeData attributeData) {
         AttributedSymbol = attributedSymbol;
         AttributeTypeSymbol = attributeData.AttributeClass!;
@@ -52,17 +57,6 @@ internal abstract class AttributeDesc : IAttributeDesc {
     }
 }
 
-internal class DependencyAttributeDesc : AttributeDesc {
-    public const string DependencyAttributeClassName =
-        $"{SourceGenerator.PhxInjectNamespace}.{nameof(DependencyAttribute)}";
-
-    public ITypeSymbol DependencyType { get; }
-    public DependencyAttributeDesc(ITypeSymbol dependencyType, ISymbol attributedSymbol, AttributeData attributeData)
-        : base(attributedSymbol, attributeData) {
-        DependencyType = dependencyType;
-    }
-}
-
 internal class FactoryAttributeDesc : AttributeDesc {
     public const string FactoryAttributeClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(FactoryAttribute)}";
 
@@ -87,23 +81,6 @@ internal class FactoryReferenceAttributeDesc : AttributeDesc {
         AttributeData attributeData)
         : base(attributedSymbol, attributeData) {
         FabricationMode = fabricationMode;
-    }
-}
-
-internal class InjectorAttributeDesc : AttributeDesc {
-    public const string InjectorAttributeClassName =
-        $"{SourceGenerator.PhxInjectNamespace}.{nameof(InjectorAttribute)}";
-
-    public string? GeneratedClassName { get; }
-    public IReadOnlyList<ITypeSymbol> Specifications { get; }
-    public InjectorAttributeDesc(
-        string? generatedClassName,
-        IReadOnlyList<ITypeSymbol> specifications,
-        ISymbol attributedSymbol,
-        AttributeData attributeData)
-        : base(attributedSymbol, attributeData) {
-        GeneratedClassName = generatedClassName;
-        Specifications = specifications;
     }
 }
 
@@ -161,20 +138,15 @@ internal class QualifierAttributeDesc : AttributeDesc {
     public QualifierAttributeDesc(ISymbol attributedSymbol, INamedTypeSymbol attributeTypeSymbol)
         : base(attributedSymbol, attributeTypeSymbol) { }
 
-    public interface IExtractor {
-        bool CanExtract(ISymbol attributedSymbol);
-        IResult<QualifierAttributeDesc> Extract(ISymbol attributedSymbol);
-        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
-    }
+    public interface IExtractor : IAttributeMetadataExtractor<QualifierAttributeDesc> { }
 
     public class Extractor : IExtractor {
+        public static IExtractor Instance = new Extractor(AttributeHelper.Instance);
         private readonly IAttributeHelper attributeHelper;
 
-        public Extractor(IAttributeHelper attributeHelper) {
+        internal Extractor(IAttributeHelper attributeHelper) {
             this.attributeHelper = attributeHelper;
         }
-
-        public Extractor() : this(new AttributeHelper()) { }
 
         public bool CanExtract(ISymbol attributedSymbol) {
             return attributeHelper.HasAttribute(attributedSymbol, QualifierAttributeClassName);
@@ -210,20 +182,15 @@ internal class SpecificationAttributeDesc : AttributeDesc {
     public SpecificationAttributeDesc(ISymbol attributedSymbol, AttributeData attributeData)
         : base(attributedSymbol, attributeData) { }
 
-    public interface IExtractor {
-        bool CanExtract(ISymbol attributedSymbol);
-        IResult<SpecificationAttributeDesc> Extract(ISymbol attributedSymbol);
-        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
-    }
+    public interface IExtractor : IAttributeMetadataExtractor<SpecificationAttributeDesc> { }
 
     public class Extractor : IExtractor {
+        public static IExtractor Instance = new Extractor(AttributeHelper.Instance);
         private readonly IAttributeHelper attributeHelper;
 
-        public Extractor(IAttributeHelper attributeHelper) {
+        internal Extractor(IAttributeHelper attributeHelper) {
             this.attributeHelper = attributeHelper;
         }
-
-        public Extractor() : this(new AttributeHelper()) { }
 
         public bool CanExtract(ISymbol attributedSymbol) {
             return attributeHelper.HasAttribute(attributedSymbol, SpecificationAttributeClassName);

@@ -21,4 +21,10 @@ public static class FunctionalExtensions {
     public static void Then<T>(this T self, Action<T> action) {
         action(self);
     }
+
+    public static IEnumerable<TSource> AppendIfNotNull<TSource>(this IEnumerable<TSource> source, TSource? element) {
+        return element == null
+            ? source
+            : source.Append(element);
+    }
 }

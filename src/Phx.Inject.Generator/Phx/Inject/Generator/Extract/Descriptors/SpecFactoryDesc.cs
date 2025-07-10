@@ -164,7 +164,7 @@ internal record SpecFactoryDesc(
         }
 
         public Extractor() : this(
-            new PartialAttributeMetadata.Extractor()
+            PartialAttributeMetadata.Extractor.Instance
         ) { }
 
         public SpecFactoryDesc ExtractAutoConstructorFactory(

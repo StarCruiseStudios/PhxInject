@@ -9,6 +9,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Map.Definitions;
@@ -110,8 +111,6 @@ internal record InjectionContextDef(
                 }
             }
 
-
-
             var generationContext = defGenerationCtx with {
                 FactoryRegistrations = factoryRegistrations,
                 BuilderRegistrations = builderRegistrations
@@ -127,7 +126,8 @@ internal record InjectionContextDef(
                 .Select(childFactory => generationContext.GetInjector(
                     childFactory.ChildInjectorType,
                     childFactory.Location))
-                .SelectMany(childInjector => childInjector.DependencyInterfaceTypes)
+                .Select(childInjector => childInjector.DependencyInterfaceType)
+                .OfType<TypeModel>()
                 .GroupBy(dependencyType => dependencyType)
                 .Select(dependencyTypeGroup => dependencyTypeGroup.First())
                 .Select(dependencyType => generationContext.GetDependency(

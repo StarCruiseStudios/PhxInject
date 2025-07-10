@@ -36,20 +36,15 @@ internal class PhxInjectAttributeMetadata : AttributeDesc {
         AllowConstructorFactories = allowConstructorFactories;
     }
 
-    public interface IExtractor {
-        bool CanExtract(ISymbol attributedSymbol);
-        IResult<PhxInjectAttributeMetadata> Extract(ISymbol attributedSymbol);
-        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
-    }
+    public interface IExtractor : IAttributeMetadataExtractor<PhxInjectAttributeMetadata> { }
 
     public class Extractor : IExtractor {
+        public static IExtractor Instance = new Extractor(AttributeHelper.Instance);
         private readonly IAttributeHelper attributeHelper;
 
-        public Extractor(IAttributeHelper attributeHelper) {
+        internal Extractor(IAttributeHelper attributeHelper) {
             this.attributeHelper = attributeHelper;
         }
-
-        public Extractor() : this(new AttributeHelper()) { }
 
         public bool CanExtract(ISymbol attributedSymbol) {
             return attributeHelper.HasAttribute(attributedSymbol, PhxInjectAttributeClassName);

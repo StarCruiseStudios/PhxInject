@@ -41,8 +41,8 @@ internal record SpecBuilderDesc(
         }
 
         public Extractor() : this(
-            new BuilderAttributeMetadata.Extractor(),
-            new BuilderReferenceAttributeMetadata.Extractor()
+            BuilderAttributeMetadata.Extractor.Instance,
+            BuilderReferenceAttributeMetadata.Extractor.Instance
         ) { }
 
         public SpecBuilderDesc? ExtractBuilder(IMethodSymbol builderMethod, ExtractorContext context) {

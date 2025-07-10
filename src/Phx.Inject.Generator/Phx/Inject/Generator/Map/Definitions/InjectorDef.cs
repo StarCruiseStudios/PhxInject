@@ -18,7 +18,7 @@ internal record InjectorDef(
     TypeModel InjectorInterfaceType,
     IEnumerable<TypeModel> Specifications,
     IEnumerable<TypeModel> ConstructedSpecifications,
-    IEnumerable<TypeModel> Dependencies,
+    TypeModel? Dependency,
     IEnumerable<InjectorProviderDef> Providers,
     IEnumerable<ActivatorDef> Builders,
     IEnumerable<InjectorChildFactoryDef> ChildFactories,
@@ -38,7 +38,7 @@ internal record InjectorDef(
                     var specDesc = context.GetSpec(spec, context.Injector.Location);
                     return specDesc.InstantiationMode == SpecInstantiationMode.Instantiated;
                 })
-                .Where(spec => context.Injector.DependencyInterfaceTypes.Contains(spec) == false)
+                .Where(spec => context.Injector.DependencyInterfaceType != spec)
                 .ToImmutableList();
 
             IReadOnlyList<InjectorProviderDef> providers = context.Injector.Providers
@@ -83,7 +83,7 @@ internal record InjectorDef(
                 context.Injector.InjectorInterfaceType,
                 context.Injector.SpecificationsTypes,
                 constructedSpecifications,
-                context.Injector.DependencyInterfaceTypes,
+                context.Injector.DependencyInterfaceType,
                 providers,
                 builders,
                 childFactories,

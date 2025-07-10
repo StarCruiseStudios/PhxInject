@@ -19,20 +19,15 @@ internal class BuilderAttributeMetadata : AttributeDesc {
     public BuilderAttributeMetadata(ISymbol attributedSymbol, AttributeData attributeData)
         : base(attributedSymbol, attributeData) { }
 
-    public interface IExtractor {
-        bool CanExtract(ISymbol attributedSymbol);
-        IResult<BuilderAttributeMetadata> Extract(ISymbol attributedSymbol);
-        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
-    }
+    public interface IExtractor : IAttributeMetadataExtractor<BuilderAttributeMetadata> { }
 
     public class Extractor : IExtractor {
+        public static IExtractor Instance = new Extractor(AttributeHelper.Instance);
         private readonly IAttributeHelper attributeHelper;
 
-        public Extractor(IAttributeHelper attributeHelper) {
+        internal Extractor(IAttributeHelper attributeHelper) {
             this.attributeHelper = attributeHelper;
         }
-
-        public Extractor() : this(new AttributeHelper()) { }
 
         public bool CanExtract(ISymbol attributedSymbol) {
             return attributeHelper.HasAttribute(attributedSymbol, BuilderAttributeClassName);

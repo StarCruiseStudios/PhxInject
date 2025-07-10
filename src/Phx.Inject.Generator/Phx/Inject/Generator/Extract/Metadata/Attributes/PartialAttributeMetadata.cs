@@ -32,14 +32,12 @@ internal class PartialAttributeMetadata : AttributeDesc {
     }
 
     public class Extractor : IExtractor {
+        public static IExtractor Instance = new Extractor(AttributeHelper.Instance);
         private readonly IAttributeHelper attributeHelper;
 
-        public Extractor(IAttributeHelper attributeHelper) {
+        internal Extractor(IAttributeHelper attributeHelper) {
             this.attributeHelper = attributeHelper;
         }
-
-        public Extractor() : this(new AttributeHelper()) { }
-
         public bool CanExtract(ISymbol attributedSymbol) {
             return attributeHelper.HasAttribute(attributedSymbol, PartialAttributeClassName);
         }

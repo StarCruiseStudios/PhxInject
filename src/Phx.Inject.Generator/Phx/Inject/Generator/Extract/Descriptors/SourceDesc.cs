@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
@@ -34,24 +35,32 @@ internal record SourceDesc(
     }
 
     public class Extractor : IExtractor {
+        private readonly DependencyAttributeMetadata.IExtractor dependencyAttributeExtractor;
         private readonly DependencyDesc.IExtractor dependencyDescExtractor;
+        private readonly InjectorAttributeMetadata.IExtractor injectorAttributeExtractor;
         private readonly InjectorDesc.IExtractor injectorDescExtractor;
         private readonly SpecDesc.IExtractor specDescExtractor;
 
         public Extractor(
             InjectorDesc.IExtractor injectorDescExtractor,
             SpecDesc.IExtractor specDescExtractor,
-            DependencyDesc.IExtractor dependencyDescExtractor
+            DependencyDesc.IExtractor dependencyDescExtractor,
+            DependencyAttributeMetadata.IExtractor dependencyAttributeExtractor,
+            InjectorAttributeMetadata.IExtractor injectorAttributeExtractor
         ) {
             this.injectorDescExtractor = injectorDescExtractor;
             this.specDescExtractor = specDescExtractor;
             this.dependencyDescExtractor = dependencyDescExtractor;
+            this.dependencyAttributeExtractor = dependencyAttributeExtractor;
+            this.injectorAttributeExtractor = injectorAttributeExtractor;
         }
 
         public Extractor() : this(
             new InjectorDesc.Extractor(),
             new SpecDesc.Extractor(),
-            new DependencyDesc.Extractor()
+            new DependencyDesc.Extractor(),
+            DependencyAttributeMetadata.Extractor.Instance,
+            InjectorAttributeMetadata.Extractor.Instance
         ) { }
 
         public SourceDesc Extract(
@@ -66,9 +75,13 @@ internal record SourceDesc(
                 .SelectCatching(
                     exceptionAggregator,
                     injectorTypeSymbol => $"extracting injector from {injectorTypeSymbol}",
-                    injectorTypeSymbol => MetadataHelpers.IsInjectorSymbol(injectorTypeSymbol).GetOrThrow(extractorCtx)
-                        ? injectorDescExtractor.Extract(injectorTypeSymbol, extractorCtx)
-                        : null)
+                    injectorTypeSymbol => {
+                        var injectorAttribute = injectorAttributeExtractor.TryExtract(injectorTypeSymbol, extractorCtx);
+
+                        return injectorAttribute == null
+                            ? null
+                            : injectorDescExtractor.Extract(injectorTypeSymbol, extractorCtx);
+                    })
                 .OfType<InjectorDesc>()
                 .ToImmutableList();
             extractorCtx.Log($"Discovered {injectorDescs.Count} injector types.");
@@ -90,15 +103,18 @@ internal record SourceDesc(
                     exceptionAggregator,
                     injectorTypeSymbol => $"extracting dependencies from injector {injectorTypeSymbol}",
                     injectorTypeSymbol => {
-                        if (!MetadataHelpers.IsInjectorSymbol(injectorTypeSymbol).GetOrThrow(extractorCtx)) {
+                        var injectorAttribute = injectorAttributeExtractor.TryExtract(injectorTypeSymbol, extractorCtx);
+                        if (injectorAttribute == null) {
                             return null;
                         }
 
-                        var dependencySymbol = MetadataHelpers.TryGetDependencyType(injectorTypeSymbol)
-                            .GetOrThrow(extractorCtx);
-                        if (dependencySymbol == null) {
+                        var dependencyAttribute =
+                            dependencyAttributeExtractor.TryExtract(injectorTypeSymbol, extractorCtx);
+                        if (dependencyAttribute == null) {
                             return null;
                         }
+
+                        var dependencySymbol = dependencyAttribute.DependencyType.TypeSymbol;
 
                         var injectorType = injectorTypeSymbol.ToTypeModel();
                         return MetadataHelpers.IsDependencySymbol(dependencySymbol).GetOrThrow(extractorCtx)

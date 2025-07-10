@@ -34,7 +34,7 @@ internal record InjectorProviderDesc(
         }
 
         public Extractor() : this(
-            new ChildInjectorAttributeMetadata.Extractor()
+            ChildInjectorAttributeMetadata.Extractor.Instance
         ) { }
 
         public InjectorProviderDesc? Extract(

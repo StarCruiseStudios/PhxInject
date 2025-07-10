@@ -16,59 +16,9 @@ using Phx.Inject.Generator.Extract.Metadata.Attributes;
 namespace Phx.Inject.Common;
 
 internal static class AttributeHelpers {
-    private static readonly AttributeHelper helper = new();
-
-    public static IResult<InjectorAttributeDesc?> TryGetInjectorAttribute(this ISymbol symbol) {
-        return helper.TryGetSingleAttribute(symbol,
-            TypeNames.InjectorAttributeClassName,
-            it => {
-                var generatedClassName = it.ConstructorArguments
-                    .FirstOrDefault(argument => argument.Kind != TypedConstantKind.Array)
-                    .Value as string;
-
-                var specifications = it.ConstructorArguments
-                    .Where(argument => argument.Kind == TypedConstantKind.Array)
-                    .SelectMany(argument => argument.Values)
-                    .Where(type => type.Value is ITypeSymbol)
-                    .Select(type => (type.Value as ITypeSymbol)!)
-                    .ToImmutableList();
-
-                return Result.Ok(new InjectorAttributeDesc(generatedClassName, specifications, symbol, it));
-            });
-    }
-
-    public static IResult<InjectorAttributeDesc> ExpectInjectorAttribute(this ISymbol symbol) {
-        return symbol.TryGetInjectorAttribute()
-            .Map(attributeData => Result.ErrorIfNull(
-                attributeData,
-                $"Expected type {symbol.Name} to have one {TypeNames.InjectorAttributeClassName}.",
-                symbol.Locations.First(),
-                Diagnostics.InvalidSpecification));
-    }
-
     public static IResult<SpecificationAttributeDesc?> TryGetSpecificationAttribute(this ISymbol symbol) {
         return TryGetSingleAttribute(symbol, TypeNames.SpecificationAttributeClassName)
             .MapNullable(it => Result.Ok(new SpecificationAttributeDesc(symbol, it)));
-    }
-
-    public static IResult<DependencyAttributeDesc?> TryGetDependencyAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, TypeNames.DependencyAttributeClassName)
-            .MapNullable(it => {
-                var constructorArgument = it.ConstructorArguments
-                    .Where(argument => argument.Kind == TypedConstantKind.Type)
-                    .Select(argument => argument.Value)
-                    .OfType<ITypeSymbol>()
-                    .ToImmutableList();
-
-                if (constructorArgument.Count != 1) {
-                    return Result.Error<DependencyAttributeDesc?>(
-                        $"Dependency for symbol {symbol.Name} must provide a dependency type.",
-                        it.GetLocation() ?? symbol.Locations.First(),
-                        Diagnostics.InvalidSpecification);
-                }
-
-                return Result.Ok(new DependencyAttributeDesc(constructorArgument.Single(), symbol, it));
-            });
     }
 
     public static IResult<LabelAttributeDesc?> TryGetLabelAttribute(this ISymbol symbol) {
@@ -293,6 +243,7 @@ internal interface IAttributeHelper {
 }
 
 internal class AttributeHelper : IAttributeHelper {
+    public static IAttributeHelper Instance { get; } = new AttributeHelper();
     public bool HasAttribute(ISymbol symbol, string attributeClassName) {
         return symbol.GetAttributes()
             .Any(attributeData => attributeData.AttributeClass?.ToString() == attributeClassName);
