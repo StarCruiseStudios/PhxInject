@@ -21,50 +21,6 @@ internal static class AttributeHelpers {
             .MapNullable(it => Result.Ok(new SpecificationAttributeDesc(symbol, it)));
     }
 
-    public static IResult<LabelAttributeDesc?> TryGetLabelAttribute(this ISymbol symbol) {
-        return TryGetSingleAttribute(symbol, TypeNames.LabelAttributeClassName)
-            .MapNullable(it => {
-                var labels = it.ConstructorArguments
-                    .Where(argument => argument.Type!.ToString() == TypeNames.StringClassName)
-                    .Select(argument => (string)argument.Value!)
-                    .ToImmutableList();
-
-                if (labels.Count == 1) {
-                    return Result.Ok(new LabelAttributeDesc(labels.Single(), symbol, it));
-                }
-
-                return Result.Error<LabelAttributeDesc?>(
-                    $"Label for symbol {symbol.Name} must provide one label value.",
-                    it.GetLocation() ?? symbol.Locations.First(),
-                    Diagnostics.InvalidSpecification);
-            });
-    }
-
-    public static IResult<QualifierAttributeDesc?> TryGetQualifierAttribute(this ISymbol symbol) {
-        return TryGetSingleAttributedAttribute(symbol, TypeNames.QualifierAttributeClassName)
-            .MapNullable(it => Result.Ok(new QualifierAttributeDesc(symbol, it)));
-    }
-
-    public static IResult<QualifierAttributeDesc?> TryGetQualifierAttributeFromAttributeType(
-        this INamedTypeSymbol attributeTypeSymbol,
-        AttributeDesc attribute) {
-        if (attributeTypeSymbol.BaseType?.ToString() != TypeNames.AttributeClassName) {
-            return Result.Error<QualifierAttributeDesc?>(
-                $"Expected qualifier type {attributeTypeSymbol.Name} to be an Attribute type.",
-                attribute.Location,
-                Diagnostics.InvalidSpecification);
-        }
-
-        return TryGetSingleAttribute(attributeTypeSymbol, TypeNames.QualifierAttributeClassName)
-            .Map(it => it == null
-                ? Result.Error<AttributeData?>(
-                    $"Expected attribute type {attributeTypeSymbol.Name} to have one {TypeNames.QualifierAttributeClassName}.",
-                    attribute.Location,
-                    Diagnostics.InvalidSpecification)
-                : Result.Ok(it))
-            .MapNullable(it => Result.Ok(new QualifierAttributeDesc(attribute.AttributedSymbol, attributeTypeSymbol)));
-    }
-
     public static IReadOnlyList<IResult<LinkAttributeDesc>> GetAllLinkAttributes(this ISymbol symbol) {
         return TryGetAttributes(symbol, TypeNames.LinkAttributeClassName)
             .Select(it => {
@@ -192,27 +148,6 @@ internal static class AttributeHelpers {
         return attributes.Count switch {
             > 1 => Result.Error<AttributeData?>(
                 $"Type {symbol.Name} can only have one {attributeClassName}. Found {attributes.Count}.",
-                symbol.Locations.First(),
-                Diagnostics.InvalidSpecification),
-            _ => Result.Ok<AttributeData?>(attributes.SingleOrDefault())
-        };
-    }
-
-    private static IReadOnlyList<AttributeData> TryGetAttributedAttributes(
-        ISymbol symbol,
-        string parentAttributeClassName) {
-        return symbol.GetAttributes()
-            .Where(attributeData => TryGetAttributes(attributeData.AttributeClass!, parentAttributeClassName).Any())
-            .ToImmutableList();
-    }
-
-    private static IResult<AttributeData?> TryGetSingleAttributedAttribute(
-        ISymbol symbol,
-        string parentAttributeClassName) {
-        var attributes = TryGetAttributedAttributes(symbol, parentAttributeClassName);
-        return attributes.Count switch {
-            > 1 => Result.Error<AttributeData?>(
-                $"Type {symbol.Name} can only have one {parentAttributeClassName}. Found {attributes.Count}: [{string.Join(", ", attributes.Select(it => it.AttributeClass!.Name))}].",
                 symbol.Locations.First(),
                 Diagnostics.InvalidSpecification),
             _ => Result.Ok<AttributeData?>(attributes.SingleOrDefault())

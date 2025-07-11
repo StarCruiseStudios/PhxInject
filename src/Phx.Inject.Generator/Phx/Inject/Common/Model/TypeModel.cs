@@ -9,6 +9,7 @@
 using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Common.Model;
 
@@ -86,7 +87,7 @@ internal static class TypeSymbolExtensions {
             typeSymbol);
     }
 
-    public static QualifiedTypeModel ToQualifiedTypeModel(this ITypeSymbol typeSymbol, IQualifier qualifier) {
+    public static QualifiedTypeModel ToQualifiedTypeModel(this ITypeSymbol typeSymbol, QualifierMetadata qualifier) {
         return new QualifiedTypeModel(
             typeSymbol.ToTypeModel(),
             qualifier);

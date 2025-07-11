@@ -7,7 +7,7 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Generator.Extract.Descriptors;
+using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Common.Model;
 
@@ -17,12 +17,12 @@ internal interface IQualifier {
 
 internal class LabelQualifier : IQualifier {
     private readonly string baseIdentifier;
-    public string Identifier { get; }
 
     public LabelQualifier(string qualifier) {
         baseIdentifier = qualifier;
         Identifier = "L_" + qualifier;
     }
+    public string Identifier { get; }
 
     public override string ToString() {
         return $"\"{baseIdentifier}\"";
@@ -39,11 +39,14 @@ internal class LabelQualifier : IQualifier {
 }
 
 internal class NoQualifier : IQualifier {
-    public string Identifier => "";
-    
-    private NoQualifier() { }
     public static readonly NoQualifier Instance = new();
-    
+
+    private NoQualifier() { }
+
+    public string Identifier {
+        get => "";
+    }
+
     public override bool Equals(object? obj) {
         return obj is NoQualifier;
     }
@@ -54,13 +57,13 @@ internal class NoQualifier : IQualifier {
 }
 
 internal class AttributeQualifier : IQualifier {
-    public QualifierAttributeDesc Attribute { get; }
-    public string Identifier { get; }
+    public QualifierAttributeMetadata Attribute { get; }
 
-    public AttributeQualifier(QualifierAttributeDesc attribute) {
+    public AttributeQualifier(QualifierAttributeMetadata attribute) {
         Attribute = attribute;
         Identifier = "A_" + attribute.AttributeTypeSymbol;
     }
+    public string Identifier { get; }
 
     public override string ToString() {
         return $"@{Attribute.AttributeTypeSymbol.Name}";
@@ -74,7 +77,7 @@ internal class AttributeQualifier : IQualifier {
     }
 
     public override int GetHashCode() {
-        return (typeof(AttributeQualifier).GetHashCode() * 397) 
+        return (typeof(AttributeQualifier).GetHashCode() * 397)
             ^ SymbolEqualityComparer.IncludeNullability.GetHashCode(Attribute.AttributeTypeSymbol);
     }
 }

@@ -32,17 +32,21 @@ internal record SpecBuilderDesc(
         private readonly BuilderAttributeMetadata.IExtractor builderAttributeExtractor;
 
         private readonly BuilderReferenceAttributeMetadata.IExtractor builderReferenceAttributeExtractor;
+        private readonly QualifierMetadata.IExtractor qualifierExtractor;
         public Extractor(
             BuilderAttributeMetadata.IExtractor builderAttributeExtractor,
-            BuilderReferenceAttributeMetadata.IExtractor builderReferenceAttributeExtractor
+            BuilderReferenceAttributeMetadata.IExtractor builderReferenceAttributeExtractor,
+            QualifierMetadata.IExtractor qualifierExtractor
         ) {
             this.builderAttributeExtractor = builderAttributeExtractor;
             this.builderReferenceAttributeExtractor = builderReferenceAttributeExtractor;
+            this.qualifierExtractor = qualifierExtractor;
         }
 
         public Extractor() : this(
             BuilderAttributeMetadata.Extractor.Instance,
-            BuilderReferenceAttributeMetadata.Extractor.Instance
+            BuilderReferenceAttributeMetadata.Extractor.Instance,
+            QualifierMetadata.Extractor.Instance
         ) { }
 
         public SpecBuilderDesc? ExtractBuilder(IMethodSymbol builderMethod, ExtractorContext context) {
@@ -62,8 +66,7 @@ internal record SpecBuilderDesc(
                     context);
             }
 
-            var qualifier = builderMethod.GetQualifier()
-                .GetOrThrow(context);
+            var qualifier = qualifierExtractor.Extract(builderMethod).GetOrThrow(context);
             // Use the qualifier from the method, not the parameter.
             var builtType = methodParameterTypes[0] with {
                 Qualifier = qualifier
@@ -84,9 +87,9 @@ internal record SpecBuilderDesc(
             var builderLocation = builderType.TypeModel.TypeSymbol.Locations.First();
             IReadOnlyList<IMethodSymbol> builderMethods = MetadataHelpers
                 .GetDirectBuilderMethods(builderType.TypeModel.TypeSymbol, context)
-                .Where(b => Equals(b.GetQualifier()
-                        .GetOrThrow(context),
-                    builderType.Qualifier))
+                .Where(b => Equals(
+                    qualifierExtractor.Extract(b).GetOrThrow(context).Qualifier,
+                    builderType.Qualifier.Qualifier))
                 .Where(b => ValidateBuilder(b, builderLocation, context))
                 .ToImmutableList();
 
@@ -224,7 +227,7 @@ internal record SpecBuilderDesc(
             return true;
         }
 
-        private static void GetBuilderReferenceTypes(
+        private void GetBuilderReferenceTypes(
             ISymbol builderReferenceSymbol,
             ITypeSymbol builderReferenceTypeSymbol,
             Location builderReferenceLocation,
@@ -243,8 +246,7 @@ internal record SpecBuilderDesc(
 
             IReadOnlyList<ITypeSymbol> typeArguments = referenceTypeSymbol.TypeArguments;
 
-            var qualifier = builderReferenceSymbol.GetQualifier()
-                .GetOrThrow(extractorCtx);
+            var qualifier = qualifierExtractor.Extract(builderReferenceSymbol).GetOrThrow(extractorCtx);
             var returnTypeModel = TypeModel.FromTypeSymbol(typeArguments[0]);
             builtType = new QualifiedTypeModel(
                 returnTypeModel,
@@ -254,7 +256,7 @@ internal record SpecBuilderDesc(
                 ? ImmutableList.Create<QualifiedTypeModel>()
                 : typeArguments.Skip(1)
                     .Select(typeArgument => TypeModel.FromTypeSymbol(typeArgument))
-                    .Select(typeModel => new QualifiedTypeModel(typeModel, NoQualifier.Instance))
+                    .Select(typeModel => new QualifiedTypeModel(typeModel, QualifierMetadata.NoQualifier))
                     .ToImmutableList();
         }
     }

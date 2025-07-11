@@ -67,14 +67,18 @@ internal record DependencyProviderDesc(
 
     public class Extractor : IExtractor {
         private readonly PartialAttributeMetadata.IExtractor partialAttributeExtractor;
+        private readonly QualifierMetadata.IExtractor qualifierExtractor;
         public Extractor(
-            PartialAttributeMetadata.IExtractor partialAttributeExtractor
+            PartialAttributeMetadata.IExtractor partialAttributeExtractor,
+            QualifierMetadata.IExtractor qualifierExtractor
         ) {
             this.partialAttributeExtractor = partialAttributeExtractor;
+            this.qualifierExtractor = qualifierExtractor;
         }
 
         public Extractor() : this(
-            PartialAttributeMetadata.Extractor.Instance
+            PartialAttributeMetadata.Extractor.Instance,
+            QualifierMetadata.Extractor.Instance
         ) { }
 
         public DependencyProviderDesc Extract(
@@ -85,7 +89,7 @@ internal record DependencyProviderDesc(
             var currentCtx = extractorCtx.GetChildContext(symbol);
 
             RequireDependencyProvider(symbol, currentCtx);
-            var qualifier = symbol.GetQualifier().GetOrThrow(currentCtx);
+            var qualifier = qualifierExtractor.Extract(symbol).GetOrThrow(currentCtx);
             var providedType = symbol.ReturnType.ToQualifiedTypeModel(qualifier);
             var partialAttribute = partialAttributeExtractor.CanExtract(symbol)
                 ? partialAttributeExtractor.Extract(symbol)

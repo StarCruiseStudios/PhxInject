@@ -6,15 +6,34 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
+using Phx.Inject.Generator.Extract.Metadata.Attributes;
+
 namespace Phx.Inject.Common.Model;
 
 internal record QualifiedTypeModel(
     TypeModel TypeModel,
-    IQualifier Qualifier
+    QualifierMetadata Qualifier
 ) {
+    public virtual bool Equals(QualifiedTypeModel? other) {
+        if (other is null) {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other)) {
+            return true;
+        }
+
+        return TypeModel.Equals(other.TypeModel)
+            && Qualifier.Qualifier.Equals(other.Qualifier.Qualifier);
+    }
+    public override int GetHashCode() {
+        unchecked {
+            return (TypeModel.GetHashCode() * 397) ^ Qualifier.Qualifier.GetHashCode();
+        }
+    }
     public override string ToString() {
-        return Qualifier is NoQualifier
+        return Qualifier.Qualifier is NoQualifier
             ? TypeModel.ToString()
-            : $"[{Qualifier}] {TypeModel}";
+            : $"[{Qualifier.Qualifier}] {TypeModel}";
     }
 }

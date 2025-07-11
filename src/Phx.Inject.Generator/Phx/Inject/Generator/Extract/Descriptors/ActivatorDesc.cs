@@ -7,9 +7,9 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
@@ -26,6 +26,13 @@ internal record ActivatorDesc(
     }
 
     public class Extractor : IExtractor {
+        private readonly QualifierMetadata.IExtractor qualifierExtractor;
+        public static IExtractor Instance { get; } = new Extractor(QualifierMetadata.Extractor.Instance);
+
+        public Extractor(QualifierMetadata.IExtractor qualifierExtractor) {
+            this.qualifierExtractor = qualifierExtractor;
+        }
+
         public ActivatorDesc? Extract(
             IMethodSymbol builderMethod,
             ExtractorContext extractorCtx
@@ -44,10 +51,10 @@ internal record ActivatorDesc(
                     builderLocation,
                     currentCtx);
             }
-            
-            var qualifier = builderMethod.GetQualifier().GetOrThrow(currentCtx);
+
+            var qualifier = qualifierExtractor.Extract(builderMethod).GetOrThrow(currentCtx);
             var builtType = builderMethod.Parameters[0].Type.ToQualifiedTypeModel(qualifier);
-            
+
             return new ActivatorDesc(
                 builtType,
                 builderMethod.Name,

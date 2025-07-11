@@ -56,7 +56,7 @@ internal record InjectorDesc(
 
         public Extractor() : this(
             new InjectorProviderDesc.Extractor(),
-            new ActivatorDesc.Extractor(),
+            ActivatorDesc.Extractor.Instance,
             new InjectorChildFactoryDesc.Extractor(),
             DependencyAttributeMetadata.Extractor.Instance,
             InjectorAttributeMetadata.Extractor.Instance) { }

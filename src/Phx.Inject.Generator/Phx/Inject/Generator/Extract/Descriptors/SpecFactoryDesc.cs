@@ -117,8 +117,7 @@ internal record SpecFactoryDesc(
 
         var typeArguments = referenceTypeSymbol.TypeArguments;
 
-        var qualifier = factoryReferenceSymbol.GetQualifier()
-            .GetOrThrow(extractorCtx);
+        var qualifier = QualifierMetadata.Extractor.Instance.Extract(factoryReferenceSymbol).GetOrThrow(extractorCtx);
         var returnTypeModel = TypeModel.FromTypeSymbol(typeArguments[typeArguments.Length - 1]);
         returnType = new QualifiedTypeModel(
             returnTypeModel,
@@ -128,7 +127,7 @@ internal record SpecFactoryDesc(
             ? ImmutableList.Create<QualifiedTypeModel>()
             : typeArguments.Take(typeArguments.Length - 1)
                 .Select(typeArgument => TypeModel.FromTypeSymbol(typeArgument))
-                .Select(typeModel => new QualifiedTypeModel(typeModel, NoQualifier.Instance))
+                .Select(typeModel => new QualifiedTypeModel(typeModel, QualifierMetadata.NoQualifier))
                 .ToImmutableList();
     }
 
@@ -186,7 +185,7 @@ internal record SpecFactoryDesc(
                 .GetRequiredPropertyQualifiedTypes(constructorSymbol, currentCtx)
                 .Select(property =>
                     new SpecFactoryRequiredPropertyDesc(property.Value, property.Key, constructorLocation));
-            var qualifier = constructorSymbol.GetQualifier()
+            var qualifier = QualifierMetadata.Extractor.Instance.Extract(constructorSymbol)
                 .GetOrThrow(currentCtx);
             var returnType = constructorType with {
                 Qualifier = qualifier
@@ -218,7 +217,7 @@ internal record SpecFactoryDesc(
             var methodParameterTypes =
                 MetadataHelpers.TryGetMethodParametersQualifiedTypes(factoryMethod, currentCtx);
 
-            var qualifier = factoryMethod.GetQualifier()
+            var qualifier = QualifierMetadata.Extractor.Instance.Extract(factoryMethod)
                 .GetOrThrow(currentCtx);
             var returnTypeModel = TypeModel.FromTypeSymbol(factoryMethod.ReturnType);
             var returnType = new QualifiedTypeModel(
@@ -263,7 +262,7 @@ internal record SpecFactoryDesc(
 
             var methodParameterTypes = ImmutableList.Create<QualifiedTypeModel>();
 
-            var qualifier = factoryProperty.GetQualifier()
+            var qualifier = QualifierMetadata.Extractor.Instance.Extract(factoryProperty)
                 .GetOrThrow(currentCtx);
             var returnTypeModel = TypeModel.FromTypeSymbol(factoryProperty.Type);
             var returnType = new QualifiedTypeModel(

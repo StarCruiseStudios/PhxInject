@@ -27,14 +27,18 @@ internal record InjectorProviderDesc(
 
     public class Extractor : IExtractor {
         private readonly ChildInjectorAttributeMetadata.IExtractor childInjectorAttributeExtractor;
+        private readonly QualifierMetadata.IExtractor qualifierExtractor;
         public Extractor(
-            ChildInjectorAttributeMetadata.IExtractor childInjectorAttributeExtractor
+            ChildInjectorAttributeMetadata.IExtractor childInjectorAttributeExtractor,
+            QualifierMetadata.IExtractor qualifierExtractor
         ) {
             this.childInjectorAttributeExtractor = childInjectorAttributeExtractor;
+            this.qualifierExtractor = qualifierExtractor;
         }
 
         public Extractor() : this(
-            ChildInjectorAttributeMetadata.Extractor.Instance
+            ChildInjectorAttributeMetadata.Extractor.Instance,
+            QualifierMetadata.Extractor.Instance
         ) { }
 
         public InjectorProviderDesc? Extract(
@@ -62,8 +66,7 @@ internal record InjectorProviderDesc(
             }
 
             var returnType = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
-            var qualifier = providerMethod.GetQualifier()
-                .GetOrThrow(currentCtx);
+            var qualifier = qualifierExtractor.Extract(providerMethod).GetOrThrow(currentCtx);
             return new InjectorProviderDesc(
                 new QualifiedTypeModel(returnType, qualifier),
                 providerMethod.Name,

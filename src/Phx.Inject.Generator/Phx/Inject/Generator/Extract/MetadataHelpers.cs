@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract;
 
@@ -19,7 +20,7 @@ internal static class MetadataHelpers {
         IMethodSymbol methodSymbol,
         IGeneratorContext generatorCtx) {
         return methodSymbol.Parameters.Select(parameter => {
-                var qualifier = GetQualifier(parameter).GetOrThrow(generatorCtx);
+                var qualifier = QualifierMetadata.Extractor.Instance.Extract(parameter).GetOrThrow(generatorCtx);
                 return new QualifiedTypeModel(
                     TypeModel.FromTypeSymbol(parameter.Type),
                     qualifier);
@@ -51,36 +52,6 @@ internal static class MetadataHelpers {
         var constructorMethod = constructors.Single();
 
         return TryGetMethodParametersQualifiedTypes(constructorMethod, generatorCtx);
-    }
-
-    public static IResult<IQualifier> GetQualifier(this ISymbol symbol) {
-        var labelAttributeResult = symbol.TryGetLabelAttribute();
-        if (!labelAttributeResult.IsOk) {
-            return labelAttributeResult.MapError<IQualifier>();
-        }
-
-        var qualifierAttributeResult = symbol.TryGetQualifierAttribute();
-        if (!qualifierAttributeResult.IsOk) {
-            return qualifierAttributeResult.MapError<IQualifier>();
-        }
-
-        var labelAttribute = labelAttributeResult.GetValue();
-        var qualifierAttribute = qualifierAttributeResult.GetValue();
-
-        if (labelAttribute != null) {
-            if (qualifierAttribute != null) {
-                return Result.Error<IQualifier>(
-                    $"Symbol {symbol.Name} can only have one Label or Qualifier attribute.",
-                    symbol.Locations.First(),
-                    Diagnostics.InvalidSpecification);
-            }
-
-            return Result.Ok(new LabelQualifier(labelAttribute.Label));
-        }
-
-        return qualifierAttribute != null
-            ? Result.Ok<IQualifier>(new AttributeQualifier(qualifierAttribute))
-            : Result.Ok<IQualifier>(NoQualifier.Instance);
     }
 
     public static IResult<bool> IsSpecSymbol(ITypeSymbol symbol) {
@@ -132,7 +103,7 @@ internal static class MetadataHelpers {
                 property => property.Name,
                 property => new QualifiedTypeModel(
                     TypeModel.FromTypeSymbol(property.Type),
-                    GetQualifier(property).GetOrThrow(generatorCtx)
+                    QualifierMetadata.Extractor.Instance.Extract(property).GetOrThrow(generatorCtx)
                 )
             );
     }

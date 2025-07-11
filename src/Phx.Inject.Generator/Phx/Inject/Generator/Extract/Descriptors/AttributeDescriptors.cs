@@ -84,21 +84,6 @@ internal class FactoryReferenceAttributeDesc : AttributeDesc {
     }
 }
 
-internal class LabelAttributeDesc : AttributeDesc {
-    public const string LabelAttributeClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(LabelAttribute)}";
-
-    public string Label { get; }
-    public LabelAttributeDesc(string label, ISymbol attributedSymbol, AttributeData attributeData)
-        : base(attributedSymbol, attributeData) {
-        Label = label;
-    }
-
-    public LabelAttributeDesc(string label, ISymbol attributedSymbol, INamedTypeSymbol attributeTypeSymbol)
-        : base(attributedSymbol, attributeTypeSymbol) {
-        Label = label;
-    }
-}
-
 internal class LinkAttributeDesc : AttributeDesc {
     public const string LinkAttributeClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(LinkAttribute)}";
 
@@ -125,53 +110,6 @@ internal class LinkAttributeDesc : AttributeDesc {
         InputLabel = inputLabel;
         OutputQualifier = outputQualifier;
         OutputLabel = outputLabel;
-    }
-}
-
-internal class QualifierAttributeDesc : AttributeDesc {
-    public const string QualifierAttributeClassName =
-        $"{SourceGenerator.PhxInjectNamespace}.{nameof(QualifierAttribute)}";
-
-    public QualifierAttributeDesc(ISymbol attributedSymbol, AttributeData attributeData)
-        : base(attributedSymbol, attributeData) { }
-
-    public QualifierAttributeDesc(ISymbol attributedSymbol, INamedTypeSymbol attributeTypeSymbol)
-        : base(attributedSymbol, attributeTypeSymbol) { }
-
-    public interface IExtractor : IAttributeMetadataExtractor<QualifierAttributeDesc> { }
-
-    public class Extractor : IExtractor {
-        public static IExtractor Instance = new Extractor(AttributeHelper.Instance);
-        private readonly IAttributeHelper attributeHelper;
-
-        internal Extractor(IAttributeHelper attributeHelper) {
-            this.attributeHelper = attributeHelper;
-        }
-
-        public bool CanExtract(ISymbol attributedSymbol) {
-            return attributeHelper.HasAttribute(attributedSymbol, QualifierAttributeClassName);
-        }
-
-        public IResult<QualifierAttributeDesc> Extract(ISymbol attributedSymbol) {
-            return attributeHelper.ExpectSingleAttribute(
-                attributedSymbol,
-                QualifierAttributeClassName,
-                attributeData => Result.Ok(
-                    new QualifierAttributeDesc(attributedSymbol, attributeData)));
-        }
-
-        public void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
-            if (attributedSymbol is not IMethodSymbol {
-                    IsStatic: true,
-                    DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
-                }
-            ) {
-                throw Diagnostics.InvalidSpecification.AsException(
-                    $"Builder {attributedSymbol.Name} must be a public or internal static method.",
-                    attributedSymbol.Locations.First(),
-                    generatorCtx);
-            }
-        }
     }
 }
 
