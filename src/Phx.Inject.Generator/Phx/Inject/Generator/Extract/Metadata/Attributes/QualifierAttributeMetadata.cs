@@ -10,11 +10,10 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
-using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal class QualifierAttributeMetadata : AttributeDesc {
+internal class QualifierAttributeMetadata : AttributeMetadata {
     public const string QualifierAttributeClassName =
         $"{SourceGenerator.PhxInjectNamespace}.{nameof(QualifierAttribute)}";
 
@@ -24,7 +23,11 @@ internal class QualifierAttributeMetadata : AttributeDesc {
     public QualifierAttributeMetadata(ISymbol attributedSymbol, INamedTypeSymbol attributeTypeSymbol)
         : base(attributedSymbol, attributeTypeSymbol) { }
 
-    public interface IExtractor : IAttributeMetadataExtractor<QualifierAttributeMetadata> { }
+    public interface IExtractor {
+        bool CanExtract(ISymbol attributedSymbol);
+        IResult<QualifierAttributeMetadata> Extract(ISymbol attributedSymbol);
+        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+    }
 
     public class Extractor : IExtractor {
         public static IExtractor Instance = new Extractor(

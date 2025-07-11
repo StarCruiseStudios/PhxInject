@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
@@ -40,19 +41,22 @@ internal record SourceDesc(
         private readonly InjectorAttributeMetadata.IExtractor injectorAttributeExtractor;
         private readonly InjectorDesc.IExtractor injectorDescExtractor;
         private readonly SpecDesc.IExtractor specDescExtractor;
+        private readonly SpecificationAttributeMetadata.IExtractor specificationAttributeExtractor;
 
         public Extractor(
             InjectorDesc.IExtractor injectorDescExtractor,
             SpecDesc.IExtractor specDescExtractor,
             DependencyDesc.IExtractor dependencyDescExtractor,
             DependencyAttributeMetadata.IExtractor dependencyAttributeExtractor,
-            InjectorAttributeMetadata.IExtractor injectorAttributeExtractor
+            InjectorAttributeMetadata.IExtractor injectorAttributeExtractor,
+            SpecificationAttributeMetadata.IExtractor specificationAttributeExtractor
         ) {
             this.injectorDescExtractor = injectorDescExtractor;
             this.specDescExtractor = specDescExtractor;
             this.dependencyDescExtractor = dependencyDescExtractor;
             this.dependencyAttributeExtractor = dependencyAttributeExtractor;
             this.injectorAttributeExtractor = injectorAttributeExtractor;
+            this.specificationAttributeExtractor = specificationAttributeExtractor;
         }
 
         public Extractor() : this(
@@ -60,7 +64,8 @@ internal record SourceDesc(
             new SpecDesc.Extractor(),
             new DependencyDesc.Extractor(),
             DependencyAttributeMetadata.Extractor.Instance,
-            InjectorAttributeMetadata.Extractor.Instance
+            InjectorAttributeMetadata.Extractor.Instance,
+            SpecificationAttributeMetadata.Extractor.Instance
         ) { }
 
         public SourceDesc Extract(
@@ -72,44 +77,35 @@ internal record SourceDesc(
             var extractorCtx = new ExtractorContext(generatorCtx.ExecutionContext);
 
             IReadOnlyList<InjectorDesc> injectorDescs = injectorCandidates
+                .Where(injectorTypeSymbol => injectorAttributeExtractor.CanExtract(injectorTypeSymbol))
                 .SelectCatching(
                     exceptionAggregator,
                     injectorTypeSymbol => $"extracting injector from {injectorTypeSymbol}",
-                    injectorTypeSymbol => {
-                        var injectorAttribute = injectorAttributeExtractor.TryExtract(injectorTypeSymbol, extractorCtx);
-
-                        return injectorAttribute == null
-                            ? null
-                            : injectorDescExtractor.Extract(injectorTypeSymbol, extractorCtx);
-                    })
-                .OfType<InjectorDesc>()
+                    injectorTypeSymbol => injectorDescExtractor.Extract(injectorTypeSymbol, extractorCtx))
                 .ToImmutableList();
             extractorCtx.Log($"Discovered {injectorDescs.Count} injector types.");
 
             IReadOnlyList<SpecDesc> specDescs = specificationCandidates
+                .Where(specificationTypeSymbol => specificationAttributeExtractor.CanExtract(specificationTypeSymbol))
                 .SelectCatching(
                     exceptionAggregator,
                     specificationTypeSymbol => $"extracting specification from {specificationTypeSymbol}",
-                    specificationTypeSymbol =>
-                        MetadataHelpers.IsSpecSymbol(specificationTypeSymbol).GetOrThrow(extractorCtx)
-                            ? specDescExtractor.Extract(specificationTypeSymbol, extractorCtx)
-                            : null)
-                .OfType<SpecDesc>()
+                    specificationTypeSymbol => specDescExtractor.Extract(specificationTypeSymbol, extractorCtx))
                 .ToImmutableList();
             extractorCtx.Log($"Discovered {specDescs.Count} specification types.");
 
             IReadOnlyList<DependencyDesc> dependencyDescs = injectorCandidates
+                .Where(injectorTypeSymbol => injectorAttributeExtractor.CanExtract(injectorTypeSymbol))
                 .SelectCatching(
                     exceptionAggregator,
                     injectorTypeSymbol => $"extracting dependencies from injector {injectorTypeSymbol}",
                     injectorTypeSymbol => {
-                        var injectorAttribute = injectorAttributeExtractor.TryExtract(injectorTypeSymbol, extractorCtx);
-                        if (injectorAttribute == null) {
-                            return null;
-                        }
-
-                        var dependencyAttribute =
-                            dependencyAttributeExtractor.TryExtract(injectorTypeSymbol, extractorCtx);
+                        var dependencyAttribute = dependencyAttributeExtractor.CanExtract(injectorTypeSymbol)
+                            ? dependencyAttributeExtractor.Extract(injectorTypeSymbol)
+                                .GetOrThrow(extractorCtx)
+                                .Also(_ => dependencyAttributeExtractor.ValidateAttributedType(injectorTypeSymbol,
+                                    extractorCtx))
+                            : null;
                         if (dependencyAttribute == null) {
                             return null;
                         }
@@ -117,9 +113,7 @@ internal record SourceDesc(
                         var dependencySymbol = dependencyAttribute.DependencyType.TypeSymbol;
 
                         var injectorType = injectorTypeSymbol.ToTypeModel();
-                        return MetadataHelpers.IsDependencySymbol(dependencySymbol).GetOrThrow(extractorCtx)
-                            ? dependencyDescExtractor.Extract(dependencySymbol, injectorType, extractorCtx)
-                            : null;
+                        return dependencyDescExtractor.Extract(dependencySymbol, injectorType, extractorCtx);
                     })
                 .OfType<DependencyDesc>()
                 .ToImmutableList();

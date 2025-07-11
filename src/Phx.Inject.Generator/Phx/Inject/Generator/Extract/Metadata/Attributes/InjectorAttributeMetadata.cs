@@ -11,11 +11,10 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal class InjectorAttributeMetadata : AttributeDesc {
+internal class InjectorAttributeMetadata : AttributeMetadata {
     public const string InjectorAttributeClassName =
         $"{SourceGenerator.PhxInjectNamespace}.{nameof(InjectorAttribute)}";
 
@@ -31,7 +30,11 @@ internal class InjectorAttributeMetadata : AttributeDesc {
         Specifications = specifications;
     }
 
-    public interface IExtractor : IAttributeMetadataExtractor<InjectorAttributeMetadata> { }
+    public interface IExtractor {
+        bool CanExtract(ISymbol attributedSymbol);
+        IResult<InjectorAttributeMetadata> Extract(ISymbol attributedSymbol);
+        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+    }
 
     public class Extractor : IExtractor {
         public static IExtractor Instance = new Extractor(AttributeHelper.Instance);

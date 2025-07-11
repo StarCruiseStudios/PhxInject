@@ -54,36 +54,6 @@ internal static class MetadataHelpers {
         return TryGetMethodParametersQualifiedTypes(constructorMethod, generatorCtx);
     }
 
-    public static IResult<bool> IsSpecSymbol(ITypeSymbol symbol) {
-        return symbol.TryGetSpecificationAttribute()
-            .Map(specificationAttribute => {
-                if (specificationAttribute == null) {
-                    Result.Ok(false);
-                }
-
-                var isStaticSpecification = symbol is { TypeKind: TypeKind.Class, IsStatic: true };
-                var isInterfaceSpecification = symbol.TypeKind == TypeKind.Interface;
-
-                return isStaticSpecification || isInterfaceSpecification
-                    ? Result.Ok(true)
-                    : Result.Error<bool>(
-                        $"Specification type {symbol.Name} must be a static class or interface.",
-                        symbol.Locations.First(),
-                        Diagnostics.InvalidSpecification);
-            });
-    }
-
-    public static IResult<bool> IsDependencySymbol(ITypeSymbol symbol) {
-        var isInterface = symbol is { TypeKind: TypeKind.Interface };
-
-        return isInterface
-            ? Result.Ok(true)
-            : Result.Error<bool>(
-                $"Dependency type {symbol.Name} must be an interface.",
-                symbol.Locations.First(),
-                Diagnostics.InvalidSpecification);
-    }
-
     public static TypeModel CreateConstructorSpecContainerType(TypeModel injectorType) {
         var specContainerTypeName = NameHelpers.GetAppendedClassName(injectorType, "ConstructorFactories");
         return injectorType with {
@@ -106,14 +76,5 @@ internal static class MetadataHelpers {
                     QualifierMetadata.Extractor.Instance.Extract(property).GetOrThrow(generatorCtx)
                 )
             );
-    }
-
-    public static IReadOnlyList<IMethodSymbol> GetDirectBuilderMethods(
-        ITypeSymbol type,
-        IGeneratorContext generatorCtx) {
-        return type.GetMembers()
-            .OfType<IMethodSymbol>()
-            .Where(m => m.TryGetBuilderAttribute().GetOrThrow(generatorCtx) != null)
-            .ToImmutableList();
     }
 }

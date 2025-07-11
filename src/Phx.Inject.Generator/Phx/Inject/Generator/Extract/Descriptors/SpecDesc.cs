@@ -8,10 +8,10 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
@@ -31,24 +31,33 @@ internal record SpecDesc(
     }
 
     public class Extractor : IExtractor {
+        private readonly LinkAttributeMetadata.IExtractor linkAttributeExtractor;
         private readonly SpecBuilderDesc.IExtractor specExtractorDescExtractor;
         private readonly SpecFactoryDesc.IExtractor specFactoryDescExtractor;
+        private readonly SpecificationAttributeMetadata.IExtractor specificationAttributeExtractor;
         private readonly SpecLinkDesc.IExtractor specLinkDescExtractor;
 
         public Extractor(
             SpecFactoryDesc.IExtractor specFactoryDescExtractor,
             SpecBuilderDesc.IExtractor specExtractorDescExtractor,
-            SpecLinkDesc.IExtractor specLinkDescExtractor
+            SpecLinkDesc.IExtractor specLinkDescExtractor,
+            SpecificationAttributeMetadata.IExtractor specificationAttributeExtractor,
+            LinkAttributeMetadata.IExtractor linkAttributeExtractor
         ) {
             this.specFactoryDescExtractor = specFactoryDescExtractor;
             this.specExtractorDescExtractor = specExtractorDescExtractor;
             this.specLinkDescExtractor = specLinkDescExtractor;
+            this.specificationAttributeExtractor = specificationAttributeExtractor;
+            this.linkAttributeExtractor = linkAttributeExtractor;
         }
 
         public Extractor() : this(
             new SpecFactoryDesc.Extractor(),
             new SpecBuilderDesc.Extractor(),
-            new SpecLinkDesc.Extractor()) { }
+            new SpecLinkDesc.Extractor(),
+            SpecificationAttributeMetadata.Extractor.Instance,
+            LinkAttributeMetadata.Extractor.Instance
+        ) { }
 
         public SpecDesc Extract(ITypeSymbol specSymbol, ExtractorContext extractorContext) {
             var specLocation = specSymbol.Locations.First();
@@ -59,6 +68,11 @@ internal record SpecDesc(
                 $"extracting specification {specType}",
                 currentCtx,
                 exceptionAggregator => {
+                    var specAttribute = specificationAttributeExtractor
+                        .Extract(specSymbol)
+                        .GetOrThrow(currentCtx)
+                        .Also(_ => specificationAttributeExtractor.ValidateAttributedType(specSymbol, currentCtx));
+
                     var specInstantiationMode = specSymbol.IsStatic
                         ? SpecInstantiationMode.Static
                         : SpecInstantiationMode.Instantiated;
@@ -115,7 +129,7 @@ internal record SpecDesc(
                         .OfType<SpecBuilderDesc>()
                         .ToImmutableList();
 
-                    IReadOnlyList<SpecLinkDesc> links = specSymbol.GetAllLinkAttributes()
+                    IReadOnlyList<SpecLinkDesc> links = linkAttributeExtractor.ExtractAll(specSymbol)
                         .SelectCatching(
                             exceptionAggregator,
                             link => $"extracting specification link from {specType}",
@@ -143,6 +157,7 @@ internal record SpecDesc(
     }
 
     public class AutoSpecExtractor : IAutoSpecExtractor {
+        private readonly LinkAttributeMetadata.IExtractor linkAttributeExtractor;
         private readonly SpecBuilderDesc.IExtractor specExtractorDescExtractor;
         private readonly SpecFactoryDesc.IExtractor specFactoryDescExtractor;
         private readonly SpecLinkDesc.IExtractor specLinkDescExtractor;
@@ -150,17 +165,21 @@ internal record SpecDesc(
         public AutoSpecExtractor(
             SpecFactoryDesc.IExtractor specFactoryDescExtractor,
             SpecBuilderDesc.IExtractor specExtractorDescExtractor,
-            SpecLinkDesc.IExtractor specLinkDescExtractor
+            SpecLinkDesc.IExtractor specLinkDescExtractor,
+            LinkAttributeMetadata.IExtractor linkAttributeExtractor
         ) {
             this.specFactoryDescExtractor = specFactoryDescExtractor;
             this.specExtractorDescExtractor = specExtractorDescExtractor;
             this.specLinkDescExtractor = specLinkDescExtractor;
+            this.linkAttributeExtractor = linkAttributeExtractor;
         }
 
         public AutoSpecExtractor() : this(
             new SpecFactoryDesc.Extractor(),
             new SpecBuilderDesc.Extractor(),
-            new SpecLinkDesc.Extractor()) { }
+            new SpecLinkDesc.Extractor(),
+            LinkAttributeMetadata.Extractor.Instance
+        ) { }
 
         public SpecDesc Extract(
             TypeModel injectorType,
@@ -187,7 +206,8 @@ internal record SpecDesc(
                         .ToImmutableList();
 
                     IReadOnlyList<SpecLinkDesc> links = constructorTypes
-                        .SelectMany(constructorType => constructorType.TypeModel.TypeSymbol.GetAllLinkAttributes()
+                        .SelectMany(constructorType => linkAttributeExtractor
+                            .ExtractAll(constructorType.TypeModel.TypeSymbol)
                             .SelectCatching(
                                 exceptionAggregator,
                                 link => $"extracting link for auto constructor type {constructorType}",

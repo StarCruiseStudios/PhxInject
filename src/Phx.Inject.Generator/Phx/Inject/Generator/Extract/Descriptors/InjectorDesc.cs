@@ -72,7 +72,17 @@ internal record InjectorDesc(
                 exceptionAggregator => {
                     var injectorLocation = injectorInterfaceSymbol.Locations.First();
                     var injectorInterfaceType = TypeModel.FromTypeSymbol(injectorInterfaceSymbol);
-                    var injectorAttribute = injectorAttributeExtractor.Expect(injectorInterfaceSymbol, currentCtx);
+                    if (!injectorAttributeExtractor.CanExtract(injectorInterfaceSymbol)) {
+                        throw Diagnostics.InvalidSpecification.AsException(
+                            $"Type {injectorInterfaceSymbol} must declare an {InjectorAttributeMetadata.InjectorAttributeClassName}.",
+                            injectorInterfaceSymbol.Locations.First(),
+                            currentCtx);
+                    }
+
+                    var injectorAttribute = injectorAttributeExtractor.Extract(injectorInterfaceSymbol)
+                        .GetOrThrow(currentCtx)
+                        .Also(_ => injectorAttributeExtractor.ValidateAttributedType(injectorInterfaceSymbol,
+                            currentCtx));
 
                     var generatedInjectorTypeName =
                         injectorAttribute.GeneratedClassName?.AsValidIdentifier().StartUppercase()
@@ -83,8 +93,12 @@ internal record InjectorDesc(
                         TypeArguments = ImmutableList<TypeModel>.Empty
                     };
 
-                    var dependencyAttribute =
-                        dependencyAttributeExtractor.TryExtract(injectorInterfaceSymbol, currentCtx);
+                    var dependencyAttribute = dependencyAttributeExtractor.CanExtract(injectorInterfaceSymbol)
+                        ? dependencyAttributeExtractor.Extract(injectorInterfaceSymbol)
+                            .GetOrThrow(currentCtx)
+                            .Also(_ => dependencyAttributeExtractor.ValidateAttributedType(injectorInterfaceSymbol,
+                                currentCtx))
+                        : null;
 
                     IReadOnlyList<TypeModel> specificationTypes = injectorAttribute.Specifications
                         .AppendIfNotNull(dependencyAttribute?.DependencyType)

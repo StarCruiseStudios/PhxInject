@@ -15,9 +15,9 @@ namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 internal class QualifierMetadata : IDescriptor {
     public static QualifierMetadata NoQualifier { get; } = new(Common.Model.NoQualifier.Instance, Location.None);
-    public AttributeDesc? Attribute { get; }
+    public AttributeMetadata? Attribute { get; }
     public IQualifier Qualifier { get; }
-    public QualifierMetadata(AttributeDesc attribute) {
+    public QualifierMetadata(AttributeMetadata attribute) {
         Attribute = attribute;
         Location = attribute.Location;
 

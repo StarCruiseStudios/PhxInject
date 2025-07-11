@@ -11,11 +11,10 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal class DependencyAttributeMetadata : AttributeDesc {
+internal class DependencyAttributeMetadata : AttributeMetadata {
     public const string DependencyAttributeClassName =
         $"{SourceGenerator.PhxInjectNamespace}.{nameof(DependencyAttribute)}";
 
@@ -25,7 +24,11 @@ internal class DependencyAttributeMetadata : AttributeDesc {
         DependencyType = dependencyType;
     }
 
-    public interface IExtractor : IAttributeMetadataExtractor<DependencyAttributeMetadata> { }
+    public interface IExtractor {
+        bool CanExtract(ISymbol attributedSymbol);
+        IResult<DependencyAttributeMetadata> Extract(ISymbol attributedSymbol);
+        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+    }
 
     public class Extractor : IExtractor {
         public static IExtractor Instance = new Extractor(
@@ -61,7 +64,7 @@ internal class DependencyAttributeMetadata : AttributeDesc {
                     if (constructorArgument.Count != 1) {
                         return Result.Error<DependencyAttributeMetadata>(
                             $"Dependency for symbol {attributedSymbol.Name} must provide a dependency type.",
-                            attributeData.GetLocation() ?? attributedSymbol.Locations.First(),
+                            GetAttributeLocation(attributeData, attributedSymbol),
                             Diagnostics.InvalidSpecification);
                     }
 

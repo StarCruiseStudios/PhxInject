@@ -10,11 +10,10 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
-using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal class LabelAttributeMetadata : AttributeDesc {
+internal class LabelAttributeMetadata : AttributeMetadata {
     public const string LabelAttributeClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(LabelAttribute)}";
 
     public string Label { get; }
@@ -28,7 +27,11 @@ internal class LabelAttributeMetadata : AttributeDesc {
         Label = label;
     }
 
-    public interface IExtractor : IAttributeMetadataExtractor<LabelAttributeMetadata> { }
+    public interface IExtractor {
+        bool CanExtract(ISymbol attributedSymbol);
+        IResult<LabelAttributeMetadata> Extract(ISymbol attributedSymbol);
+        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+    }
 
     public class Extractor : IExtractor {
         public static IExtractor Instance = new Extractor(AttributeHelper.Instance);
@@ -58,7 +61,7 @@ internal class LabelAttributeMetadata : AttributeDesc {
 
                     return Result.Error<LabelAttributeMetadata>(
                         $"Label for symbol {attributedSymbol.Name} must provide one label value.",
-                        attributeData.GetLocation() ?? attributedSymbol.Locations.First(),
+                        GetAttributeLocation(attributeData, attributedSymbol),
                         Diagnostics.InvalidSpecification);
                 });
         }

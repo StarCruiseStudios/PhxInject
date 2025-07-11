@@ -9,6 +9,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Metadata;
@@ -42,7 +43,9 @@ internal static class PhxInjectSettingsMetadata {
                     exceptionAggregator,
                     typeSymbol => $"extracting PhxInject settings from {typeSymbol}",
                     typeSymbol => {
-                        var settingsAttribute = phxInjectAttributeExtractor.Expect(typeSymbol, extractorCtx);
+                        var settingsAttribute = phxInjectAttributeExtractor.Extract(typeSymbol)
+                            .GetOrThrow(generatorCtx)
+                            .Also(_ => phxInjectAttributeExtractor.ValidateAttributedType(typeSymbol, generatorCtx));
 
                         return new GeneratorSettings(
                             settingsAttribute.TabSize,

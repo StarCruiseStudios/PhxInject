@@ -30,7 +30,6 @@ internal record SpecBuilderDesc(
 
     public class Extractor : IExtractor {
         private readonly BuilderAttributeMetadata.IExtractor builderAttributeExtractor;
-
         private readonly BuilderReferenceAttributeMetadata.IExtractor builderReferenceAttributeExtractor;
         private readonly QualifierMetadata.IExtractor qualifierExtractor;
         public Extractor(
@@ -85,12 +84,18 @@ internal record SpecBuilderDesc(
 
         public SpecBuilderDesc ExtractAutoBuilder(QualifiedTypeModel builderType, ExtractorContext context) {
             var builderLocation = builderType.TypeModel.TypeSymbol.Locations.First();
-            IReadOnlyList<IMethodSymbol> builderMethods = MetadataHelpers
-                .GetDirectBuilderMethods(builderType.TypeModel.TypeSymbol, context)
-                .Where(b => Equals(
-                    qualifierExtractor.Extract(b).GetOrThrow(context).Qualifier,
-                    builderType.Qualifier.Qualifier))
-                .Where(b => ValidateBuilder(b, builderLocation, context))
+            IReadOnlyList<IMethodSymbol> builderMethods = builderType.TypeModel.TypeSymbol.GetMembers()
+                .OfType<IMethodSymbol>()
+                .Where(methodSymbol => builderAttributeExtractor.CanExtract(methodSymbol))
+                .Where(methodSymbol => {
+                    var qualifier = qualifierExtractor.Extract(methodSymbol).GetOrThrow(context).Qualifier;
+                    return Equals(qualifier, builderType.Qualifier.Qualifier);
+                })
+                .Select(methodSymbol => {
+                    var builderAttribute = builderAttributeExtractor.Extract(methodSymbol).GetOrThrow(context);
+                    ValidateBuilder(methodSymbol, builderLocation, context);
+                    return methodSymbol;
+                })
                 .ToImmutableList();
 
             var numBuilderMethods = builderMethods.Count;

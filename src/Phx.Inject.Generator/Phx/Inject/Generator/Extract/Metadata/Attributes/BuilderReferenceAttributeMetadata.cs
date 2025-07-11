@@ -9,18 +9,21 @@
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
-using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal class BuilderReferenceAttributeMetadata : AttributeDesc {
+internal class BuilderReferenceAttributeMetadata : AttributeMetadata {
     public const string BuilderReferenceAttributeClassName =
         $"{SourceGenerator.PhxInjectNamespace}.{nameof(BuilderReferenceAttribute)}";
 
     public BuilderReferenceAttributeMetadata(ISymbol attributedSymbol, AttributeData attributeData)
         : base(attributedSymbol, attributeData) { }
 
-    public interface IExtractor : IAttributeMetadataExtractor<BuilderReferenceAttributeMetadata> { }
+    public interface IExtractor {
+        bool CanExtract(ISymbol attributedSymbol);
+        IResult<BuilderReferenceAttributeMetadata> Extract(ISymbol attributedSymbol);
+        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+    }
 
     public class Extractor : IExtractor {
         public static IExtractor Instance = new Extractor(AttributeHelper.Instance);

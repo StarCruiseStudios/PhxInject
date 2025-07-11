@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------------
-// <copyright file="BuilderAttributeMetadata.cs" company="Star Cruise Studios LLC">
+// <copyright file="SpecificationAttributeMetadata.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2025 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
 //     See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -12,15 +12,16 @@ using Phx.Inject.Common.Exceptions;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal class BuilderAttributeMetadata : AttributeMetadata {
-    public const string BuilderAttributeClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(BuilderAttribute)}";
+internal class SpecificationAttributeMetadata : AttributeMetadata {
+    public const string SpecificationAttributeClassName =
+        $"{SourceGenerator.PhxInjectNamespace}.{nameof(SpecificationAttribute)}";
 
-    public BuilderAttributeMetadata(ISymbol attributedSymbol, AttributeData attributeData)
+    public SpecificationAttributeMetadata(ISymbol attributedSymbol, AttributeData attributeData)
         : base(attributedSymbol, attributeData) { }
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        IResult<BuilderAttributeMetadata> Extract(ISymbol attributedSymbol);
+        IResult<SpecificationAttributeMetadata> Extract(ISymbol attributedSymbol);
         void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
@@ -33,25 +34,24 @@ internal class BuilderAttributeMetadata : AttributeMetadata {
         }
 
         public bool CanExtract(ISymbol attributedSymbol) {
-            return attributeHelper.HasAttribute(attributedSymbol, BuilderAttributeClassName);
+            return attributeHelper.HasAttribute(attributedSymbol, SpecificationAttributeClassName);
         }
 
-        public IResult<BuilderAttributeMetadata> Extract(ISymbol attributedSymbol) {
+        public IResult<SpecificationAttributeMetadata> Extract(ISymbol attributedSymbol) {
             return attributeHelper.ExpectSingleAttribute(
                 attributedSymbol,
-                BuilderAttributeClassName,
+                SpecificationAttributeClassName,
                 attributeData => Result.Ok(
-                    new BuilderAttributeMetadata(attributedSymbol, attributeData)));
+                    new SpecificationAttributeMetadata(attributedSymbol, attributeData)));
         }
 
         public void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
-            if (attributedSymbol is not IMethodSymbol {
-                    IsStatic: true,
-                    DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
-                }
+            if (attributedSymbol is not { DeclaredAccessibility: Accessibility.Public or Accessibility.Internal }
+                or not ITypeSymbol { IsStatic: true, TypeKind: TypeKind.Class }
+                and not ITypeSymbol { TypeKind: TypeKind.Interface }
             ) {
                 throw Diagnostics.InvalidSpecification.AsException(
-                    $"Builder {attributedSymbol.Name} must be a public or internal static method.",
+                    $"Specification type {attributedSymbol.Name} must be a static class or interface.",
                     attributedSymbol.Locations.First(),
                     generatorCtx);
             }

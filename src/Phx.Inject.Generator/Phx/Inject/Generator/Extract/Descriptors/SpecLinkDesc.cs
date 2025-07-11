@@ -20,7 +20,7 @@ internal record SpecLinkDesc(
 ) : IDescriptor {
     public interface IExtractor {
         SpecLinkDesc Extract(
-            LinkAttributeDesc link,
+            LinkAttributeMetadata link,
             Location linkLocation,
             ExtractorContext extractorCtx
         );
@@ -44,7 +44,7 @@ internal record SpecLinkDesc(
         ) { }
 
         public SpecLinkDesc Extract(
-            LinkAttributeDesc link,
+            LinkAttributeMetadata link,
             Location linkLocation,
             ExtractorContext extractorCtx
         ) {
