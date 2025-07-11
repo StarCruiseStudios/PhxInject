@@ -29,21 +29,16 @@ internal class SourceRenderer {
         IReadOnlyList<(TypeModel, IRenderTemplate)> templates,
         IGeneratorContext generatorCtx
     ) {
-        var renderContext = new RenderContext(generatorSettings,null, null, generatorCtx.ExecutionContext);
-        ExceptionAggregator.Try(
-            "rendering source templates",
-            generatorCtx,
-            exceptionAggregator => {
-                templates.SelectCatching(exceptionAggregator,
-                    t => t.ToString(),
-                    t => {
-                        var (classType, template) = t;
-                        var fileName = $"{classType.NamespacedName}.{generatorSettings.GeneratedFileExtension}";
-                        generatorCtx.Log($"Rendering source for {fileName}");
-                        generatorCtx.ExecutionContext.AddSource(fileName,
-                            writerFactory.Use(writer => template.Render(writer, renderContext)));
-                        return fileName;
-                    });
+        var renderContext = new RenderContext(generatorSettings,null, generatorCtx);
+        templates.SelectCatching(generatorCtx.Aggregator,
+            t => t.ToString(),
+            t => {
+                var (classType, template) = t;
+                var fileName = $"{classType.NamespacedName}.{generatorSettings.GeneratedFileExtension}";
+                generatorCtx.Log($"Rendering source for {fileName}");
+                generatorCtx.ExecutionContext.AddSource(fileName,
+                    writerFactory.Use(writer => template.Render(writer, renderContext)));
+                return fileName;
             });
     }
 }

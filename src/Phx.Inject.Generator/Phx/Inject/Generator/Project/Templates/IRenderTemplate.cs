@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Render;
 
@@ -22,15 +23,17 @@ internal record RenderContext : IGeneratorContext {
     public IGeneratorContext? ParentContext { get; }
     public GeneratorExecutionContext ExecutionContext { get; }
     
+    public IExceptionAggregator Aggregator { get; set; }
+    
     public RenderContext(
         GeneratorSettings generatorSettings,
         ISymbol? symbol,
-        RenderContext? parentCtx,
-        GeneratorExecutionContext executionCtx
+        IGeneratorContext parentContext
     ) {
         GeneratorSettings = generatorSettings;
         Symbol = symbol;
-        ParentContext = parentCtx;
-        ExecutionContext = executionCtx;
+        ParentContext = parentContext;
+        ExecutionContext = parentContext.ExecutionContext;
+        Aggregator = parentContext.Aggregator;
     }
 }

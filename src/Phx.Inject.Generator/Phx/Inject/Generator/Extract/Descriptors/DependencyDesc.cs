@@ -26,10 +26,9 @@ internal record DependencyDesc(
         Location declarationLocation,
         IGeneratorContext generatorCtx
     ) {
-        ExceptionAggregator.Try(
+        generatorCtx.Aggregator.Aggregate(
             "Validating dependency",
-            generatorCtx,
-            _ => {
+            () => {
                 if (symbol.TypeKind != TypeKind.Interface) {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Dependency {symbol.Name} must be an interface.",
@@ -61,41 +60,44 @@ internal record DependencyDesc(
             TypeModel containingInjectorInterfaceType,
             ExtractorContext extractorCtx
         ) {
-            var currentCtx = extractorCtx.GetChildContext(symbol);
-            RequireDependency(symbol, containingInjectorInterfaceType.Location, currentCtx);
-            
-            var dependencyInterfaceType = TypeModel.FromTypeSymbol(symbol);
-            IReadOnlyList<DependencyProviderDesc> providers = symbol
-                .GetMembers()
-                .OfType<IMethodSymbol>()
-                .Select(method => dependencyProviderDescExtractor.Extract(method, dependencyInterfaceType, currentCtx))
-                .ToImmutableList();
-            
-            IReadOnlyList<SpecFactoryDesc> specFactories = providers.Select(provider => new SpecFactoryDesc(
-                    provider.ProvidedType,
-                    provider.ProviderMethodName,
-                    SpecFactoryMemberType.Method,
-                    ImmutableList<QualifiedTypeModel>.Empty,
-                    ImmutableList<SpecFactoryRequiredPropertyDesc>.Empty,
-                    FactoryFabricationMode.Recurrent,
-                    provider.IsPartial,
-                    provider.Location))
-                .ToImmutableList();
+            return extractorCtx.UseChildContext(symbol,
+                currentCtx => {
+                    RequireDependency(symbol, containingInjectorInterfaceType.Location, currentCtx);
 
-            var instantiatedSpecDesc = // TODO: Make this use the SpecDesc Exctractor instead
-                                       // new SpecDesc.Extractor().Extract(symbol, currentCtx);
-                new SpecDesc(
-                    dependencyInterfaceType,
-                    SpecInstantiationMode.Instantiated,
-                    specFactories,
-                    ImmutableList<SpecBuilderDesc>.Empty,
-                    ImmutableList<SpecLinkDesc>.Empty);
-            
-            return new DependencyDesc(
-                dependencyInterfaceType,
-                containingInjectorInterfaceType,
-                providers,
-                instantiatedSpecDesc);
+                    var dependencyInterfaceType = TypeModel.FromTypeSymbol(symbol);
+                    IReadOnlyList<DependencyProviderDesc> providers = symbol
+                        .GetMembers()
+                        .OfType<IMethodSymbol>()
+                        .Select(method =>
+                            dependencyProviderDescExtractor.Extract(method, dependencyInterfaceType, currentCtx))
+                        .ToImmutableList();
+
+                    IReadOnlyList<SpecFactoryDesc> specFactories = providers.Select(provider => new SpecFactoryDesc(
+                            provider.ProvidedType,
+                            provider.ProviderMethodName,
+                            SpecFactoryMemberType.Method,
+                            ImmutableList<QualifiedTypeModel>.Empty,
+                            ImmutableList<SpecFactoryRequiredPropertyDesc>.Empty,
+                            FactoryFabricationMode.Recurrent,
+                            provider.IsPartial,
+                            provider.Location))
+                        .ToImmutableList();
+
+                    var instantiatedSpecDesc = // TODO: Make this use the SpecDesc Exctractor instead
+                        // new SpecDesc.Extractor().Extract(symbol, currentCtx);
+                        new SpecDesc(
+                            dependencyInterfaceType,
+                            SpecInstantiationMode.Instantiated,
+                            specFactories,
+                            ImmutableList<SpecBuilderDesc>.Empty,
+                            ImmutableList<SpecLinkDesc>.Empty);
+
+                    return new DependencyDesc(
+                        dependencyInterfaceType,
+                        containingInjectorInterfaceType,
+                        providers,
+                        instantiatedSpecDesc);
+                });
         }
     }
 }

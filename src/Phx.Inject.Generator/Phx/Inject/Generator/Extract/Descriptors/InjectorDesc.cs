@@ -65,11 +65,8 @@ internal record InjectorDesc(
             ITypeSymbol injectorInterfaceSymbol,
             ExtractorContext extractorCtx
         ) {
-            var currentCtx = extractorCtx.GetChildContext(injectorInterfaceSymbol);
-            return ExceptionAggregator.Try(
-                $"extracting injector for type {injectorInterfaceSymbol.Name}",
-                currentCtx,
-                exceptionAggregator => {
+            return extractorCtx.UseChildContext(injectorInterfaceSymbol,
+                currentCtx => {
                     var injectorLocation = injectorInterfaceSymbol.Locations.First();
                     var injectorInterfaceType = TypeModel.FromTypeSymbol(injectorInterfaceSymbol);
                     if (!injectorAttributeExtractor.CanExtract(injectorInterfaceSymbol)) {
@@ -96,7 +93,8 @@ internal record InjectorDesc(
                     var dependencyAttribute = dependencyAttributeExtractor.CanExtract(injectorInterfaceSymbol)
                         ? dependencyAttributeExtractor.Extract(injectorInterfaceSymbol)
                             .GetOrThrow(currentCtx)
-                            .Also(_ => dependencyAttributeExtractor.ValidateAttributedType(injectorInterfaceSymbol,
+                            .Also(_ => dependencyAttributeExtractor.ValidateAttributedType(
+                                injectorInterfaceSymbol,
                                 currentCtx))
                         : null;
 
@@ -111,16 +109,18 @@ internal record InjectorDesc(
 
                     IReadOnlyList<InjectorProviderDesc> providers = injectorMethods
                         .SelectCatching(
-                            exceptionAggregator,
-                            methodSymbol => $"extracting injector provider method {injectorType}.{methodSymbol.Name}",
-                            methodSymbol => injectorProviderDescriptionExtractor.Extract(methodSymbol, currentCtx))
+                            currentCtx.Aggregator,
+                            methodSymbol =>
+                                $"extracting injector provider method {injectorType}.{methodSymbol.Name}",
+                            methodSymbol =>
+                                injectorProviderDescriptionExtractor.Extract(methodSymbol, currentCtx))
                         .Where(provider => provider != null)
                         .Select(provider => provider!)
                         .ToImmutableList();
 
                     IReadOnlyList<ActivatorDesc> builders = injectorMethods
                         .SelectCatching(
-                            exceptionAggregator,
+                            currentCtx.Aggregator,
                             methodSymbol => $"extracting injector activator {injectorType}.{methodSymbol.Name}",
                             method => activatorDescExtractor.Extract(method, currentCtx))
                         .Where(builder => builder != null)
@@ -130,8 +130,9 @@ internal record InjectorDesc(
                     IReadOnlyList<InjectorChildFactoryDesc> childFactories = injectorMethods
                         .Where(injectorChildFactoryDescExtractor.IsInjectorChildFactory)
                         .SelectCatching(
-                            exceptionAggregator,
-                            methodSymbol => $"extracting injector child factory {injectorType}.{methodSymbol.Name}",
+                            currentCtx.Aggregator,
+                            methodSymbol =>
+                                $"extracting injector child factory {injectorType}.{methodSymbol.Name}",
                             methodSymbol => injectorChildFactoryDescExtractor.Extract(methodSymbol, currentCtx))
                         .Select(childFactory => childFactory!)
                         .ToImmutableList();

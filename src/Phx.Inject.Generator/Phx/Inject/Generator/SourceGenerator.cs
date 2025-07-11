@@ -36,62 +36,59 @@ internal class SourceGenerator : ISourceGenerator {
     }
 
     public void Execute(GeneratorExecutionContext executionCtx) {
-        var generatorCtx = new GeneratorContext(executionCtx);
-        try {
-            ExceptionAggregator.Try(
-                "generating injection types",
-                generatorCtx,
-                exceptionAggregator => {
-                    // Abstract: Source code to syntax declarations.
-                    var syntaxReceiver = generatorCtx.ExecutionContext.SyntaxReceiver as SourceSyntaxReceiver
-                        ?? throw Diagnostics.InternalError.AsFatalException(
-                            $"Incorrect Syntax Receiver {generatorCtx.ExecutionContext.SyntaxReceiver}.",
-                            Location.None,
-                            generatorCtx);
+            GeneratorContext.UseContext(executionCtx,
+                generatorCtx => {
+                    generatorCtx.Aggregator.Aggregate(
+                        "generating injection types",
+                        () => {
+                            // Abstract: Source code to syntax declarations.
+                            var syntaxReceiver = generatorCtx.ExecutionContext.SyntaxReceiver as SourceSyntaxReceiver
+                                ?? throw Diagnostics.InternalError.AsFatalException(
+                                    $"Incorrect Syntax Receiver {generatorCtx.ExecutionContext.SyntaxReceiver}.",
+                                    Location.None,
+                                    generatorCtx);
 
-                    // Extract: Syntax declarations to descriptors.
-                    IReadOnlyList<ITypeSymbol> settingsCandidates = syntaxReceiver.PhxInjectSettingsCandidates
-                        .SelectCatching(
-                            exceptionAggregator,
-                            syntaxNode => $"extracting PhxInject settings from syntax {syntaxNode.Identifier.Text}",
-                            syntaxNode => ExpectTypeSymbolFromDeclaration(syntaxNode, generatorCtx))
-                        .ToImmutableList();
+                            // Extract: Syntax declarations to descriptors.
+                            IReadOnlyList<ITypeSymbol> settingsCandidates = syntaxReceiver.PhxInjectSettingsCandidates
+                                .SelectCatching(
+                                    generatorCtx.Aggregator,
+                                    syntaxNode =>
+                                        $"extracting PhxInject settings from syntax {syntaxNode.Identifier.Text}",
+                                    syntaxNode => ExpectTypeSymbolFromDeclaration(syntaxNode, generatorCtx))
+                                .ToImmutableList();
 
-                    IReadOnlyList<ITypeSymbol> injectorCandidates = syntaxReceiver.InjectorCandidates
-                        .SelectCatching(
-                            exceptionAggregator,
-                            syntaxNode => $"extracting injectors from syntax {syntaxNode.Identifier.Text}",
-                            syntaxNode => ExpectTypeSymbolFromDeclaration(syntaxNode, generatorCtx))
-                        .ToImmutableList();
+                            IReadOnlyList<ITypeSymbol> injectorCandidates = syntaxReceiver.InjectorCandidates
+                                .SelectCatching(
+                                    generatorCtx.Aggregator,
+                                    syntaxNode => $"extracting injectors from syntax {syntaxNode.Identifier.Text}",
+                                    syntaxNode => ExpectTypeSymbolFromDeclaration(syntaxNode, generatorCtx))
+                                .ToImmutableList();
 
-                    IReadOnlyList<ITypeSymbol> specificationCandidates = syntaxReceiver.SpecificationCandidates
-                        .SelectCatching(
-                            exceptionAggregator,
-                            syntaxNode => $"extracting specifications from syntax {syntaxNode.Identifier.Text}",
-                            syntaxNode => ExpectTypeSymbolFromDeclaration(syntaxNode, generatorCtx))
-                        .ToImmutableList();
+                            IReadOnlyList<ITypeSymbol> specificationCandidates = syntaxReceiver.SpecificationCandidates
+                                .SelectCatching(
+                                    generatorCtx.Aggregator,
+                                    syntaxNode => $"extracting specifications from syntax {syntaxNode.Identifier.Text}",
+                                    syntaxNode => ExpectTypeSymbolFromDeclaration(syntaxNode, generatorCtx))
+                                .ToImmutableList();
 
-                    var settings = phxInjectSettingsExtractor
-                        .Extract(settingsCandidates, exceptionAggregator, generatorCtx);
-                    var sourceDesc = new SourceDesc.Extractor()
-                        .Extract(injectorCandidates, specificationCandidates, exceptionAggregator, generatorCtx);
+                            var settings = phxInjectSettingsExtractor
+                                .Extract(settingsCandidates, generatorCtx);
+                            var sourceDesc = new SourceDesc.Extractor()
+                                .Extract(injectorCandidates, specificationCandidates, generatorCtx);
 
-                    // Map: Descriptors to defs.
-                    var injectionContextDefs = new SourceDefMapper(settings)
-                        .Map(sourceDesc, generatorCtx);
+                            // Map: Descriptors to defs.
+                            var injectionContextDefs = new SourceDefMapper(settings)
+                                .Map(sourceDesc, generatorCtx);
 
-                    // Project: Defs to templates.
-                    var templates = new SourceTemplateProjector()
-                        .Project(injectionContextDefs, generatorCtx);
+                            // Project: Defs to templates.
+                            var templates = new SourceTemplateProjector()
+                                .Project(injectionContextDefs, generatorCtx);
 
-                    // Render: Templates to generated source.
-                    new SourceRenderer(settings)
-                        .Render(templates, generatorCtx);
+                            // Render: Templates to generated source.
+                            new SourceRenderer(settings)
+                                .Render(templates, generatorCtx);
+                        });
                 });
-        } catch (InjectionException) {
-            // Ignore injection exceptions to allow partial generation to complete.
-            // They are already reported as diagnostics.
-        }
     }
     private static ITypeSymbol ExpectTypeSymbolFromDeclaration(
         TypeDeclarationSyntax syntaxNode,

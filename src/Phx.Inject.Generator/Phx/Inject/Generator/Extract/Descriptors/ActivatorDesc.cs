@@ -37,28 +37,30 @@ internal record ActivatorDesc(
             IMethodSymbol builderMethod,
             ExtractorContext extractorCtx
         ) {
-            var currentCtx = extractorCtx.GetChildContext(builderMethod);
-            var builderLocation = builderMethod.Locations.First();
+            return extractorCtx.UseChildContext(builderMethod,
+                currentCtx => {
+                    var builderLocation = builderMethod.Locations.First();
 
-            if (!builderMethod.ReturnsVoid) {
-                // This is a provider, not a builder.
-                return null;
-            }
+                    if (!builderMethod.ReturnsVoid) {
+                        // This is a provider, not a builder.
+                        return null;
+                    }
 
-            if (builderMethod.Parameters.Length != 1) {
-                throw Diagnostics.InvalidSpecification.AsException(
-                    $"Injector builder {builderMethod.Name} must have exactly 1 parameter.",
-                    builderLocation,
-                    currentCtx);
-            }
+                    if (builderMethod.Parameters.Length != 1) {
+                        throw Diagnostics.InvalidSpecification.AsException(
+                            $"Injector builder {builderMethod.Name} must have exactly 1 parameter.",
+                            builderLocation,
+                            currentCtx);
+                    }
 
-            var qualifier = qualifierExtractor.Extract(builderMethod).GetOrThrow(currentCtx);
-            var builtType = builderMethod.Parameters[0].Type.ToQualifiedTypeModel(qualifier);
+                    var qualifier = qualifierExtractor.Extract(builderMethod).GetOrThrow(currentCtx);
+                    var builtType = builderMethod.Parameters[0].Type.ToQualifiedTypeModel(qualifier);
 
-            return new ActivatorDesc(
-                builtType,
-                builderMethod.Name,
-                builderLocation);
+                    return new ActivatorDesc(
+                        builtType,
+                        builderMethod.Name,
+                        builderLocation);
+                });
         }
     }
 }

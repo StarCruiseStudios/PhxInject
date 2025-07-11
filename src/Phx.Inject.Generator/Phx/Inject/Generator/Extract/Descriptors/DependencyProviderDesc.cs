@@ -36,10 +36,9 @@ internal record DependencyProviderDesc(
         IMethodSymbol symbol,
         IGeneratorContext generatorCtx
     ) {
-        ExceptionAggregator.Try(
+        generatorCtx.Aggregator.Aggregate(
             "Validating dependency provider",
-            generatorCtx,
-            _ => {
+            () => {
                 if (symbol.ReturnsVoid) {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Dependency provider {symbol.Name} must have a return type.",
@@ -47,7 +46,7 @@ internal record DependencyProviderDesc(
                         generatorCtx);
                 }
             },
-            _ => {
+            () => {
                 if (symbol.Parameters.Length > 0) {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Dependency provider {symbol.Name} must not have any parameters.",
@@ -86,20 +85,21 @@ internal record DependencyProviderDesc(
             TypeModel dependencyInterface,
             ExtractorContext extractorCtx
         ) {
-            var currentCtx = extractorCtx.GetChildContext(symbol);
+            return extractorCtx.UseChildContext(symbol,
+                currentCtx => {
+                    RequireDependencyProvider(symbol, currentCtx);
+                    var qualifier = qualifierExtractor.Extract(symbol).GetOrThrow(currentCtx);
+                    var providedType = symbol.ReturnType.ToQualifiedTypeModel(qualifier);
+                    var partialAttribute = partialAttributeExtractor.CanExtract(symbol)
+                        ? partialAttributeExtractor.Extract(symbol)
+                            .GetOrThrow(currentCtx)
+                            .Also(_ => partialAttributeExtractor.ValidateAttributedType(symbol,
+                                providedType.TypeModel,
+                                currentCtx))
+                        : null;
 
-            RequireDependencyProvider(symbol, currentCtx);
-            var qualifier = qualifierExtractor.Extract(symbol).GetOrThrow(currentCtx);
-            var providedType = symbol.ReturnType.ToQualifiedTypeModel(qualifier);
-            var partialAttribute = partialAttributeExtractor.CanExtract(symbol)
-                ? partialAttributeExtractor.Extract(symbol)
-                    .GetOrThrow(currentCtx)
-                    .Also(_ => partialAttributeExtractor.ValidateAttributedType(symbol,
-                        providedType.TypeModel,
-                        currentCtx))
-                : null;
-
-            return new DependencyProviderDesc(symbol, dependencyInterface, providedType, partialAttribute);
+                    return new DependencyProviderDesc(symbol, dependencyInterface, providedType, partialAttribute);
+                });
         }
     }
 }

@@ -18,7 +18,6 @@ internal static class PhxInjectSettingsMetadata {
     public interface IExtractor {
         GeneratorSettings Extract(
             IReadOnlyList<ITypeSymbol> settingsCandidates,
-            IExceptionAggregator exceptionAggregator,
             IGeneratorContext generatorCtx);
     }
 
@@ -33,14 +32,13 @@ internal static class PhxInjectSettingsMetadata {
 
         public GeneratorSettings Extract(
             IReadOnlyList<ITypeSymbol> settingsCandidates,
-            IExceptionAggregator exceptionAggregator,
             IGeneratorContext generatorCtx
         ) {
-            var extractorCtx = new ExtractorContext(generatorCtx.ExecutionContext);
+            var extractorCtx = new ExtractorContext(null, generatorCtx);
             IReadOnlyList<GeneratorSettings> injectSettings = settingsCandidates
                 .Where(typeSymbol => phxInjectAttributeExtractor.CanExtract(typeSymbol))
                 .SelectCatching(
-                    exceptionAggregator,
+                    generatorCtx.Aggregator,
                     typeSymbol => $"extracting PhxInject settings from {typeSymbol}",
                     typeSymbol => {
                         var settingsAttribute = phxInjectAttributeExtractor.Extract(typeSymbol)
@@ -59,7 +57,7 @@ internal static class PhxInjectSettingsMetadata {
 
             var settings = injectSettings.Count switch {
                 1 => injectSettings.First(),
-                _ => exceptionAggregator.AggregateMany<GeneratorSettings, GeneratorSettings>(
+                _ => generatorCtx.Aggregator.AggregateMany<GeneratorSettings, GeneratorSettings>(
                             injectSettings,
                             settings => $"extracting PhxInject settings {settings.Name}",
                             settings => throw Diagnostics.InvalidSpecification.AsException(

@@ -31,7 +31,6 @@ internal record SourceDesc(
         SourceDesc Extract(
             IReadOnlyList<ITypeSymbol> injectorCandidates,
             IReadOnlyList<ITypeSymbol> specificationCandidates,
-            IExceptionAggregator exceptionAggregator,
             IGeneratorContext generatorCtx);
     }
 
@@ -71,15 +70,14 @@ internal record SourceDesc(
         public SourceDesc Extract(
             IReadOnlyList<ITypeSymbol> injectorCandidates,
             IReadOnlyList<ITypeSymbol> specificationCandidates,
-            IExceptionAggregator exceptionAggregator,
             IGeneratorContext generatorCtx
         ) {
-            var extractorCtx = new ExtractorContext(generatorCtx.ExecutionContext);
+            var extractorCtx = new ExtractorContext(null, generatorCtx);
 
             IReadOnlyList<InjectorDesc> injectorDescs = injectorCandidates
                 .Where(injectorTypeSymbol => injectorAttributeExtractor.CanExtract(injectorTypeSymbol))
                 .SelectCatching(
-                    exceptionAggregator,
+                    extractorCtx.Aggregator,
                     injectorTypeSymbol => $"extracting injector from {injectorTypeSymbol}",
                     injectorTypeSymbol => injectorDescExtractor.Extract(injectorTypeSymbol, extractorCtx))
                 .ToImmutableList();
@@ -88,7 +86,7 @@ internal record SourceDesc(
             IReadOnlyList<SpecDesc> specDescs = specificationCandidates
                 .Where(specificationTypeSymbol => specificationAttributeExtractor.CanExtract(specificationTypeSymbol))
                 .SelectCatching(
-                    exceptionAggregator,
+                    extractorCtx.Aggregator,
                     specificationTypeSymbol => $"extracting specification from {specificationTypeSymbol}",
                     specificationTypeSymbol => specDescExtractor.Extract(specificationTypeSymbol, extractorCtx))
                 .ToImmutableList();
@@ -97,7 +95,7 @@ internal record SourceDesc(
             IReadOnlyList<DependencyDesc> dependencyDescs = injectorCandidates
                 .Where(injectorTypeSymbol => injectorAttributeExtractor.CanExtract(injectorTypeSymbol))
                 .SelectCatching(
-                    exceptionAggregator,
+                    extractorCtx.Aggregator,
                     injectorTypeSymbol => $"extracting dependencies from injector {injectorTypeSymbol}",
                     injectorTypeSymbol => {
                         var dependencyAttribute = dependencyAttributeExtractor.CanExtract(injectorTypeSymbol)

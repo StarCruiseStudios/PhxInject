@@ -45,32 +45,34 @@ internal record InjectorProviderDesc(
             IMethodSymbol providerMethod,
             ExtractorContext extractorCtx
         ) {
-            var currentCtx = extractorCtx.GetChildContext(providerMethod);
-            var providerLocation = providerMethod.Locations.First();
+            return extractorCtx.UseChildContext(providerMethod,
+                currentCtx => {
+                    var providerLocation = providerMethod.Locations.First();
 
-            if (providerMethod.ReturnsVoid) {
-                // This is a builder, not a provider.
-                return null;
-            }
+                    if (providerMethod.ReturnsVoid) {
+                        // This is a builder, not a provider.
+                        return null;
+                    }
 
-            if (childInjectorAttributeExtractor.CanExtract(providerMethod)) {
-                // This is an injector child factory, not a provider.
-                return null;
-            }
+                    if (childInjectorAttributeExtractor.CanExtract(providerMethod)) {
+                        // This is an injector child factory, not a provider.
+                        return null;
+                    }
 
-            if (providerMethod.Parameters.Length > 0) {
-                throw Diagnostics.InvalidSpecification.AsException(
-                    $"Injector provider {providerMethod.Name} must not have any parameters.",
-                    providerLocation,
-                    currentCtx);
-            }
+                    if (providerMethod.Parameters.Length > 0) {
+                        throw Diagnostics.InvalidSpecification.AsException(
+                            $"Injector provider {providerMethod.Name} must not have any parameters.",
+                            providerLocation,
+                            currentCtx);
+                    }
 
-            var returnType = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
-            var qualifier = qualifierExtractor.Extract(providerMethod).GetOrThrow(currentCtx);
-            return new InjectorProviderDesc(
-                new QualifiedTypeModel(returnType, qualifier),
-                providerMethod.Name,
-                providerLocation);
+                    var returnType = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
+                    var qualifier = qualifierExtractor.Extract(providerMethod).GetOrThrow(currentCtx);
+                    return new InjectorProviderDesc(
+                        new QualifiedTypeModel(returnType, qualifier),
+                        providerMethod.Name,
+                        providerLocation);
+                });
         }
     }
 }

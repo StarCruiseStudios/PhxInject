@@ -13,6 +13,7 @@ namespace Phx.Inject.Generator;
 
 internal interface IGeneratorContext {
     ISymbol? Symbol { get; }
+    IExceptionAggregator Aggregator { get; }
     IGeneratorContext? ParentContext { get; }
     GeneratorExecutionContext ExecutionContext { get; }
 }
@@ -27,14 +28,34 @@ internal static class IGeneratorContextExtensions {
     }
 }
 
-internal record class GeneratorContext(
-    GeneratorExecutionContext ExecutionContext
-) : IGeneratorContext {
-    public ISymbol? Symbol {
-        get => null;
+internal class GeneratorContext : IGeneratorContext {
+    public ISymbol? Symbol { get => null; }
+    
+    private IExceptionAggregator? aggregator;
+    public IExceptionAggregator Aggregator { get => aggregator!; }
+    
+    public IGeneratorContext? ParentContext { get => null; }
+    
+    public GeneratorExecutionContext ExecutionContext { get; }
+    
+    private GeneratorContext(GeneratorExecutionContext executionContext) {
+        ExecutionContext = executionContext;
     }
     
-    public IGeneratorContext? ParentContext {
-        get => null;
-    }
+    public static void UseContext(GeneratorExecutionContext executionContext, Action<GeneratorContext> action) {
+        var newContext = new GeneratorContext(executionContext);
+        try {
+            ExceptionAggregator.Try<object?>(
+                $"generating injection source for {executionContext.Compilation.AssemblyName}",
+                newContext,
+                exceptionAggregator => {
+                    newContext.aggregator = exceptionAggregator;
+                    action(newContext);
+                    return null;
+                });
+        } catch (InjectionException) {
+            // Ignore injection exceptions to allow partial generation to complete.
+            // They are already reported as diagnostics.
+        }
+    } 
 }

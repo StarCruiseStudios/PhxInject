@@ -113,7 +113,7 @@ internal class SpecDefMapper : ISpecDefMapper {
                 defGenerationCtx.Injector.InjectorType,
                 autoFactoryTypes,
                 autoBuilderTypes,
-                new ExtractorContext(defGenerationCtx.ExecutionContext))
+                new ExtractorContext(null, defGenerationCtx))
             : null;
     }
 

@@ -106,238 +106,249 @@ internal record SpecFactoryDesc(
             QualifiedTypeModel constructorType,
             ExtractorContext extractorCtx
         ) {
-            var currentCtx = extractorCtx.GetChildContext(constructorType.TypeModel.TypeSymbol);
-            var constructorSymbol = constructorType.TypeModel.TypeSymbol;
-            var constructorLocation = constructorSymbol.Locations.First();
-            var factoryAttribute = factoryAttributeExtractor.CanExtract(constructorSymbol)
-                ? factoryAttributeExtractor.Extract(constructorSymbol)
-                    .GetOrThrow(currentCtx)
-                    .Also(_ => {
-                        factoryAttributeExtractor.ValidateAttributedAutoConstructorType(constructorSymbol, currentCtx);
-                    })
-                : null;
+            return extractorCtx.UseChildContext(constructorType.TypeModel.TypeSymbol,
+                currentCtx => {
+                    var constructorSymbol = constructorType.TypeModel.TypeSymbol;
+                    var constructorLocation = constructorSymbol.Locations.First();
+                    var factoryAttribute = factoryAttributeExtractor.CanExtract(constructorSymbol)
+                        ? factoryAttributeExtractor.Extract(constructorSymbol)
+                            .GetOrThrow(currentCtx)
+                            .Also(_ => {
+                                factoryAttributeExtractor.ValidateAttributedAutoConstructorType(constructorSymbol,
+                                    currentCtx);
+                            })
+                        : null;
 
-            var constructorParameterTypes =
-                MetadataHelpers.TryGetConstructorParameterQualifiedTypes(constructorSymbol, currentCtx);
-            var requiredProperties = MetadataHelpers
-                .GetRequiredPropertyQualifiedTypes(constructorSymbol, currentCtx)
-                .Select(property =>
-                    new SpecFactoryRequiredPropertyDesc(property.Value, property.Key, constructorLocation));
-            var qualifier = QualifierMetadata.Extractor.Instance.Extract(constructorSymbol)
-                .GetOrThrow(currentCtx);
-            var returnType = constructorType with {
-                Qualifier = qualifier
-            };
+                    var constructorParameterTypes =
+                        MetadataHelpers.TryGetConstructorParameterQualifiedTypes(constructorSymbol, currentCtx);
+                    var requiredProperties = MetadataHelpers
+                        .GetRequiredPropertyQualifiedTypes(constructorSymbol, currentCtx)
+                        .Select(property =>
+                            new SpecFactoryRequiredPropertyDesc(property.Value, property.Key, constructorLocation));
+                    var qualifier = QualifierMetadata.Extractor.Instance.Extract(constructorSymbol)
+                        .GetOrThrow(currentCtx);
+                    var returnType = constructorType with {
+                        Qualifier = qualifier
+                    };
 
-            return new SpecFactoryDesc(
-                returnType,
-                constructorType.TypeModel.GetVariableName(),
-                SpecFactoryMemberType.Constructor,
-                constructorParameterTypes,
-                requiredProperties,
-                factoryAttribute?.FabricationMode ?? FactoryFabricationMode.Recurrent,
-                false, // Constructor factories cannot be partial
-                constructorLocation);
+                    return new SpecFactoryDesc(
+                        returnType,
+                        constructorType.TypeModel.GetVariableName(),
+                        SpecFactoryMemberType.Constructor,
+                        constructorParameterTypes,
+                        requiredProperties,
+                        factoryAttribute?.FabricationMode ?? FactoryFabricationMode.Recurrent,
+                        false, // Constructor factories cannot be partial
+                        constructorLocation);
+                });
         }
 
         public SpecFactoryDesc? ExtractFactory(
             IMethodSymbol factoryMethod,
             ExtractorContext extractorCtx
         ) {
-            var currentCtx = extractorCtx.GetChildContext(factoryMethod);
-            var factoryLocation = factoryMethod.Locations.First();
+            return extractorCtx.UseChildContext(factoryMethod,
+                currentCtx => {
+                    var factoryLocation = factoryMethod.Locations.First();
 
-            if (!factoryAttributeExtractor.CanExtract(factoryMethod)) {
-                // This is not a factory.
-                return null;
-            }
+                    if (!factoryAttributeExtractor.CanExtract(factoryMethod)) {
+                        // This is not a factory.
+                        return null;
+                    }
 
-            var factoryAttribute = factoryAttributeExtractor.Extract(factoryMethod)
-                .GetOrThrow(currentCtx)
-                .Also(_ => factoryAttributeExtractor.ValidateAttributedType(factoryMethod, currentCtx));
-            if (factoryReferenceAttributeExtractor.CanExtract(factoryMethod)) {
-                throw Diagnostics.InvalidSpecification.AsException(
-                    "Method cannot have both Factory and FactoryReference attributes.",
-                    factoryLocation,
-                    extractorCtx);
-            }
+                    var factoryAttribute = factoryAttributeExtractor.Extract(factoryMethod)
+                        .GetOrThrow(currentCtx)
+                        .Also(_ => factoryAttributeExtractor.ValidateAttributedType(factoryMethod, currentCtx));
+                    if (factoryReferenceAttributeExtractor.CanExtract(factoryMethod)) {
+                        throw Diagnostics.InvalidSpecification.AsException(
+                            "Method cannot have both Factory and FactoryReference attributes.",
+                            factoryLocation,
+                            extractorCtx);
+                    }
 
-            var methodParameterTypes =
-                MetadataHelpers.TryGetMethodParametersQualifiedTypes(factoryMethod, currentCtx);
+                    var methodParameterTypes =
+                        MetadataHelpers.TryGetMethodParametersQualifiedTypes(factoryMethod, currentCtx);
 
-            var qualifier = QualifierMetadata.Extractor.Instance.Extract(factoryMethod)
-                .GetOrThrow(currentCtx);
-            var returnTypeModel = TypeModel.FromTypeSymbol(factoryMethod.ReturnType);
-            var returnType = new QualifiedTypeModel(
-                returnTypeModel,
-                qualifier);
+                    var qualifier = QualifierMetadata.Extractor.Instance.Extract(factoryMethod)
+                        .GetOrThrow(currentCtx);
+                    var returnTypeModel = TypeModel.FromTypeSymbol(factoryMethod.ReturnType);
+                    var returnType = new QualifiedTypeModel(
+                        returnTypeModel,
+                        qualifier);
 
-            var partialAttribute = partialAttributeExtractor.CanExtract(factoryMethod)
-                ? partialAttributeExtractor.Extract(factoryMethod)
-                    .GetOrThrow(currentCtx)
-                    .Also(_ => partialAttributeExtractor.ValidateAttributedType(factoryMethod,
-                        returnType.TypeModel,
-                        currentCtx))
-                : null;
+                    var partialAttribute = partialAttributeExtractor.CanExtract(factoryMethod)
+                        ? partialAttributeExtractor.Extract(factoryMethod)
+                            .GetOrThrow(currentCtx)
+                            .Also(_ => partialAttributeExtractor.ValidateAttributedType(factoryMethod,
+                                returnType.TypeModel,
+                                currentCtx))
+                        : null;
 
-            return new SpecFactoryDesc(
-                returnType,
-                factoryMethod.Name,
-                SpecFactoryMemberType.Method,
-                methodParameterTypes,
-                ImmutableList<SpecFactoryRequiredPropertyDesc>.Empty,
-                factoryAttribute.FabricationMode,
-                partialAttribute != null,
-                factoryLocation);
+                    return new SpecFactoryDesc(
+                        returnType,
+                        factoryMethod.Name,
+                        SpecFactoryMemberType.Method,
+                        methodParameterTypes,
+                        ImmutableList<SpecFactoryRequiredPropertyDesc>.Empty,
+                        factoryAttribute.FabricationMode,
+                        partialAttribute != null,
+                        factoryLocation);
+                });
         }
 
         public SpecFactoryDesc? ExtractFactory(
             IPropertySymbol factoryProperty,
             ExtractorContext extractorCtx
         ) {
-            var currentCtx = extractorCtx.GetChildContext(factoryProperty);
-            var factoryLocation = factoryProperty.Locations.First();
+            return extractorCtx.UseChildContext(factoryProperty,
+                currentCtx => {
+                    var factoryLocation = factoryProperty.Locations.First();
 
-            if (!factoryAttributeExtractor.CanExtract(factoryProperty)) {
-                // This is not a factory.
-                return null;
-            }
+                    if (!factoryAttributeExtractor.CanExtract(factoryProperty)) {
+                        // This is not a factory.
+                        return null;
+                    }
 
-            var factoryAttribute = factoryAttributeExtractor.Extract(factoryProperty)
-                .GetOrThrow(currentCtx)
-                .Also(_ => factoryAttributeExtractor.ValidateAttributedType(factoryProperty, currentCtx));
-            if (factoryReferenceAttributeExtractor.CanExtract(factoryProperty)) {
-                throw Diagnostics.InvalidSpecification.AsException(
-                    "Property cannot have both Factory and FactoryReference attributes.",
-                    factoryLocation,
-                    extractorCtx);
-            }
+                    var factoryAttribute = factoryAttributeExtractor.Extract(factoryProperty)
+                        .GetOrThrow(currentCtx)
+                        .Also(_ => factoryAttributeExtractor.ValidateAttributedType(factoryProperty, currentCtx));
+                    if (factoryReferenceAttributeExtractor.CanExtract(factoryProperty)) {
+                        throw Diagnostics.InvalidSpecification.AsException(
+                            "Property cannot have both Factory and FactoryReference attributes.",
+                            factoryLocation,
+                            extractorCtx);
+                    }
 
-            var methodParameterTypes = ImmutableList.Create<QualifiedTypeModel>();
+                    var methodParameterTypes = ImmutableList.Create<QualifiedTypeModel>();
 
-            var qualifier = QualifierMetadata.Extractor.Instance.Extract(factoryProperty)
-                .GetOrThrow(currentCtx);
-            var returnTypeModel = TypeModel.FromTypeSymbol(factoryProperty.Type);
-            var returnType = new QualifiedTypeModel(
-                returnTypeModel,
-                qualifier);
+                    var qualifier = QualifierMetadata.Extractor.Instance.Extract(factoryProperty)
+                        .GetOrThrow(currentCtx);
+                    var returnTypeModel = TypeModel.FromTypeSymbol(factoryProperty.Type);
+                    var returnType = new QualifiedTypeModel(
+                        returnTypeModel,
+                        qualifier);
 
-            var partialAttribute = partialAttributeExtractor.CanExtract(factoryProperty)
-                ? partialAttributeExtractor.Extract(factoryProperty)
-                    .GetOrThrow(currentCtx)
-                    .Also(_ => partialAttributeExtractor.ValidateAttributedType(factoryProperty,
-                        returnType.TypeModel,
-                        currentCtx))
-                : null;
+                    var partialAttribute = partialAttributeExtractor.CanExtract(factoryProperty)
+                        ? partialAttributeExtractor.Extract(factoryProperty)
+                            .GetOrThrow(currentCtx)
+                            .Also(_ => partialAttributeExtractor.ValidateAttributedType(factoryProperty,
+                                returnType.TypeModel,
+                                currentCtx))
+                        : null;
 
-            return new SpecFactoryDesc(
-                returnType,
-                factoryProperty.Name,
-                SpecFactoryMemberType.Property,
-                methodParameterTypes,
-                ImmutableList<SpecFactoryRequiredPropertyDesc>.Empty,
-                factoryAttribute.FabricationMode,
-                partialAttribute != null,
-                factoryLocation);
+                    return new SpecFactoryDesc(
+                        returnType,
+                        factoryProperty.Name,
+                        SpecFactoryMemberType.Property,
+                        methodParameterTypes,
+                        ImmutableList<SpecFactoryRequiredPropertyDesc>.Empty,
+                        factoryAttribute.FabricationMode,
+                        partialAttribute != null,
+                        factoryLocation);
+                });
         }
 
         public SpecFactoryDesc? ExtractFactoryReference(
             IPropertySymbol factoryReferenceProperty,
             ExtractorContext extractorCtx
         ) {
-            var currentCtx = extractorCtx.GetChildContext(factoryReferenceProperty);
-            var factoryReferenceLocation = factoryReferenceProperty.Locations.First();
+            return extractorCtx.UseChildContext(factoryReferenceProperty,
+                currentCtx => {
+                    var factoryReferenceLocation = factoryReferenceProperty.Locations.First();
 
-            if (!factoryReferenceAttributeExtractor.CanExtract(factoryReferenceProperty)) {
-                // This is not a factory reference.
-                return null;
-            }
+                    if (!factoryReferenceAttributeExtractor.CanExtract(factoryReferenceProperty)) {
+                        // This is not a factory reference.
+                        return null;
+                    }
 
-            var factoryReferenceAttribute = factoryReferenceAttributeExtractor.Extract(factoryReferenceProperty)
-                .GetOrThrow(currentCtx)
-                .Also(_ => factoryReferenceAttributeExtractor.ValidateAttributedType(factoryReferenceProperty,
-                    currentCtx));
-            if (factoryAttributeExtractor.CanExtract(factoryReferenceProperty)) {
-                throw Diagnostics.InvalidSpecification.AsException(
-                    "Property cannot have both Factory and FactoryReference attributes.",
-                    factoryReferenceLocation,
-                    extractorCtx);
-            }
+                    var factoryReferenceAttribute = factoryReferenceAttributeExtractor.Extract(factoryReferenceProperty)
+                        .GetOrThrow(currentCtx)
+                        .Also(_ => factoryReferenceAttributeExtractor.ValidateAttributedType(factoryReferenceProperty,
+                            currentCtx));
+                    if (factoryAttributeExtractor.CanExtract(factoryReferenceProperty)) {
+                        throw Diagnostics.InvalidSpecification.AsException(
+                            "Property cannot have both Factory and FactoryReference attributes.",
+                            factoryReferenceLocation,
+                            extractorCtx);
+                    }
 
-            GetFactoryReferenceTypes(
-                factoryReferenceProperty,
-                factoryReferenceProperty.Type,
-                factoryReferenceLocation,
-                currentCtx,
-                out var returnType,
-                out var parameterTypes);
+                    GetFactoryReferenceTypes(
+                        factoryReferenceProperty,
+                        factoryReferenceProperty.Type,
+                        factoryReferenceLocation,
+                        currentCtx,
+                        out var returnType,
+                        out var parameterTypes);
 
-            var partialAttribute = partialAttributeExtractor.CanExtract(factoryReferenceProperty)
-                ? partialAttributeExtractor.Extract(factoryReferenceProperty)
-                    .GetOrThrow(currentCtx)
-                    .Also(_ => partialAttributeExtractor.ValidateAttributedType(factoryReferenceProperty,
-                        returnType.TypeModel,
-                        currentCtx))
-                : null;
+                    var partialAttribute = partialAttributeExtractor.CanExtract(factoryReferenceProperty)
+                        ? partialAttributeExtractor.Extract(factoryReferenceProperty)
+                            .GetOrThrow(currentCtx)
+                            .Also(_ => partialAttributeExtractor.ValidateAttributedType(factoryReferenceProperty,
+                                returnType.TypeModel,
+                                currentCtx))
+                        : null;
 
-            return new SpecFactoryDesc(
-                returnType,
-                factoryReferenceProperty.Name,
-                SpecFactoryMemberType.Reference,
-                parameterTypes,
-                ImmutableList<SpecFactoryRequiredPropertyDesc>.Empty,
-                factoryReferenceAttribute.FabricationMode,
-                partialAttribute != null,
-                factoryReferenceLocation);
+                    return new SpecFactoryDesc(
+                        returnType,
+                        factoryReferenceProperty.Name,
+                        SpecFactoryMemberType.Reference,
+                        parameterTypes,
+                        ImmutableList<SpecFactoryRequiredPropertyDesc>.Empty,
+                        factoryReferenceAttribute.FabricationMode,
+                        partialAttribute != null,
+                        factoryReferenceLocation);
+                });
         }
 
         public SpecFactoryDesc? ExtractFactoryReference(
             IFieldSymbol factoryReferenceField,
             ExtractorContext extractorCtx
         ) {
-            var currentCtx = extractorCtx.GetChildContext(factoryReferenceField);
-            var factoryReferenceLocation = factoryReferenceField.Locations.First();
-            if (!factoryReferenceAttributeExtractor.CanExtract(factoryReferenceField)) {
-                // This is not a factory reference.
-                return null;
-            }
+            return extractorCtx.UseChildContext(factoryReferenceField,
+                currentCtx => {
+                    var factoryReferenceLocation = factoryReferenceField.Locations.First();
+                    if (!factoryReferenceAttributeExtractor.CanExtract(factoryReferenceField)) {
+                        // This is not a factory reference.
+                        return null;
+                    }
 
-            var factoryReferenceAttribute = factoryReferenceAttributeExtractor.Extract(factoryReferenceField)
-                .GetOrThrow(currentCtx)
-                .Also(_ => factoryReferenceAttributeExtractor.ValidateAttributedType(factoryReferenceField,
-                    currentCtx));
-            if (factoryAttributeExtractor.CanExtract(factoryReferenceField)) {
-                throw Diagnostics.InvalidSpecification.AsException(
-                    "Field cannot have both Factory and FactoryReference attributes.",
-                    factoryReferenceLocation,
-                    extractorCtx);
-            }
+                    var factoryReferenceAttribute = factoryReferenceAttributeExtractor.Extract(factoryReferenceField)
+                        .GetOrThrow(currentCtx)
+                        .Also(_ => factoryReferenceAttributeExtractor.ValidateAttributedType(factoryReferenceField,
+                            currentCtx));
+                    if (factoryAttributeExtractor.CanExtract(factoryReferenceField)) {
+                        throw Diagnostics.InvalidSpecification.AsException(
+                            "Field cannot have both Factory and FactoryReference attributes.",
+                            factoryReferenceLocation,
+                            extractorCtx);
+                    }
 
-            GetFactoryReferenceTypes(
-                factoryReferenceField,
-                factoryReferenceField.Type,
-                factoryReferenceLocation,
-                currentCtx,
-                out var returnType,
-                out var parameterTypes);
+                    GetFactoryReferenceTypes(
+                        factoryReferenceField,
+                        factoryReferenceField.Type,
+                        factoryReferenceLocation,
+                        currentCtx,
+                        out var returnType,
+                        out var parameterTypes);
 
-            var partialAttribute = partialAttributeExtractor.CanExtract(factoryReferenceField)
-                ? partialAttributeExtractor.Extract(factoryReferenceField)
-                    .GetOrThrow(currentCtx)
-                    .Also(_ => partialAttributeExtractor.ValidateAttributedType(factoryReferenceField,
-                        returnType.TypeModel,
-                        currentCtx))
-                : null;
+                    var partialAttribute = partialAttributeExtractor.CanExtract(factoryReferenceField)
+                        ? partialAttributeExtractor.Extract(factoryReferenceField)
+                            .GetOrThrow(currentCtx)
+                            .Also(_ => partialAttributeExtractor.ValidateAttributedType(factoryReferenceField,
+                                returnType.TypeModel,
+                                currentCtx))
+                        : null;
 
-            return new SpecFactoryDesc(
-                returnType,
-                factoryReferenceField.Name,
-                SpecFactoryMemberType.Reference,
-                parameterTypes,
-                ImmutableList<SpecFactoryRequiredPropertyDesc>.Empty,
-                factoryReferenceAttribute.FabricationMode,
-                partialAttribute != null,
-                factoryReferenceLocation);
+                    return new SpecFactoryDesc(
+                        returnType,
+                        factoryReferenceField.Name,
+                        SpecFactoryMemberType.Reference,
+                        parameterTypes,
+                        ImmutableList<SpecFactoryRequiredPropertyDesc>.Empty,
+                        factoryReferenceAttribute.FabricationMode,
+                        partialAttribute != null,
+                        factoryReferenceLocation);
+                });
         }
     }
 }

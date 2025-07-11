@@ -12,9 +12,8 @@ using Phx.Inject.Generator;
 namespace Phx.Inject.Common.Exceptions;
 
 internal interface IExceptionAggregator {
-    T Aggregate<T>(string message, Func<T> func, Func<Exception, T> defaultValue);
+    void Aggregate(string message, params Action[] actions);
     IReadOnlyList<R> AggregateMany<T, R>(IEnumerable<T> elements, Func<T, string> elementDescription, Func<T, R> func);
-    void Aggregate(string message, Action action);
 }
 
 internal sealed class ExceptionAggregator : IExceptionAggregator {
@@ -30,21 +29,13 @@ internal sealed class ExceptionAggregator : IExceptionAggregator {
         this.generatorContext = generatorContext;
     }
 
-    public T Aggregate<T>(string message, Func<T> func, Func<Exception, T> defaultValue) {
-        try {
-            return func();
-        } catch (Exception e) {
-            var ie = e.AsInjectionException(message, generatorContext);
-            exceptions.Add(ie);
-            return defaultValue(ie);
-        }
-    }
-
-    public void Aggregate(string message, Action action) {
-        try {
-            action();
-        } catch (Exception e) {
-            exceptions.Add(e.AsInjectionException(message, generatorContext));
+    public void Aggregate(string message, params Action[] actions) {
+        foreach (var action in actions) {
+            try {
+                action();
+            } catch (Exception e) {
+                exceptions.Add(AsInjectionException(e, message, generatorContext));
+            }
         }
     }
 
@@ -58,15 +49,19 @@ internal sealed class ExceptionAggregator : IExceptionAggregator {
             try {
                 results.Add(func(element));
             } catch (Exception e) {
-                exceptions.Add(e.AsInjectionException(elementDescription(element), generatorContext));
+                exceptions.Add(AsInjectionException(e, elementDescription(element), generatorContext));
             }
         }
 
         return results;
     }
 
-    private T Throw<T>(IGeneratorContext generatorContext) {
-        throw Diagnostics.AggregateError.AsAggregateException(message, exceptions, generatorContext);
+    private AggregateInjectionException AsException() {
+        return Diagnostics.AggregateError.AsAggregateException(message, exceptions, generatorContext);
+    }
+    
+    private T Throw<T>() {
+        throw AsException();
     }
 
     public static T Try<T>(
@@ -74,35 +69,32 @@ internal sealed class ExceptionAggregator : IExceptionAggregator {
         IGeneratorContext generatorCtx,
         Func<IExceptionAggregator, T> func
     ) {
-        var aggregateException = new ExceptionAggregator(
+        var aggregator = new ExceptionAggregator(
             $"One or more errors occurred while {description}.",
             generatorCtx);
-        var result =
-            aggregateException.Aggregate(
-                description,
-                () => func(aggregateException),
-                e => aggregateException.Throw<T>(generatorCtx));
 
-        return aggregateException.exceptions.OfType<FatalInjectionException>().Any()
-            ? aggregateException.Throw<T>(generatorCtx)
-            : result;
+        try {
+            var result = func(aggregator);
+            return aggregator.exceptions.OfType<FatalInjectionException>().Any()
+                ? aggregator.Throw<T>()
+                : result;
+        } catch (Exception e) {
+            var ie = AsInjectionException(e, description, generatorCtx);
+            aggregator.exceptions.Add(ie);
+            throw aggregator.AsException();
+        }
     }
 
-    public static void Try(
-        string description,
-        IGeneratorContext generatorCtx,
-        params Action<IExceptionAggregator>[] actions
+    private static InjectionException AsInjectionException(
+        Exception e,
+        string message,
+        IGeneratorContext generatorContext
     ) {
-        var aggregator = new ExceptionAggregator(
-            $"One or more errors error occurred while {description}.",
-            generatorCtx);
-        foreach (var action in actions) {
-            aggregator.Aggregate(description, () => action(aggregator));
-        }
-        
-        if (aggregator.exceptions.Count > 0) {
-            aggregator.Throw<object>(generatorCtx);
-        }
+        return e as InjectionException
+            ?? Diagnostics.UnexpectedError.AsFatalException(
+                $"Unexpected error while {message}: {e}",
+                generatorContext.GetLocation(),
+                generatorContext);
     }
 }
 
@@ -114,17 +106,5 @@ internal static class ExceptionAggregatorExtensions {
         Func<TSource, TResult> selector
     ) {
         return aggregator.AggregateMany(source, elementDescription, selector);
-    }
-
-    public static InjectionException AsInjectionException(
-        this Exception e,
-        string message,
-        IGeneratorContext generatorContext
-    ) {
-        return e as InjectionException
-            ?? Diagnostics.UnexpectedError.AsFatalException(
-                $"Unexpected error while {message}: {e}",
-                generatorContext.GetLocation(),
-                generatorContext);
     }
 }

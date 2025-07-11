@@ -52,8 +52,7 @@ internal class SourceTemplateProjector {
                                 specDefMap,
                                 dependencyDefMap,
                                 null,
-                                null,
-                                generatorCtx.ExecutionContext);
+                                generatorCtx);
 
                             var templates = new List<(TypeModel, IRenderTemplate)>();
                             var injectorDef = injectionContextDef.Injector;

@@ -71,7 +71,7 @@ internal class SourceDefMapper {
                                 dependencyDescMap,
                                 ImmutableDictionary<RegistrationIdentifier, List<FactoryRegistration>>.Empty,
                                 ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
-                                generatorCtx.ExecutionContext);
+                                generatorCtx);
 
                             if (generatorSettings.AllowConstructorFactories) {
                                 var constructorSpec =

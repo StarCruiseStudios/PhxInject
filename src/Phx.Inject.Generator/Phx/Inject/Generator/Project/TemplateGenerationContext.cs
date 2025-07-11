@@ -22,22 +22,24 @@ internal record TemplateGenerationContext : IGeneratorContext {
     public IGeneratorContext? ParentContext { get; }
     public GeneratorExecutionContext ExecutionContext { get; }
     
+    public IExceptionAggregator Aggregator { get; set; }
+    
     public TemplateGenerationContext(
         InjectorDef injector,
         IReadOnlyDictionary<TypeModel, InjectorDef> injectors,
         IReadOnlyDictionary<TypeModel, SpecContainerDef> specContainers,
         IReadOnlyDictionary<TypeModel, DependencyImplementationDef> dependencyImplementations,
         ISymbol? symbol,
-        TemplateGenerationContext? parentCtx,
-        GeneratorExecutionContext executionCtx
+        IGeneratorContext parentContext
     ) {
         Symbol = symbol;
         Injector = injector;
         Injectors = injectors;
         SpecContainers = specContainers;
         DependencyImplementations = dependencyImplementations;
-        ParentContext = parentCtx;
-        ExecutionContext = executionCtx;
+        ParentContext = parentContext;
+        ExecutionContext = parentContext.ExecutionContext;
+        Aggregator = parentContext.Aggregator;
     }
 
     public InjectorDef GetInjector(TypeModel type, Location location) {

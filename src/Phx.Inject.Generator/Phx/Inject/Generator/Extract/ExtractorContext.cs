@@ -7,26 +7,35 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Exceptions;
 
 namespace Phx.Inject.Generator.Extract;
 
-internal record ExtractorContext : IGeneratorContext {
-    public ISymbol? Symbol { get; private init; }
-    public IGeneratorContext? ParentContext { get; private init; }
+internal class ExtractorContext : IGeneratorContext {
+    public ISymbol? Symbol { get; }
+    public IGeneratorContext? ParentContext { get; }
     public GeneratorExecutionContext ExecutionContext { get; }
     
+    public IExceptionAggregator Aggregator { get; set; }
+    
     public ExtractorContext(
-        GeneratorExecutionContext executionCtx
+        ISymbol? symbol,
+        IGeneratorContext parentContext
     ) {
-        Symbol = null;
-        ParentContext = null;
-        ExecutionContext = executionCtx;
+        Symbol = symbol;
+        ParentContext = parentContext;
+        ExecutionContext = parentContext.ExecutionContext;
+        Aggregator = parentContext.Aggregator;
     }
 
-    public ExtractorContext GetChildContext(ISymbol symbol) {
-        return new ExtractorContext(ExecutionContext) {
-            Symbol = symbol,
-            ParentContext = this
-        };
+    public T UseChildContext<T>(ISymbol symbol, Func<ExtractorContext, T> func) {
+        var childContext = new ExtractorContext(symbol, this);
+        return ExceptionAggregator.Try(
+            $"extracting {symbol}",
+            childContext,
+            exceptionAggregator => {
+                childContext.Aggregator = exceptionAggregator;
+                return func(childContext);
+            });
     }
 }

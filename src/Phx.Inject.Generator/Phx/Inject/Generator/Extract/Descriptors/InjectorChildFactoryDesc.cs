@@ -49,30 +49,33 @@ internal record InjectorChildFactoryDesc(
             IMethodSymbol childInjectorMethod,
             ExtractorContext extractorCtx
         ) {
-            var currentCtx = extractorCtx.GetChildContext(childInjectorMethod);
-            var childInjectorLocation = childInjectorMethod.Locations.First();
+            return extractorCtx.UseChildContext(childInjectorMethod,
+                currentCtx => {
+                    var childInjectorLocation = childInjectorMethod.Locations.First();
 
-            if (!childInjectorAttributeExtractor.CanExtract(childInjectorMethod)) {
-                throw Diagnostics.InvalidSpecification.AsException(
-                    $"Type {childInjectorMethod} must declare an {ChildInjectorAttributeMetadata.ChildInjectorAttributeClassName}.",
-                    childInjectorMethod.Locations.First(),
-                    currentCtx);
-            }
+                    if (!childInjectorAttributeExtractor.CanExtract(childInjectorMethod)) {
+                        throw Diagnostics.InvalidSpecification.AsException(
+                            $"Type {childInjectorMethod} must declare an {ChildInjectorAttributeMetadata.ChildInjectorAttributeClassName}.",
+                            childInjectorMethod.Locations.First(),
+                            currentCtx);
+                    }
 
-            var childInjectorAttribute = childInjectorAttributeExtractor.Extract(childInjectorMethod)
-                .GetOrThrow(currentCtx)
-                .Also(_ => childInjectorAttributeExtractor.ValidateAttributedType(childInjectorMethod, currentCtx));
+                    var childInjectorAttribute = childInjectorAttributeExtractor.Extract(childInjectorMethod)
+                        .GetOrThrow(currentCtx)
+                        .Also(_ => childInjectorAttributeExtractor.ValidateAttributedType(childInjectorMethod,
+                            currentCtx));
 
-            IReadOnlyList<TypeModel> parameters = childInjectorMethod.Parameters
-                .Select(parameter => TypeModel.FromTypeSymbol(parameter.Type))
-                .ToImmutableList();
+                    IReadOnlyList<TypeModel> parameters = childInjectorMethod.Parameters
+                        .Select(parameter => TypeModel.FromTypeSymbol(parameter.Type))
+                        .ToImmutableList();
 
-            var returnType = TypeModel.FromTypeSymbol(childInjectorMethod.ReturnType);
-            return new InjectorChildFactoryDesc(
-                returnType,
-                childInjectorMethod.Name,
-                parameters,
-                childInjectorLocation);
+                    var returnType = TypeModel.FromTypeSymbol(childInjectorMethod.ReturnType);
+                    return new InjectorChildFactoryDesc(
+                        returnType,
+                        childInjectorMethod.Name,
+                        parameters,
+                        childInjectorLocation);
+                });
         }
     }
 }

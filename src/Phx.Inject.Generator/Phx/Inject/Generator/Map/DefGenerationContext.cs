@@ -27,6 +27,8 @@ internal record DefGenerationContext : IGeneratorContext {
     public IGeneratorContext? ParentContext { get; private init; }
     public GeneratorExecutionContext ExecutionContext { get; }
     
+    public IExceptionAggregator Aggregator { get; set; }
+    
     public DefGenerationContext(
         InjectorDesc injector,
         IReadOnlyDictionary<TypeModel, InjectorDesc> injectors,
@@ -34,7 +36,7 @@ internal record DefGenerationContext : IGeneratorContext {
         IReadOnlyDictionary<TypeModel, DependencyDesc> dependencies,
         IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> factoryRegistrations,
         IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations,
-        GeneratorExecutionContext executionCtx
+        IGeneratorContext parentContext
     ) {
         Injector = injector;
         Injectors = injectors;
@@ -43,8 +45,9 @@ internal record DefGenerationContext : IGeneratorContext {
         FactoryRegistrations = factoryRegistrations;
         BuilderRegistrations = builderRegistrations;
         Symbol = null;
-        ParentContext = null;
-        ExecutionContext = executionCtx;
+        ParentContext = parentContext;
+        ExecutionContext = parentContext.ExecutionContext;
+        Aggregator = parentContext.Aggregator;
     }
 
     public InjectorDesc GetInjector(TypeModel type, Location location) {
@@ -165,10 +168,9 @@ internal record DefGenerationContext : IGeneratorContext {
             Dependencies,
             FactoryRegistrations,
             BuilderRegistrations,
-            ExecutionContext
+            this
         ) {
-            Symbol = symbol,
-            ParentContext = this
+            Symbol = symbol
         };
     }
 }

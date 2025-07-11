@@ -53,10 +53,9 @@ internal class PartialAttributeMetadata : AttributeMetadata {
             ISymbol attributedSymbol,
             TypeModel partialType,
             IGeneratorContext generatorCtx) {
-            ExceptionAggregator.Try(
+            generatorCtx.Aggregator.Aggregate(
                 "Validating partial type",
-                generatorCtx,
-                _ => {
+                () => {
                     if (attributedSymbol is not IMethodSymbol
                         and not IPropertySymbol
                         and not IFieldSymbol {
@@ -70,7 +69,7 @@ internal class PartialAttributeMetadata : AttributeMetadata {
                             generatorCtx);
                     }
                 },
-                _ => {
+                () => {
                     if (!PartialTypes.Contains(partialType.NamespacedBaseTypeName)) {
                         throw Diagnostics.InvalidSpecification.AsException(
                             $"Partial factories must return one of [{string.Join(", ", PartialTypes)}].",
