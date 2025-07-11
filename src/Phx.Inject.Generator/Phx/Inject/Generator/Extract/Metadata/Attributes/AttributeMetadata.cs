@@ -8,6 +8,8 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
@@ -18,7 +20,7 @@ internal interface IAttributeMetadata : IDescriptor {
     AttributeData AttributeData { get; }
 }
 
-internal abstract class AttributeMetadata : IAttributeMetadata {
+internal class AttributeMetadata : IAttributeMetadata {
     protected AttributeMetadata(ISymbol attributedSymbol, AttributeData attributeData) {
         AttributedSymbol = attributedSymbol;
         AttributeTypeSymbol = attributeData.AttributeClass!;
@@ -52,5 +54,39 @@ internal abstract class AttributeMetadata : IAttributeMetadata {
 
         protected override ImmutableArray<KeyValuePair<string, TypedConstant>> CommonNamedArguments { get; } =
             ImmutableArray<KeyValuePair<string, TypedConstant>>.Empty;
+    }
+    
+    public interface IAttributeExtractor {
+        bool CanExtract(ISymbol attributedSymbol, string attributeClassName);
+        IResult<AttributeMetadata> ExtractOne(ISymbol attributedSymbol, string attributeClassName);
+        IReadOnlyList<IResult<AttributeMetadata>> ExtractAll(ISymbol attributedSymbol, string attributeClassName);
+    }
+
+    public class AttributeExtractor : IAttributeExtractor {
+        public static IAttributeExtractor Instance = new AttributeExtractor(AttributeHelper.Instance);
+
+        private readonly IAttributeHelper attributeHelper;
+
+        internal AttributeExtractor(IAttributeHelper attributeHelper) {
+            this.attributeHelper = attributeHelper;
+        }
+        
+        public bool CanExtract(ISymbol attributedSymbol, string attributeClassName) {
+            return attributeHelper.HasAttribute(attributedSymbol, attributeClassName);
+        }
+
+        public IResult<AttributeMetadata> ExtractOne(ISymbol attributedSymbol, string attributeClassName) {
+            return attributeHelper.ExpectSingleAttribute(
+                attributedSymbol,
+                attributeClassName,
+                attributeData => Result.Ok(new AttributeMetadata(attributedSymbol, attributeData)));
+        }
+
+        public IReadOnlyList<IResult<AttributeMetadata>> ExtractAll(ISymbol attributedSymbol, string attributeClassName) {
+            return attributeHelper.GetAttributes(
+                attributedSymbol,
+                attributeClassName,
+                attributeData => Result.Ok(new AttributeMetadata(attributedSymbol, attributeData)));
+        }
     }
 }

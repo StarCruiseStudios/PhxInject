@@ -31,32 +31,32 @@ internal class QualifierAttributeMetadata : AttributeMetadata {
 
     public class Extractor : IExtractor {
         public static IExtractor Instance = new Extractor(
-            AttributeExtractor.Instance,
+            AttributeNameExtractor.Instance,
             AttributeHelper.Instance);
 
-        private readonly IAttributeExtractor attributeExtractor;
+        private readonly IAttributeNameExtractor attributeNameExtractor;
         private readonly IAttributeHelper attributeHelper;
 
         internal Extractor(
-            IAttributeExtractor attributeExtractor,
+            IAttributeNameExtractor attributeNameExtractor,
             IAttributeHelper attributeHelper
         ) {
-            this.attributeExtractor = attributeExtractor;
+            this.attributeNameExtractor = attributeNameExtractor;
             this.attributeHelper = attributeHelper;
         }
 
         public bool CanExtract(ISymbol attributedSymbol) {
             return attributedSymbol.GetAttributes()
-                .Any(attributeData => attributeExtractor.CanExtract(attributeData.AttributeClass!));
+                .Any(attributeData => attributeNameExtractor.CanExtract(attributeData.AttributeClass!));
         }
 
         public IResult<QualifierAttributeMetadata> Extract(ISymbol attributedSymbol) {
             var attributeDatas = attributedSymbol.GetAttributes()
-                .Where(attributeData => attributeExtractor.CanExtract(attributeData.AttributeClass!))
+                .Where(attributeData => attributeNameExtractor.CanExtract(attributeData.AttributeClass!))
                 .ToImmutableList();
 
             foreach (var attributeData in attributeDatas) {
-                var attributeResult = attributeExtractor.Extract(attributedSymbol, attributeData.AttributeClass!);
+                var attributeResult = attributeNameExtractor.Extract(attributedSymbol, attributeData.AttributeClass!);
                 if (!attributeResult.IsOk) {
                     return attributeResult;
                 }
@@ -79,24 +79,24 @@ internal class QualifierAttributeMetadata : AttributeMetadata {
 
         public void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
             foreach (var attributeData in attributedSymbol.GetAttributes()
-                .Where(attributeData => attributeExtractor.CanExtract(attributeData.AttributeClass!))
+                .Where(attributeData => attributeNameExtractor.CanExtract(attributeData.AttributeClass!))
             ) {
-                attributeExtractor.ValidateAttributedType(attributeData.AttributeClass!, generatorCtx);
+                attributeNameExtractor.ValidateAttributedType(attributeData.AttributeClass!, generatorCtx);
             }
         }
     }
 
-    public interface IAttributeExtractor {
+    public interface IAttributeNameExtractor {
         bool CanExtract(ISymbol attributeTypeSymbol);
         IResult<QualifierAttributeMetadata> Extract(ISymbol attributedSymbol, ISymbol attributeTypeSymbol);
         void ValidateAttributedType(ISymbol attributeTypeSymbol, IGeneratorContext generatorCtx);
     }
 
-    public class AttributeExtractor : IAttributeExtractor {
-        public static IAttributeExtractor Instance = new AttributeExtractor(AttributeHelper.Instance);
+    public class AttributeNameExtractor : IAttributeNameExtractor {
+        public static IAttributeNameExtractor Instance = new AttributeNameExtractor(AttributeHelper.Instance);
         private readonly IAttributeHelper attributeHelper;
 
-        internal AttributeExtractor(IAttributeHelper attributeHelper) {
+        internal AttributeNameExtractor(IAttributeHelper attributeHelper) {
             this.attributeHelper = attributeHelper;
         }
 

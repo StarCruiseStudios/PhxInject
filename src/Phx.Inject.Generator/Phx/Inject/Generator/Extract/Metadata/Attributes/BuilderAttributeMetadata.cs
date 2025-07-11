@@ -12,11 +12,8 @@ using Phx.Inject.Common.Exceptions;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal class BuilderAttributeMetadata : AttributeMetadata {
+internal record BuilderAttributeMetadata(AttributeMetadata Attribute) {
     public const string BuilderAttributeClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(BuilderAttribute)}";
-
-    public BuilderAttributeMetadata(ISymbol attributedSymbol, AttributeData attributeData)
-        : base(attributedSymbol, attributeData) { }
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
@@ -25,23 +22,20 @@ internal class BuilderAttributeMetadata : AttributeMetadata {
     }
 
     public class Extractor : IExtractor {
-        public static IExtractor Instance = new Extractor(AttributeHelper.Instance);
-        private readonly IAttributeHelper attributeHelper;
+        public static IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
+        private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
 
-        internal Extractor(IAttributeHelper attributeHelper) {
-            this.attributeHelper = attributeHelper;
+        internal Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) {
+            this.attributeExtractor = attributeExtractor;
         }
 
         public bool CanExtract(ISymbol attributedSymbol) {
-            return attributeHelper.HasAttribute(attributedSymbol, BuilderAttributeClassName);
+            return attributeExtractor.CanExtract(attributedSymbol, BuilderAttributeClassName);
         }
 
         public IResult<BuilderAttributeMetadata> Extract(ISymbol attributedSymbol) {
-            return attributeHelper.ExpectSingleAttribute(
-                attributedSymbol,
-                BuilderAttributeClassName,
-                attributeData => Result.Ok(
-                    new BuilderAttributeMetadata(attributedSymbol, attributeData)));
+            return attributeExtractor.ExtractOne(attributedSymbol, BuilderAttributeClassName)
+                .Map(attribute => Result.Ok(new BuilderAttributeMetadata(attribute)));
         }
 
         public void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
