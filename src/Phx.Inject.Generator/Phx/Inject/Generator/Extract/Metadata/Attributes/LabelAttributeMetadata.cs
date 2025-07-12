@@ -24,7 +24,7 @@ internal record LabelAttributeMetadata(string Label, AttributeMetadata Attribute
 
     public interface IAttributeExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        LabelAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        LabelAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx);
     }
 
     public class AttributeExtractor(AttributeMetadata.IAttributeExtractor attributeExtractor) : IAttributeExtractor {
@@ -35,8 +35,8 @@ internal record LabelAttributeMetadata(string Label, AttributeMetadata Attribute
             return attributeExtractor.CanExtract(attributedSymbol, LabelAttributeClassName);
         }
 
-        public LabelAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
-            var attribute = attributeExtractor.ExtractOne(attributedSymbol, LabelAttributeClassName, generatorCtx);
+        public LabelAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx) {
+            var attribute = attributeExtractor.ExtractOne(attributedSymbol, LabelAttributeClassName, currentCtx);
             var labels = attribute.AttributeData.ConstructorArguments
                 .Where(argument => argument.Type.GetFullyQualifiedName() == TypeNames.StringClassName)
                 .Select(argument => (string)argument.Value!)
@@ -49,7 +49,7 @@ internal record LabelAttributeMetadata(string Label, AttributeMetadata Attribute
             throw Diagnostics.InvalidSpecification.AsException(
                 $"Label for symbol {attributedSymbol.Name} must provide one label value.",
                 attribute.Location,
-                generatorCtx);
+                currentCtx);
         }
     }
 
@@ -57,7 +57,7 @@ internal record LabelAttributeMetadata(string Label, AttributeMetadata Attribute
         LabelAttributeMetadata Extract(
             string label,
             AttributeMetadata attributeMetadata,
-            IGeneratorContext generatorCtx);
+            IGeneratorContext currentCtx);
     }
 
     public class StringExtractor : IStringExtractor {
@@ -66,19 +66,19 @@ internal record LabelAttributeMetadata(string Label, AttributeMetadata Attribute
         public LabelAttributeMetadata Extract(
             string label,
             AttributeMetadata attributeMetadata,
-            IGeneratorContext generatorCtx) {
-            VerifyExtract(label, attributeMetadata, generatorCtx);
+            IGeneratorContext currentCtx) {
+            VerifyExtract(label, attributeMetadata, currentCtx);
 
             return new LabelAttributeMetadata(label, attributeMetadata);
         }
 
-        private bool VerifyExtract(string label, AttributeMetadata attributeMetadata, IGeneratorContext? generatorCtx) {
-            if (generatorCtx != null) {
+        private bool VerifyExtract(string label, AttributeMetadata attributeMetadata, IGeneratorContext? currentCtx) {
+            if (currentCtx != null) {
                 if (string.IsNullOrWhiteSpace(label)) {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Cannot extract label from a null or empty string\"{label}\".",
                         attributeMetadata.Location,
-                        generatorCtx);
+                        currentCtx);
                 }
             }
 

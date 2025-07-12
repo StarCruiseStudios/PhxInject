@@ -66,7 +66,7 @@ internal class SourceDefMapper {
                                 injectorSpecDescMap.Add(spec, specDesc);
                             }
 
-                            var defGenerationContext = new DefGenerationContext(
+                            var defGenerationCtx = new DefGenerationContext(
                                 injectorDesc,
                                 injectorDescMap,
                                 injectorSpecDescMap,
@@ -77,14 +77,14 @@ internal class SourceDefMapper {
 
                             if (generatorSettings.AllowConstructorFactories) {
                                 var constructorSpec =
-                                    specDefMapper.ExtractConstructorSpecForContext(defGenerationContext);
+                                    specDefMapper.ExtractConstructorSpecForContext(defGenerationCtx);
 
                                 if (constructorSpec != null) {
                                     injectorSpecDescMap.Add(constructorSpec.SpecType, constructorSpec);
                                 }
                             }
 
-                            return new InjectionDefMapper().Map(defGenerationContext);
+                            return new InjectionDefMapper().Map(defGenerationCtx);
                         })
                     .ToImmutableList();
             });

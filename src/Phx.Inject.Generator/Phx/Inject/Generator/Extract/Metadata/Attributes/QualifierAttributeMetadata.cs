@@ -22,7 +22,7 @@ internal record QualifierAttributeMetadata(AttributeMetadata AttributeMetadata) 
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        QualifierAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        QualifierAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx);
     }
 
     public class Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) : IExtractor {
@@ -32,22 +32,22 @@ internal record QualifierAttributeMetadata(AttributeMetadata AttributeMetadata) 
             return attributeExtractor.CanExtract(attributedSymbol, QualifierAttributeClassName);
         }
 
-        public QualifierAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+        public QualifierAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx) {
             if (attributedSymbol is not INamedTypeSymbol namedSymbol) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Expected qualifier type {attributedSymbol.Name} to be a type.",
                     attributedSymbol.GetLocationOrDefault(),
-                    generatorCtx);
+                    currentCtx);
             }
 
             if (namedSymbol.BaseType?.GetFullyQualifiedName() != TypeNames.AttributeClassName) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Expected qualifier type {attributedSymbol.Name} to be an Attribute type.",
                     attributedSymbol.GetLocationOrDefault(),
-                    generatorCtx);
+                    currentCtx);
             }
 
-            var attribute = attributeExtractor.ExtractOne(attributedSymbol, QualifierAttributeClassName, generatorCtx);
+            var attribute = attributeExtractor.ExtractOne(attributedSymbol, QualifierAttributeClassName, currentCtx);
             return new QualifierAttributeMetadata(attribute);
         }
     }

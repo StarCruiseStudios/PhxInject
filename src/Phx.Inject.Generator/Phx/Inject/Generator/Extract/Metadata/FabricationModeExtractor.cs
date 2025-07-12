@@ -20,7 +20,7 @@ internal static class FactoryFabricationModeMetadata {
         FactoryFabricationMode Extract(
             ISymbol attributedSymbol,
             AttributeData attributeData,
-            IGeneratorContext generatorCtx);
+            IGeneratorContext parentCtx);
     }
 
     internal class Extractor : IExtractor {
@@ -29,7 +29,7 @@ internal static class FactoryFabricationModeMetadata {
         public FactoryFabricationMode Extract(
             ISymbol attributedSymbol,
             AttributeData attributeData,
-            IGeneratorContext generatorCtx) {
+            IGeneratorContext parentCtx) {
             IReadOnlyList<FactoryFabricationMode> fabricationModes = attributeData.ConstructorArguments
                 .Where(argument => argument.Type!.GetFullyQualifiedName() == TypeNames.FabricationModeClassName)
                 .Select(argument => (FactoryFabricationMode)argument.Value!)
@@ -41,7 +41,7 @@ internal static class FactoryFabricationModeMetadata {
                     throw Diagnostics.InvalidSpecification.AsException(
                         "Factories can only have a single fabrication mode.",
                         attributeData.GetAttributeLocation(attributedSymbol),
-                        generatorCtx);
+                        parentCtx);
                 case 1:
                     fabricationMode = fabricationModes.Single();
                     break;

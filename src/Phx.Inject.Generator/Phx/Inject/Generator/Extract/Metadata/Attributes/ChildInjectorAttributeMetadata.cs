@@ -19,7 +19,7 @@ internal record ChildInjectorAttributeMetadata(AttributeMetadata AttributeMetada
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        ChildInjectorAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        ChildInjectorAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx);
     }
 
     public class Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) : IExtractor {
@@ -29,9 +29,9 @@ internal record ChildInjectorAttributeMetadata(AttributeMetadata AttributeMetada
             return attributeExtractor.CanExtract(attributedSymbol, ChildInjectorAttributeClassName);
         }
 
-        public ChildInjectorAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+        public ChildInjectorAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx) {
             var attribute =
-                attributeExtractor.ExtractOne(attributedSymbol, ChildInjectorAttributeClassName, generatorCtx);
+                attributeExtractor.ExtractOne(attributedSymbol, ChildInjectorAttributeClassName, currentCtx);
             return new ChildInjectorAttributeMetadata(attribute);
         }
     }

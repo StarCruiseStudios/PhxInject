@@ -23,21 +23,21 @@ internal record DependencyImplementationDef(
     public interface IMapper {
         DependencyImplementationDef Map(
             DependencyMetadata dependencyMetadata,
-            DefGenerationContext context
+            DefGenerationContext currentCtx
         );
     }
 
     public class Mapper : IMapper {
         public DependencyImplementationDef Map(
             DependencyMetadata dependencyMetadata,
-            DefGenerationContext context
+            DefGenerationContext currentCtx
         ) {
             var implementationType = TypeHelpers.CreateDependencyImplementationType(
-                context.Injector.InjectorType,
+                currentCtx.Injector.InjectorType,
                 dependencyMetadata.DependencyInterfaceType);
 
             IReadOnlyList<DependencyProviderMethodDef> providers = dependencyMetadata.Providers.Select(provider => {
-                    var specContainerFactoryInvocation = context.GetSpecContainerFactoryInvocation(
+                    var specContainerFactoryInvocation = currentCtx.GetSpecContainerFactoryInvocation(
                         provider.ProvidedType,
                         provider.Location);
 

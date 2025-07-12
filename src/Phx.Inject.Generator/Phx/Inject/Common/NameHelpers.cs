@@ -33,7 +33,7 @@ internal static class NameHelpers {
         return $"{injectorType.BaseTypeName}.{SpecContainerCollectionTypeName}";
     }
 
-    public static string GetSpecContainerFactoryName(this SpecFactoryDesc factory, IGeneratorContext context) {
+    public static string GetSpecContainerFactoryName(this SpecFactoryDesc factory, IGeneratorContext currentCtx) {
         var sb = factory.SpecFactoryMemberType switch {
             SpecFactoryMemberType.Method => new StringBuilder("Fac_"),
             SpecFactoryMemberType.Property => new StringBuilder("PropFac_"),
@@ -42,7 +42,7 @@ internal static class NameHelpers {
             _ => throw Diagnostics.InternalError.AsFatalException(
                 $"Unhandled Spec Factory Member Type {factory.SpecFactoryMemberType}.",
                 factory.Location,
-                context)
+                currentCtx)
         };
 
         sb.Append(factory.ReturnType.AsVariableName().StartUppercase())
@@ -52,7 +52,7 @@ internal static class NameHelpers {
         return sb.ToString();
     }
 
-    public static string GetSpecContainerBuilderName(this SpecBuilderMetadata builder, IGeneratorContext context) {
+    public static string GetSpecContainerBuilderName(this SpecBuilderMetadata builder, IGeneratorContext currentCtx) {
         var sb = builder.SpecBuilderMemberType switch {
             SpecBuilderMemberType.Method => new StringBuilder("Bld_"),
             SpecBuilderMemberType.Reference => new StringBuilder("RefBld_"),
@@ -60,7 +60,7 @@ internal static class NameHelpers {
             _ => throw Diagnostics.InternalError.AsFatalException(
                 $"Unhandled Spec Builder Member Type {builder.SpecBuilderMemberType}.",
                 builder.Location,
-                context)
+                currentCtx)
         };
 
         sb.Append(builder.BuiltType.AsVariableName().StartUppercase())

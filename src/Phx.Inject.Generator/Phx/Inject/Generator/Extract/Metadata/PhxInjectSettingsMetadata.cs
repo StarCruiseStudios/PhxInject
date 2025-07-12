@@ -17,7 +17,7 @@ internal static class PhxInjectSettingsMetadata {
     public interface IExtractor {
         GeneratorSettings Extract(
             IReadOnlyList<ITypeSymbol> settingsCandidates,
-            IGeneratorContext generatorCtx);
+            IGeneratorContext parentCtx);
     }
 
     public class Extractor : IExtractor {
@@ -31,16 +31,16 @@ internal static class PhxInjectSettingsMetadata {
 
         public GeneratorSettings Extract(
             IReadOnlyList<ITypeSymbol> settingsCandidates,
-            IGeneratorContext generatorCtx
+            IGeneratorContext parentCtx
         ) {
-            var extractorCtx = new ExtractorContext("extracting PhxInject settings", null, generatorCtx);
+            var currentCtx = new ExtractorContext("extracting PhxInject settings", null, parentCtx);
             IReadOnlyList<GeneratorSettings> injectSettings = settingsCandidates
                 .Where(typeSymbol => phxInjectAttributeExtractor.CanExtract(typeSymbol))
                 .SelectCatching(
-                    generatorCtx.Aggregator,
+                    currentCtx.Aggregator,
                     typeSymbol => $"extracting PhxInject settings from {typeSymbol}",
                     typeSymbol => {
-                        var settingsAttribute = phxInjectAttributeExtractor.Extract(typeSymbol, generatorCtx);
+                        var settingsAttribute = phxInjectAttributeExtractor.Extract(typeSymbol, currentCtx);
 
                         return new GeneratorSettings(
                             settingsAttribute.TabSize,
@@ -50,22 +50,22 @@ internal static class PhxInjectSettingsMetadata {
                             settingsAttribute);
                     })
                 .ToImmutableList();
-            extractorCtx.Log($"Discovered {injectSettings.Count} inject settings.");
+            currentCtx.Log($"Discovered {injectSettings.Count} inject settings.");
 
             var settings = injectSettings.Count switch {
                 1 => injectSettings.First(),
-                _ => generatorCtx.Aggregator.AggregateMany<GeneratorSettings, GeneratorSettings>(
+                _ => currentCtx.Aggregator.AggregateMany<GeneratorSettings, GeneratorSettings>(
                             injectSettings,
                             settings => $"extracting PhxInject settings {settings.Name}",
                             settings => throw Diagnostics.InvalidSpecification.AsException(
                                 $"Only one PhxInject settings can be specified. "
                                 + $"Found {injectSettings.Count} on types [{string.Join(", ", injectSettings.Select(it => it.Metadata?.AttributeMetadata.AttributedSymbol))}].",
                                 settings.Location,
-                                extractorCtx))
+                                currentCtx))
                         .FirstOrDefault()
                     ?? new GeneratorSettings()
             };
-            extractorCtx.Log($"Using settings: {settings}");
+            currentCtx.Log($"Using settings: {settings}");
             return settings;
         }
     }

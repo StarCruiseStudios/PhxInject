@@ -24,7 +24,7 @@ internal record DependencyAttributeMetadata(TypeModel DependencyType, AttributeM
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        DependencyAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        DependencyAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx);
     }
 
     public class Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) : IExtractor {
@@ -34,8 +34,8 @@ internal record DependencyAttributeMetadata(TypeModel DependencyType, AttributeM
             return attributeExtractor.CanExtract(attributedSymbol, DependencyAttributeClassName);
         }
 
-        public DependencyAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
-            var attribute = attributeExtractor.ExtractOne(attributedSymbol, DependencyAttributeClassName, generatorCtx);
+        public DependencyAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx) {
+            var attribute = attributeExtractor.ExtractOne(attributedSymbol, DependencyAttributeClassName, currentCtx);
 
             var constructorArgument = attribute.AttributeData.ConstructorArguments
                 .Where(argument => argument.Kind == TypedConstantKind.Type)
@@ -47,7 +47,7 @@ internal record DependencyAttributeMetadata(TypeModel DependencyType, AttributeM
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Dependency for symbol {attributedSymbol.Name} must provide a dependency type.",
                     attribute.AttributeData.GetAttributeLocation(attributedSymbol),
-                    generatorCtx);
+                    currentCtx);
             }
 
             return new DependencyAttributeMetadata(

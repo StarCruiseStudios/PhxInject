@@ -31,7 +31,7 @@ internal record SpecFactoryDesc(
         ISymbol factoryReferenceSymbol,
         ITypeSymbol factoryReferenceTypeSymbol,
         Location factoryReferenceLocation,
-        ExtractorContext extractorCtx,
+        ExtractorContext currentCtx,
         out QualifiedTypeModel returnType,
         out IEnumerable<QualifiedTypeModel> parameterTypes
     ) {
@@ -41,12 +41,12 @@ internal record SpecFactoryDesc(
             throw Diagnostics.InvalidSpecification.AsException(
                 "Factory reference must be a field or property of type Func<>.",
                 factoryReferenceLocation,
-                extractorCtx);
+                currentCtx);
         }
 
         var typeArguments = referenceTypeSymbol.TypeArguments;
 
-        var qualifier = QualifierMetadata.AttributeExtractor.Instance.Extract(factoryReferenceSymbol, extractorCtx);
+        var qualifier = QualifierMetadata.AttributeExtractor.Instance.Extract(factoryReferenceSymbol, currentCtx);
         var returnTypeModel = TypeModel.FromTypeSymbol(typeArguments[typeArguments.Length - 1]);
         returnType = new QualifiedTypeModel(
             returnTypeModel,
@@ -63,23 +63,23 @@ internal record SpecFactoryDesc(
     public interface IExtractor {
         SpecFactoryDesc ExtractAutoConstructorFactory(
             QualifiedTypeModel constructorType,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         );
         SpecFactoryDesc? ExtractFactory(
             IMethodSymbol factoryMethod,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         );
         SpecFactoryDesc? ExtractFactory(
             IPropertySymbol factoryProperty,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         );
         SpecFactoryDesc? ExtractFactoryReference(
             IPropertySymbol factoryReferenceProperty,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         );
         SpecFactoryDesc? ExtractFactoryReference(
             IFieldSymbol factoryReferenceField,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         );
     }
 
@@ -105,9 +105,9 @@ internal record SpecFactoryDesc(
 
         public SpecFactoryDesc ExtractAutoConstructorFactory(
             QualifiedTypeModel constructorType,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         ) {
-            return extractorCtx.UseChildContext(
+            return parentCtx.UseChildContext(
                 "extracting auto constructor factory specification",
                 constructorType.TypeModel.TypeSymbol,
                 currentCtx => {
@@ -143,9 +143,9 @@ internal record SpecFactoryDesc(
 
         public SpecFactoryDesc? ExtractFactory(
             IMethodSymbol factoryMethod,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         ) {
-            return extractorCtx.UseChildContext(
+            return parentCtx.UseChildContext(
                 "extracting specification factory method",
                 factoryMethod,
                 currentCtx => {
@@ -161,7 +161,7 @@ internal record SpecFactoryDesc(
                         throw Diagnostics.InvalidSpecification.AsException(
                             "Method cannot have both Factory and FactoryReference attributes.",
                             factoryLocation,
-                            extractorCtx);
+                            currentCtx);
                     }
 
                     var methodParameterTypes =
@@ -191,9 +191,9 @@ internal record SpecFactoryDesc(
 
         public SpecFactoryDesc? ExtractFactory(
             IPropertySymbol factoryProperty,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         ) {
-            return extractorCtx.UseChildContext(
+            return parentCtx.UseChildContext(
                 "extracting specification factory property",
                 factoryProperty,
                 currentCtx => {
@@ -209,7 +209,7 @@ internal record SpecFactoryDesc(
                         throw Diagnostics.InvalidSpecification.AsException(
                             "Property cannot have both Factory and FactoryReference attributes.",
                             factoryLocation,
-                            extractorCtx);
+                            currentCtx);
                     }
 
                     var methodParameterTypes = ImmutableList.Create<QualifiedTypeModel>();
@@ -238,9 +238,9 @@ internal record SpecFactoryDesc(
 
         public SpecFactoryDesc? ExtractFactoryReference(
             IPropertySymbol factoryReferenceProperty,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         ) {
-            return extractorCtx.UseChildContext(
+            return parentCtx.UseChildContext(
                 "extracting specification factory reference property",
                 factoryReferenceProperty,
                 currentCtx => {
@@ -257,7 +257,7 @@ internal record SpecFactoryDesc(
                         throw Diagnostics.InvalidSpecification.AsException(
                             "Property cannot have both Factory and FactoryReference attributes.",
                             factoryReferenceLocation,
-                            extractorCtx);
+                            currentCtx);
                     }
 
                     GetFactoryReferenceTypes(
@@ -286,9 +286,9 @@ internal record SpecFactoryDesc(
 
         public SpecFactoryDesc? ExtractFactoryReference(
             IFieldSymbol factoryReferenceField,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         ) {
-            return extractorCtx.UseChildContext(
+            return parentCtx.UseChildContext(
                 "extracting specification factory reference field",
                 factoryReferenceField,
                 currentCtx => {
@@ -304,7 +304,7 @@ internal record SpecFactoryDesc(
                         throw Diagnostics.InvalidSpecification.AsException(
                             "Field cannot have both Factory and FactoryReference attributes.",
                             factoryReferenceLocation,
-                            extractorCtx);
+                            currentCtx);
                     }
 
                     GetFactoryReferenceTypes(

@@ -31,7 +31,7 @@ internal record DependencyProviderMetadata(
         DependencyProviderMetadata Extract(
             IMethodSymbol providerMethodSymbol,
             TypeModel dependencyInterface,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         );
     }
 
@@ -47,9 +47,9 @@ internal record DependencyProviderMetadata(
         public DependencyProviderMetadata Extract(
             IMethodSymbol providerMethodSymbol,
             TypeModel dependencyInterface,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         ) {
-            return extractorCtx.UseChildContext(
+            return parentCtx.UseChildContext(
                 $"extracting dependency provider {providerMethodSymbol}",
                 providerMethodSymbol,
                 currentCtx => {
@@ -73,20 +73,20 @@ internal record DependencyProviderMetadata(
                 });
         }
 
-        private bool VerifyExtract(IMethodSymbol providerMethodSymbol, IGeneratorContext? generatorCtx) {
-            if (generatorCtx != null) {
+        private bool VerifyExtract(IMethodSymbol providerMethodSymbol, IGeneratorContext? currentCtx) {
+            if (currentCtx != null) {
                 if (providerMethodSymbol.ReturnsVoid) {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Dependency provider {providerMethodSymbol.Name} must have a return type.",
                         providerMethodSymbol.GetLocationOrDefault(),
-                        generatorCtx);
+                        currentCtx);
                 }
 
                 if (providerMethodSymbol.Parameters.Length > 0) {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Dependency provider {providerMethodSymbol.Name} must not have any parameters.",
                         providerMethodSymbol.GetLocationOrDefault(),
-                        generatorCtx);
+                        currentCtx);
                 }
             }
 

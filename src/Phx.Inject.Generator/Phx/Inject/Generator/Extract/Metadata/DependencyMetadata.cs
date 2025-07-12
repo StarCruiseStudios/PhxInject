@@ -30,7 +30,7 @@ internal record DependencyMetadata(
         DependencyMetadata Extract(
             ITypeSymbol dependencySymbol,
             TypeModel containingInjectorInterfaceType,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         );
     }
 
@@ -45,9 +45,9 @@ internal record DependencyMetadata(
         public DependencyMetadata Extract(
             ITypeSymbol dependencySymbol,
             TypeModel containingInjectorInterfaceType,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         ) {
-            return extractorCtx.UseChildContext(
+            return parentCtx.UseChildContext(
                 $"extracting dependency {containingInjectorInterfaceType} -> {dependencySymbol}",
                 dependencySymbol,
                 currentCtx => {
@@ -73,13 +73,13 @@ internal record DependencyMetadata(
                 });
         }
 
-        private bool VerifyExtract(ITypeSymbol symbol, Location declarationLocation, IGeneratorContext? generatorCtx) {
-            if (generatorCtx != null) {
+        private bool VerifyExtract(ITypeSymbol symbol, Location declarationLocation, IGeneratorContext? currentCtx) {
+            if (currentCtx != null) {
                 if (symbol.TypeKind != TypeKind.Interface) {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Dependency {symbol.Name} must be an interface.",
                         declarationLocation,
-                        generatorCtx);
+                        currentCtx);
                 }
             }
 

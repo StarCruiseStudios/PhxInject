@@ -23,7 +23,7 @@ internal record SourceDesc(
         SourceDesc Extract(
             IReadOnlyList<ITypeSymbol> injectorCandidates,
             IReadOnlyList<ITypeSymbol> specificationCandidates,
-            IGeneratorContext generatorCtx);
+            IGeneratorContext parentCtx);
     }
 
     public class Extractor : IExtractor {
@@ -54,40 +54,40 @@ internal record SourceDesc(
         public SourceDesc Extract(
             IReadOnlyList<ITypeSymbol> injectorCandidates,
             IReadOnlyList<ITypeSymbol> specificationCandidates,
-            IGeneratorContext generatorCtx
+            IGeneratorContext parentCtx
         ) {
-            var extractorCtx = new ExtractorContext(null, null, generatorCtx);
+            var currentCtx = new ExtractorContext(null, null, parentCtx);
 
             IReadOnlyList<InjectorMetadata> injectorDescs = injectorCandidates
                 .Where(injectorTypeSymbol => injectorDescExtractor.CanExtract(injectorTypeSymbol))
                 .SelectCatching(
-                    extractorCtx.Aggregator,
+                    currentCtx.Aggregator,
                     injectorTypeSymbol => $"extracting injector from {injectorTypeSymbol}",
-                    injectorTypeSymbol => injectorDescExtractor.Extract(injectorTypeSymbol, extractorCtx))
+                    injectorTypeSymbol => injectorDescExtractor.Extract(injectorTypeSymbol, currentCtx))
                 .ToImmutableList();
-            extractorCtx.Log($"Discovered {injectorDescs.Count} injector types.");
+            currentCtx.Log($"Discovered {injectorDescs.Count} injector types.");
 
             IReadOnlyList<DependencyMetadata> dependencyDescs = injectorDescs
                 .Where(injectorDesc => injectorDesc.DependencyInterfaceType != null)
                 .SelectCatching(
-                    extractorCtx.Aggregator,
+                    currentCtx.Aggregator,
                     injectorDesc => $"extracting dependencies from injector {injectorDesc.InjectorInterfaceType}",
                     injectorDesc => {
                         var dependencySymbol = injectorDesc.DependencyInterfaceType!.TypeSymbol;
                         var injectorType = injectorDesc.InjectorInterfaceType;
-                        return dependencyDescExtractor.Extract(dependencySymbol, injectorType, extractorCtx);
+                        return dependencyDescExtractor.Extract(dependencySymbol, injectorType, currentCtx);
                     })
                 .ToImmutableList();
-            extractorCtx.Log($"Discovered {dependencyDescs.Count} dependency types.");
+            currentCtx.Log($"Discovered {dependencyDescs.Count} dependency types.");
 
             IReadOnlyList<SpecDesc> specDescs = specificationCandidates
                 .Where(specificationTypeSymbol => specificationAttributeExtractor.CanExtract(specificationTypeSymbol))
                 .SelectCatching(
-                    extractorCtx.Aggregator,
+                    currentCtx.Aggregator,
                     specificationTypeSymbol => $"extracting specification from {specificationTypeSymbol}",
-                    specificationTypeSymbol => specDescExtractor.Extract(specificationTypeSymbol, extractorCtx))
+                    specificationTypeSymbol => specDescExtractor.Extract(specificationTypeSymbol, currentCtx))
                 .ToImmutableList();
-            extractorCtx.Log($"Discovered {specDescs.Count} specification types.");
+            currentCtx.Log($"Discovered {specDescs.Count} specification types.");
 
             return new SourceDesc(
                 injectorDescs,

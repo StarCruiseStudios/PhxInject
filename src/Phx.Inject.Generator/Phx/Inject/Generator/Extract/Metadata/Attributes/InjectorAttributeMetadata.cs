@@ -25,7 +25,7 @@ internal record InjectorAttributeMetadata(
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        InjectorAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        InjectorAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx);
     }
 
     public class Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) : IExtractor {
@@ -35,8 +35,8 @@ internal record InjectorAttributeMetadata(
             return attributeExtractor.CanExtract(attributedSymbol, InjectorAttributeClassName);
         }
 
-        public InjectorAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
-            var attribute = attributeExtractor.ExtractOne(attributedSymbol, InjectorAttributeClassName, generatorCtx);
+        public InjectorAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx) {
+            var attribute = attributeExtractor.ExtractOne(attributedSymbol, InjectorAttributeClassName, currentCtx);
             var generatedClassName = attribute.AttributeData.ConstructorArguments
                 .FirstOrDefault(argument => argument.Kind != TypedConstantKind.Array)
                 .Value as string;

@@ -21,7 +21,7 @@ internal record BuilderReferenceAttributeMetadata(AttributeMetadata AttributeMet
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        BuilderReferenceAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        BuilderReferenceAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx);
     }
 
     public class Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) : IExtractor {
@@ -31,7 +31,7 @@ internal record BuilderReferenceAttributeMetadata(AttributeMetadata AttributeMet
             return attributeExtractor.CanExtract(attributedSymbol, BuilderReferenceAttributeClassName);
         }
 
-        public BuilderReferenceAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+        public BuilderReferenceAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx) {
             if (attributedSymbol is
                 not IFieldSymbol {
                     IsStatic: true,
@@ -46,11 +46,11 @@ internal record BuilderReferenceAttributeMetadata(AttributeMetadata AttributeMet
                     $"Builder reference {attributedSymbol.Name} must be a public or internal static property or field."
                     + $"{attributedSymbol.IsStatic}, {attributedSymbol.DeclaredAccessibility}",
                     attributedSymbol.GetLocationOrDefault(),
-                    generatorCtx);
+                    currentCtx);
             }
 
             var attribute =
-                attributeExtractor.ExtractOne(attributedSymbol, BuilderReferenceAttributeClassName, generatorCtx);
+                attributeExtractor.ExtractOne(attributedSymbol, BuilderReferenceAttributeClassName, currentCtx);
             return new BuilderReferenceAttributeMetadata(attribute);
         }
     }

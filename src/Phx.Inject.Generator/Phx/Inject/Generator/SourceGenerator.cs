@@ -31,76 +31,76 @@ internal class SourceGenerator : ISourceGenerator {
 
     public SourceGenerator() : this(new PhxInjectSettingsMetadata.Extractor()) { }
 
-    public void Initialize(GeneratorInitializationContext context) {
-        context.RegisterForSyntaxNotifications(() => new SourceSyntaxReceiver());
+    public void Initialize(GeneratorInitializationContext generatorInitializationContext) {
+        generatorInitializationContext.RegisterForSyntaxNotifications(() => new SourceSyntaxReceiver());
     }
 
-    public void Execute(GeneratorExecutionContext executionCtx) {
-            GeneratorContext.UseContext(executionCtx,
-                generatorCtx => {
-                    generatorCtx.Aggregator.Aggregate(
-                        "generating injection types",
-                        () => {
-                            // Abstract: Source code to syntax declarations.
-                            var syntaxReceiver = generatorCtx.ExecutionContext.SyntaxReceiver as SourceSyntaxReceiver
-                                ?? throw Diagnostics.InternalError.AsFatalException(
-                                    $"Incorrect Syntax Receiver {generatorCtx.ExecutionContext.SyntaxReceiver}.",
-                                    Location.None,
-                                    generatorCtx);
+    public void Execute(GeneratorExecutionContext executionContext) {
+        GeneratorContext.UseContext(executionContext,
+            currentCtx => {
+                currentCtx.Aggregator.Aggregate(
+                    "generating injection types",
+                    () => {
+                        // Abstract: Source code to syntax declarations.
+                        var syntaxReceiver = currentCtx.ExecutionContext.SyntaxReceiver as SourceSyntaxReceiver
+                            ?? throw Diagnostics.InternalError.AsFatalException(
+                                $"Incorrect Syntax Receiver {currentCtx.ExecutionContext.SyntaxReceiver}.",
+                                Location.None,
+                                currentCtx);
 
-                            // Extract: Syntax declarations to descriptors.
-                            IReadOnlyList<ITypeSymbol> settingsCandidates = syntaxReceiver.PhxInjectSettingsCandidates
-                                .SelectCatching(
-                                    generatorCtx.Aggregator,
-                                    syntaxNode =>
-                                        $"extracting PhxInject settings from syntax {syntaxNode.Identifier.Text}",
-                                    syntaxNode => ExpectTypeSymbolFromDeclaration(syntaxNode, generatorCtx))
-                                .ToImmutableList();
+                        // Extract: Syntax declarations to descriptors.
+                        IReadOnlyList<ITypeSymbol> settingsCandidates = syntaxReceiver.PhxInjectSettingsCandidates
+                            .SelectCatching(
+                                currentCtx.Aggregator,
+                                syntaxNode =>
+                                    $"extracting PhxInject settings from syntax {syntaxNode.Identifier.Text}",
+                                syntaxNode => ExpectTypeSymbolFromDeclaration(syntaxNode, currentCtx))
+                            .ToImmutableList();
 
-                            IReadOnlyList<ITypeSymbol> injectorCandidates = syntaxReceiver.InjectorCandidates
-                                .SelectCatching(
-                                    generatorCtx.Aggregator,
-                                    syntaxNode => $"extracting injectors from syntax {syntaxNode.Identifier.Text}",
-                                    syntaxNode => ExpectTypeSymbolFromDeclaration(syntaxNode, generatorCtx))
-                                .ToImmutableList();
+                        IReadOnlyList<ITypeSymbol> injectorCandidates = syntaxReceiver.InjectorCandidates
+                            .SelectCatching(
+                                currentCtx.Aggregator,
+                                syntaxNode => $"extracting injectors from syntax {syntaxNode.Identifier.Text}",
+                                syntaxNode => ExpectTypeSymbolFromDeclaration(syntaxNode, currentCtx))
+                            .ToImmutableList();
 
-                            IReadOnlyList<ITypeSymbol> specificationCandidates = syntaxReceiver.SpecificationCandidates
-                                .SelectCatching(
-                                    generatorCtx.Aggregator,
-                                    syntaxNode => $"extracting specifications from syntax {syntaxNode.Identifier.Text}",
-                                    syntaxNode => ExpectTypeSymbolFromDeclaration(syntaxNode, generatorCtx))
-                                .ToImmutableList();
+                        IReadOnlyList<ITypeSymbol> specificationCandidates = syntaxReceiver.SpecificationCandidates
+                            .SelectCatching(
+                                currentCtx.Aggregator,
+                                syntaxNode => $"extracting specifications from syntax {syntaxNode.Identifier.Text}",
+                                syntaxNode => ExpectTypeSymbolFromDeclaration(syntaxNode, currentCtx))
+                            .ToImmutableList();
 
-                            var settings = phxInjectSettingsExtractor
-                                .Extract(settingsCandidates, generatorCtx);
-                            var sourceDesc = new SourceDesc.Extractor()
-                                .Extract(injectorCandidates, specificationCandidates, generatorCtx);
+                        var settings = phxInjectSettingsExtractor
+                            .Extract(settingsCandidates, currentCtx);
+                        var sourceDesc = new SourceDesc.Extractor()
+                            .Extract(injectorCandidates, specificationCandidates, currentCtx);
 
-                            // Map: Descriptors to defs.
-                            var injectionContextDefs = new SourceDefMapper(settings)
-                                .Map(sourceDesc, generatorCtx);
+                        // Map: Descriptors to defs.
+                        var injectionContextDefs = new SourceDefMapper(settings)
+                            .Map(sourceDesc, currentCtx);
 
-                            // Project: Defs to templates.
-                            var templates = new SourceTemplateProjector()
-                                .Project(injectionContextDefs, generatorCtx);
+                        // Project: Defs to templates.
+                        var templates = new SourceTemplateProjector()
+                            .Project(injectionContextDefs, currentCtx);
 
-                            // Render: Templates to generated source.
-                            new SourceRenderer(settings)
-                                .Render(templates, generatorCtx);
-                        });
-                });
+                        // Render: Templates to generated source.
+                        new SourceRenderer(settings)
+                            .Render(templates, currentCtx);
+                    });
+            });
     }
     private static ITypeSymbol ExpectTypeSymbolFromDeclaration(
         TypeDeclarationSyntax syntaxNode,
-        IGeneratorContext generatorCtx
+        IGeneratorContext currentCtx
     ) {
-        var symbol = generatorCtx.ExecutionContext.Compilation
+        var symbol = currentCtx.ExecutionContext.Compilation
             .GetSemanticModel(syntaxNode.SyntaxTree)
             .GetDeclaredSymbol(syntaxNode);
         return symbol as ITypeSymbol
             ?? throw Diagnostics.InternalError.AsException(
                 $"Expected a type declaration, but found {symbol?.Kind.ToString() ?? "null"} for {syntaxNode.Identifier.Text}.",
                 syntaxNode.GetLocation(),
-                generatorCtx);
+                currentCtx);
     }
 }

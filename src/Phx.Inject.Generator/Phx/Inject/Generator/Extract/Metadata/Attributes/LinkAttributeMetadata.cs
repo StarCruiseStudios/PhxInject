@@ -43,7 +43,7 @@ internal record LinkAttributeMetadata(
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        IReadOnlyList<LinkAttributeMetadata> ExtractAll(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        IReadOnlyList<LinkAttributeMetadata> ExtractAll(ISymbol attributedSymbol, IGeneratorContext currentCtx);
     }
 
     public class Extractor(
@@ -58,10 +58,10 @@ internal record LinkAttributeMetadata(
 
         public IReadOnlyList<LinkAttributeMetadata> ExtractAll(
             ISymbol attributedSymbol,
-            IGeneratorContext generatorCtx) {
-            return attributeExtractor.ExtractAll(attributedSymbol, LinkAttributeClassName, generatorCtx)
+            IGeneratorContext currentCtx) {
+            return attributeExtractor.ExtractAll(attributedSymbol, LinkAttributeClassName, currentCtx)
                 .SelectCatching(
-                    generatorCtx.Aggregator,
+                    currentCtx.Aggregator,
                     attribute => $"extracting link attribute from {attributedSymbol}",
                     attribute => {
                         var attributeData = attribute.AttributeData;
@@ -69,7 +69,7 @@ internal record LinkAttributeMetadata(
                             throw Diagnostics.InvalidSpecification.AsException(
                                 "Link attribute must have only an input and output type specified.",
                                 attribute.Location,
-                                generatorCtx);
+                                currentCtx);
                         }
 
                         var inputTypeArgument = attributeData.ConstructorArguments[0].Value as ITypeSymbol;
@@ -79,7 +79,7 @@ internal record LinkAttributeMetadata(
                             throw Diagnostics.InvalidSpecification.AsException(
                                 "Link attribute must specify input and output types.",
                                 attribute.Location,
-                                generatorCtx);
+                                currentCtx);
                         }
 
                         var inputLabel = attributeData.NamedArguments
@@ -102,14 +102,14 @@ internal record LinkAttributeMetadata(
                             throw Diagnostics.InvalidSpecification.AsException(
                                 "Link attribute cannot specify both input label and qualifier.",
                                 attribute.Location,
-                                generatorCtx);
+                                currentCtx);
                         }
 
                         if (outputLabel != null && outputQualifier != null) {
                             throw Diagnostics.InvalidSpecification.AsException(
                                 "Link attribute cannot specify both output label and qualifier.",
                                 attribute.Location,
-                                generatorCtx);
+                                currentCtx);
                         }
 
                         return new LinkAttributeMetadata(

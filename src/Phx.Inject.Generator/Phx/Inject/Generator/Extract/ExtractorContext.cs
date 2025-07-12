@@ -32,16 +32,16 @@ internal class ExtractorContext : IGeneratorContext {
     public int ContextDepth { get; }
 
     public T UseChildContext<T>(string description, ISymbol symbol, Func<ExtractorContext, T> func) {
-        var childContext = new ExtractorContext(description, symbol, this);
+        var childCtx = new ExtractorContext(description, symbol, this);
         var message =
-            $"{(childContext.ContextDepth > 0 ? "|" : "")}{new string(' ', childContext.ContextDepth * 2)}{description}";
-        childContext.Log(message, Location.None);
+            $"{(childCtx.ContextDepth > 0 ? "|" : "")}{new string(' ', childCtx.ContextDepth * 2)}{description}";
+        childCtx.Log(message, Location.None);
         return ExceptionAggregator.Try(
             $"extracting {symbol}",
-            childContext,
+            childCtx,
             exceptionAggregator => {
-                childContext.Aggregator = exceptionAggregator;
-                return func(childContext);
+                childCtx.Aggregator = exceptionAggregator;
+                return func(childCtx);
             });
     }
 }

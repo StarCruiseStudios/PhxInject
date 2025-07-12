@@ -20,7 +20,7 @@ internal record BuilderAttributeMetadata(AttributeMetadata AttributeMetadata) : 
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        BuilderAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        BuilderAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx);
     }
 
     public class Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) : IExtractor {
@@ -30,7 +30,7 @@ internal record BuilderAttributeMetadata(AttributeMetadata AttributeMetadata) : 
             return attributeExtractor.CanExtract(attributedSymbol, BuilderAttributeClassName);
         }
 
-        public BuilderAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+        public BuilderAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx) {
             if (attributedSymbol is not IMethodSymbol {
                     IsStatic: true,
                     DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
@@ -39,10 +39,10 @@ internal record BuilderAttributeMetadata(AttributeMetadata AttributeMetadata) : 
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Builder {attributedSymbol.Name} must be a public or internal static method.",
                     attributedSymbol.GetLocationOrDefault(),
-                    generatorCtx);
+                    currentCtx);
             }
 
-            var attribute = attributeExtractor.ExtractOne(attributedSymbol, BuilderAttributeClassName, generatorCtx);
+            var attribute = attributeExtractor.ExtractOne(attributedSymbol, BuilderAttributeClassName, currentCtx);
             return new BuilderAttributeMetadata(attribute);
         }
     }

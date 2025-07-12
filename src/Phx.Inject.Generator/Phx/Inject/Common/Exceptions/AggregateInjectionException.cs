@@ -19,11 +19,11 @@ internal sealed class AggregateInjectionException : FatalInjectionException {
         string message,
         Diagnostic diagnostic,
         IEnumerable<InjectionException> exceptions,
-        IGeneratorContext generatorContext
+        IGeneratorContext currentCtx
     ) : base(
         message,
         diagnostic,
-        generatorContext
+        currentCtx
     ) {
         Exceptions = exceptions.ToImmutableList();
     }

@@ -31,7 +31,7 @@ internal record SpecLinkMetadata(
         bool CanExtract(TypeModel containingSpecificationType);
         IReadOnlyList<SpecLinkMetadata> ExtractAll(
             TypeModel containingSpecificationType,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         );
     }
 
@@ -52,9 +52,9 @@ internal record SpecLinkMetadata(
 
         public IReadOnlyList<SpecLinkMetadata> ExtractAll(
             TypeModel containingSpecificationType,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         ) {
-            return extractorCtx.UseChildContext(
+            return parentCtx.UseChildContext(
                 $"extracting links from {containingSpecificationType}",
                 containingSpecificationType.TypeSymbol,
                 currentCtx => {
@@ -70,7 +70,7 @@ internal record SpecLinkMetadata(
                                         ? customQualifierTypeExtractor.Extract(
                                             linkAttribute.AttributeMetadata.AttributedSymbol,
                                             linkAttribute.InputQualifier,
-                                            extractorCtx)
+                                            currentCtx)
                                         : linkAttribute.InputLabel != null
                                             ? labelStringExtractor.Extract(
                                                 linkAttribute.InputLabel,
@@ -82,7 +82,7 @@ internal record SpecLinkMetadata(
                                         ? customQualifierTypeExtractor.Extract(
                                             linkAttribute.AttributeMetadata.AttributedSymbol,
                                             linkAttribute.OutputQualifier,
-                                            extractorCtx)
+                                            currentCtx)
                                         : linkAttribute.OutputLabel != null
                                             ? labelStringExtractor.Extract(
                                                 linkAttribute.OutputLabel,
@@ -104,14 +104,14 @@ internal record SpecLinkMetadata(
                 });
         }
 
-        private bool VerifyExtract(TypeModel containingSpecificationType, IGeneratorContext? generatorCtx) {
+        private bool VerifyExtract(TypeModel containingSpecificationType, IGeneratorContext? currentCtx) {
             if (!linkAttributeExtractor.CanExtract(containingSpecificationType.TypeSymbol)) {
-                return generatorCtx == null
+                return currentCtx == null
                     ? false
                     : throw Diagnostics.InternalError.AsException(
                         $"Specification type {containingSpecificationType} must have a {LinkAttributeMetadata.LinkAttributeClassName}.",
                         containingSpecificationType.Location,
-                        generatorCtx);
+                        currentCtx);
             }
 
             return true;

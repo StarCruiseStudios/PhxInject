@@ -37,7 +37,7 @@ internal record InjectorMetadata(
         bool CanExtract(ITypeSymbol providerMethodSymbol);
         InjectorMetadata Extract(
             ITypeSymbol injectorInterfaceSymbol,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         );
     }
 
@@ -61,9 +61,9 @@ internal record InjectorMetadata(
 
         public InjectorMetadata Extract(
             ITypeSymbol injectorInterfaceSymbol,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         ) {
-            return extractorCtx.UseChildContext(
+            return parentCtx.UseChildContext(
                 $"extracting injector {injectorInterfaceSymbol}",
                 injectorInterfaceSymbol,
                 currentCtx => {
@@ -137,17 +137,17 @@ internal record InjectorMetadata(
                 });
         }
 
-        private bool VerifyExtract(ITypeSymbol injectorInterfaceSymbol, IGeneratorContext? generatorCtx) {
+        private bool VerifyExtract(ITypeSymbol injectorInterfaceSymbol, IGeneratorContext? currentCtx) {
             if (!injectorAttributeExtractor.CanExtract(injectorInterfaceSymbol)) {
-                return generatorCtx == null
+                return currentCtx == null
                     ? false
                     : throw Diagnostics.InternalError.AsException(
                         $"Child injector factory must declare an {InjectorAttributeMetadata.InjectorAttributeClassName}.",
                         injectorInterfaceSymbol.GetLocationOrDefault(),
-                        generatorCtx);
+                        currentCtx);
             }
 
-            if (generatorCtx != null) {
+            if (currentCtx != null) {
                 if (injectorInterfaceSymbol is not ITypeSymbol {
                         TypeKind: TypeKind.Interface,
                         DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
@@ -156,7 +156,7 @@ internal record InjectorMetadata(
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Injector type {injectorInterfaceSymbol.Name} must be a public or internal interface.",
                         injectorInterfaceSymbol.GetLocationOrDefault(),
-                        generatorCtx);
+                        currentCtx);
                 }
             }
 

@@ -15,8 +15,8 @@ internal interface IResult<out T> {
     bool IsOk { get; }
 
     T GetValue();
-    T GetOrThrow(IGeneratorContext generatorContext);
-    T GetOrThrowFatal(IGeneratorContext generatorContext);
+    T GetOrThrow(IGeneratorContext currentCtx);
+    T GetOrThrowFatal(IGeneratorContext currentCtx);
     IResult<R> Map<R>(Func<T, IResult<R>> mapFunc);
     IResult<R> MapError<R>();
 }
@@ -78,10 +78,10 @@ internal static class Result {
             return value;
         }
 
-        public T GetOrThrow(IGeneratorContext generatorContext) {
+        public T GetOrThrow(IGeneratorContext currentCtx) {
             return value;
         }
-        public T GetOrThrowFatal(IGeneratorContext generatorContext) {
+        public T GetOrThrowFatal(IGeneratorContext currentCtx) {
             return value;
         }
 
@@ -112,12 +112,12 @@ internal static class Result {
             throw new InvalidOperationException("Cannot get value from an Error result.");
         }
 
-        public T GetOrThrow(IGeneratorContext generatorContext) {
-            throw diagnosticData.AsException(message, location, generatorContext);
+        public T GetOrThrow(IGeneratorContext currentCtx) {
+            throw diagnosticData.AsException(message, location, currentCtx);
         }
 
-        public T GetOrThrowFatal(IGeneratorContext generatorContext) {
-            throw diagnosticData.AsFatalException(message, location, generatorContext);
+        public T GetOrThrowFatal(IGeneratorContext currentCtx) {
+            throw diagnosticData.AsFatalException(message, location, currentCtx);
         }
 
         public IResult<R> Map<R>(Func<T, IResult<R>> mapFunc) {

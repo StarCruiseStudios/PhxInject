@@ -19,9 +19,9 @@ namespace Phx.Inject.Generator.Extract;
 internal static class MetadataHelpers {
     public static IReadOnlyList<QualifiedTypeModel> TryGetMethodParametersQualifiedTypes(
         IMethodSymbol methodSymbol,
-        IGeneratorContext generatorCtx) {
+        IGeneratorContext currentCtx) {
         return methodSymbol.Parameters.Select(parameter => {
-                var qualifier = QualifierMetadata.AttributeExtractor.Instance.Extract(parameter, generatorCtx);
+                var qualifier = QualifierMetadata.AttributeExtractor.Instance.Extract(parameter, currentCtx);
                 return new QualifiedTypeModel(
                     TypeModel.FromTypeSymbol(parameter.Type),
                     qualifier);
@@ -31,7 +31,7 @@ internal static class MetadataHelpers {
 
     public static IReadOnlyList<QualifiedTypeModel> TryGetConstructorParameterQualifiedTypes(
         ITypeSymbol type,
-        IGeneratorContext generatorCtx) {
+        IGeneratorContext currentCtx) {
         var typeLocation = type.GetLocationOrDefault();
 
         if (type.IsStatic || type.IsAbstract || type.TypeKind == TypeKind.Interface) {
@@ -47,12 +47,12 @@ internal static class MetadataHelpers {
             throw Diagnostics.InvalidSpecification.AsException(
                 $"Auto injected type '{type.Name}' must contain exactly one public constructor",
                 typeLocation,
-                generatorCtx);
+                currentCtx);
         }
 
         var constructorMethod = constructors.Single();
 
-        return TryGetMethodParametersQualifiedTypes(constructorMethod, generatorCtx);
+        return TryGetMethodParametersQualifiedTypes(constructorMethod, currentCtx);
     }
 
     public static TypeModel CreateConstructorSpecContainerType(TypeModel injectorType) {
@@ -65,7 +65,7 @@ internal static class MetadataHelpers {
 
     public static IReadOnlyDictionary<string, QualifiedTypeModel> GetRequiredPropertyQualifiedTypes(
         ITypeSymbol type,
-        IGeneratorContext generatorCtx) {
+        IGeneratorContext currentCtx) {
         return type.GetMembers()
             .OfType<IPropertySymbol>()
             .Where(p => p.SetMethod != null && p.SetMethod.DeclaredAccessibility == Accessibility.Public)
@@ -74,7 +74,7 @@ internal static class MetadataHelpers {
                 property => property.Name,
                 property => new QualifiedTypeModel(
                     TypeModel.FromTypeSymbol(property.Type),
-                    QualifierMetadata.AttributeExtractor.Instance.Extract(property, generatorCtx)
+                    QualifierMetadata.AttributeExtractor.Instance.Extract(property, currentCtx)
                 )
             );
     }

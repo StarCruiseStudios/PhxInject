@@ -21,7 +21,7 @@ internal record SpecificationAttributeMetadata(AttributeMetadata AttributeMetada
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        SpecificationAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        SpecificationAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx);
     }
 
     public class Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) : IExtractor {
@@ -31,7 +31,7 @@ internal record SpecificationAttributeMetadata(AttributeMetadata AttributeMetada
             return attributeExtractor.CanExtract(attributedSymbol, SpecificationAttributeClassName);
         }
 
-        public SpecificationAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+        public SpecificationAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx) {
             if (attributedSymbol is not { DeclaredAccessibility: Accessibility.Public or Accessibility.Internal }
                 or not ITypeSymbol { IsStatic: true, TypeKind: TypeKind.Class }
                 and not ITypeSymbol { TypeKind: TypeKind.Interface }
@@ -39,11 +39,11 @@ internal record SpecificationAttributeMetadata(AttributeMetadata AttributeMetada
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Specification type {attributedSymbol.Name} must be a static class or interface.",
                     attributedSymbol.GetLocationOrDefault(),
-                    generatorCtx);
+                    currentCtx);
             }
 
             var attribute =
-                attributeExtractor.ExtractOne(attributedSymbol, SpecificationAttributeClassName, generatorCtx);
+                attributeExtractor.ExtractOne(attributedSymbol, SpecificationAttributeClassName, currentCtx);
             return new SpecificationAttributeMetadata(attribute);
         }
     }

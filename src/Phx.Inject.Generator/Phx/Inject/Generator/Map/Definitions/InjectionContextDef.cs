@@ -24,7 +24,7 @@ internal record InjectionContextDef(
     public interface IMapper {
         InjectionContextDef Map(
             InjectorMetadata injectorMetadata,
-            DefGenerationContext defGenerationCtx
+            DefGenerationContext parentCtx
         );
     }
 
@@ -50,16 +50,16 @@ internal record InjectionContextDef(
 
         public InjectionContextDef Map(
             InjectorMetadata injectorMetadata,
-            DefGenerationContext defGenerationCtx
+            DefGenerationContext parentCtx
         ) {
             var factoryRegistrations = new Dictionary<RegistrationIdentifier, List<FactoryRegistration>>();
             var builderRegistrations = new Dictionary<RegistrationIdentifier, BuilderRegistration>();
 
-            IReadOnlyList<SpecDesc> specDescs = defGenerationCtx.Specifications.Values.ToImmutableList();
+            IReadOnlyList<SpecDesc> specDescs = parentCtx.Specifications.Values.ToImmutableList();
 
             // Create a registration for all of the spec descriptors' factory and builder methods.
             foreach (var specDesc in specDescs) {
-                var specCtx = defGenerationCtx.GetChildContext(specDesc.SpecType.TypeSymbol);
+                var currentCtx = parentCtx.GetChildContext(specDesc.SpecType.TypeSymbol);
                 foreach (var factory in specDesc.Factories) {
                     var key = RegistrationIdentifier.FromQualifiedTypeModel(factory.ReturnType);
                     if (!factoryRegistrations.TryGetValue(key, out var registrationList)) {
@@ -91,48 +91,48 @@ internal record InjectionContextDef(
                         throw Diagnostics.IncompleteSpecification.AsException(
                             $"Cannot find factory for type {link.InputType} required by link in specification {specDesc.SpecType}.",
                             link.Location,
-                            defGenerationCtx);
+                            parentCtx);
                     }
                 }
             }
 
             foreach (var factoryRegistration in factoryRegistrations.Values) {
                 if (factoryRegistration.Count > 1 && !factoryRegistration.All(it => it.FactoryDesc.isPartial)) {
-                    defGenerationCtx.Aggregator.AggregateMany<FactoryRegistration, FactoryRegistration>(
+                    parentCtx.Aggregator.AggregateMany<FactoryRegistration, FactoryRegistration>(
                         factoryRegistration,
                         registration => $"registering factory {registration.FactoryDesc.ReturnType}",
                         registration => throw Diagnostics.InvalidSpecification.AsException(
                             $"Factory for type {registration.FactoryDesc.ReturnType} must be unique or all factories must be partial.",
                             registration.FactoryDesc.Location,
-                            defGenerationCtx));
+                            parentCtx));
                 }
             }
 
-            var generationContext = defGenerationCtx with {
+            var generatorCtx = parentCtx with {
                 FactoryRegistrations = factoryRegistrations,
                 BuilderRegistrations = builderRegistrations
             };
 
-            var injectorDef = injectorDefMapper.Map(generationContext);
+            var injectorDef = injectorDefMapper.Map(generatorCtx);
 
             IReadOnlyList<SpecContainerDef> specContainerDefs = specDescs
-                .Select(specDesc => specContainerDefMapper.Map(specDesc, generationContext))
+                .Select(specDesc => specContainerDefMapper.Map(specDesc, generatorCtx))
                 .ToImmutableList();
 
             IReadOnlyList<DependencyImplementationDef> dependencyImplementationDefs = injectorMetadata.ChildFactories
-                .Select(childFactory => generationContext.GetInjector(
+                .Select(childFactory => generatorCtx.GetInjector(
                     childFactory.ChildInjectorType,
                     childFactory.Location))
                 .Select(childInjector => childInjector.DependencyInterfaceType)
                 .OfType<TypeModel>()
                 .GroupBy(dependencyType => dependencyType)
                 .Select(dependencyTypeGroup => dependencyTypeGroup.First())
-                .Select(dependencyType => generationContext.GetDependency(
+                .Select(dependencyType => generatorCtx.GetDependency(
                     dependencyType,
                     injectorMetadata.Location))
                 .Select(dependency => dependencyImplementationDefMapper.Map(
                     dependency,
-                    generationContext))
+                    generatorCtx))
                 .ToImmutableList();
 
             return new InjectionContextDef(

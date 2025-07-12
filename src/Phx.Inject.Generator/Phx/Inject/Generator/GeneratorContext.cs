@@ -22,15 +22,15 @@ internal interface IGeneratorContext {
 }
 
 internal static class IGeneratorContextExtensions {
-    public static IInjectionFrame GetFrame(this IGeneratorContext generatorCtx) {
+    public static IInjectionFrame GetFrame(this IGeneratorContext currentCtx) {
         return new InjectionFrame(
-            generatorCtx.Description,
-            generatorCtx.Symbol,
-            generatorCtx.ParentContext?.GetFrame());
+            currentCtx.Description,
+            currentCtx.Symbol,
+            currentCtx.ParentContext?.GetFrame());
     }
 
-    public static Location GetLocation(this IGeneratorContext generatorCtx) {
-        return generatorCtx.Symbol.GetLocationOrDefault();
+    public static Location GetLocation(this IGeneratorContext currentCtx) {
+        return currentCtx.Symbol.GetLocationOrDefault();
     }
 }
 
@@ -50,15 +50,15 @@ internal class GeneratorContext : IGeneratorContext {
     public int ContextDepth { get => 0; }
 
     public static void UseContext(GeneratorExecutionContext executionContext, Action<GeneratorContext> action) {
-        var newContext = new GeneratorContext(executionContext);
-        newContext.Log(newContext.Description, Location.None);
+        var newCtx = new GeneratorContext(executionContext);
+        newCtx.Log(newCtx.Description, Location.None);
         try {
             ExceptionAggregator.Try<object?>(
-                newContext.Description,
-                newContext,
+                newCtx.Description,
+                newCtx,
                 exceptionAggregator => {
-                    newContext.aggregator = exceptionAggregator;
-                    action(newContext);
+                    newCtx.aggregator = exceptionAggregator;
+                    action(newCtx);
                     return null;
                 });
         } catch (InjectionException) {

@@ -33,7 +33,7 @@ internal record InjectorChildFactoryMetadata(
         InjectorChildFactoryMetadata Extract(
             TypeModel InjectorInterfaceType,
             IMethodSymbol childInjectorMethod,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         );
     }
 
@@ -49,9 +49,9 @@ internal record InjectorChildFactoryMetadata(
         public InjectorChildFactoryMetadata Extract(
             TypeModel InjectorInterfaceType,
             IMethodSymbol childInjectorMethod,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         ) {
-            return extractorCtx.UseChildContext(
+            return parentCtx.UseChildContext(
                 $"extracting injector child factory {childInjectorMethod}",
                 childInjectorMethod,
                 currentCtx => {
@@ -77,18 +77,18 @@ internal record InjectorChildFactoryMetadata(
 
         private bool VerifyExtract(
             IMethodSymbol childInjectorMethod,
-            IGeneratorContext? generatorCtx
+            IGeneratorContext? currentCtx
         ) {
             if (!childInjectorAttributeExtractor.CanExtract(childInjectorMethod)) {
-                return generatorCtx == null
+                return currentCtx == null
                     ? false
                     : throw Diagnostics.InternalError.AsException(
                         $"Child injector factory must declare a {ChildInjectorAttributeMetadata.ChildInjectorAttributeClassName}.",
                         childInjectorMethod.GetLocationOrDefault(),
-                        generatorCtx);
+                        currentCtx);
             }
 
-            if (generatorCtx != null) {
+            if (currentCtx != null) {
                 if (childInjectorMethod is not {
                         ReturnsVoid: false,
                         DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
@@ -97,7 +97,7 @@ internal record InjectorChildFactoryMetadata(
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Child injector factory {childInjectorMethod.Name} must be a public or internal method with a return type.",
                         childInjectorMethod.GetLocationOrDefault(),
-                        generatorCtx);
+                        currentCtx);
                 }
             }
 

@@ -30,7 +30,7 @@ internal record PartialAttributeMetadata(AttributeMetadata AttributeMetadata) : 
         PartialAttributeMetadata Extract(
             TypeModel partialType,
             ISymbol attributedSymbol,
-            IGeneratorContext generatorCtx);
+            IGeneratorContext currentCtx);
     }
 
     public class Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) : IExtractor {
@@ -43,7 +43,7 @@ internal record PartialAttributeMetadata(AttributeMetadata AttributeMetadata) : 
         public PartialAttributeMetadata Extract(
             TypeModel partialType,
             ISymbol attributedSymbol,
-            IGeneratorContext generatorCtx) {
+            IGeneratorContext currentCtx) {
             if (attributedSymbol is not IMethodSymbol
                 and not IPropertySymbol {
                     IsStatic: true,
@@ -53,17 +53,17 @@ internal record PartialAttributeMetadata(AttributeMetadata AttributeMetadata) : 
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Partial factory {attributedSymbol.Name} must be a public or internal static method or property.",
                     attributedSymbol.GetLocationOrDefault(),
-                    generatorCtx);
+                    currentCtx);
             }
 
             if (!PartialTypes.Contains(partialType.NamespacedBaseTypeName)) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Partial factories must return one of [{string.Join(", ", PartialTypes)}].",
                     attributedSymbol.GetLocationOrDefault(),
-                    generatorCtx);
+                    currentCtx);
             }
 
-            var attribute = attributeExtractor.ExtractOne(attributedSymbol, PartialAttributeClassName, generatorCtx);
+            var attribute = attributeExtractor.ExtractOne(attributedSymbol, PartialAttributeClassName, currentCtx);
             return new PartialAttributeMetadata(attribute);
         }
     }

@@ -24,7 +24,7 @@ internal record FactoryReferenceAttributeMetadata(
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        FactoryReferenceAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        FactoryReferenceAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx);
     }
 
     public class Extractor(
@@ -38,7 +38,7 @@ internal record FactoryReferenceAttributeMetadata(
             return attributeExtractor.CanExtract(attributedSymbol, FactoryReferenceAttributeClassName);
         }
 
-        public FactoryReferenceAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+        public FactoryReferenceAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx) {
             if (attributedSymbol is not IFieldSymbol {
                     IsStatic: true,
                     DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
@@ -51,13 +51,13 @@ internal record FactoryReferenceAttributeMetadata(
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Factory reference {attributedSymbol.Name} must be a public or internal static property or field.",
                     attributedSymbol.GetLocationOrDefault(),
-                    generatorCtx);
+                    currentCtx);
             }
 
             var attribute =
-                attributeExtractor.ExtractOne(attributedSymbol, FactoryReferenceAttributeClassName, generatorCtx);
+                attributeExtractor.ExtractOne(attributedSymbol, FactoryReferenceAttributeClassName, currentCtx);
             var fabricationMode =
-                fabricationModeExtractor.Extract(attributedSymbol, attribute.AttributeData, generatorCtx);
+                fabricationModeExtractor.Extract(attributedSymbol, attribute.AttributeData, currentCtx);
             return new FactoryReferenceAttributeMetadata(fabricationMode, attribute);
         }
     }

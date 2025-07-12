@@ -15,8 +15,8 @@ internal class FatalInjectionException : InjectionException {
     public FatalInjectionException(
         string message,
         Diagnostic diagnostic,
-        IGeneratorContext generatorContext
-    ) : base(message, diagnostic, generatorContext) { }
+        IGeneratorContext currentCtx
+    ) : base(message, diagnostic, currentCtx) { }
 }
 
 internal class InjectionException : Exception {
@@ -25,9 +25,9 @@ internal class InjectionException : Exception {
     public InjectionException(
         string message,
         Diagnostic diagnostic,
-        IGeneratorContext generatorContext
+        IGeneratorContext currentCtx
     ) : base(message) {
         Diagnostic = diagnostic;
-        generatorContext.ExecutionContext.ReportDiagnostic(Diagnostic);
+        currentCtx.ExecutionContext.ReportDiagnostic(Diagnostic);
     }
 }

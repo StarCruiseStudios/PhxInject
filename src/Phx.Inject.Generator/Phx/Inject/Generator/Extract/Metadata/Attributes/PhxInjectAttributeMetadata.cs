@@ -27,7 +27,7 @@ internal record PhxInjectAttributeMetadata(
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        PhxInjectAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        PhxInjectAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx);
     }
 
     public class Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) : IExtractor {
@@ -37,15 +37,15 @@ internal record PhxInjectAttributeMetadata(
             return attributeExtractor.CanExtract(attributedSymbol, PhxInjectAttributeClassName);
         }
 
-        public PhxInjectAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+        public PhxInjectAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx) {
             if (attributedSymbol is not ITypeSymbol { TypeKind: TypeKind.Class }) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"PhxInject settings type {attributedSymbol.Name} must be a class.",
                     attributedSymbol.GetLocationOrDefault(),
-                    generatorCtx);
+                    currentCtx);
             }
 
-            var attribute = attributeExtractor.ExtractOne(attributedSymbol, PhxInjectAttributeClassName, generatorCtx);
+            var attribute = attributeExtractor.ExtractOne(attributedSymbol, PhxInjectAttributeClassName, currentCtx);
 
             var tabSize = attribute.AttributeData.NamedArguments
                 .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.TabSize))

@@ -27,11 +27,11 @@ internal record SpecDesc(
     }
 
     public interface IExtractor {
-        SpecDesc Extract(ITypeSymbol specSymbol, ExtractorContext extractorCtx);
+        SpecDesc Extract(ITypeSymbol specSymbol, ExtractorContext parentCtx);
         SpecDesc ExtractDependencySpec(
             ITypeSymbol dependencySymbol,
             IReadOnlyList<DependencyProviderMetadata> providers,
-            ExtractorContext extractorCtx);
+            ExtractorContext parentCtx);
     }
 
     public class Extractor : IExtractor {
@@ -67,8 +67,8 @@ internal record SpecDesc(
             SpecificationAttributeMetadata.Extractor.Instance
         ) { }
 
-        public SpecDesc Extract(ITypeSymbol specSymbol, ExtractorContext extractorCtx) {
-            return extractorCtx.UseChildContext(
+        public SpecDesc Extract(ITypeSymbol specSymbol, ExtractorContext parentCtx) {
+            return parentCtx.UseChildContext(
                 "extracting specification",
                 specSymbol,
                 currentCtx => {
@@ -156,7 +156,7 @@ internal record SpecDesc(
         public SpecDesc ExtractDependencySpec(
             ITypeSymbol dependencySymbol,
             IReadOnlyList<DependencyProviderMetadata> providers,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         ) {
             IReadOnlyList<SpecFactoryDesc> specFactories = providers.Select(provider => new SpecFactoryDesc(
                     provider.ProvidedType,
@@ -183,7 +183,7 @@ internal record SpecDesc(
             TypeModel injectorType,
             IReadOnlyList<QualifiedTypeModel> constructorTypes,
             IReadOnlyList<QualifiedTypeModel> builderTypes,
-            ExtractorContext extractorCtx);
+            ExtractorContext parentCtx);
     }
 
     public class AutoSpecExtractor : IAutoSpecExtractor {
@@ -219,11 +219,11 @@ internal record SpecDesc(
             TypeModel injectorType,
             IReadOnlyList<QualifiedTypeModel> constructorTypes,
             IReadOnlyList<QualifiedTypeModel> builderTypes,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         ) {
             var specType = MetadataHelpers.CreateConstructorSpecContainerType(injectorType);
 
-            return extractorCtx.UseChildContext(
+            return parentCtx.UseChildContext(
                 "extracting auto constructor specification",
                 injectorType.TypeSymbol,
                 currentCtx => {

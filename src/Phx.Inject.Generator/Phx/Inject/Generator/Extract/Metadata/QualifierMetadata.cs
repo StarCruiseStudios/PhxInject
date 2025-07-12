@@ -33,7 +33,7 @@ internal class QualifierMetadata : IDescriptor {
     public Location Location { get; }
 
     public interface IAttributeExtractor {
-        QualifierMetadata Extract(ISymbol qualifiedSymbol, IGeneratorContext generatorCtx);
+        QualifierMetadata Extract(ISymbol qualifiedSymbol, IGeneratorContext currentCtx);
     }
 
     public class AttributeExtractor(
@@ -44,12 +44,12 @@ internal class QualifierMetadata : IDescriptor {
             CustomQualifierAttributeMetadata.AttributeExtractor.Instance,
             LabelAttributeMetadata.AttributeExtractor.Instance);
 
-        public QualifierMetadata Extract(ISymbol qualifiedSymbol, IGeneratorContext generatorCtx) {
+        public QualifierMetadata Extract(ISymbol qualifiedSymbol, IGeneratorContext currentCtx) {
             var labelAttribute = labelAttributeExtractor.CanExtract(qualifiedSymbol)
-                ? labelAttributeExtractor.Extract(qualifiedSymbol, generatorCtx)
+                ? labelAttributeExtractor.Extract(qualifiedSymbol, currentCtx)
                 : null;
             var qualifierAttribute = qualifierAttributeTypeExtractor.CanExtract(qualifiedSymbol)
-                ? qualifierAttributeTypeExtractor.Extract(qualifiedSymbol, generatorCtx)
+                ? qualifierAttributeTypeExtractor.Extract(qualifiedSymbol, currentCtx)
                 : null;
 
             if (labelAttribute != null) {
@@ -57,7 +57,7 @@ internal class QualifierMetadata : IDescriptor {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Symbol {qualifiedSymbol.Name} can only have one Label or Qualifier attribute.",
                         qualifiedSymbol.GetLocationOrDefault(),
-                        generatorCtx);
+                        currentCtx);
                 }
 
                 return new QualifierMetadata(labelAttribute);
@@ -75,7 +75,7 @@ internal class QualifierMetadata : IDescriptor {
         QualifierMetadata Extract(
             ISymbol attributedSymbol,
             INamedTypeSymbol customQualifierTypeSymbol,
-            IGeneratorContext generatorCtx);
+            IGeneratorContext currentCtx);
     }
 
     public class CustomQualifierTypeExtractor(
@@ -87,17 +87,17 @@ internal class QualifierMetadata : IDescriptor {
         public QualifierMetadata Extract(
             ISymbol attributedSymbol,
             INamedTypeSymbol customQualifierTypeSymbol,
-            IGeneratorContext generatorCtx) {
+            IGeneratorContext currentCtx) {
             var customQualifierAttribute = customQualifierAttributeTypeExtractor.Extract(
                 attributedSymbol,
                 customQualifierTypeSymbol,
-                generatorCtx);
+                currentCtx);
             return new QualifierMetadata(customQualifierAttribute);
         }
     }
 
     public interface ILabelStringExtractor {
-        QualifierMetadata Extract(string Label, AttributeMetadata attributeMetadata, IGeneratorContext generatorCtx);
+        QualifierMetadata Extract(string Label, AttributeMetadata attributeMetadata, IGeneratorContext currentCtx);
     }
 
     public class LabelStringExtractor(
@@ -109,11 +109,11 @@ internal class QualifierMetadata : IDescriptor {
         public QualifierMetadata Extract(
             string Label,
             AttributeMetadata attributeMetadata,
-            IGeneratorContext generatorCtx) {
+            IGeneratorContext currentCtx) {
             var labelAttribute = labelAttributeStringExtractor.Extract(
                 Label,
                 attributeMetadata,
-                generatorCtx);
+                currentCtx);
             return new QualifierMetadata(labelAttribute);
         }
     }

@@ -19,7 +19,7 @@ internal class InjectionDefMapper {
 
     public InjectionDefMapper() : this(new InjectionContextDef.Mapper()) { }
 
-    public InjectionContextDef Map(DefGenerationContext context) {
-        return injectionContextDefMapper.Map(context.Injector, context);
+    public InjectionContextDef Map(DefGenerationContext generationCtx) {
+        return injectionContextDefMapper.Map(generationCtx.Injector, generationCtx);
     }
 }

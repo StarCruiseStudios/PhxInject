@@ -22,8 +22,8 @@ internal record FactoryAttributeMetadata(FactoryFabricationMode FabricationMode,
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        FactoryAttributeMetadata ExtractFactory(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
-        FactoryAttributeMetadata ExtractAutoFactory(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        FactoryAttributeMetadata ExtractFactory(ISymbol attributedSymbol, IGeneratorContext currentCtx);
+        FactoryAttributeMetadata ExtractAutoFactory(ISymbol attributedSymbol, IGeneratorContext currentCtx);
     }
 
     public class Extractor(
@@ -37,7 +37,7 @@ internal record FactoryAttributeMetadata(FactoryFabricationMode FabricationMode,
             return attributeExtractor.CanExtract(attributedSymbol, FactoryAttributeClassName);
         }
 
-        public FactoryAttributeMetadata ExtractFactory(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+        public FactoryAttributeMetadata ExtractFactory(ISymbol attributedSymbol, IGeneratorContext currentCtx) {
             if (attributedSymbol is not IMethodSymbol {
                     DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
                 }
@@ -48,16 +48,16 @@ internal record FactoryAttributeMetadata(FactoryFabricationMode FabricationMode,
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Factory {attributedSymbol.Name} must be a public or internal method or property.",
                     attributedSymbol.GetLocationOrDefault(),
-                    generatorCtx);
+                    currentCtx);
             }
 
-            var attribute = attributeExtractor.ExtractOne(attributedSymbol, FactoryAttributeClassName, generatorCtx);
+            var attribute = attributeExtractor.ExtractOne(attributedSymbol, FactoryAttributeClassName, currentCtx);
             var fabricationMode =
-                fabricationModeExtractor.Extract(attributedSymbol, attribute.AttributeData, generatorCtx);
+                fabricationModeExtractor.Extract(attributedSymbol, attribute.AttributeData, currentCtx);
             return new FactoryAttributeMetadata(fabricationMode, attribute);
         }
 
-        public FactoryAttributeMetadata ExtractAutoFactory(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+        public FactoryAttributeMetadata ExtractAutoFactory(ISymbol attributedSymbol, IGeneratorContext currentCtx) {
             if (attributedSymbol is not ITypeSymbol {
                     TypeKind: TypeKind.Class,
                     IsStatic: false,
@@ -68,12 +68,12 @@ internal record FactoryAttributeMetadata(FactoryFabricationMode FabricationMode,
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Auto factory {attributedSymbol.Name} must be a public or internal non-abstract class.",
                     attributedSymbol.GetLocationOrDefault(),
-                    generatorCtx);
+                    currentCtx);
             }
 
-            var attribute = attributeExtractor.ExtractOne(attributedSymbol, FactoryAttributeClassName, generatorCtx);
+            var attribute = attributeExtractor.ExtractOne(attributedSymbol, FactoryAttributeClassName, currentCtx);
             var fabricationMode =
-                fabricationModeExtractor.Extract(attributedSymbol, attribute.AttributeData, generatorCtx);
+                fabricationModeExtractor.Extract(attributedSymbol, attribute.AttributeData, currentCtx);
             return new FactoryAttributeMetadata(fabricationMode, attribute);
         }
     }

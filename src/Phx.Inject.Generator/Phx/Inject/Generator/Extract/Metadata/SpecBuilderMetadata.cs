@@ -32,7 +32,7 @@ internal record SpecBuilderMetadata(
 
     public interface IBuilderExtractor {
         bool CanExtract(ISymbol builderSymbol);
-        SpecBuilderMetadata ExtractBuilder(IMethodSymbol builderMethod, ExtractorContext context);
+        SpecBuilderMetadata ExtractBuilder(IMethodSymbol builderMethod, ExtractorContext parentCtx);
     }
 
     public class BuilderExtractor(
@@ -51,8 +51,8 @@ internal record SpecBuilderMetadata(
             return VerifyExtract(builderSymbol, null);
         }
 
-        public SpecBuilderMetadata ExtractBuilder(IMethodSymbol builderMethod, ExtractorContext extractorCtx) {
-            return extractorCtx.UseChildContext(
+        public SpecBuilderMetadata ExtractBuilder(IMethodSymbol builderMethod, ExtractorContext parentCtx) {
+            return parentCtx.UseChildContext(
                 $"extracting specification builder {builderMethod}",
                 builderMethod,
                 currentCtx => {
@@ -95,22 +95,22 @@ internal record SpecBuilderMetadata(
                 });
         }
 
-        private bool VerifyExtract(ISymbol builderSymbol, ExtractorContext? extractorCtx) {
+        private bool VerifyExtract(ISymbol builderSymbol, ExtractorContext? currentCtx) {
             if (!builderAttributeExtractor.CanExtract(builderSymbol)) {
-                return extractorCtx == null
+                return currentCtx == null
                     ? false
                     : throw Diagnostics.InternalError.AsException(
                         $"Builder {builderSymbol} must have a {BuilderAttributeMetadata.BuilderAttributeClassName}.",
                         builderSymbol.GetLocationOrDefault(),
-                        extractorCtx);
+                        currentCtx);
             }
 
-            if (extractorCtx != null) {
+            if (currentCtx != null) {
                 if (builderReferenceAttributeExtractor.CanExtract(builderSymbol)) {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Builder {builderSymbol} cannot have both {BuilderAttributeMetadata.BuilderAttributeClassName} and {BuilderReferenceAttributeMetadata.BuilderReferenceAttributeClassName}.",
                         builderSymbol.GetLocationOrDefault(),
-                        extractorCtx);
+                        currentCtx);
                 }
 
                 if (builderSymbol is
@@ -119,7 +119,7 @@ internal record SpecBuilderMetadata(
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Builder {builderSymbol} must be a public or internal method.",
                         builderSymbol.GetLocationOrDefault(),
-                        extractorCtx);
+                        currentCtx);
                 }
             }
 
@@ -129,7 +129,7 @@ internal record SpecBuilderMetadata(
 
     public interface IBuilderReferenceExtractor {
         bool CanExtract(ISymbol builderSymbol);
-        SpecBuilderMetadata ExtractBuilderReference(ISymbol builderReferenceSymbol, ExtractorContext extractorCtx);
+        SpecBuilderMetadata ExtractBuilderReference(ISymbol builderReferenceSymbol, ExtractorContext parentCtx);
     }
 
     public class BuilderReferenceExtractor(
@@ -150,8 +150,8 @@ internal record SpecBuilderMetadata(
 
         public SpecBuilderMetadata ExtractBuilderReference(
             ISymbol builderReferenceSymbol,
-            ExtractorContext extractorCtx) {
-            return extractorCtx.UseChildContext(
+            ExtractorContext parentCtx) {
+            return parentCtx.UseChildContext(
                 $"extracting specification builder reference {builderReferenceSymbol}",
                 builderReferenceSymbol,
                 currentCtx => {
@@ -205,22 +205,22 @@ internal record SpecBuilderMetadata(
                 });
         }
 
-        private bool VerifyExtract(ISymbol builderSymbol, ExtractorContext? extractorCtx) {
+        private bool VerifyExtract(ISymbol builderSymbol, ExtractorContext? currentCtx) {
             if (!builderReferenceAttributeExtractor.CanExtract(builderSymbol)) {
-                return extractorCtx == null
+                return currentCtx == null
                     ? false
                     : throw Diagnostics.InternalError.AsException(
                         $"Builder reference {builderSymbol} must have a {BuilderReferenceAttributeMetadata.BuilderReferenceAttributeClassName}.",
                         builderSymbol.GetLocationOrDefault(),
-                        extractorCtx);
+                        currentCtx);
             }
 
-            if (extractorCtx != null) {
+            if (currentCtx != null) {
                 if (builderAttributeExtractor.CanExtract(builderSymbol)) {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Builder reference {builderSymbol} cannot have both {BuilderAttributeMetadata.BuilderAttributeClassName} and {BuilderReferenceAttributeMetadata.BuilderReferenceAttributeClassName}.",
                         builderSymbol.GetLocationOrDefault(),
-                        extractorCtx);
+                        currentCtx);
                 }
 
                 if (builderSymbol is not { DeclaredAccessibility: Accessibility.Public or Accessibility.Internal }
@@ -229,7 +229,7 @@ internal record SpecBuilderMetadata(
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Builder reference {builderSymbol} must be a public or internal property or field.",
                         builderSymbol.GetLocationOrDefault(),
-                        extractorCtx);
+                        currentCtx);
                 }
             }
 
@@ -238,7 +238,7 @@ internal record SpecBuilderMetadata(
     }
 
     public interface IAutoBuilderExtractor {
-        SpecBuilderMetadata ExtractBuilder(QualifiedTypeModel autoBuilderType, ExtractorContext extractorCtx);
+        SpecBuilderMetadata ExtractBuilder(QualifiedTypeModel autoBuilderType, ExtractorContext parentCtx);
     }
 
     public class AutoBuilderExtractor(
@@ -253,15 +253,15 @@ internal record SpecBuilderMetadata(
                 QualifierMetadata.AttributeExtractor.Instance
             );
 
-        public SpecBuilderMetadata ExtractBuilder(QualifiedTypeModel autoBuilderType, ExtractorContext extractorCtx) {
-            return extractorCtx.UseChildContext(
+        public SpecBuilderMetadata ExtractBuilder(QualifiedTypeModel autoBuilderType, ExtractorContext parentCtx) {
+            return parentCtx.UseChildContext(
                 $"extracting auto builder for type {autoBuilderType}",
                 autoBuilderType.TypeModel.TypeSymbol,
                 currentCtx => {
                     IReadOnlyList<IMethodSymbol> builderMethods = autoBuilderType.TypeModel.TypeSymbol.GetMembers()
                         .OfType<IMethodSymbol>()
                         .Where(methodSymbol => {
-                            var qualifier = qualifierExtractor.Extract(methodSymbol, extractorCtx).Qualifier;
+                            var qualifier = qualifierExtractor.Extract(methodSymbol, currentCtx).Qualifier;
                             return builderAttributeExtractor.CanExtract(methodSymbol)
                                 && Equals(qualifier, autoBuilderType.Qualifier.Qualifier);
                         })
@@ -321,18 +321,18 @@ internal record SpecBuilderMetadata(
         private bool VerifyExtractBuilder(
             QualifiedTypeModel autoBuilderType,
             IMethodSymbol builderSymbol,
-            ExtractorContext? extractorCtx) {
+            ExtractorContext? currentCtx) {
             if (!builderAttributeExtractor.CanExtract(builderSymbol)) {
-                return extractorCtx == null
+                return currentCtx == null
                     ? false
                     : throw Diagnostics.InternalError.AsException(
                         $"Builder {builderSymbol} must have a {BuilderAttributeMetadata.BuilderAttributeClassName}.",
                         builderSymbol.GetLocationOrDefault(),
-                        extractorCtx);
+                        currentCtx);
             }
 
-            if (extractorCtx != null) {
-                var qualifier = qualifierExtractor.Extract(builderSymbol, extractorCtx).Qualifier;
+            if (currentCtx != null) {
+                var qualifier = qualifierExtractor.Extract(builderSymbol, currentCtx).Qualifier;
                 if (!Equals(qualifier, autoBuilderType.Qualifier.Qualifier)) {
                     return false;
                 }
@@ -341,7 +341,7 @@ internal record SpecBuilderMetadata(
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Builder {builderSymbol} cannot have both {BuilderAttributeMetadata.BuilderAttributeClassName} and {BuilderReferenceAttributeMetadata.BuilderReferenceAttributeClassName}.",
                         builderSymbol.GetLocationOrDefault(),
-                        extractorCtx);
+                        currentCtx);
                 }
 
                 if (builderSymbol is
@@ -350,7 +350,7 @@ internal record SpecBuilderMetadata(
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Builder {builderSymbol} must be a public or internal method.",
                         builderSymbol.GetLocationOrDefault(),
-                        extractorCtx);
+                        currentCtx);
                 }
 
                 var numMethodParameters = builderSymbol.Parameters.Length;
@@ -358,7 +358,7 @@ internal record SpecBuilderMetadata(
                     throw Diagnostics.InvalidSpecification.AsException(
                         "Auto builder must have at least one parameter.",
                         builderSymbol.GetLocationOrDefault(),
-                        extractorCtx);
+                        currentCtx);
                 }
             }
 

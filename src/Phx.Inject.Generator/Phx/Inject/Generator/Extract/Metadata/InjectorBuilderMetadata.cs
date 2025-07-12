@@ -29,7 +29,7 @@ internal record InjectorBuilderMetadata(
         InjectorBuilderMetadata Extract(
             TypeModel injectorInterfaceType,
             IMethodSymbol builderMethodSymbol,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         );
     }
 
@@ -43,9 +43,9 @@ internal record InjectorBuilderMetadata(
         public InjectorBuilderMetadata Extract(
             TypeModel injectorInterfaceType,
             IMethodSymbol builderMethodSymbol,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         ) {
-            return extractorCtx.UseChildContext(
+            return parentCtx.UseChildContext(
                 $"extracting injector builder {builderMethodSymbol}",
                 builderMethodSymbol,
                 currentCtx => {
@@ -62,22 +62,22 @@ internal record InjectorBuilderMetadata(
                 });
         }
 
-        private bool VerifyExtract(IMethodSymbol builderMethodSymbol, IGeneratorContext? generatorCtx) {
+        private bool VerifyExtract(IMethodSymbol builderMethodSymbol, IGeneratorContext? currentCtx) {
             if (!builderMethodSymbol.ReturnsVoid) {
-                return generatorCtx == null
+                return currentCtx == null
                     ? false
                     : throw Diagnostics.InternalError.AsException(
                         "Cannot extract injector builder from a method that has a return value.",
                         builderMethodSymbol.GetLocationOrDefault(),
-                        generatorCtx);
+                        currentCtx);
             }
 
-            if (generatorCtx != null) {
+            if (currentCtx != null) {
                 if (builderMethodSymbol.Parameters.Length != 1) {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Injector builder {builderMethodSymbol.Name} must have exactly 1 parameter.",
                         builderMethodSymbol.GetLocationOrDefault(),
-                        generatorCtx);
+                        currentCtx);
                 }
             }
 

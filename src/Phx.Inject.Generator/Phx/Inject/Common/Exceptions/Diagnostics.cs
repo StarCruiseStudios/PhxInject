@@ -62,7 +62,7 @@ internal static class Diagnostics {
         public AggregateInjectionException AsAggregateException(
             string message,
             IReadOnlyList<InjectionException> exceptions,
-            IGeneratorContext generatorExecutionContext
+            IGeneratorContext currentCtx
         ) {
             var msg = string.Join("\n -> ", exceptions.Select(it => it.Message));
             return new AggregateInjectionException(
@@ -70,9 +70,9 @@ internal static class Diagnostics {
                 CreateDiagnostic(
                     message + "\n -> " + msg,
                     null,
-                    generatorExecutionContext.GetLocation()),
+                    currentCtx.GetLocation()),
                 exceptions,
-                generatorExecutionContext);
+                currentCtx);
         }
     }
 
@@ -87,8 +87,8 @@ internal static class Diagnostics {
         public override InjectionException AsException(
             string message,
             Location location,
-            IGeneratorContext generatorExecutionContext) {
-            return AsFatalException(message, location, generatorExecutionContext);
+            IGeneratorContext currentCtx) {
+            return AsFatalException(message, location, currentCtx);
         }
     }
 
@@ -108,29 +108,29 @@ internal static class Diagnostics {
         public virtual InjectionException AsException(
             string message,
             Location location,
-            IGeneratorContext generatorExecutionContext
+            IGeneratorContext currentCtx
         ) {
             return new InjectionException(
                 message,
                 CreateDiagnostic(
                     message,
-                    generatorExecutionContext.GetFrame(),
+                    currentCtx.GetFrame(),
                     location),
-                generatorExecutionContext);
+                currentCtx);
         }
 
         public virtual InjectionException AsFatalException(
             string message,
             Location location,
-            IGeneratorContext generatorExecutionContext
+            IGeneratorContext currentCtx
         ) {
             return new FatalInjectionException(
                 message,
                 CreateDiagnostic(
                     message,
-                    generatorExecutionContext.GetFrame(),
+                    currentCtx.GetFrame(),
                     location),
-                generatorExecutionContext);
+                currentCtx);
         }
 
         protected Diagnostic CreateDiagnostic(
@@ -147,11 +147,11 @@ internal static class Diagnostics {
 
 internal static class GeneratorExecutionContextExtensions {
     public static void Log(
-        this IGeneratorContext generatorCtx,
+        this IGeneratorContext currentCtx,
         string message,
         Location? location = null
     ) {
-        generatorCtx.ExecutionContext.ReportDiagnostic(
+        currentCtx.ExecutionContext.ReportDiagnostic(
             Diagnostic.Create(
                 new DiagnosticDescriptor(
                     Diagnostics.DebugMessage.Id,
@@ -160,6 +160,6 @@ internal static class GeneratorExecutionContextExtensions {
                     Diagnostics.DebugMessage.Category,
                     Diagnostics.DebugMessage.Severity,
                     true),
-                location ?? generatorCtx.GetLocation()));
+                location ?? currentCtx.GetLocation()));
     }
 }

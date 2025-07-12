@@ -30,7 +30,7 @@ internal record InjectorProviderMetadata(
         InjectorProviderMetadata Extract(
             TypeModel injectorInterfaceType,
             IMethodSymbol providerMethodSymbol,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         );
     }
 
@@ -49,9 +49,9 @@ internal record InjectorProviderMetadata(
         public InjectorProviderMetadata Extract(
             TypeModel injectorInterfaceType,
             IMethodSymbol providerMethodSymbol,
-            ExtractorContext extractorCtx
+            ExtractorContext parentCtx
         ) {
-            return extractorCtx.UseChildContext(
+            return parentCtx.UseChildContext(
                 $"extracting injector provider {providerMethodSymbol}",
                 providerMethodSymbol,
                 currentCtx => {
@@ -69,26 +69,26 @@ internal record InjectorProviderMetadata(
                 });
         }
 
-        private bool VerifyExtract(IMethodSymbol providerMethodSymbol, IGeneratorContext? generatorCtx) {
+        private bool VerifyExtract(IMethodSymbol providerMethodSymbol, IGeneratorContext? currentCtx) {
             if (childInjectorAttributeExtractor.CanExtract(providerMethodSymbol)) {
-                return generatorCtx == null
+                return currentCtx == null
                     ? false
                     : throw Diagnostics.InternalError.AsException(
                         "Cannot extract injector provider from a child injector factory method.",
                         providerMethodSymbol.GetLocationOrDefault(),
-                        generatorCtx);
+                        currentCtx);
             }
 
             if (providerMethodSymbol.ReturnsVoid) {
-                return generatorCtx == null
+                return currentCtx == null
                     ? false
                     : throw Diagnostics.InternalError.AsException(
                         $"Injector provider {providerMethodSymbol.Name} must have a return type.",
                         providerMethodSymbol.GetLocationOrDefault(),
-                        generatorCtx);
+                        currentCtx);
             }
 
-            if (generatorCtx != null) {
+            if (currentCtx != null) {
                 if (providerMethodSymbol is not {
                         DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
                     }
@@ -96,14 +96,14 @@ internal record InjectorProviderMetadata(
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Injector provider {providerMethodSymbol.Name} must be a public or internal method.",
                         providerMethodSymbol.GetLocationOrDefault(),
-                        generatorCtx);
+                        currentCtx);
                 }
 
                 if (providerMethodSymbol.Parameters.Length > 0) {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Injector provider {providerMethodSymbol.Name} must not have any parameters.",
                         providerMethodSymbol.GetLocationOrDefault(),
-                        generatorCtx);
+                        currentCtx);
                 }
             }
 

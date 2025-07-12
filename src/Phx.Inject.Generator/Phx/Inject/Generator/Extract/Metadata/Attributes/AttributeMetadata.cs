@@ -59,11 +59,11 @@ internal record AttributeMetadata(
         AttributeMetadata ExtractOne(
             ISymbol attributedSymbol,
             string attributeClassName,
-            IGeneratorContext generatorCtx);
+            IGeneratorContext currentCtx);
         IReadOnlyList<AttributeMetadata> ExtractAll(
             ISymbol attributedSymbol,
             string attributeClassName,
-            IGeneratorContext generatorCtx);
+            IGeneratorContext currentCtx);
     }
 
     public class AttributeExtractor(IAttributeHelper attributeHelper) : IAttributeExtractor {
@@ -76,22 +76,22 @@ internal record AttributeMetadata(
         public AttributeMetadata ExtractOne(
             ISymbol attributedSymbol,
             string attributeClassName,
-            IGeneratorContext generatorCtx) {
+            IGeneratorContext currentCtx) {
             return attributeHelper.ExpectSingleAttribute(
                 attributedSymbol,
                 attributeClassName,
-                generatorCtx,
+                currentCtx,
                 attributeData => new AttributeMetadata(attributedSymbol, attributeData));
         }
 
         public IReadOnlyList<AttributeMetadata> ExtractAll(
             ISymbol attributedSymbol,
             string attributeClassName,
-            IGeneratorContext generatorCtx) {
+            IGeneratorContext currentCtx) {
             return attributeHelper.GetAttributes(
                 attributedSymbol,
                 attributeClassName,
-                generatorCtx,
+                currentCtx,
                 attributeData => new AttributeMetadata(attributedSymbol, attributeData));
         }
     }
@@ -100,7 +100,7 @@ internal record AttributeMetadata(
         AttributeMetadata Extract(
             ISymbol attributedSymbol,
             ISymbol attributeTypeSymbol,
-            IGeneratorContext generatorCtx);
+            IGeneratorContext currentCtx);
     }
 
     public class TypeExtractor : ITypeExtractor {
@@ -111,13 +111,13 @@ internal record AttributeMetadata(
         public AttributeMetadata Extract(
             ISymbol attributedSymbol,
             ISymbol attributeTypeSymbol,
-            IGeneratorContext generatorCtx) {
+            IGeneratorContext currentCtx) {
             var namedSymbol = attributeTypeSymbol as INamedTypeSymbol;
             if (namedSymbol == null) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Expected attribute {attributeTypeSymbol} to be a type.",
                     attributedSymbol.GetLocationOrDefault(),
-                    generatorCtx);
+                    currentCtx);
             }
 
             return new AttributeMetadata(attributedSymbol, namedSymbol);
@@ -129,12 +129,12 @@ internal record AttributeMetadata(
         IReadOnlyList<T> GetAttributes<T>(
             ISymbol symbol,
             string attributeClassName,
-            IGeneratorContext generatorCtx,
+            IGeneratorContext currentCtx,
             Func<AttributeData, T> create);
         T ExpectSingleAttribute<T>(
             ISymbol symbol,
             string attributeClassName,
-            IGeneratorContext generatorCtx,
+            IGeneratorContext currentCtx,
             Func<AttributeData, T> create
         );
     }
@@ -149,12 +149,12 @@ internal record AttributeMetadata(
         public IReadOnlyList<T> GetAttributes<T>(
             ISymbol symbol,
             string attributeClassName,
-            IGeneratorContext generatorCtx,
+            IGeneratorContext currentCtx,
             Func<AttributeData, T> create) {
             return symbol.GetAttributes()
                 .Where(attributeData => attributeData.GetFullyQualifiedName() == attributeClassName)
                 .SelectCatching(
-                    generatorCtx.Aggregator,
+                    currentCtx.Aggregator,
                     attributeData => $"extracting attribute ${attributeData.GetFullyQualifiedName()}",
                     create)
                 .ToImmutableList();
@@ -163,7 +163,7 @@ internal record AttributeMetadata(
         public T ExpectSingleAttribute<T>(
             ISymbol symbol,
             string attributeClassName,
-            IGeneratorContext generatorCtx,
+            IGeneratorContext currentCtx,
             Func<AttributeData, T> create
         ) {
             var attributes = symbol.GetAttributes()
@@ -175,11 +175,11 @@ internal record AttributeMetadata(
                 > 1 => throw Diagnostics.InvalidSpecification.AsException(
                     $"Type {symbol.Name} cannot have more than one {attributeClassName}. Found {attributes.Count}.",
                     symbol.GetLocationOrDefault(),
-                    generatorCtx),
+                    currentCtx),
                 _ => throw Diagnostics.InvalidSpecification.AsException(
                     $"Type {symbol.Name} must have an {attributeClassName}.",
                     symbol.GetLocationOrDefault(),
-                    generatorCtx)
+                    currentCtx)
             };
         }
     }
