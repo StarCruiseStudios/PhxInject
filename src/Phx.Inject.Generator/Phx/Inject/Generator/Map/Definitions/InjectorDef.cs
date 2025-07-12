@@ -20,7 +20,7 @@ internal record InjectorDef(
     IEnumerable<TypeModel> ConstructedSpecifications,
     TypeModel? Dependency,
     IEnumerable<InjectorProviderDef> Providers,
-    IEnumerable<ActivatorDef> Builders,
+    IEnumerable<InjectorBuilderDef> Builders,
     IEnumerable<InjectorChildFactoryDef> ChildFactories,
     Location Location
 ) : IDefinition {
@@ -55,14 +55,14 @@ internal record InjectorDef(
                 })
                 .ToImmutableList();
 
-            IReadOnlyList<ActivatorDef> builders = context.Injector.Builders
+            IReadOnlyList<InjectorBuilderDef> builders = context.Injector.Builders
                 .Select(builder => {
                     var builderInvocation = context.GetSpecContainerBuilderInvocation(
                         context.Injector.InjectorType,
                         builder.BuiltType,
                         builder.Location);
 
-                    return new ActivatorDef(
+                    return new InjectorBuilderDef(
                         builder.BuiltType,
                         builder.BuilderMethodName,
                         builderInvocation,

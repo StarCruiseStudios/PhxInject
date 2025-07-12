@@ -236,9 +236,9 @@ internal record InjectorTemplate(
                             builderTargetName,
                             invocationDef.Location);
 
-                        return new ActivatorTemplate(
+                        return new InjectorBuilderTemplate(
                             builder.BuiltType.TypeModel.NamespacedName,
-                            builder.ActivatorMethodName,
+                            builder.BuilderMethodName,
                             builderTargetName,
                             builderInvocation,
                             builder.Location);

@@ -35,7 +35,7 @@ internal record InjectorDesc(
     }
 
     public class Extractor : IExtractor {
-        private readonly InjectorBuilderDesc.IExtractor activatorDescExtractor;
+        private readonly InjectorBuilderDesc.IExtractor injectorBuilderExtractor;
         private readonly DependencyAttributeMetadata.IExtractor dependencyAttributeExtractor;
         private readonly InjectorAttributeMetadata.IExtractor injectorAttributeExtractor;
         private readonly InjectorChildFactoryDesc.IExtractor injectorChildFactoryDescExtractor;
@@ -43,13 +43,13 @@ internal record InjectorDesc(
 
         public Extractor(
             InjectorProviderMetadata.IExtractor injectorProviderExtractor,
-            InjectorBuilderDesc.IExtractor activatorDescExtractor,
+            InjectorBuilderDesc.IExtractor injectorBuilderExtractor,
             InjectorChildFactoryDesc.IExtractor injectorChildFactoryDescExtractor,
             DependencyAttributeMetadata.IExtractor dependencyAttributeExtractor,
             InjectorAttributeMetadata.IExtractor injectorAttributeExtractor
         ) {
             this.injectorProviderExtractor = injectorProviderExtractor;
-            this.activatorDescExtractor = activatorDescExtractor;
+            this.injectorBuilderExtractor = injectorBuilderExtractor;
             this.injectorChildFactoryDescExtractor = injectorChildFactoryDescExtractor;
             this.dependencyAttributeExtractor = dependencyAttributeExtractor;
             this.injectorAttributeExtractor = injectorAttributeExtractor;
@@ -116,8 +116,8 @@ internal record InjectorDesc(
                     IReadOnlyList<InjectorBuilderDesc> builders = injectorMethods
                         .SelectCatching(
                             currentCtx.Aggregator,
-                            methodSymbol => $"extracting injector activator {injectorType}.{methodSymbol.Name}",
-                            method => activatorDescExtractor.Extract(method, currentCtx))
+                            methodSymbol => $"extracting injector builder {injectorType}.{methodSymbol.Name}",
+                            method => injectorBuilderExtractor.Extract(method, currentCtx))
                         .Where(builder => builder != null)
                         .Select(builder => builder!)
                         .ToImmutableList();

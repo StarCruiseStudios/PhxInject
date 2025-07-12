@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------------
-//  <copyright file="ActivatorTemplate.cs" company="Star Cruise Studios LLC">
+//  <copyright file="InjectorBuilderTemplate.cs" company="Star Cruise Studios LLC">
 //      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
 //      Licensed under the Apache License, Version 2.0.
 //      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Phx.Inject.Generator.Project.Templates;
 
-internal record ActivatorTemplate(
+internal record InjectorBuilderTemplate(
     string BuiltTypeQualifiedName,
     string MethodName,
     string BuilderTargetName,
