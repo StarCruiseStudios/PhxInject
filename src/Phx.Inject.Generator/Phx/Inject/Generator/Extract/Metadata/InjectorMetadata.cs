@@ -12,12 +12,12 @@ using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Common.Util;
-using Phx.Inject.Generator.Extract.Metadata;
+using Phx.Inject.Generator.Extract.Descriptors;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-namespace Phx.Inject.Generator.Extract.Descriptors;
+namespace Phx.Inject.Generator.Extract.Metadata;
 
-internal record InjectorDesc(
+internal record InjectorMetadata(
     TypeModel InjectorInterfaceType,
     TypeModel InjectorType,
     IEnumerable<TypeModel> SpecificationsTypes,
@@ -25,66 +25,57 @@ internal record InjectorDesc(
     IEnumerable<InjectorProviderMetadata> Providers,
     IEnumerable<InjectorBuilderMetadata> Builders,
     IEnumerable<InjectorChildFactoryMetadata> ChildFactories,
-    Location Location
+    InjectorAttributeMetadata InjectorAttribute,
+    DependencyAttributeMetadata? DependencyAttribute,
+    ITypeSymbol InjectorInterfaceTypeSymbol
 ) : IDescriptor {
+    public Location Location {
+        get => InjectorInterfaceTypeSymbol.GetLocationOrDefault();
+    }
+
     public interface IExtractor {
-        InjectorDesc Extract(
+        bool CanExtract(ITypeSymbol providerMethodSymbol);
+        InjectorMetadata Extract(
             ITypeSymbol injectorInterfaceSymbol,
             ExtractorContext extractorCtx
         );
     }
 
-    public class Extractor : IExtractor {
-        private readonly DependencyAttributeMetadata.IExtractor dependencyAttributeExtractor;
-        private readonly InjectorAttributeMetadata.IExtractor injectorAttributeExtractor;
-        private readonly InjectorBuilderMetadata.IExtractor injectorBuilderExtractor;
-        private readonly InjectorChildFactoryMetadata.IExtractor injectorChildFactoryExtractor;
-        private readonly InjectorProviderMetadata.IExtractor injectorProviderExtractor;
-
-        public Extractor(
-            InjectorProviderMetadata.IExtractor injectorProviderExtractor,
-            InjectorBuilderMetadata.IExtractor injectorBuilderExtractor,
-            InjectorChildFactoryMetadata.IExtractor injectorChildFactoryExtractor,
-            DependencyAttributeMetadata.IExtractor dependencyAttributeExtractor,
-            InjectorAttributeMetadata.IExtractor injectorAttributeExtractor
-        ) {
-            this.injectorProviderExtractor = injectorProviderExtractor;
-            this.injectorBuilderExtractor = injectorBuilderExtractor;
-            this.injectorChildFactoryExtractor = injectorChildFactoryExtractor;
-            this.dependencyAttributeExtractor = dependencyAttributeExtractor;
-            this.injectorAttributeExtractor = injectorAttributeExtractor;
-        }
-
-        public Extractor() : this(
+    public class Extractor(
+        InjectorProviderMetadata.IExtractor injectorProviderExtractor,
+        InjectorBuilderMetadata.IExtractor injectorBuilderExtractor,
+        InjectorChildFactoryMetadata.IExtractor injectorChildFactoryExtractor,
+        DependencyAttributeMetadata.IExtractor dependencyAttributeExtractor,
+        InjectorAttributeMetadata.IExtractor injectorAttributeExtractor
+    ) : IExtractor {
+        public static readonly IExtractor Instance = new Extractor(
             InjectorProviderMetadata.Extractor.Instance,
             InjectorBuilderMetadata.Extractor.Instance,
             InjectorChildFactoryMetadata.Extractor.Instance,
             DependencyAttributeMetadata.Extractor.Instance,
-            InjectorAttributeMetadata.Extractor.Instance) { }
+            InjectorAttributeMetadata.Extractor.Instance);
 
-        public InjectorDesc Extract(
+        public bool CanExtract(ITypeSymbol providerMethodSymbol) {
+            return VerifyExtract(providerMethodSymbol, null);
+        }
+
+        public InjectorMetadata Extract(
             ITypeSymbol injectorInterfaceSymbol,
             ExtractorContext extractorCtx
         ) {
             return extractorCtx.UseChildContext(
-                "extracting injector",
+                $"extracting injector {injectorInterfaceSymbol}",
                 injectorInterfaceSymbol,
                 currentCtx => {
-                    var injectorLocation = injectorInterfaceSymbol.GetLocationOrDefault();
-                    var injectorInterfaceType = TypeModel.FromTypeSymbol(injectorInterfaceSymbol);
-                    if (!injectorAttributeExtractor.CanExtract(injectorInterfaceSymbol)) {
-                        throw Diagnostics.InvalidSpecification.AsException(
-                            $"Type {injectorInterfaceSymbol} must declare an {InjectorAttributeMetadata.InjectorAttributeClassName}.",
-                            injectorInterfaceSymbol.GetLocationOrDefault(),
-                            currentCtx);
-                    }
+                    VerifyExtract(injectorInterfaceSymbol, currentCtx);
 
+                    var injectorInterfaceType = injectorInterfaceSymbol.ToTypeModel();
                     var injectorAttribute = injectorAttributeExtractor.Extract(injectorInterfaceSymbol, currentCtx);
 
                     var generatedInjectorTypeName =
                         injectorAttribute.GeneratedClassName?.AsValidIdentifier().StartUppercase()
-                        ?? TypeModel.FromTypeSymbol(injectorInterfaceSymbol).GetInjectorClassName();
-                    ;
+                        ?? injectorInterfaceType.GetInjectorClassName();
+
                     var injectorType = injectorInterfaceType with {
                         BaseTypeName = generatedInjectorTypeName,
                         TypeArguments = ImmutableList<TypeModel>.Empty
@@ -93,6 +84,7 @@ internal record InjectorDesc(
                     var dependencyAttribute = dependencyAttributeExtractor.CanExtract(injectorInterfaceSymbol)
                         ? dependencyAttributeExtractor.Extract(injectorInterfaceSymbol, currentCtx)
                         : null;
+                    var dependencyType = dependencyAttribute?.DependencyType;
 
                     IReadOnlyList<TypeModel> specificationTypes = injectorAttribute.Specifications
                         .AppendIfNotNull(dependencyAttribute?.DependencyType)
@@ -131,16 +123,44 @@ internal record InjectorDesc(
                                 injectorChildFactoryExtractor.Extract(injectorInterfaceType, methodSymbol, currentCtx))
                         .ToImmutableList();
 
-                    return new InjectorDesc(
+                    return new InjectorMetadata(
                         injectorInterfaceType,
                         injectorType,
                         specificationTypes,
-                        dependencyAttribute?.DependencyType,
+                        dependencyType,
                         providers,
                         builders,
                         childFactories,
-                        injectorLocation);
+                        injectorAttribute,
+                        dependencyAttribute,
+                        injectorInterfaceSymbol);
                 });
+        }
+
+        private bool VerifyExtract(ITypeSymbol injectorInterfaceSymbol, IGeneratorContext? generatorCtx) {
+            if (!injectorAttributeExtractor.CanExtract(injectorInterfaceSymbol)) {
+                return generatorCtx == null
+                    ? false
+                    : throw Diagnostics.InternalError.AsException(
+                        $"Child injector factory must declare an {InjectorAttributeMetadata.InjectorAttributeClassName}.",
+                        injectorInterfaceSymbol.GetLocationOrDefault(),
+                        generatorCtx);
+            }
+
+            if (generatorCtx != null) {
+                if (injectorInterfaceSymbol is not ITypeSymbol {
+                        TypeKind: TypeKind.Interface,
+                        DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
+                    }
+                ) {
+                    throw Diagnostics.InvalidSpecification.AsException(
+                        $"Injector type {injectorInterfaceSymbol.Name} must be a public or internal interface.",
+                        injectorInterfaceSymbol.GetLocationOrDefault(),
+                        generatorCtx);
+                }
+            }
+
+            return true;
         }
     }
 }

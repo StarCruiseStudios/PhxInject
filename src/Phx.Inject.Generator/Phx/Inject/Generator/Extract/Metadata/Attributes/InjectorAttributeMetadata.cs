@@ -8,9 +8,7 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
@@ -38,17 +36,6 @@ internal record InjectorAttributeMetadata(
         }
 
         public InjectorAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
-            if (attributedSymbol is not ITypeSymbol {
-                    TypeKind: TypeKind.Interface,
-                    DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
-                }
-            ) {
-                throw Diagnostics.InvalidSpecification.AsException(
-                    $"Injector type {attributedSymbol.Name} must be a public or internal interface.",
-                    attributedSymbol.GetLocationOrDefault(),
-                    generatorCtx);
-            }
-
             var attribute = attributeExtractor.ExtractOne(attributedSymbol, InjectorAttributeClassName, generatorCtx);
             var generatedClassName = attribute.AttributeData.ConstructorArguments
                 .FirstOrDefault(argument => argument.Kind != TypedConstantKind.Array)

@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Extract.Descriptors;
+using Phx.Inject.Generator.Extract.Metadata;
 
 namespace Phx.Inject.Generator.Map.Definitions;
 
@@ -22,7 +23,7 @@ internal record InjectionContextDef(
 ) : IDefinition {
     public interface IMapper {
         InjectionContextDef Map(
-            InjectorDesc injectorDesc,
+            InjectorMetadata injectorMetadata,
             DefGenerationContext defGenerationCtx
         );
     }
@@ -48,7 +49,7 @@ internal record InjectionContextDef(
             new DependencyImplementationDef.Mapper()) { }
 
         public InjectionContextDef Map(
-            InjectorDesc injectorDesc,
+            InjectorMetadata injectorMetadata,
             DefGenerationContext defGenerationCtx
         ) {
             var factoryRegistrations = new Dictionary<RegistrationIdentifier, List<FactoryRegistration>>();
@@ -118,7 +119,7 @@ internal record InjectionContextDef(
                 .Select(specDesc => specContainerDefMapper.Map(specDesc, generationContext))
                 .ToImmutableList();
 
-            IReadOnlyList<DependencyImplementationDef> dependencyImplementationDefs = injectorDesc.ChildFactories
+            IReadOnlyList<DependencyImplementationDef> dependencyImplementationDefs = injectorMetadata.ChildFactories
                 .Select(childFactory => generationContext.GetInjector(
                     childFactory.ChildInjectorType,
                     childFactory.Location))
@@ -128,7 +129,7 @@ internal record InjectionContextDef(
                 .Select(dependencyTypeGroup => dependencyTypeGroup.First())
                 .Select(dependencyType => generationContext.GetDependency(
                     dependencyType,
-                    injectorDesc.Location))
+                    injectorMetadata.Location))
                 .Select(dependency => dependencyImplementationDefMapper.Map(
                     dependency,
                     generationContext))
@@ -138,7 +139,7 @@ internal record InjectionContextDef(
                 injectorDef,
                 specContainerDefs,
                 dependencyImplementationDefs,
-                injectorDesc.Location);
+                injectorMetadata.Location);
         }
     }
 }

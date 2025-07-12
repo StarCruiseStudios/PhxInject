@@ -9,13 +9,13 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
-using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Extract.Metadata;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
 internal record SourceDesc(
-    IReadOnlyList<InjectorDesc> injectorDescs,
+    IReadOnlyList<InjectorMetadata> injectorDescs,
     IReadOnlyList<SpecDesc> specDescs,
     IReadOnlyList<DependencyDesc> dependencyDescs
 ) {
@@ -34,35 +34,27 @@ internal record SourceDesc(
     }
 
     public class Extractor : IExtractor {
-        private readonly DependencyAttributeMetadata.IExtractor dependencyAttributeExtractor;
         private readonly DependencyDesc.IExtractor dependencyDescExtractor;
-        private readonly InjectorAttributeMetadata.IExtractor injectorAttributeExtractor;
-        private readonly InjectorDesc.IExtractor injectorDescExtractor;
+        private readonly InjectorMetadata.IExtractor injectorDescExtractor;
         private readonly SpecDesc.IExtractor specDescExtractor;
         private readonly SpecificationAttributeMetadata.IExtractor specificationAttributeExtractor;
 
         public Extractor(
-            InjectorDesc.IExtractor injectorDescExtractor,
+            InjectorMetadata.IExtractor injectorDescExtractor,
             SpecDesc.IExtractor specDescExtractor,
             DependencyDesc.IExtractor dependencyDescExtractor,
-            DependencyAttributeMetadata.IExtractor dependencyAttributeExtractor,
-            InjectorAttributeMetadata.IExtractor injectorAttributeExtractor,
             SpecificationAttributeMetadata.IExtractor specificationAttributeExtractor
         ) {
             this.injectorDescExtractor = injectorDescExtractor;
             this.specDescExtractor = specDescExtractor;
             this.dependencyDescExtractor = dependencyDescExtractor;
-            this.dependencyAttributeExtractor = dependencyAttributeExtractor;
-            this.injectorAttributeExtractor = injectorAttributeExtractor;
             this.specificationAttributeExtractor = specificationAttributeExtractor;
         }
 
         public Extractor() : this(
-            new InjectorDesc.Extractor(),
+            InjectorMetadata.Extractor.Instance,
             new SpecDesc.Extractor(),
             new DependencyDesc.Extractor(),
-            DependencyAttributeMetadata.Extractor.Instance,
-            InjectorAttributeMetadata.Extractor.Instance,
             SpecificationAttributeMetadata.Extractor.Instance
         ) { }
 
@@ -73,14 +65,27 @@ internal record SourceDesc(
         ) {
             var extractorCtx = new ExtractorContext(null, null, generatorCtx);
 
-            IReadOnlyList<InjectorDesc> injectorDescs = injectorCandidates
-                .Where(injectorTypeSymbol => injectorAttributeExtractor.CanExtract(injectorTypeSymbol))
+            IReadOnlyList<InjectorMetadata> injectorDescs = injectorCandidates
+                .Where(injectorTypeSymbol => injectorDescExtractor.CanExtract(injectorTypeSymbol))
                 .SelectCatching(
                     extractorCtx.Aggregator,
                     injectorTypeSymbol => $"extracting injector from {injectorTypeSymbol}",
                     injectorTypeSymbol => injectorDescExtractor.Extract(injectorTypeSymbol, extractorCtx))
                 .ToImmutableList();
             extractorCtx.Log($"Discovered {injectorDescs.Count} injector types.");
+
+            IReadOnlyList<DependencyDesc> dependencyDescs = injectorDescs
+                .Where(injectorDesc => injectorDesc.DependencyInterfaceType != null)
+                .SelectCatching(
+                    extractorCtx.Aggregator,
+                    injectorDesc => $"extracting dependencies from injector {injectorDesc.InjectorInterfaceType}",
+                    injectorDesc => {
+                        var dependencySymbol = injectorDesc.DependencyInterfaceType!.TypeSymbol;
+                        var injectorType = injectorDesc.InjectorInterfaceType;
+                        return dependencyDescExtractor.Extract(dependencySymbol, injectorType, extractorCtx);
+                    })
+                .ToImmutableList();
+            extractorCtx.Log($"Discovered {dependencyDescs.Count} dependency types.");
 
             IReadOnlyList<SpecDesc> specDescs = specificationCandidates
                 .Where(specificationTypeSymbol => specificationAttributeExtractor.CanExtract(specificationTypeSymbol))
@@ -90,28 +95,6 @@ internal record SourceDesc(
                     specificationTypeSymbol => specDescExtractor.Extract(specificationTypeSymbol, extractorCtx))
                 .ToImmutableList();
             extractorCtx.Log($"Discovered {specDescs.Count} specification types.");
-
-            IReadOnlyList<DependencyDesc> dependencyDescs = injectorCandidates
-                .Where(injectorTypeSymbol => injectorAttributeExtractor.CanExtract(injectorTypeSymbol))
-                .SelectCatching(
-                    extractorCtx.Aggregator,
-                    injectorTypeSymbol => $"extracting dependencies from injector {injectorTypeSymbol}",
-                    injectorTypeSymbol => {
-                        var dependencyAttribute = dependencyAttributeExtractor.CanExtract(injectorTypeSymbol)
-                            ? dependencyAttributeExtractor.Extract(injectorTypeSymbol, extractorCtx)
-                            : null;
-                        if (dependencyAttribute == null) {
-                            return null;
-                        }
-
-                        var dependencySymbol = dependencyAttribute.DependencyType.TypeSymbol;
-
-                        var injectorType = injectorTypeSymbol.ToTypeModel();
-                        return dependencyDescExtractor.Extract(dependencySymbol, injectorType, extractorCtx);
-                    })
-                .OfType<DependencyDesc>()
-                .ToImmutableList();
-            extractorCtx.Log($"Discovered {dependencyDescs.Count} dependency types.");
 
             return new SourceDesc(
                 injectorDescs,

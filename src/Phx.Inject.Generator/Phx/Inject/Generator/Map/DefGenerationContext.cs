@@ -12,21 +12,22 @@ using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Extract.Descriptors;
+using Phx.Inject.Generator.Extract.Metadata;
 using Phx.Inject.Generator.Map.Definitions;
 
 namespace Phx.Inject.Generator.Map;
 
 internal record DefGenerationContext : IGeneratorContext {
-    public InjectorDesc Injector { get; }
-    public IReadOnlyDictionary<TypeModel, InjectorDesc> Injectors { get; }
+    public InjectorMetadata Injector { get; }
+    public IReadOnlyDictionary<TypeModel, InjectorMetadata> Injectors { get; }
     public IReadOnlyDictionary<TypeModel, SpecDesc> Specifications { get; }
     public IReadOnlyDictionary<TypeModel, DependencyDesc> Dependencies { get; }
     public IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> FactoryRegistrations { get; set; }
     public IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> BuilderRegistrations { get; set; }
 
     public DefGenerationContext(
-        InjectorDesc injector,
-        IReadOnlyDictionary<TypeModel, InjectorDesc> injectors,
+        InjectorMetadata injector,
+        IReadOnlyDictionary<TypeModel, InjectorMetadata> injectors,
         IReadOnlyDictionary<TypeModel, SpecDesc> specifications,
         IReadOnlyDictionary<TypeModel, DependencyDesc> dependencies,
         IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> factoryRegistrations,
@@ -52,7 +53,7 @@ internal record DefGenerationContext : IGeneratorContext {
 
     public IExceptionAggregator Aggregator { get; set; }
 
-    public InjectorDesc GetInjector(TypeModel type, Location location) {
+    public InjectorMetadata GetInjector(TypeModel type, Location location) {
         if (Injectors.TryGetValue(type, out var injector)) {
             return injector;
         }
