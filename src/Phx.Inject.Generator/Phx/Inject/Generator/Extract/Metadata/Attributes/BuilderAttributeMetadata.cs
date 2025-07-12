@@ -7,18 +7,19 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal record BuilderAttributeMetadata(AttributeMetadata Attribute) {
+internal record BuilderAttributeMetadata(AttributeMetadata Attribute) : IDescriptor {
     public const string BuilderAttributeClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(BuilderAttribute)}";
+
+    public Location Location { get; } = Attribute.Location;
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        IResult<BuilderAttributeMetadata> Extract(ISymbol attributedSymbol);
-        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        BuilderAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
     public class Extractor : IExtractor {
@@ -33,12 +34,7 @@ internal record BuilderAttributeMetadata(AttributeMetadata Attribute) {
             return attributeExtractor.CanExtract(attributedSymbol, BuilderAttributeClassName);
         }
 
-        public IResult<BuilderAttributeMetadata> Extract(ISymbol attributedSymbol) {
-            return attributeExtractor.ExtractOne(attributedSymbol, BuilderAttributeClassName)
-                .Map(attribute => Result.Ok(new BuilderAttributeMetadata(attribute)));
-        }
-
-        public void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+        public BuilderAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
             if (attributedSymbol is not IMethodSymbol {
                     IsStatic: true,
                     DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
@@ -49,6 +45,9 @@ internal record BuilderAttributeMetadata(AttributeMetadata Attribute) {
                     attributedSymbol.Locations.First(),
                     generatorCtx);
             }
+
+            var attribute = attributeExtractor.ExtractOne(attributedSymbol, BuilderAttributeClassName, generatorCtx);
+            return new BuilderAttributeMetadata(attribute);
         }
     }
 }

@@ -11,72 +11,64 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal class PartialAttributeMetadata : AttributeMetadata {
+internal record PartialAttributeMetadata(AttributeMetadata Attribute) : IDescriptor {
     public const string PartialAttributeClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(PartialAttribute)}";
 
     private static readonly IImmutableSet<string> PartialTypes = ImmutableHashSet.CreateRange(new[] {
         TypeNames.IReadOnlyListClassName, TypeNames.ISetClassName, TypeNames.IReadOnlyDictionaryClassName
     });
 
-    public PartialAttributeMetadata(ISymbol attributedSymbol, AttributeData attributeData)
-        : base(attributedSymbol, attributeData) { }
+    public Location Location { get; } = Attribute.Location;
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        IResult<PartialAttributeMetadata> Extract(ISymbol attributedSymbol);
-        void ValidateAttributedType(ISymbol attributedSymbol, TypeModel partialType, IGeneratorContext generatorCtx);
+        PartialAttributeMetadata Extract(
+            TypeModel partialType,
+            ISymbol attributedSymbol,
+            IGeneratorContext generatorCtx);
     }
 
     public class Extractor : IExtractor {
-        public static IExtractor Instance = new Extractor(AttributeHelper.Instance);
-        private readonly IAttributeHelper attributeHelper;
+        public static IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
+        private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
 
-        internal Extractor(IAttributeHelper attributeHelper) {
-            this.attributeHelper = attributeHelper;
+        internal Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) {
+            this.attributeExtractor = attributeExtractor;
         }
+
         public bool CanExtract(ISymbol attributedSymbol) {
-            return attributeHelper.HasAttribute(attributedSymbol, PartialAttributeClassName);
+            return attributeExtractor.CanExtract(attributedSymbol, PartialAttributeClassName);
         }
 
-        public IResult<PartialAttributeMetadata> Extract(ISymbol attributedSymbol) {
-            return attributeHelper.ExpectSingleAttribute(
-                attributedSymbol,
-                PartialAttributeClassName,
-                attributeData => Result.Ok(
-                    new PartialAttributeMetadata(attributedSymbol, attributeData)));
-        }
-
-        public void ValidateAttributedType(
-            ISymbol attributedSymbol,
+        public PartialAttributeMetadata Extract(
             TypeModel partialType,
+            ISymbol attributedSymbol,
             IGeneratorContext generatorCtx) {
-            generatorCtx.Aggregator.Aggregate(
-                "Validating partial type",
-                () => {
-                    if (attributedSymbol is not IMethodSymbol
-                        and not IPropertySymbol
-                        and not IFieldSymbol {
-                            IsStatic: true,
-                            DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
-                        }
-                    ) {
-                        throw Diagnostics.InvalidSpecification.AsException(
-                            $"Partial factory {attributedSymbol.Name} must be a public or internal static method, property or field.",
-                            attributedSymbol.Locations.First(),
-                            generatorCtx);
-                    }
-                },
-                () => {
-                    if (!PartialTypes.Contains(partialType.NamespacedBaseTypeName)) {
-                        throw Diagnostics.InvalidSpecification.AsException(
-                            $"Partial factories must return one of [{string.Join(", ", PartialTypes)}].",
-                            attributedSymbol.Locations.First(),
-                            generatorCtx);
-                    }
-                });
+            if (attributedSymbol is not IMethodSymbol
+                and not IPropertySymbol {
+                    IsStatic: true,
+                    DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
+                }
+            ) {
+                throw Diagnostics.InvalidSpecification.AsException(
+                    $"Partial factory {attributedSymbol.Name} must be a public or internal static method or property.",
+                    attributedSymbol.Locations.First(),
+                    generatorCtx);
+            }
+
+            if (!PartialTypes.Contains(partialType.NamespacedBaseTypeName)) {
+                throw Diagnostics.InvalidSpecification.AsException(
+                    $"Partial factories must return one of [{string.Join(", ", PartialTypes)}].",
+                    attributedSymbol.Locations.First(),
+                    generatorCtx);
+            }
+
+            var attribute = attributeExtractor.ExtractOne(attributedSymbol, PartialAttributeClassName, generatorCtx);
+            return new PartialAttributeMetadata(attribute);
         }
     }
 }

@@ -7,7 +7,6 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Common.Model;
 
@@ -56,28 +55,28 @@ internal class NoQualifier : IQualifier {
     }
 }
 
-internal class AttributeQualifier : IQualifier {
-    public QualifierAttributeMetadata Attribute { get; }
+internal class CustomQualifier : IQualifier {
+    public ITypeSymbol AttributeType { get; }
 
-    public AttributeQualifier(QualifierAttributeMetadata attribute) {
-        Attribute = attribute;
-        Identifier = "A_" + attribute.AttributeTypeSymbol;
+    public CustomQualifier(ITypeSymbol attributeType) {
+        AttributeType = attributeType;
+        Identifier = "A_" + attributeType;
     }
     public string Identifier { get; }
 
     public override string ToString() {
-        return $"@{Attribute.AttributeTypeSymbol.Name}";
+        return $"@{AttributeType.Name}";
     }
 
     public override bool Equals(object? obj) {
-        return obj is AttributeQualifier qualifier
+        return obj is CustomQualifier qualifier
             && SymbolEqualityComparer.IncludeNullability.Equals(
-                Attribute.AttributeTypeSymbol,
-                qualifier.Attribute.AttributeTypeSymbol);
+                AttributeType,
+                qualifier.AttributeType);
     }
 
     public override int GetHashCode() {
-        return (typeof(AttributeQualifier).GetHashCode() * 397)
-            ^ SymbolEqualityComparer.IncludeNullability.GetHashCode(Attribute.AttributeTypeSymbol);
+        return (typeof(CustomQualifier).GetHashCode() * 397)
+            ^ SymbolEqualityComparer.IncludeNullability.GetHashCode(AttributeType);
     }
 }

@@ -9,19 +9,32 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Generator;
+using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Common;
 
 internal interface IAttributeHelper {
     bool HasAttribute(ISymbol symbol, string attributeClassName);
-    IReadOnlyList<IResult<T>> GetAttributes<T>(
+    IReadOnlyList<IResult<T>> GetAttributesResult<T>(
         ISymbol symbol,
         string attributeClassName,
         Func<AttributeData, IResult<T>> create);
-    IResult<T> ExpectSingleAttribute<T>(
+    IResult<T> ExpectSingleAttributeResult<T>(
         ISymbol symbol,
         string attributeClassName,
         Func<AttributeData, IResult<T>> create
+    );
+    IReadOnlyList<T> GetAttributes<T>(
+        ISymbol symbol,
+        string attributeClassName,
+        IGeneratorContext generatorCtx,
+        Func<AttributeData, T> create);
+    T ExpectSingleAttribute<T>(
+        ISymbol symbol,
+        string attributeClassName,
+        IGeneratorContext generatorCtx,
+        Func<AttributeData, T> create
     );
 }
 
@@ -29,51 +42,72 @@ internal class AttributeHelper : IAttributeHelper {
     public static IAttributeHelper Instance { get; } = new AttributeHelper();
     public bool HasAttribute(ISymbol symbol, string attributeClassName) {
         return symbol.GetAttributes()
-            .Any(attributeData => attributeData.AttributeClass?.ToString() == attributeClassName);
+            .Any(attributeData => attributeData.GetFullyQualifiedName() == attributeClassName);
     }
 
-    public IReadOnlyList<IResult<T>> GetAttributes<T>(
+    public IReadOnlyList<IResult<T>> GetAttributesResult<T>(
         ISymbol symbol,
         string attributeClassName,
         Func<AttributeData, IResult<T>> create) {
         return symbol.GetAttributes()
-            .Where(attributeData => attributeData.AttributeClass?.ToString() == attributeClassName)
+            .Where(attributeData => attributeData.GetFullyQualifiedName() == attributeClassName)
             .Select(create)
             .ToImmutableList();
     }
 
-    public IResult<T> ExpectSingleAttribute<T>(
+    public IResult<T> ExpectSingleAttributeResult<T>(
         ISymbol symbol,
         string attributeClassName,
         Func<AttributeData, IResult<T>> create
     ) {
-        var attributes = GetAttributes(symbol, attributeClassName, create);
+        var attributes = GetAttributesResult(symbol, attributeClassName, create);
         return attributes.Count switch {
             1 => attributes.Single(),
             > 1 => Result.Error<T>(
-                $"Type {symbol.Name} cannot have more than one {attributeClassName}. Found {attributes.Count}.",
+                $"Symbol {symbol.Name} cannot have more than one {attributeClassName}. Found {attributes.Count}.",
                 symbol.Locations.First(),
                 Diagnostics.InvalidSpecification),
             _ => Result.Error<T>(
-                $"Type {symbol.Name} must have an {attributeClassName}.",
+                $"Symbol {symbol.Name} must have an {attributeClassName}.",
                 symbol.Locations.First(),
                 Diagnostics.InvalidSpecification)
         };
     }
 
-    public IResult<T?> TryGetSingleAttribute<T>(
+    public IReadOnlyList<T> GetAttributes<T>(
         ISymbol symbol,
         string attributeClassName,
-        Func<AttributeData, IResult<T?>> create
-    ) where T : class? {
-        var attributes = GetAttributes(symbol, attributeClassName, create);
+        IGeneratorContext generatorCtx,
+        Func<AttributeData, T> create) {
+        return symbol.GetAttributes()
+            .Where(attributeData => attributeData.GetFullyQualifiedName() == attributeClassName)
+            .SelectCatching(
+                generatorCtx.Aggregator,
+                attributeData => $"extracting attribute ${attributeData.GetFullyQualifiedName()}",
+                create)
+            .ToImmutableList();
+    }
+
+    public T ExpectSingleAttribute<T>(
+        ISymbol symbol,
+        string attributeClassName,
+        IGeneratorContext generatorCtx,
+        Func<AttributeData, T> create
+    ) {
+        var attributes = symbol.GetAttributes()
+            .Where(attributeData => attributeData.GetFullyQualifiedName() == attributeClassName)
+            .ToImmutableList();
+
         return attributes.Count switch {
-            1 => attributes.Single(),
-            > 1 => Result.Error<T?>(
-                $"Type {symbol.Name} can only have one {attributeClassName}. Found {attributes.Count}.",
+            1 => create(attributes.Single()),
+            > 1 => throw Diagnostics.InvalidSpecification.AsException(
+                $"Type {symbol.Name} cannot have more than one {attributeClassName}. Found {attributes.Count}.",
                 symbol.Locations.First(),
-                Diagnostics.InvalidSpecification),
-            _ => Result.Ok<T?>(null)
+                generatorCtx),
+            _ => throw Diagnostics.InvalidSpecification.AsException(
+                $"Type {symbol.Name} must have an {attributeClassName}.",
+                symbol.Locations.First(),
+                generatorCtx)
         };
     }
 }

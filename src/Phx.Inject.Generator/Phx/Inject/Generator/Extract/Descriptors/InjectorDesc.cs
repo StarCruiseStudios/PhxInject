@@ -93,9 +93,6 @@ internal record InjectorDesc(
                     var dependencyAttribute = dependencyAttributeExtractor.CanExtract(injectorInterfaceSymbol)
                         ? dependencyAttributeExtractor.Extract(injectorInterfaceSymbol)
                             .GetOrThrow(currentCtx)
-                            .Also(_ => dependencyAttributeExtractor.ValidateAttributedType(
-                                injectorInterfaceSymbol,
-                                currentCtx))
                         : null;
 
                     IReadOnlyList<TypeModel> specificationTypes = injectorAttribute.Specifications

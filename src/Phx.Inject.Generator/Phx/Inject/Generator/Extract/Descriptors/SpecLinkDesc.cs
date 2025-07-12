@@ -8,7 +8,7 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Extract.Metadata;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
@@ -27,20 +27,20 @@ internal record SpecLinkDesc(
     }
 
     public class Extractor : IExtractor {
-        private readonly QualifierAttributeMetadata.IAttributeNameExtractor qualifierAttributeNameExtractor;
+        private readonly CustomQualifierAttributeMetadata.ITypeExtractor qualifierAttributeTypeExtractor;
         private readonly QualifierMetadata.IExtractor qualifierExtractor;
 
         public Extractor(
             QualifierMetadata.IExtractor qualifierExtractor,
-            QualifierAttributeMetadata.IAttributeNameExtractor qualifierAttributeNameExtractor
+            CustomQualifierAttributeMetadata.ITypeExtractor qualifierAttributeTypeExtractor
         ) {
             this.qualifierExtractor = qualifierExtractor;
-            this.qualifierAttributeNameExtractor = qualifierAttributeNameExtractor;
+            this.qualifierAttributeTypeExtractor = qualifierAttributeTypeExtractor;
         }
 
         public Extractor() : this(
             QualifierMetadata.Extractor.Instance,
-            QualifierAttributeMetadata.AttributeNameExtractor.Instance
+            CustomQualifierAttributeMetadata.TypeExtractor.Instance
         ) { }
 
         public SpecLinkDesc Extract(
@@ -53,22 +53,26 @@ internal record SpecLinkDesc(
 
             var inputQualifierAttribute = link.InputQualifier == null
                 ? null
-                : qualifierAttributeNameExtractor.Extract(link.Attribute.AttributedSymbol, link.InputQualifier)
-                    .GetOrThrow(extractorCtx)
-                    .Also(_ => qualifierAttributeNameExtractor.ValidateAttributedType(link.InputQualifier, extractorCtx));
+                : qualifierAttributeTypeExtractor.Extract(link.Attribute.AttributedSymbol,
+                    link.InputQualifier,
+                    extractorCtx);
             var inputQualifier = inputQualifierAttribute != null
-                ? new QualifierMetadata(new AttributeQualifier(inputQualifierAttribute), link.Attribute.Location)
+                ? new QualifierMetadata(
+                    new CustomQualifier(inputQualifierAttribute.AttributeMetadata.AttributeTypeSymbol),
+                    link.Attribute.Location)
                 : link.InputLabel != null
                     ? new QualifierMetadata(new LabelQualifier(link.InputLabel), link.Attribute.Location)
                     : QualifierMetadata.NoQualifier;
 
             var outputQualifierAttribute = link.OutputQualifier == null
                 ? null
-                : qualifierAttributeNameExtractor.Extract(link.Attribute.AttributedSymbol, link.OutputQualifier)
-                    .GetOrThrow(extractorCtx)
-                    .Also(_ => qualifierAttributeNameExtractor.ValidateAttributedType(link.OutputQualifier, extractorCtx));
+                : qualifierAttributeTypeExtractor.Extract(link.Attribute.AttributedSymbol,
+                    link.OutputQualifier,
+                    extractorCtx);
             var outputQualifier = outputQualifierAttribute != null
-                ? new QualifierMetadata(new AttributeQualifier(outputQualifierAttribute), link.Attribute.Location)
+                ? new QualifierMetadata(
+                    new CustomQualifier(outputQualifierAttribute.AttributeMetadata.AttributeTypeSymbol),
+                    link.Attribute.Location)
                 : link.OutputLabel != null
                     ? new QualifierMetadata(new LabelQualifier(link.OutputLabel), link.Attribute.Location)
                     : QualifierMetadata.NoQualifier;

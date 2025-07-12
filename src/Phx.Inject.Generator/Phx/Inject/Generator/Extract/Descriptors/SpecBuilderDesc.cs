@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Extract.Metadata;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
@@ -65,7 +66,7 @@ internal record SpecBuilderDesc(
                     context);
             }
 
-            var qualifier = qualifierExtractor.Extract(builderMethod).GetOrThrow(context);
+            var qualifier = qualifierExtractor.Extract(builderMethod, context);
             // Use the qualifier from the method, not the parameter.
             var builtType = methodParameterTypes[0] with {
                 Qualifier = qualifier
@@ -88,11 +89,11 @@ internal record SpecBuilderDesc(
                 .OfType<IMethodSymbol>()
                 .Where(methodSymbol => builderAttributeExtractor.CanExtract(methodSymbol))
                 .Where(methodSymbol => {
-                    var qualifier = qualifierExtractor.Extract(methodSymbol).GetOrThrow(context).Qualifier;
+                    var qualifier = qualifierExtractor.Extract(methodSymbol, context).Qualifier;
                     return Equals(qualifier, builderType.Qualifier.Qualifier);
                 })
                 .Select(methodSymbol => {
-                    var builderAttribute = builderAttributeExtractor.Extract(methodSymbol).GetOrThrow(context);
+                    var builderAttribute = builderAttributeExtractor.Extract(methodSymbol, context);
                     ValidateBuilder(methodSymbol, builderLocation, context);
                     return methodSymbol;
                 })
@@ -205,8 +206,6 @@ internal record SpecBuilderDesc(
                     context);
             }
 
-            builderAttributeExtractor.ValidateAttributedType(builderSymbol, context);
-
             return true;
         }
 
@@ -226,8 +225,6 @@ internal record SpecBuilderDesc(
                     builderReferenceLocation,
                     generatorCtx);
             }
-
-            builderReferenceAttributeExtractor.ValidateAttributedType(builderReferenceSymbol, generatorCtx);
 
             return true;
         }
@@ -251,7 +248,7 @@ internal record SpecBuilderDesc(
 
             IReadOnlyList<ITypeSymbol> typeArguments = referenceTypeSymbol.TypeArguments;
 
-            var qualifier = qualifierExtractor.Extract(builderReferenceSymbol).GetOrThrow(extractorCtx);
+            var qualifier = qualifierExtractor.Extract(builderReferenceSymbol, extractorCtx);
             var returnTypeModel = TypeModel.FromTypeSymbol(typeArguments[0]);
             builtType = new QualifiedTypeModel(
                 returnTypeModel,

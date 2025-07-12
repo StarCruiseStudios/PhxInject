@@ -6,133 +6,53 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal class QualifierAttributeMetadata : AttributeMetadata {
+internal record QualifierAttributeMetadata(AttributeMetadata AttributeMetadata) : IDescriptor {
     public const string QualifierAttributeClassName =
         $"{SourceGenerator.PhxInjectNamespace}.{nameof(QualifierAttribute)}";
 
-    public QualifierAttributeMetadata(ISymbol attributedSymbol, AttributeData attributeData)
-        : base(attributedSymbol, attributeData) { }
-
-    public QualifierAttributeMetadata(ISymbol attributedSymbol, INamedTypeSymbol attributeTypeSymbol)
-        : base(attributedSymbol, attributeTypeSymbol) { }
+    public Location Location { get; } = AttributeMetadata.Location;
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        IResult<QualifierAttributeMetadata> Extract(ISymbol attributedSymbol);
-        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        QualifierAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
     public class Extractor : IExtractor {
-        public static IExtractor Instance = new Extractor(
-            AttributeNameExtractor.Instance,
-            AttributeHelper.Instance);
+        public static IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
+        private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
 
-        private readonly IAttributeNameExtractor attributeNameExtractor;
-        private readonly IAttributeHelper attributeHelper;
-
-        internal Extractor(
-            IAttributeNameExtractor attributeNameExtractor,
-            IAttributeHelper attributeHelper
-        ) {
-            this.attributeNameExtractor = attributeNameExtractor;
-            this.attributeHelper = attributeHelper;
+        internal Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) {
+            this.attributeExtractor = attributeExtractor;
         }
 
         public bool CanExtract(ISymbol attributedSymbol) {
-            return attributedSymbol.GetAttributes()
-                .Any(attributeData => attributeNameExtractor.CanExtract(attributeData.AttributeClass!));
+            return attributeExtractor.CanExtract(attributedSymbol, QualifierAttributeClassName);
         }
 
-        public IResult<QualifierAttributeMetadata> Extract(ISymbol attributedSymbol) {
-            var attributeDatas = attributedSymbol.GetAttributes()
-                .Where(attributeData => attributeNameExtractor.CanExtract(attributeData.AttributeClass!))
-                .ToImmutableList();
-
-            foreach (var attributeData in attributeDatas) {
-                var attributeResult = attributeNameExtractor.Extract(attributedSymbol, attributeData.AttributeClass!);
-                if (!attributeResult.IsOk) {
-                    return attributeResult;
-                }
-            }
-
-            return attributeDatas.Count switch {
-                1 => attributeHelper.ExpectSingleAttribute(attributedSymbol,
-                    attributeDatas.Single().AttributeClass!.ToString()!,
-                    attributeData => Result.Ok(new QualifierAttributeMetadata(attributedSymbol, attributeData))),
-                > 1 => Result.Error<QualifierAttributeMetadata>(
-                    $"Type {attributedSymbol.Name} can only have one {QualifierAttributeClassName}. Found {attributeDatas.Count}.",
-                    attributedSymbol.Locations.First(),
-                    Diagnostics.InvalidSpecification),
-                _ => Result.Error<QualifierAttributeMetadata>(
-                    $"Type {attributedSymbol.Name} must have an {QualifierAttributeClassName}.",
-                    attributedSymbol.Locations.First(),
-                    Diagnostics.InvalidSpecification)
-            };
-        }
-
-        public void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
-            foreach (var attributeData in attributedSymbol.GetAttributes()
-                .Where(attributeData => attributeNameExtractor.CanExtract(attributeData.AttributeClass!))
-            ) {
-                attributeNameExtractor.ValidateAttributedType(attributeData.AttributeClass!, generatorCtx);
-            }
-        }
-    }
-
-    public interface IAttributeNameExtractor {
-        bool CanExtract(ISymbol attributeTypeSymbol);
-        IResult<QualifierAttributeMetadata> Extract(ISymbol attributedSymbol, ISymbol attributeTypeSymbol);
-        void ValidateAttributedType(ISymbol attributeTypeSymbol, IGeneratorContext generatorCtx);
-    }
-
-    public class AttributeNameExtractor : IAttributeNameExtractor {
-        public static IAttributeNameExtractor Instance = new AttributeNameExtractor(AttributeHelper.Instance);
-        private readonly IAttributeHelper attributeHelper;
-
-        internal AttributeNameExtractor(IAttributeHelper attributeHelper) {
-            this.attributeHelper = attributeHelper;
-        }
-
-        public bool CanExtract(ISymbol attributeTypeSymbol) {
-            return attributeHelper.HasAttribute(attributeTypeSymbol, QualifierAttributeClassName);
-        }
-
-        public IResult<QualifierAttributeMetadata> Extract(ISymbol attributedSymbol, ISymbol attributeTypeSymbol) {
-            if (attributeTypeSymbol is not INamedTypeSymbol namedSymbol) {
-                return Result.Error<QualifierAttributeMetadata>(
-                    $"Expected qualifier type {attributeTypeSymbol.Name} to be a type.",
-                    attributedSymbol.Locations.First(),
-                    Diagnostics.InvalidSpecification);
-            }
-
-            return attributeHelper.ExpectSingleAttribute(
-                attributeTypeSymbol,
-                QualifierAttributeClassName,
-                attributeData => Result.Ok(
-                    new QualifierAttributeMetadata(attributedSymbol, namedSymbol)));
-        }
-
-        public void ValidateAttributedType(ISymbol attributeTypeSymbol, IGeneratorContext generatorCtx) {
-            if (attributeTypeSymbol is not INamedTypeSymbol namedSymbol) {
+        public QualifierAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+            if (attributedSymbol is not INamedTypeSymbol namedSymbol) {
                 throw Diagnostics.InvalidSpecification.AsException(
-                    $"Expected qualifier type {attributeTypeSymbol.Name} to be a type.",
-                    attributeTypeSymbol.Locations.First(),
+                    $"Expected qualifier type {attributedSymbol.Name} to be a type.",
+                    attributedSymbol.Locations.First(),
                     generatorCtx);
             }
 
             if (namedSymbol.BaseType?.ToString() != TypeNames.AttributeClassName) {
                 throw Diagnostics.InvalidSpecification.AsException(
-                    $"Expected qualifier type {attributeTypeSymbol.Name} to be an Attribute type.",
-                    attributeTypeSymbol.Locations.First(),
+                    $"Expected qualifier type {attributedSymbol.Name} to be an Attribute type.",
+                    attributedSymbol.Locations.First(),
                     generatorCtx);
             }
+
+            var attribute = attributeExtractor.ExtractOne(attributedSymbol, QualifierAttributeClassName, generatorCtx);
+            return new QualifierAttributeMetadata(attribute);
         }
     }
 }

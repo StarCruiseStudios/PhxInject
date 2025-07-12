@@ -9,7 +9,7 @@
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Extract.Metadata;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
@@ -88,14 +88,10 @@ internal record DependencyProviderDesc(
             return extractorCtx.UseChildContext(symbol,
                 currentCtx => {
                     RequireDependencyProvider(symbol, currentCtx);
-                    var qualifier = qualifierExtractor.Extract(symbol).GetOrThrow(currentCtx);
+                    var qualifier = qualifierExtractor.Extract(symbol, currentCtx);
                     var providedType = symbol.ReturnType.ToQualifiedTypeModel(qualifier);
                     var partialAttribute = partialAttributeExtractor.CanExtract(symbol)
-                        ? partialAttributeExtractor.Extract(symbol)
-                            .GetOrThrow(currentCtx)
-                            .Also(_ => partialAttributeExtractor.ValidateAttributedType(symbol,
-                                providedType.TypeModel,
-                                currentCtx))
+                        ? partialAttributeExtractor.Extract(providedType.TypeModel, symbol, currentCtx)
                         : null;
 
                     return new DependencyProviderDesc(symbol, dependencyInterface, providedType, partialAttribute);

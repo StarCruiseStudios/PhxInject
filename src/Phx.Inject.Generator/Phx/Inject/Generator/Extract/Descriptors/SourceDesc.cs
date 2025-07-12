@@ -10,7 +10,6 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
@@ -101,8 +100,6 @@ internal record SourceDesc(
                         var dependencyAttribute = dependencyAttributeExtractor.CanExtract(injectorTypeSymbol)
                             ? dependencyAttributeExtractor.Extract(injectorTypeSymbol)
                                 .GetOrThrow(extractorCtx)
-                                .Also(_ => dependencyAttributeExtractor.ValidateAttributedType(injectorTypeSymbol,
-                                    extractorCtx))
                             : null;
                         if (dependencyAttribute == null) {
                             return null;

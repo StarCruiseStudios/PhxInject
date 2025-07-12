@@ -10,62 +10,49 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Common.Model;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal class LabelAttributeMetadata : AttributeMetadata {
+internal record LabelAttributeMetadata(string Label, AttributeMetadata AttributeMetadata)
+    : ITypeQualifierAttributeMetadata {
     public const string LabelAttributeClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(LabelAttribute)}";
 
-    public string Label { get; }
-    public LabelAttributeMetadata(string label, ISymbol attributedSymbol, AttributeData attributeData)
-        : base(attributedSymbol, attributeData) {
-        Label = label;
-    }
-
-    public LabelAttributeMetadata(string label, ISymbol attributedSymbol, INamedTypeSymbol attributeTypeSymbol)
-        : base(attributedSymbol, attributeTypeSymbol) {
-        Label = label;
-    }
+    public IQualifier Qualifier { get; } = new LabelQualifier(Label);
+    public Location Location { get; } = AttributeMetadata.Location;
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        IResult<LabelAttributeMetadata> Extract(ISymbol attributedSymbol);
-        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        LabelAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
     public class Extractor : IExtractor {
-        public static IExtractor Instance = new Extractor(AttributeHelper.Instance);
-        private readonly IAttributeHelper attributeHelper;
+        public static IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
+        private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
 
-        internal Extractor(IAttributeHelper attributeHelper) {
-            this.attributeHelper = attributeHelper;
+        internal Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) {
+            this.attributeExtractor = attributeExtractor;
         }
 
         public bool CanExtract(ISymbol attributedSymbol) {
-            return attributeHelper.HasAttribute(attributedSymbol, LabelAttributeClassName);
+            return attributeExtractor.CanExtract(attributedSymbol, LabelAttributeClassName);
         }
 
-        public IResult<LabelAttributeMetadata> Extract(ISymbol attributedSymbol) {
-            return attributeHelper.ExpectSingleAttribute(
-                attributedSymbol,
-                LabelAttributeClassName,
-                attributeData => {
-                    var labels = attributeData.ConstructorArguments
-                        .Where(argument => argument.Type!.ToString() == TypeNames.StringClassName)
-                        .Select(argument => (string)argument.Value!)
-                        .ToImmutableList();
+        public LabelAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+            var attribute = attributeExtractor.ExtractOne(attributedSymbol, LabelAttributeClassName, generatorCtx);
+            var labels = attribute.AttributeData.ConstructorArguments
+                .Where(argument => argument.Type!.ToString() == TypeNames.StringClassName)
+                .Select(argument => (string)argument.Value!)
+                .ToImmutableList();
 
-                    if (labels.Count == 1) {
-                        return Result.Ok(new LabelAttributeMetadata(labels.Single(), attributedSymbol, attributeData));
-                    }
+            if (labels.Count == 1) {
+                return new LabelAttributeMetadata(labels.Single(), attribute);
+            }
 
-                    return Result.Error<LabelAttributeMetadata>(
-                        $"Label for symbol {attributedSymbol.Name} must provide one label value.",
-                        GetAttributeLocation(attributeData, attributedSymbol),
-                        Diagnostics.InvalidSpecification);
-                });
+            throw Diagnostics.InvalidSpecification.AsException(
+                $"Label for symbol {attributedSymbol.Name} must provide one label value.",
+                attribute.Location,
+                generatorCtx);
         }
-
-        public void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx) { }
     }
 }

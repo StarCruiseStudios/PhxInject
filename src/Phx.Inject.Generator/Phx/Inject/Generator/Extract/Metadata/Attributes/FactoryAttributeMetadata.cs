@@ -46,7 +46,7 @@ internal class FactoryAttributeMetadata : AttributeMetadata {
         }
 
         public IResult<FactoryAttributeMetadata> Extract(ISymbol attributedSymbol) {
-            return attributeHelper.ExpectSingleAttribute(
+            return attributeHelper.ExpectSingleAttributeResult(
                 attributedSymbol,
                 FactoryAttributeClassName,
                 attributeData => {
@@ -60,7 +60,7 @@ internal class FactoryAttributeMetadata : AttributeMetadata {
                         case > 1:
                             return Result.Error<FactoryAttributeMetadata>(
                                 "Factories can only have a single fabrication mode.",
-                                GetAttributeLocation(attributeData, attributedSymbol),
+                                attributeData.GetAttributeLocation(attributedSymbol),
                                 Diagnostics.InternalError);
                         case 1:
                             fabricationMode = fabricationModes.Single();

@@ -10,7 +10,6 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
@@ -60,10 +59,8 @@ internal record InjectorChildFactoryDesc(
                             currentCtx);
                     }
 
-                    var childInjectorAttribute = childInjectorAttributeExtractor.Extract(childInjectorMethod)
-                        .GetOrThrow(currentCtx)
-                        .Also(_ => childInjectorAttributeExtractor.ValidateAttributedType(childInjectorMethod,
-                            currentCtx));
+                    var childInjectorAttribute =
+                        childInjectorAttributeExtractor.Extract(childInjectorMethod, currentCtx);
 
                     IReadOnlyList<TypeModel> parameters = childInjectorMethod.Parameters
                         .Select(parameter => TypeModel.FromTypeSymbol(parameter.Type))

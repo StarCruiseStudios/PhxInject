@@ -9,7 +9,7 @@
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Generator.Extract.Metadata.Attributes;
+using Phx.Inject.Generator.Extract.Metadata;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
@@ -53,7 +53,7 @@ internal record ActivatorDesc(
                             currentCtx);
                     }
 
-                    var qualifier = qualifierExtractor.Extract(builderMethod).GetOrThrow(currentCtx);
+                    var qualifier = qualifierExtractor.Extract(builderMethod, currentCtx);
                     var builtType = builderMethod.Parameters[0].Type.ToQualifiedTypeModel(qualifier);
 
                     return new ActivatorDesc(

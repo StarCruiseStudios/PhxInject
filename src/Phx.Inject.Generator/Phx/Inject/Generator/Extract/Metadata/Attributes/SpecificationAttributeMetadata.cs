@@ -38,7 +38,7 @@ internal class SpecificationAttributeMetadata : AttributeMetadata {
         }
 
         public IResult<SpecificationAttributeMetadata> Extract(ISymbol attributedSymbol) {
-            return attributeHelper.ExpectSingleAttribute(
+            return attributeHelper.ExpectSingleAttributeResult(
                 attributedSymbol,
                 SpecificationAttributeClassName,
                 attributeData => Result.Ok(

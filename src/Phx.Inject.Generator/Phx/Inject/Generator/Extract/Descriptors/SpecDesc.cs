@@ -131,11 +131,12 @@ internal record SpecDesc(
                         .OfType<SpecBuilderDesc>()
                         .ToImmutableList();
 
-                    IReadOnlyList<SpecLinkDesc> links = linkAttributeExtractor.ExtractAll(specSymbol)
+                    IReadOnlyList<SpecLinkDesc> links = linkAttributeExtractor.ExtractAll(specSymbol, currentCtx)
                         .SelectCatching(
                             currentCtx.Aggregator,
                             link => $"extracting specification link from {specType}",
-                            link => specLinkDescExtractor.Extract(link.GetOrThrow(currentCtx),
+                            link => specLinkDescExtractor.Extract(
+                                link,
                                 specLocation,
                                 currentCtx))
                         .ToImmutableList();
@@ -191,7 +192,7 @@ internal record SpecDesc(
         ) {
             var specLocation = injectorType.TypeSymbol.Locations.First();
             var specType = MetadataHelpers.CreateConstructorSpecContainerType(injectorType);
-            
+
             return extractorCtx.UseChildContext(injectorType.TypeSymbol,
                 currentCtx => {
                     var specInstantiationMode = SpecInstantiationMode.Static;
@@ -206,12 +207,12 @@ internal record SpecDesc(
 
                     IReadOnlyList<SpecLinkDesc> links = constructorTypes
                         .SelectMany(constructorType => linkAttributeExtractor
-                            .ExtractAll(constructorType.TypeModel.TypeSymbol)
+                            .ExtractAll(constructorType.TypeModel.TypeSymbol, currentCtx)
                             .SelectCatching(
                                 currentCtx.Aggregator,
                                 link => $"extracting link for auto constructor type {constructorType}",
                                 link => specLinkDescExtractor
-                                    .Extract(link.GetOrThrow(currentCtx), specLocation, currentCtx)
+                                    .Extract(link, specLocation, currentCtx)
                                     .Also(it => {
                                         if (it.InputType != constructorType) {
                                             throw Diagnostics.InvalidSpecification.AsException(

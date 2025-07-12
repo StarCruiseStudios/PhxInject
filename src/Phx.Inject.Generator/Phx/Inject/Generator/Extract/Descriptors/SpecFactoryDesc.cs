@@ -12,6 +12,7 @@ using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Extract.Metadata;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
@@ -45,7 +46,7 @@ internal record SpecFactoryDesc(
 
         var typeArguments = referenceTypeSymbol.TypeArguments;
 
-        var qualifier = QualifierMetadata.Extractor.Instance.Extract(factoryReferenceSymbol).GetOrThrow(extractorCtx);
+        var qualifier = QualifierMetadata.Extractor.Instance.Extract(factoryReferenceSymbol, extractorCtx);
         var returnTypeModel = TypeModel.FromTypeSymbol(typeArguments[typeArguments.Length - 1]);
         returnType = new QualifiedTypeModel(
             returnTypeModel,
@@ -125,8 +126,7 @@ internal record SpecFactoryDesc(
                         .GetRequiredPropertyQualifiedTypes(constructorSymbol, currentCtx)
                         .Select(property =>
                             new SpecFactoryRequiredPropertyDesc(property.Value, property.Key, constructorLocation));
-                    var qualifier = QualifierMetadata.Extractor.Instance.Extract(constructorSymbol)
-                        .GetOrThrow(currentCtx);
+                    var qualifier = QualifierMetadata.Extractor.Instance.Extract(constructorSymbol, currentCtx);
                     var returnType = constructorType with {
                         Qualifier = qualifier
                     };
@@ -169,19 +169,14 @@ internal record SpecFactoryDesc(
                     var methodParameterTypes =
                         MetadataHelpers.TryGetMethodParametersQualifiedTypes(factoryMethod, currentCtx);
 
-                    var qualifier = QualifierMetadata.Extractor.Instance.Extract(factoryMethod)
-                        .GetOrThrow(currentCtx);
+                    var qualifier = QualifierMetadata.Extractor.Instance.Extract(factoryMethod, currentCtx);
                     var returnTypeModel = TypeModel.FromTypeSymbol(factoryMethod.ReturnType);
                     var returnType = new QualifiedTypeModel(
                         returnTypeModel,
                         qualifier);
 
                     var partialAttribute = partialAttributeExtractor.CanExtract(factoryMethod)
-                        ? partialAttributeExtractor.Extract(factoryMethod)
-                            .GetOrThrow(currentCtx)
-                            .Also(_ => partialAttributeExtractor.ValidateAttributedType(factoryMethod,
-                                returnType.TypeModel,
-                                currentCtx))
+                        ? partialAttributeExtractor.Extract(returnType.TypeModel, factoryMethod, currentCtx)
                         : null;
 
                     return new SpecFactoryDesc(
@@ -221,19 +216,14 @@ internal record SpecFactoryDesc(
 
                     var methodParameterTypes = ImmutableList.Create<QualifiedTypeModel>();
 
-                    var qualifier = QualifierMetadata.Extractor.Instance.Extract(factoryProperty)
-                        .GetOrThrow(currentCtx);
+                    var qualifier = QualifierMetadata.Extractor.Instance.Extract(factoryProperty, currentCtx);
                     var returnTypeModel = TypeModel.FromTypeSymbol(factoryProperty.Type);
                     var returnType = new QualifiedTypeModel(
                         returnTypeModel,
                         qualifier);
 
                     var partialAttribute = partialAttributeExtractor.CanExtract(factoryProperty)
-                        ? partialAttributeExtractor.Extract(factoryProperty)
-                            .GetOrThrow(currentCtx)
-                            .Also(_ => partialAttributeExtractor.ValidateAttributedType(factoryProperty,
-                                returnType.TypeModel,
-                                currentCtx))
+                        ? partialAttributeExtractor.Extract(returnType.TypeModel, factoryProperty, currentCtx)
                         : null;
 
                     return new SpecFactoryDesc(
@@ -281,11 +271,7 @@ internal record SpecFactoryDesc(
                         out var parameterTypes);
 
                     var partialAttribute = partialAttributeExtractor.CanExtract(factoryReferenceProperty)
-                        ? partialAttributeExtractor.Extract(factoryReferenceProperty)
-                            .GetOrThrow(currentCtx)
-                            .Also(_ => partialAttributeExtractor.ValidateAttributedType(factoryReferenceProperty,
-                                returnType.TypeModel,
-                                currentCtx))
+                        ? partialAttributeExtractor.Extract(returnType.TypeModel, factoryReferenceProperty, currentCtx)
                         : null;
 
                     return new SpecFactoryDesc(
@@ -332,11 +318,7 @@ internal record SpecFactoryDesc(
                         out var parameterTypes);
 
                     var partialAttribute = partialAttributeExtractor.CanExtract(factoryReferenceField)
-                        ? partialAttributeExtractor.Extract(factoryReferenceField)
-                            .GetOrThrow(currentCtx)
-                            .Also(_ => partialAttributeExtractor.ValidateAttributedType(factoryReferenceField,
-                                returnType.TypeModel,
-                                currentCtx))
+                        ? partialAttributeExtractor.Extract(returnType.TypeModel, factoryReferenceField, currentCtx)
                         : null;
 
                     return new SpecFactoryDesc(

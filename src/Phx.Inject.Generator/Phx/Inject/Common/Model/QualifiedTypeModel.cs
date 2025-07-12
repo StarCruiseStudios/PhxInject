@@ -6,7 +6,7 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-using Phx.Inject.Generator.Extract.Metadata.Attributes;
+using Phx.Inject.Generator.Extract.Metadata;
 
 namespace Phx.Inject.Common.Model;
 

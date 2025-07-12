@@ -7,45 +7,35 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal class ChildInjectorAttributeMetadata : AttributeMetadata {
+internal record ChildInjectorAttributeMetadata(AttributeMetadata Attribute) : IDescriptor {
     public const string ChildInjectorAttributeClassName =
         $"{SourceGenerator.PhxInjectNamespace}.{nameof(ChildInjectorAttribute)}";
 
-    public ChildInjectorAttributeMetadata(ISymbol attributedSymbol, AttributeData attributeData)
-        : base(attributedSymbol, attributeData) { }
+    public Location Location { get; } = Attribute.Location;
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        IResult<ChildInjectorAttributeMetadata> Extract(ISymbol attributedSymbol);
-        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        ChildInjectorAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
     public class Extractor : IExtractor {
-        public static IExtractor Instance = new Extractor(AttributeHelper.Instance);
-        private readonly IAttributeHelper attributeHelper;
+        public static IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
+        private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
 
-        internal Extractor(IAttributeHelper attributeHelper) {
-            this.attributeHelper = attributeHelper;
+        internal Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) {
+            this.attributeExtractor = attributeExtractor;
         }
 
         public bool CanExtract(ISymbol attributedSymbol) {
-            return attributeHelper.HasAttribute(attributedSymbol, ChildInjectorAttributeClassName);
+            return attributeExtractor.CanExtract(attributedSymbol, ChildInjectorAttributeClassName);
         }
 
-        public IResult<ChildInjectorAttributeMetadata> Extract(ISymbol attributedSymbol) {
-            return attributeHelper.ExpectSingleAttribute(
-                attributedSymbol,
-                ChildInjectorAttributeClassName,
-                attributeData => Result.Ok(
-                    new ChildInjectorAttributeMetadata(attributedSymbol, attributeData)));
-        }
-
-        public void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+        public ChildInjectorAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
             if (attributedSymbol is not IMethodSymbol {
                     ReturnsVoid: false,
                     DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
@@ -56,6 +46,10 @@ internal class ChildInjectorAttributeMetadata : AttributeMetadata {
                     attributedSymbol.Locations.First(),
                     generatorCtx);
             }
+
+            var attribute =
+                attributeExtractor.ExtractOne(attributedSymbol, ChildInjectorAttributeClassName, generatorCtx);
+            return new ChildInjectorAttributeMetadata(attribute);
         }
     }
 }

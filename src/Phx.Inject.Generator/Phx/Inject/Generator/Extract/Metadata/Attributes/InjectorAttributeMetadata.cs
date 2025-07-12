@@ -50,7 +50,7 @@ internal class InjectorAttributeMetadata : AttributeMetadata {
         }
 
         public IResult<InjectorAttributeMetadata> Extract(ISymbol attributedSymbol) {
-            return attributeHelper.ExpectSingleAttribute(
+            return attributeHelper.ExpectSingleAttributeResult(
                 attributedSymbol,
                 InjectorAttributeClassName,
                 attributeData => {

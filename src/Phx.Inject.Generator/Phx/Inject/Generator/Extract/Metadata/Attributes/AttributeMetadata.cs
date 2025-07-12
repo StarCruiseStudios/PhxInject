@@ -21,14 +21,14 @@ internal interface IAttributeMetadata : IDescriptor {
 }
 
 internal class AttributeMetadata : IAttributeMetadata {
-    protected AttributeMetadata(ISymbol attributedSymbol, AttributeData attributeData) {
+    public AttributeMetadata(ISymbol attributedSymbol, AttributeData attributeData) {
         AttributedSymbol = attributedSymbol;
-        AttributeTypeSymbol = attributeData.AttributeClass!;
+        AttributeTypeSymbol = attributeData.GetNamedTypeSymbol();
         AttributeData = attributeData;
-        Location = GetAttributeLocation(attributeData, attributedSymbol);
+        Location = attributeData.GetAttributeLocation(attributedSymbol);
     }
 
-    protected AttributeMetadata(ISymbol attributedSymbol, INamedTypeSymbol attributeTypeSymbol) {
+    public AttributeMetadata(ISymbol attributedSymbol, INamedTypeSymbol attributeTypeSymbol) {
         AttributedSymbol = attributedSymbol;
         AttributeTypeSymbol = attributeTypeSymbol;
         AttributeData = new EmptyAttributeData();
@@ -38,11 +38,6 @@ internal class AttributeMetadata : IAttributeMetadata {
     public INamedTypeSymbol AttributeTypeSymbol { get; }
     public AttributeData AttributeData { get; }
     public Location Location { get; }
-
-    protected static Location GetAttributeLocation(AttributeData attributeData, ISymbol attributedSymbol) {
-        return attributeData.ApplicationSyntaxReference?.GetSyntax().GetLocation()
-            ?? attributedSymbol.Locations.First();
-    }
 
     private class EmptyAttributeData : AttributeData {
         protected override INamedTypeSymbol? CommonAttributeClass { get; } = null;
@@ -55,11 +50,17 @@ internal class AttributeMetadata : IAttributeMetadata {
         protected override ImmutableArray<KeyValuePair<string, TypedConstant>> CommonNamedArguments { get; } =
             ImmutableArray<KeyValuePair<string, TypedConstant>>.Empty;
     }
-    
+
     public interface IAttributeExtractor {
         bool CanExtract(ISymbol attributedSymbol, string attributeClassName);
-        IResult<AttributeMetadata> ExtractOne(ISymbol attributedSymbol, string attributeClassName);
-        IReadOnlyList<IResult<AttributeMetadata>> ExtractAll(ISymbol attributedSymbol, string attributeClassName);
+        AttributeMetadata ExtractOne(
+            ISymbol attributedSymbol,
+            string attributeClassName,
+            IGeneratorContext generatorCtx);
+        IReadOnlyList<AttributeMetadata> ExtractAll(
+            ISymbol attributedSymbol,
+            string attributeClassName,
+            IGeneratorContext generatorCtx);
     }
 
     public class AttributeExtractor : IAttributeExtractor {
@@ -70,23 +71,69 @@ internal class AttributeMetadata : IAttributeMetadata {
         internal AttributeExtractor(IAttributeHelper attributeHelper) {
             this.attributeHelper = attributeHelper;
         }
-        
+
         public bool CanExtract(ISymbol attributedSymbol, string attributeClassName) {
             return attributeHelper.HasAttribute(attributedSymbol, attributeClassName);
         }
 
-        public IResult<AttributeMetadata> ExtractOne(ISymbol attributedSymbol, string attributeClassName) {
+        public AttributeMetadata ExtractOne(
+            ISymbol attributedSymbol,
+            string attributeClassName,
+            IGeneratorContext generatorCtx) {
             return attributeHelper.ExpectSingleAttribute(
                 attributedSymbol,
                 attributeClassName,
-                attributeData => Result.Ok(new AttributeMetadata(attributedSymbol, attributeData)));
+                generatorCtx,
+                attributeData => new AttributeMetadata(attributedSymbol, attributeData));
         }
 
-        public IReadOnlyList<IResult<AttributeMetadata>> ExtractAll(ISymbol attributedSymbol, string attributeClassName) {
+        public IReadOnlyList<AttributeMetadata> ExtractAll(
+            ISymbol attributedSymbol,
+            string attributeClassName,
+            IGeneratorContext generatorCtx) {
             return attributeHelper.GetAttributes(
                 attributedSymbol,
                 attributeClassName,
-                attributeData => Result.Ok(new AttributeMetadata(attributedSymbol, attributeData)));
+                generatorCtx,
+                attributeData => new AttributeMetadata(attributedSymbol, attributeData));
+        }
+    }
+
+    public interface ITypeExtractor {
+        bool CanExtract(ISymbol attributeTypeSymbol);
+        AttributeMetadata Extract(
+            ISymbol attributedSymbol,
+            ISymbol attributeTypeSymbol,
+            IGeneratorContext generatorCtx);
+    }
+
+    public class TypeExtractor : ITypeExtractor {
+        public static ITypeExtractor Instance = new TypeExtractor(AttributeHelper.Instance);
+
+        private readonly IAttributeHelper attributeHelper;
+
+        internal TypeExtractor(IAttributeHelper attributeHelper) {
+            this.attributeHelper = attributeHelper;
+        }
+
+        public bool CanExtract(ISymbol attributeTypeSymbol) {
+            return attributeHelper.HasAttribute(attributeTypeSymbol,
+                QualifierAttributeMetadata.QualifierAttributeClassName);
+        }
+
+        public AttributeMetadata Extract(
+            ISymbol attributedSymbol,
+            ISymbol attributeTypeSymbol,
+            IGeneratorContext generatorCtx) {
+            var namedSymbol = attributeTypeSymbol as INamedTypeSymbol;
+            if (namedSymbol == null) {
+                throw Diagnostics.InvalidSpecification.AsException(
+                    $"Expected attribute {attributeTypeSymbol} to be a type.",
+                    attributedSymbol.Locations.First(),
+                    generatorCtx);
+            }
+
+            return new AttributeMetadata(attributedSymbol, namedSymbol);
         }
     }
 }

@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Generator.Extract.Metadata.Attributes;
+using Phx.Inject.Generator.Extract.Metadata;
 
 namespace Phx.Inject.Generator.Extract;
 
@@ -20,7 +20,7 @@ internal static class MetadataHelpers {
         IMethodSymbol methodSymbol,
         IGeneratorContext generatorCtx) {
         return methodSymbol.Parameters.Select(parameter => {
-                var qualifier = QualifierMetadata.Extractor.Instance.Extract(parameter).GetOrThrow(generatorCtx);
+                var qualifier = QualifierMetadata.Extractor.Instance.Extract(parameter, generatorCtx);
                 return new QualifiedTypeModel(
                     TypeModel.FromTypeSymbol(parameter.Type),
                     qualifier);
@@ -73,7 +73,7 @@ internal static class MetadataHelpers {
                 property => property.Name,
                 property => new QualifiedTypeModel(
                     TypeModel.FromTypeSymbol(property.Type),
-                    QualifierMetadata.Extractor.Instance.Extract(property).GetOrThrow(generatorCtx)
+                    QualifierMetadata.Extractor.Instance.Extract(property, generatorCtx)
                 )
             );
     }

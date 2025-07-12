@@ -54,7 +54,7 @@ internal class PhxInjectAttributeMetadata : AttributeMetadata {
         }
 
         public IResult<PhxInjectAttributeMetadata> Extract(ISymbol attributedSymbol) {
-            return attributeHelper.ExpectSingleAttribute(
+            return attributeHelper.ExpectSingleAttributeResult(
                 attributedSymbol,
                 PhxInjectAttributeClassName,
                 attributeData => {

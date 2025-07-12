@@ -27,7 +27,6 @@ internal class DependencyAttributeMetadata : AttributeMetadata {
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
         IResult<DependencyAttributeMetadata> Extract(ISymbol attributedSymbol);
-        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
     public class Extractor : IExtractor {
@@ -51,7 +50,7 @@ internal class DependencyAttributeMetadata : AttributeMetadata {
         }
 
         public IResult<DependencyAttributeMetadata> Extract(ISymbol attributedSymbol) {
-            return attributeHelper.ExpectSingleAttribute(
+            return attributeHelper.ExpectSingleAttributeResult(
                 attributedSymbol,
                 DependencyAttributeClassName,
                 attributeData => {
@@ -64,7 +63,7 @@ internal class DependencyAttributeMetadata : AttributeMetadata {
                     if (constructorArgument.Count != 1) {
                         return Result.Error<DependencyAttributeMetadata>(
                             $"Dependency for symbol {attributedSymbol.Name} must provide a dependency type.",
-                            GetAttributeLocation(attributeData, attributedSymbol),
+                            attributeData.GetAttributeLocation(attributedSymbol),
                             Diagnostics.InvalidSpecification);
                     }
 
@@ -72,17 +71,6 @@ internal class DependencyAttributeMetadata : AttributeMetadata {
                         attributedSymbol,
                         attributeData));
                 });
-        }
-
-        public void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
-            if (!injectorAttributeExtractor.CanExtract(attributedSymbol)) {
-                throw Diagnostics.InvalidSpecification.AsException(
-                    $"Type {attributedSymbol.Name} must be an injector type to declare a {DependencyAttributeClassName}.",
-                    attributedSymbol.Locations.First(),
-                    generatorCtx);
-            }
-
-            injectorAttributeExtractor.ValidateAttributedType(attributedSymbol, generatorCtx);
         }
     }
 }

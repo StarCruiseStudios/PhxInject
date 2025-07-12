@@ -7,46 +7,40 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal class BuilderReferenceAttributeMetadata : AttributeMetadata {
+internal record BuilderReferenceAttributeMetadata(AttributeMetadata Attribute) : IDescriptor {
     public const string BuilderReferenceAttributeClassName =
         $"{SourceGenerator.PhxInjectNamespace}.{nameof(BuilderReferenceAttribute)}";
 
-    public BuilderReferenceAttributeMetadata(ISymbol attributedSymbol, AttributeData attributeData)
-        : base(attributedSymbol, attributeData) { }
+    public Location Location { get; } = Attribute.Location;
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        IResult<BuilderReferenceAttributeMetadata> Extract(ISymbol attributedSymbol);
-        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        BuilderReferenceAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
     public class Extractor : IExtractor {
-        public static IExtractor Instance = new Extractor(AttributeHelper.Instance);
-        private readonly IAttributeHelper attributeHelper;
+        public static IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
+        private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
 
-        internal Extractor(IAttributeHelper attributeHelper) {
-            this.attributeHelper = attributeHelper;
+        internal Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) {
+            this.attributeExtractor = attributeExtractor;
         }
 
         public bool CanExtract(ISymbol attributedSymbol) {
-            return attributeHelper.HasAttribute(attributedSymbol, BuilderReferenceAttributeClassName);
+            return attributeExtractor.CanExtract(attributedSymbol, BuilderReferenceAttributeClassName);
         }
 
-        public IResult<BuilderReferenceAttributeMetadata> Extract(ISymbol attributedSymbol) {
-            return attributeHelper.ExpectSingleAttribute(
-                attributedSymbol,
-                BuilderReferenceAttributeClassName,
-                attributeData => Result.Ok(
-                    new BuilderReferenceAttributeMetadata(attributedSymbol, attributeData)));
-        }
-
-        public void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
-            if (attributedSymbol is not IFieldSymbol
+        public BuilderReferenceAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+            if (attributedSymbol is
+                not IFieldSymbol {
+                    IsStatic: true,
+                    DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
+                }
                 and not IPropertySymbol {
                     IsStatic: true,
                     DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
@@ -58,6 +52,10 @@ internal class BuilderReferenceAttributeMetadata : AttributeMetadata {
                     attributedSymbol.Locations.First(),
                     generatorCtx);
             }
+
+            var attribute =
+                attributeExtractor.ExtractOne(attributedSymbol, BuilderReferenceAttributeClassName, generatorCtx);
+            return new BuilderReferenceAttributeMetadata(attribute);
         }
     }
 }

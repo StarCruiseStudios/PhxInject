@@ -9,6 +9,7 @@
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Extract.Metadata;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
@@ -67,7 +68,7 @@ internal record InjectorProviderDesc(
                     }
 
                     var returnType = TypeModel.FromTypeSymbol(providerMethod.ReturnType);
-                    var qualifier = qualifierExtractor.Extract(providerMethod).GetOrThrow(currentCtx);
+                    var qualifier = qualifierExtractor.Extract(providerMethod, currentCtx);
                     return new InjectorProviderDesc(
                         new QualifiedTypeModel(returnType, qualifier),
                         providerMethod.Name,

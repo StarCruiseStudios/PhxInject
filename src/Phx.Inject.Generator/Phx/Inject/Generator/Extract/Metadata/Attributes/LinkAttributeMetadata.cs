@@ -8,8 +8,8 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
@@ -21,12 +21,14 @@ internal record LinkAttributeMetadata(
     INamedTypeSymbol? OutputQualifier,
     string? OutputLabel,
     AttributeMetadata Attribute
-) {
+) : IDescriptor {
     public const string LinkAttributeClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(LinkAttribute)}";
+
+    public Location Location { get; } = Attribute.Location;
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        IReadOnlyList<IResult<LinkAttributeMetadata>> ExtractAll(ISymbol attributedSymbol);
+        IReadOnlyList<LinkAttributeMetadata> ExtractAll(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
     public class Extractor : IExtractor {
@@ -41,66 +43,71 @@ internal record LinkAttributeMetadata(
             return attributeExtractor.CanExtract(attributedSymbol, LinkAttributeClassName);
         }
 
-        public IReadOnlyList<IResult<LinkAttributeMetadata>> ExtractAll(ISymbol attributedSymbol) {
-            return attributeExtractor.ExtractAll(attributedSymbol, LinkAttributeClassName)
-                .Select(result => result.Map(attribute => {
-                    var attributeData = attribute.AttributeData;
-                    if (attribute.AttributeData.ConstructorArguments.Length != 2) {
-                        return Result.Error<LinkAttributeMetadata>(
-                            "Link attribute must have only an input and output type specified.",
-                            attribute.Location,
-                            Diagnostics.InternalError);
-                    }
+        public IReadOnlyList<LinkAttributeMetadata> ExtractAll(
+            ISymbol attributedSymbol,
+            IGeneratorContext generatorCtx) {
+            return attributeExtractor.ExtractAll(attributedSymbol, LinkAttributeClassName, generatorCtx)
+                .SelectCatching(
+                    generatorCtx.Aggregator,
+                    attribute => $"extracting link attribute from {attributedSymbol}",
+                    attribute => {
+                        var attributeData = attribute.AttributeData;
+                        if (attribute.AttributeData.ConstructorArguments.Length != 2) {
+                            throw Diagnostics.InvalidSpecification.AsException(
+                                "Link attribute must have only an input and output type specified.",
+                                attribute.Location,
+                                generatorCtx);
+                        }
 
-                    var inputTypeArgument = attributeData.ConstructorArguments[0].Value as ITypeSymbol;
-                    var returnTypeArgument = attributeData.ConstructorArguments[1].Value as ITypeSymbol;
+                        var inputTypeArgument = attributeData.ConstructorArguments[0].Value as ITypeSymbol;
+                        var returnTypeArgument = attributeData.ConstructorArguments[1].Value as ITypeSymbol;
 
-                    if (inputTypeArgument == null || returnTypeArgument == null) {
-                        return Result.Error<LinkAttributeMetadata>(
-                            "Link attribute must specify non-null types.",
-                            attribute.Location,
-                            Diagnostics.InvalidSpecification);
-                    }
+                        if (inputTypeArgument == null || returnTypeArgument == null) {
+                            throw Diagnostics.InvalidSpecification.AsException(
+                                "Link attribute must specify input and output types.",
+                                attribute.Location,
+                                generatorCtx);
+                        }
 
-                    var inputLabel = attributeData.NamedArguments
-                        .FirstOrDefault(arg => arg.Key == nameof(LinkAttribute.InputLabel))
-                        .Value.Value as string;
+                        var inputLabel = attributeData.NamedArguments
+                            .FirstOrDefault(arg => arg.Key == nameof(LinkAttribute.InputLabel))
+                            .Value.Value as string;
 
-                    var inputQualifier = attributeData.NamedArguments
-                        .FirstOrDefault(arg => arg.Key == nameof(LinkAttribute.InputQualifier))
-                        .Value.Value as INamedTypeSymbol;
+                        var inputQualifier = attributeData.NamedArguments
+                            .FirstOrDefault(arg => arg.Key == nameof(LinkAttribute.InputQualifier))
+                            .Value.Value as INamedTypeSymbol;
 
-                    var outputLabel = attributeData.NamedArguments
-                        .FirstOrDefault(arg => arg.Key == nameof(LinkAttribute.OutputLabel))
-                        .Value.Value as string;
+                        var outputLabel = attributeData.NamedArguments
+                            .FirstOrDefault(arg => arg.Key == nameof(LinkAttribute.OutputLabel))
+                            .Value.Value as string;
 
-                    var outputQualifier = attributeData.NamedArguments
-                        .FirstOrDefault(arg => arg.Key == nameof(LinkAttribute.OutputQualifier))
-                        .Value.Value as INamedTypeSymbol;
+                        var outputQualifier = attributeData.NamedArguments
+                            .FirstOrDefault(arg => arg.Key == nameof(LinkAttribute.OutputQualifier))
+                            .Value.Value as INamedTypeSymbol;
 
-                    if (inputLabel != null && inputQualifier != null) {
-                        return Result.Error<LinkAttributeMetadata>(
-                            "Link attribute cannot specify both input label and qualifier.",
-                            attribute.Location,
-                            Diagnostics.InvalidSpecification);
-                    }
+                        if (inputLabel != null && inputQualifier != null) {
+                            throw Diagnostics.InvalidSpecification.AsException(
+                                "Link attribute cannot specify both input label and qualifier.",
+                                attribute.Location,
+                                generatorCtx);
+                        }
 
-                    if (outputLabel != null && outputQualifier != null) {
-                        return Result.Error<LinkAttributeMetadata>(
-                            "Link attribute cannot specify both output label and qualifier.",
-                            attribute.Location,
-                            Diagnostics.InvalidSpecification);
-                    }
+                        if (outputLabel != null && outputQualifier != null) {
+                            throw Diagnostics.InvalidSpecification.AsException(
+                                "Link attribute cannot specify both output label and qualifier.",
+                                attribute.Location,
+                                generatorCtx);
+                        }
 
-                    return Result.Ok(new LinkAttributeMetadata(
-                        inputTypeArgument,
-                        returnTypeArgument,
-                        inputQualifier,
-                        inputLabel,
-                        outputQualifier,
-                        outputLabel,
-                        attribute));
-                }))
+                        return new LinkAttributeMetadata(
+                            inputTypeArgument,
+                            returnTypeArgument,
+                            inputQualifier,
+                            inputLabel,
+                            outputQualifier,
+                            outputLabel,
+                            attribute);
+                    })
                 .ToImmutableList();
         }
     }
