@@ -60,16 +60,15 @@ internal record SpecDesc(
         ) { }
 
         public SpecDesc Extract(ITypeSymbol specSymbol, ExtractorContext extractorCtx) {
-            return extractorCtx.UseChildContext(specSymbol,
+            return extractorCtx.UseChildContext(
+                "extracting specification",
+                specSymbol,
                 currentCtx => {
                     var specLocation = specSymbol.Locations.First();
                     var specType = TypeModel.FromTypeSymbol(specSymbol);
 
                     var specAttribute = specificationAttributeExtractor
-                        .Extract(specSymbol)
-                        .GetOrThrow(currentCtx)
-                        .Also(_ => specificationAttributeExtractor.ValidateAttributedType(specSymbol,
-                            currentCtx));
+                        .Extract(specSymbol, currentCtx);
 
                     var specInstantiationMode = specSymbol.IsStatic
                         ? SpecInstantiationMode.Static
@@ -193,7 +192,9 @@ internal record SpecDesc(
             var specLocation = injectorType.TypeSymbol.Locations.First();
             var specType = MetadataHelpers.CreateConstructorSpecContainerType(injectorType);
 
-            return extractorCtx.UseChildContext(injectorType.TypeSymbol,
+            return extractorCtx.UseChildContext(
+                "extracting auto constructor specification",
+                injectorType.TypeSymbol,
                 currentCtx => {
                     var specInstantiationMode = SpecInstantiationMode.Static;
 

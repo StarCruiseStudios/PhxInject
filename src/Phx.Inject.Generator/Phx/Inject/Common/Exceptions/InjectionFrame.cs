@@ -13,6 +13,7 @@ using Phx.Inject.Common.Util;
 namespace Phx.Inject.Common.Exceptions;
 
 internal interface IInjectionFrame {
+    string? Description { get; }
     ISymbol? Symbol { get; }
     IInjectionFrame? Parent { get; }
 }
@@ -21,9 +22,12 @@ internal static class IInjectionFrameExtensions {
     public static string GetInjectionFrameStack(this IInjectionFrame? frame) {
         var sb = new StringBuilder();
         var injectionFrame = frame;
-        while (injectionFrame is { Symbol: not null }) {
-            sb.AppendLine()
-                .Append($"|   at {injectionFrame}");
+        while (injectionFrame != null) {
+            if (injectionFrame.Description != null) {
+                sb.AppendLine()
+                    .Append($"|   while {injectionFrame}");
+            }
+            
             injectionFrame = injectionFrame.Parent;
         }
 
@@ -31,22 +35,19 @@ internal static class IInjectionFrameExtensions {
     }
 }
 
-internal class InjectionFrame : IInjectionFrame {
-    public InjectionFrame(ISymbol? symbol, IInjectionFrame? parent) {
-        Symbol = symbol;
-        Parent = parent;
-    }
-    public ISymbol? Symbol { get; }
-    public IInjectionFrame? Parent { get; }
-
+internal record InjectionFrame(
+    string? Description,
+    ISymbol? Symbol,
+    IInjectionFrame? Parent
+) : IInjectionFrame {
     public override string ToString() {
         return Symbol?.Let(it => {
                 var location = it.Locations.First();
                 var typeName = it.ContainingNamespace + "." + it.Name;
 
                 return
-                    $"{Path.GetFileName(location.GetLineSpan().Path)}({location.GetLineSpan().StartLinePosition}) [{typeName}]";
+                    $"{Description} for {typeName} {Path.GetFileName(location.GetLineSpan().Path)}({location.GetLineSpan().StartLinePosition})";
             })
-            ?? "[Injection]";
+            ?? Description ?? "unknown injection frame";
     }
 }

@@ -36,7 +36,7 @@ internal class QualifierMetadata : IDescriptor {
     }
 
     public class Extractor : IExtractor {
-        public static IExtractor Instance = new Extractor(
+        public static readonly IExtractor Instance = new Extractor(
             CustomQualifierAttributeMetadata.AttributeExtractor.Instance,
             LabelAttributeMetadata.Extractor.Instance);
 

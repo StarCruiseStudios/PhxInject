@@ -23,12 +23,7 @@ internal record DefGenerationContext : IGeneratorContext {
     public IReadOnlyDictionary<TypeModel, DependencyDesc> Dependencies { get; }
     public IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> FactoryRegistrations { get; set; }
     public IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> BuilderRegistrations { get; set; }
-    public ISymbol? Symbol { get; private init; }
-    public IGeneratorContext? ParentContext { get; private init; }
-    public GeneratorExecutionContext ExecutionContext { get; }
-    
-    public IExceptionAggregator Aggregator { get; set; }
-    
+
     public DefGenerationContext(
         InjectorDesc injector,
         IReadOnlyDictionary<TypeModel, InjectorDesc> injectors,
@@ -38,6 +33,7 @@ internal record DefGenerationContext : IGeneratorContext {
         IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations,
         IGeneratorContext parentContext
     ) {
+        Description = null;
         Injector = injector;
         Injectors = injectors;
         Specifications = specifications;
@@ -49,6 +45,12 @@ internal record DefGenerationContext : IGeneratorContext {
         ExecutionContext = parentContext.ExecutionContext;
         Aggregator = parentContext.Aggregator;
     }
+    public string? Description { get; }
+    public ISymbol? Symbol { get; private init; }
+    public IGeneratorContext? ParentContext { get; }
+    public GeneratorExecutionContext ExecutionContext { get; }
+
+    public IExceptionAggregator Aggregator { get; set; }
 
     public InjectorDesc GetInjector(TypeModel type, Location location) {
         if (Injectors.TryGetValue(type, out var injector)) {

@@ -18,12 +18,7 @@ internal record TemplateGenerationContext : IGeneratorContext {
     public IReadOnlyDictionary<TypeModel, InjectorDef> Injectors { get; }
     public IReadOnlyDictionary<TypeModel, SpecContainerDef> SpecContainers { get; }
     public IReadOnlyDictionary<TypeModel, DependencyImplementationDef> DependencyImplementations { get; }
-    public ISymbol? Symbol { get; private init; }
-    public IGeneratorContext? ParentContext { get; }
-    public GeneratorExecutionContext ExecutionContext { get; }
-    
-    public IExceptionAggregator Aggregator { get; set; }
-    
+
     public TemplateGenerationContext(
         InjectorDef injector,
         IReadOnlyDictionary<TypeModel, InjectorDef> injectors,
@@ -32,6 +27,7 @@ internal record TemplateGenerationContext : IGeneratorContext {
         ISymbol? symbol,
         IGeneratorContext parentContext
     ) {
+        Description = null;
         Symbol = symbol;
         Injector = injector;
         Injectors = injectors;
@@ -41,6 +37,12 @@ internal record TemplateGenerationContext : IGeneratorContext {
         ExecutionContext = parentContext.ExecutionContext;
         Aggregator = parentContext.Aggregator;
     }
+    public string? Description { get; }
+    public ISymbol? Symbol { get; }
+    public IGeneratorContext? ParentContext { get; }
+    public GeneratorExecutionContext ExecutionContext { get; }
+
+    public IExceptionAggregator Aggregator { get; set; }
 
     public InjectorDef GetInjector(TypeModel type, Location location) {
         if (Injectors.TryGetValue(type, out var injector)) {

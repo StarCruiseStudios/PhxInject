@@ -12,6 +12,7 @@ using Phx.Inject.Common.Exceptions;
 namespace Phx.Inject.Generator;
 
 internal interface IGeneratorContext {
+    string? Description { get; }
     ISymbol? Symbol { get; }
     IExceptionAggregator Aggregator { get; }
     IGeneratorContext? ParentContext { get; }
@@ -20,7 +21,10 @@ internal interface IGeneratorContext {
 
 internal static class IGeneratorContextExtensions {
     public static IInjectionFrame GetFrame(this IGeneratorContext generatorCtx) {
-        return new InjectionFrame(generatorCtx.Symbol, generatorCtx.ParentContext?.GetFrame());
+        return new InjectionFrame(
+            generatorCtx.Description,
+            generatorCtx.Symbol,
+            generatorCtx.ParentContext?.GetFrame());
     }
 
     public static Location GetLocation(this IGeneratorContext generatorCtx) {
@@ -29,24 +33,24 @@ internal static class IGeneratorContextExtensions {
 }
 
 internal class GeneratorContext : IGeneratorContext {
-    public ISymbol? Symbol { get => null; }
-    
     private IExceptionAggregator? aggregator;
-    public IExceptionAggregator Aggregator { get => aggregator!; }
-    
-    public IGeneratorContext? ParentContext { get => null; }
-    
-    public GeneratorExecutionContext ExecutionContext { get; }
-    
+
     private GeneratorContext(GeneratorExecutionContext executionContext) {
         ExecutionContext = executionContext;
     }
-    
+    public string Description { get => $"generating injection source for {ExecutionContext.Compilation.AssemblyName}"; }
+    public ISymbol? Symbol { get => null; }
+    public IExceptionAggregator Aggregator { get => aggregator!; }
+
+    public IGeneratorContext? ParentContext { get => null; }
+
+    public GeneratorExecutionContext ExecutionContext { get; }
+
     public static void UseContext(GeneratorExecutionContext executionContext, Action<GeneratorContext> action) {
         var newContext = new GeneratorContext(executionContext);
         try {
             ExceptionAggregator.Try<object?>(
-                $"generating injection source for {executionContext.Compilation.AssemblyName}",
+                newContext.Description,
                 newContext,
                 exceptionAggregator => {
                     newContext.aggregator = exceptionAggregator;
@@ -57,5 +61,5 @@ internal class GeneratorContext : IGeneratorContext {
             // Ignore injection exceptions to allow partial generation to complete.
             // They are already reported as diagnostics.
         }
-    } 
+    }
 }

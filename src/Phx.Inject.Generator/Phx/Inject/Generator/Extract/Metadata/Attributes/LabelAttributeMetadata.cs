@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
@@ -27,7 +28,7 @@ internal record LabelAttributeMetadata(string Label, AttributeMetadata Attribute
     }
 
     public class Extractor : IExtractor {
-        public static IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
+        public static readonly IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
         private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
 
         internal Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) {
@@ -41,7 +42,7 @@ internal record LabelAttributeMetadata(string Label, AttributeMetadata Attribute
         public LabelAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
             var attribute = attributeExtractor.ExtractOne(attributedSymbol, LabelAttributeClassName, generatorCtx);
             var labels = attribute.AttributeData.ConstructorArguments
-                .Where(argument => argument.Type!.ToString() == TypeNames.StringClassName)
+                .Where(argument => argument.Type.GetFullyQualifiedName() == TypeNames.StringClassName)
                 .Select(argument => (string)argument.Value!)
                 .ToImmutableList();
 

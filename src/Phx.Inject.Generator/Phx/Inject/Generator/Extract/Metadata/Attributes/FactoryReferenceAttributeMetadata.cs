@@ -6,73 +6,45 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal class FactoryReferenceAttributeMetadata : AttributeMetadata {
+internal record FactoryReferenceAttributeMetadata(
+    FactoryFabricationMode FabricationMode,
+    AttributeMetadata AttributeMetadata) : IDescriptor {
     public const string FactoryReferenceAttributeClassName =
         $"{SourceGenerator.PhxInjectNamespace}.{nameof(FactoryReferenceAttribute)}";
 
-    public FactoryFabricationMode FabricationMode { get; }
-    public FactoryReferenceAttributeMetadata(
-        FactoryFabricationMode fabricationMode,
-        ISymbol attributedSymbol,
-        AttributeData attributeData)
-        : base(attributedSymbol, attributeData) {
-        FabricationMode = fabricationMode;
-    }
+    public Location Location { get; } = AttributeMetadata.Location;
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        IResult<FactoryReferenceAttributeMetadata> Extract(ISymbol attributedSymbol);
-        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        FactoryReferenceAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
     public class Extractor : IExtractor {
-        public static IExtractor Instance = new Extractor(AttributeHelper.Instance);
-        private readonly IAttributeHelper attributeHelper;
+        public static readonly IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance,
+            FactoryFabricationModeMetadata.Extractor.Instance);
 
-        internal Extractor(IAttributeHelper attributeHelper) {
-            this.attributeHelper = attributeHelper;
+        private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
+        private readonly FactoryFabricationModeMetadata.IExtractor fabricationModeExtractor;
+
+        internal Extractor(
+            AttributeMetadata.IAttributeExtractor attributeExtractor,
+            FactoryFabricationModeMetadata.IExtractor fabricationModeExtractor) {
+            this.attributeExtractor = attributeExtractor;
+            this.fabricationModeExtractor = fabricationModeExtractor;
         }
 
         public bool CanExtract(ISymbol attributedSymbol) {
-            return attributeHelper.HasAttribute(attributedSymbol, FactoryReferenceAttributeClassName);
+            return attributeExtractor.CanExtract(attributedSymbol, FactoryReferenceAttributeClassName);
         }
 
-        public IResult<FactoryReferenceAttributeMetadata> Extract(ISymbol attributedSymbol) {
-            return attributeHelper.ExpectSingleAttributeResult(
-                attributedSymbol,
-                FactoryReferenceAttributeClassName,
-                attributeData => {
-                    IReadOnlyList<FactoryFabricationMode> fabricationModes = attributeData.ConstructorArguments
-                        .Where(argument => argument.Type!.ToString() == TypeNames.FabricationModeClassName)
-                        .Select(argument => (FactoryFabricationMode)argument.Value!)
-                        .ToImmutableList();
-
-                    var fabricationMode = FactoryFabricationMode.Recurrent;
-                    switch (fabricationModes.Count) {
-                        case > 1:
-                            return Result.Error<FactoryReferenceAttributeMetadata>(
-                                "Factory references can only have a single fabrication mode.",
-                                attributeData.GetAttributeLocation(attributedSymbol),
-                                Diagnostics.InternalError);
-                        case 1:
-                            fabricationMode = fabricationModes.Single();
-                            break;
-                    }
-
-                    return Result.Ok(
-                        new FactoryReferenceAttributeMetadata(fabricationMode, attributedSymbol, attributeData));
-                });
-        }
-
-        public void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+        public FactoryReferenceAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
             if (attributedSymbol is not IFieldSymbol {
                     IsStatic: true,
                     DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
@@ -87,6 +59,12 @@ internal class FactoryReferenceAttributeMetadata : AttributeMetadata {
                     attributedSymbol.Locations.First(),
                     generatorCtx);
             }
+
+            var attribute =
+                attributeExtractor.ExtractOne(attributedSymbol, FactoryReferenceAttributeClassName, generatorCtx);
+            var fabricationMode =
+                fabricationModeExtractor.Extract(attributedSymbol, attribute.AttributeData, generatorCtx);
+            return new FactoryReferenceAttributeMetadata(fabricationMode, attribute);
         }
     }
 }

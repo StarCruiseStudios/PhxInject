@@ -46,7 +46,9 @@ internal record InjectorProviderDesc(
             IMethodSymbol providerMethod,
             ExtractorContext extractorCtx
         ) {
-            return extractorCtx.UseChildContext(providerMethod,
+            return extractorCtx.UseChildContext(
+                "extracting injector provider",
+                providerMethod,
                 currentCtx => {
                     var providerLocation = providerMethod.Locations.First();
 

@@ -9,6 +9,7 @@
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
@@ -25,7 +26,7 @@ internal record QualifierAttributeMetadata(AttributeMetadata AttributeMetadata) 
     }
 
     public class Extractor : IExtractor {
-        public static IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
+        public static readonly IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
         private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
 
         internal Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) {
@@ -44,7 +45,7 @@ internal record QualifierAttributeMetadata(AttributeMetadata AttributeMetadata) 
                     generatorCtx);
             }
 
-            if (namedSymbol.BaseType?.ToString() != TypeNames.AttributeClassName) {
+            if (namedSymbol.BaseType?.GetFullyQualifiedName() != TypeNames.AttributeClassName) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Expected qualifier type {attributedSymbol.Name} to be an Attribute type.",
                     attributedSymbol.Locations.First(),

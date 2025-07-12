@@ -8,69 +8,56 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal class DependencyAttributeMetadata : AttributeMetadata {
+internal record DependencyAttributeMetadata(TypeModel DependencyType, AttributeMetadata AttributeMetadata)
+    : IDescriptor {
     public const string DependencyAttributeClassName =
         $"{SourceGenerator.PhxInjectNamespace}.{nameof(DependencyAttribute)}";
 
-    public TypeModel DependencyType { get; }
-    public DependencyAttributeMetadata(TypeModel dependencyType, ISymbol attributedSymbol, AttributeData attributeData)
-        : base(attributedSymbol, attributeData) {
-        DependencyType = dependencyType;
-    }
+    public Location Location { get; } = AttributeMetadata.Location;
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        IResult<DependencyAttributeMetadata> Extract(ISymbol attributedSymbol);
+        DependencyAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
     public class Extractor : IExtractor {
-        public static IExtractor Instance = new Extractor(
-            AttributeHelper.Instance,
-            InjectorAttributeMetadata.Extractor.Instance);
+        public static readonly IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
+        private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
 
-        private readonly IAttributeHelper attributeHelper;
-        private readonly InjectorAttributeMetadata.IExtractor injectorAttributeExtractor;
-
-        internal Extractor(
-            IAttributeHelper attributeHelper,
-            InjectorAttributeMetadata.IExtractor injectorAttributeExtractor
-        ) {
-            this.attributeHelper = attributeHelper;
-            this.injectorAttributeExtractor = injectorAttributeExtractor;
+        internal Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) {
+            this.attributeExtractor = attributeExtractor;
         }
 
         public bool CanExtract(ISymbol attributedSymbol) {
-            return attributeHelper.HasAttribute(attributedSymbol, DependencyAttributeClassName);
+            return attributeExtractor.CanExtract(attributedSymbol, DependencyAttributeClassName);
         }
 
-        public IResult<DependencyAttributeMetadata> Extract(ISymbol attributedSymbol) {
-            return attributeHelper.ExpectSingleAttributeResult(
-                attributedSymbol,
-                DependencyAttributeClassName,
-                attributeData => {
-                    var constructorArgument = attributeData.ConstructorArguments
-                        .Where(argument => argument.Kind == TypedConstantKind.Type)
-                        .Select(argument => argument.Value)
-                        .OfType<ITypeSymbol>()
-                        .ToImmutableList();
+        public DependencyAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+            var attribute = attributeExtractor.ExtractOne(attributedSymbol, DependencyAttributeClassName, generatorCtx);
 
-                    if (constructorArgument.Count != 1) {
-                        return Result.Error<DependencyAttributeMetadata>(
-                            $"Dependency for symbol {attributedSymbol.Name} must provide a dependency type.",
-                            attributeData.GetAttributeLocation(attributedSymbol),
-                            Diagnostics.InvalidSpecification);
-                    }
+            var constructorArgument = attribute.AttributeData.ConstructorArguments
+                .Where(argument => argument.Kind == TypedConstantKind.Type)
+                .Select(argument => argument.Value)
+                .OfType<ITypeSymbol>()
+                .ToImmutableList();
 
-                    return Result.Ok(new DependencyAttributeMetadata(constructorArgument.Single().ToTypeModel(),
-                        attributedSymbol,
-                        attributeData));
-                });
+            if (constructorArgument.Count != 1) {
+                throw Diagnostics.InvalidSpecification.AsException(
+                    $"Dependency for symbol {attributedSymbol.Name} must provide a dependency type.",
+                    attribute.AttributeData.GetAttributeLocation(attributedSymbol),
+                    generatorCtx);
+            }
+
+            return new DependencyAttributeMetadata(
+                constructorArgument.Single().ToTypeModel(),
+                attribute);
         }
     }
 }

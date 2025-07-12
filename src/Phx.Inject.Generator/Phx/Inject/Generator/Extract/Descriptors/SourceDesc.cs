@@ -71,7 +71,7 @@ internal record SourceDesc(
             IReadOnlyList<ITypeSymbol> specificationCandidates,
             IGeneratorContext generatorCtx
         ) {
-            var extractorCtx = new ExtractorContext(null, generatorCtx);
+            var extractorCtx = new ExtractorContext(null, null, generatorCtx);
 
             IReadOnlyList<InjectorDesc> injectorDescs = injectorCandidates
                 .Where(injectorTypeSymbol => injectorAttributeExtractor.CanExtract(injectorTypeSymbol))
@@ -98,8 +98,7 @@ internal record SourceDesc(
                     injectorTypeSymbol => $"extracting dependencies from injector {injectorTypeSymbol}",
                     injectorTypeSymbol => {
                         var dependencyAttribute = dependencyAttributeExtractor.CanExtract(injectorTypeSymbol)
-                            ? dependencyAttributeExtractor.Extract(injectorTypeSymbol)
-                                .GetOrThrow(extractorCtx)
+                            ? dependencyAttributeExtractor.Extract(injectorTypeSymbol, extractorCtx)
                             : null;
                         if (dependencyAttribute == null) {
                             return null;

@@ -13,13 +13,13 @@ using Phx.Inject.Generator.Extract.Metadata;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
-internal record ActivatorDesc(
+internal record InjectorBuilderDesc(
     QualifiedTypeModel BuiltType,
     string BuilderMethodName,
     Location Location
 ) : IDescriptor {
     public interface IExtractor {
-        ActivatorDesc? Extract(
+        InjectorBuilderDesc? Extract(
             IMethodSymbol builderMethod,
             ExtractorContext extractorCtx
         );
@@ -33,11 +33,13 @@ internal record ActivatorDesc(
             this.qualifierExtractor = qualifierExtractor;
         }
 
-        public ActivatorDesc? Extract(
+        public InjectorBuilderDesc? Extract(
             IMethodSymbol builderMethod,
             ExtractorContext extractorCtx
         ) {
-            return extractorCtx.UseChildContext(builderMethod,
+            return extractorCtx.UseChildContext(
+                "extracting injector activator",
+                builderMethod,
                 currentCtx => {
                     var builderLocation = builderMethod.Locations.First();
 
@@ -56,7 +58,7 @@ internal record ActivatorDesc(
                     var qualifier = qualifierExtractor.Extract(builderMethod, currentCtx);
                     var builtType = builderMethod.Parameters[0].Type.ToQualifiedTypeModel(qualifier);
 
-                    return new ActivatorDesc(
+                    return new InjectorBuilderDesc(
                         builtType,
                         builderMethod.Name,
                         builderLocation);

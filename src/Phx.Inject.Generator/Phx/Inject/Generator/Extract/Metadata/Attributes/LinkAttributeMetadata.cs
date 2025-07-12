@@ -32,7 +32,7 @@ internal record LinkAttributeMetadata(
     }
 
     public class Extractor : IExtractor {
-        public static IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
+        public static readonly IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
         private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
 
         internal Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) {

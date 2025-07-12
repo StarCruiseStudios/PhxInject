@@ -6,72 +6,44 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal class FactoryAttributeMetadata : AttributeMetadata {
+internal record FactoryAttributeMetadata(FactoryFabricationMode FabricationMode, AttributeMetadata AttributeMetadata)
+    : IDescriptor {
     public const string FactoryAttributeClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(FactoryAttribute)}";
 
-    public FactoryFabricationMode FabricationMode { get; }
-    public FactoryAttributeMetadata(
-        FactoryFabricationMode fabricationMode,
-        ISymbol attributedSymbol,
-        AttributeData attributeData)
-        : base(attributedSymbol, attributeData) {
-        FabricationMode = fabricationMode;
-    }
+    public Location Location { get; } = AttributeMetadata.Location;
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        IResult<FactoryAttributeMetadata> Extract(ISymbol attributedSymbol);
-        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
-        void ValidateAttributedAutoConstructorType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        FactoryAttributeMetadata ExtractFactory(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        FactoryAttributeMetadata ExtractAutoFactory(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
     public class Extractor : IExtractor {
-        public static IExtractor Instance = new Extractor(AttributeHelper.Instance);
-        private readonly IAttributeHelper attributeHelper;
+        public static readonly IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance,
+            FactoryFabricationModeMetadata.Extractor.Instance);
 
-        internal Extractor(IAttributeHelper attributeHelper) {
-            this.attributeHelper = attributeHelper;
+        private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
+        private readonly FactoryFabricationModeMetadata.IExtractor fabricationModeExtractor;
+
+        internal Extractor(
+            AttributeMetadata.IAttributeExtractor attributeExtractor,
+            FactoryFabricationModeMetadata.IExtractor fabricationModeExtractor) {
+            this.attributeExtractor = attributeExtractor;
+            this.fabricationModeExtractor = fabricationModeExtractor;
         }
 
         public bool CanExtract(ISymbol attributedSymbol) {
-            return attributeHelper.HasAttribute(attributedSymbol, FactoryAttributeClassName);
+            return attributeExtractor.CanExtract(attributedSymbol, FactoryAttributeClassName);
         }
 
-        public IResult<FactoryAttributeMetadata> Extract(ISymbol attributedSymbol) {
-            return attributeHelper.ExpectSingleAttributeResult(
-                attributedSymbol,
-                FactoryAttributeClassName,
-                attributeData => {
-                    IReadOnlyList<FactoryFabricationMode> fabricationModes = attributeData.ConstructorArguments
-                        .Where(argument => argument.Type!.ToString() == TypeNames.FabricationModeClassName)
-                        .Select(argument => (FactoryFabricationMode)argument.Value!)
-                        .ToImmutableList();
-
-                    var fabricationMode = FactoryFabricationMode.Recurrent;
-                    switch (fabricationModes.Count) {
-                        case > 1:
-                            return Result.Error<FactoryAttributeMetadata>(
-                                "Factories can only have a single fabrication mode.",
-                                attributeData.GetAttributeLocation(attributedSymbol),
-                                Diagnostics.InternalError);
-                        case 1:
-                            fabricationMode = fabricationModes.Single();
-                            break;
-                    }
-
-                    return Result.Ok(new FactoryAttributeMetadata(fabricationMode, attributedSymbol, attributeData));
-                });
-        }
-
-        public void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+        public FactoryAttributeMetadata ExtractFactory(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
             if (attributedSymbol is not IMethodSymbol {
                     DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
                 }
@@ -84,9 +56,14 @@ internal class FactoryAttributeMetadata : AttributeMetadata {
                     attributedSymbol.Locations.First(),
                     generatorCtx);
             }
+
+            var attribute = attributeExtractor.ExtractOne(attributedSymbol, FactoryAttributeClassName, generatorCtx);
+            var fabricationMode =
+                fabricationModeExtractor.Extract(attributedSymbol, attribute.AttributeData, generatorCtx);
+            return new FactoryAttributeMetadata(fabricationMode, attribute);
         }
 
-        public void ValidateAttributedAutoConstructorType(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+        public FactoryAttributeMetadata ExtractAutoFactory(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
             if (attributedSymbol is not ITypeSymbol {
                     TypeKind: TypeKind.Class,
                     IsStatic: false,
@@ -99,6 +76,11 @@ internal class FactoryAttributeMetadata : AttributeMetadata {
                     attributedSymbol.Locations.First(),
                     generatorCtx);
             }
+
+            var attribute = attributeExtractor.ExtractOne(attributedSymbol, FactoryAttributeClassName, generatorCtx);
+            var fabricationMode =
+                fabricationModeExtractor.Extract(attributedSymbol, attribute.AttributeData, generatorCtx);
+            return new FactoryAttributeMetadata(fabricationMode, attribute);
         }
     }
 }

@@ -12,24 +12,25 @@ using Phx.Inject.Common.Exceptions;
 namespace Phx.Inject.Generator.Extract;
 
 internal class ExtractorContext : IGeneratorContext {
-    public ISymbol? Symbol { get; }
-    public IGeneratorContext? ParentContext { get; }
-    public GeneratorExecutionContext ExecutionContext { get; }
-    
-    public IExceptionAggregator Aggregator { get; set; }
-    
     public ExtractorContext(
+        string? description,
         ISymbol? symbol,
         IGeneratorContext parentContext
     ) {
+        Description = description;
         Symbol = symbol;
         ParentContext = parentContext;
         ExecutionContext = parentContext.ExecutionContext;
         Aggregator = parentContext.Aggregator;
     }
+    public string? Description { get; }
+    public ISymbol? Symbol { get; }
+    public IGeneratorContext? ParentContext { get; }
+    public GeneratorExecutionContext ExecutionContext { get; }
+    public IExceptionAggregator Aggregator { get; set; }
 
-    public T UseChildContext<T>(ISymbol symbol, Func<ExtractorContext, T> func) {
-        var childContext = new ExtractorContext(symbol, this);
+    public T UseChildContext<T>(string description, ISymbol symbol, Func<ExtractorContext, T> func) {
+        var childContext = new ExtractorContext(description, symbol, this);
         return ExceptionAggregator.Try(
             $"extracting {symbol}",
             childContext,

@@ -12,11 +12,11 @@ using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal record BuilderReferenceAttributeMetadata(AttributeMetadata Attribute) : IDescriptor {
+internal record BuilderReferenceAttributeMetadata(AttributeMetadata AttributeMetadata) : IDescriptor {
     public const string BuilderReferenceAttributeClassName =
         $"{SourceGenerator.PhxInjectNamespace}.{nameof(BuilderReferenceAttribute)}";
 
-    public Location Location { get; } = Attribute.Location;
+    public Location Location { get; } = AttributeMetadata.Location;
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
@@ -24,7 +24,7 @@ internal record BuilderReferenceAttributeMetadata(AttributeMetadata Attribute) :
     }
 
     public class Extractor : IExtractor {
-        public static IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
+        public static readonly IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
         private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
 
         internal Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) {

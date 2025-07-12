@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
@@ -27,7 +28,7 @@ internal record CustomQualifierAttributeMetadata(
     }
 
     public class AttributeExtractor : IAttributeExtractor {
-        public static IAttributeExtractor Instance = new AttributeExtractor(
+        public static readonly IAttributeExtractor Instance = new AttributeExtractor(
             QualifierAttributeMetadata.Extractor.Instance,
             AttributeMetadata.AttributeExtractor.Instance);
 
@@ -69,7 +70,9 @@ internal record CustomQualifierAttributeMetadata(
             var qualifierAttribute = qualifierAttributeExtractor.Extract(customQualifierType, generatorCtx);
 
             var customQualifierAttribute =
-                attributeExtractor.ExtractOne(attributedSymbol, customQualifierType.ToString(), generatorCtx);
+                attributeExtractor.ExtractOne(attributedSymbol,
+                    customQualifierType.GetFullyQualifiedName(),
+                    generatorCtx);
             return new CustomQualifierAttributeMetadata(qualifierAttribute, customQualifierAttribute);
         }
 
@@ -78,7 +81,7 @@ internal record CustomQualifierAttributeMetadata(
                 .Where(attributeData => qualifierAttributeExtractor.CanExtract(attributeData.GetNamedTypeSymbol()))
             ) {
                 var namedSymbol = attributeData.GetNamedTypeSymbol();
-                if (namedSymbol.BaseType?.ToString() != TypeNames.AttributeClassName) {
+                if (namedSymbol.BaseType?.GetFullyQualifiedName() != TypeNames.AttributeClassName) {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Expected qualifier type {namedSymbol.Name} to be an Attribute type.",
                         namedSymbol.Locations.First(),
@@ -97,19 +100,19 @@ internal record CustomQualifierAttributeMetadata(
     }
 
     public class TypeExtractor : ITypeExtractor {
-        public static ITypeExtractor Instance = new TypeExtractor(
+        public static readonly ITypeExtractor Instance = new TypeExtractor(
             QualifierAttributeMetadata.Extractor.Instance,
             AttributeMetadata.TypeExtractor.Instance);
 
-        private readonly AttributeMetadata.ITypeExtractor attributeExtractor;
+        private readonly AttributeMetadata.ITypeExtractor attributeTypeExtractor;
         private readonly QualifierAttributeMetadata.IExtractor qualifierAttributeExtractor;
 
         internal TypeExtractor(
             QualifierAttributeMetadata.IExtractor qualifierAttributeExtractor,
-            AttributeMetadata.ITypeExtractor attributeExtractor
+            AttributeMetadata.ITypeExtractor attributeTypeExtractor
         ) {
             this.qualifierAttributeExtractor = qualifierAttributeExtractor;
-            this.attributeExtractor = attributeExtractor;
+            this.attributeTypeExtractor = attributeTypeExtractor;
         }
 
         public bool CanExtract(ISymbol qualifierTypeSymbol) {
@@ -127,7 +130,7 @@ internal record CustomQualifierAttributeMetadata(
                     generatorCtx);
             }
 
-            if (qualifierTypeNameSymbol.BaseType?.ToString() != TypeNames.AttributeClassName) {
+            if (qualifierTypeNameSymbol.BaseType?.GetFullyQualifiedName() != TypeNames.AttributeClassName) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Expected qualifier type {qualifierTypeNameSymbol.Name} to be an Attribute type.",
                     qualifierTypeNameSymbol.Locations.First(),
@@ -135,7 +138,9 @@ internal record CustomQualifierAttributeMetadata(
             }
 
             var qualifierAttribute = qualifierAttributeExtractor.Extract(qualifierTypeSymbol, generatorCtx);
-            var customQualifierAttribute = new AttributeMetadata(attributedTypeSymbol, qualifierTypeNameSymbol);
+            var customQualifierAttribute =
+                attributeTypeExtractor.Extract(attributedTypeSymbol, qualifierTypeNameSymbol, generatorCtx);
+            // var customQualifierAttribute = new AttributeMetadata(attributedTypeSymbol, qualifierTypeNameSymbol);
 
             return new CustomQualifierAttributeMetadata(qualifierAttribute, customQualifierAttribute);
         }

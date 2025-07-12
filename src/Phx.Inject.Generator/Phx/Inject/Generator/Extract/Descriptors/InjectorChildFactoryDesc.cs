@@ -48,7 +48,9 @@ internal record InjectorChildFactoryDesc(
             IMethodSymbol childInjectorMethod,
             ExtractorContext extractorCtx
         ) {
-            return extractorCtx.UseChildContext(childInjectorMethod,
+            return extractorCtx.UseChildContext(
+                "extracting injector child factory",
+                childInjectorMethod,
                 currentCtx => {
                     var childInjectorLocation = childInjectorMethod.Locations.First();
 

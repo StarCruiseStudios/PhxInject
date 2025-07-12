@@ -22,7 +22,7 @@ internal record InjectorDesc(
     IEnumerable<TypeModel> SpecificationsTypes,
     TypeModel? DependencyInterfaceType,
     IEnumerable<InjectorProviderDesc> Providers,
-    IEnumerable<ActivatorDesc> Builders,
+    IEnumerable<InjectorBuilderDesc> Builders,
     IEnumerable<InjectorChildFactoryDesc> ChildFactories,
     Location Location
 ) : IDescriptor {
@@ -34,7 +34,7 @@ internal record InjectorDesc(
     }
 
     public class Extractor : IExtractor {
-        private readonly ActivatorDesc.IExtractor activatorDescExtractor;
+        private readonly InjectorBuilderDesc.IExtractor activatorDescExtractor;
         private readonly DependencyAttributeMetadata.IExtractor dependencyAttributeExtractor;
         private readonly InjectorAttributeMetadata.IExtractor injectorAttributeExtractor;
         private readonly InjectorChildFactoryDesc.IExtractor injectorChildFactoryDescExtractor;
@@ -42,7 +42,7 @@ internal record InjectorDesc(
 
         public Extractor(
             InjectorProviderDesc.IExtractor injectorProviderDescriptionExtractor,
-            ActivatorDesc.IExtractor activatorDescExtractor,
+            InjectorBuilderDesc.IExtractor activatorDescExtractor,
             InjectorChildFactoryDesc.IExtractor injectorChildFactoryDescExtractor,
             DependencyAttributeMetadata.IExtractor dependencyAttributeExtractor,
             InjectorAttributeMetadata.IExtractor injectorAttributeExtractor
@@ -56,7 +56,7 @@ internal record InjectorDesc(
 
         public Extractor() : this(
             new InjectorProviderDesc.Extractor(),
-            ActivatorDesc.Extractor.Instance,
+            InjectorBuilderDesc.Extractor.Instance,
             new InjectorChildFactoryDesc.Extractor(),
             DependencyAttributeMetadata.Extractor.Instance,
             InjectorAttributeMetadata.Extractor.Instance) { }
@@ -65,7 +65,9 @@ internal record InjectorDesc(
             ITypeSymbol injectorInterfaceSymbol,
             ExtractorContext extractorCtx
         ) {
-            return extractorCtx.UseChildContext(injectorInterfaceSymbol,
+            return extractorCtx.UseChildContext(
+                "extracting injector",
+                injectorInterfaceSymbol,
                 currentCtx => {
                     var injectorLocation = injectorInterfaceSymbol.Locations.First();
                     var injectorInterfaceType = TypeModel.FromTypeSymbol(injectorInterfaceSymbol);
@@ -76,10 +78,7 @@ internal record InjectorDesc(
                             currentCtx);
                     }
 
-                    var injectorAttribute = injectorAttributeExtractor.Extract(injectorInterfaceSymbol)
-                        .GetOrThrow(currentCtx)
-                        .Also(_ => injectorAttributeExtractor.ValidateAttributedType(injectorInterfaceSymbol,
-                            currentCtx));
+                    var injectorAttribute = injectorAttributeExtractor.Extract(injectorInterfaceSymbol, currentCtx);
 
                     var generatedInjectorTypeName =
                         injectorAttribute.GeneratedClassName?.AsValidIdentifier().StartUppercase()
@@ -91,8 +90,7 @@ internal record InjectorDesc(
                     };
 
                     var dependencyAttribute = dependencyAttributeExtractor.CanExtract(injectorInterfaceSymbol)
-                        ? dependencyAttributeExtractor.Extract(injectorInterfaceSymbol)
-                            .GetOrThrow(currentCtx)
+                        ? dependencyAttributeExtractor.Extract(injectorInterfaceSymbol, currentCtx)
                         : null;
 
                     IReadOnlyList<TypeModel> specificationTypes = injectorAttribute.Specifications
@@ -115,7 +113,7 @@ internal record InjectorDesc(
                         .Select(provider => provider!)
                         .ToImmutableList();
 
-                    IReadOnlyList<ActivatorDesc> builders = injectorMethods
+                    IReadOnlyList<InjectorBuilderDesc> builders = injectorMethods
                         .SelectCatching(
                             currentCtx.Aggregator,
                             methodSymbol => $"extracting injector activator {injectorType}.{methodSymbol.Name}",

@@ -9,7 +9,6 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
-using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Metadata;
@@ -34,16 +33,14 @@ internal static class PhxInjectSettingsMetadata {
             IReadOnlyList<ITypeSymbol> settingsCandidates,
             IGeneratorContext generatorCtx
         ) {
-            var extractorCtx = new ExtractorContext(null, generatorCtx);
+            var extractorCtx = new ExtractorContext("extracting PhxInject settings", null, generatorCtx);
             IReadOnlyList<GeneratorSettings> injectSettings = settingsCandidates
                 .Where(typeSymbol => phxInjectAttributeExtractor.CanExtract(typeSymbol))
                 .SelectCatching(
                     generatorCtx.Aggregator,
                     typeSymbol => $"extracting PhxInject settings from {typeSymbol}",
                     typeSymbol => {
-                        var settingsAttribute = phxInjectAttributeExtractor.Extract(typeSymbol)
-                            .GetOrThrow(generatorCtx)
-                            .Also(_ => phxInjectAttributeExtractor.ValidateAttributedType(typeSymbol, generatorCtx));
+                        var settingsAttribute = phxInjectAttributeExtractor.Extract(typeSymbol, generatorCtx);
 
                         return new GeneratorSettings(
                             settingsAttribute.TabSize,
@@ -62,7 +59,7 @@ internal static class PhxInjectSettingsMetadata {
                             settings => $"extracting PhxInject settings {settings.Name}",
                             settings => throw Diagnostics.InvalidSpecification.AsException(
                                 $"Only one PhxInject settings can be specified. "
-                                + $"Found {injectSettings.Count} on types [{string.Join(", ", injectSettings.Select(it => it.Metadata?.AttributedSymbol))}].",
+                                + $"Found {injectSettings.Count} on types [{string.Join(", ", injectSettings.Select(it => it.Metadata?.AttributeMetadata.AttributedSymbol))}].",
                                 settings.Location,
                                 extractorCtx))
                         .FirstOrDefault()

@@ -85,7 +85,9 @@ internal record DependencyProviderDesc(
             TypeModel dependencyInterface,
             ExtractorContext extractorCtx
         ) {
-            return extractorCtx.UseChildContext(symbol,
+            return extractorCtx.UseChildContext(
+                "extracting dependency provider",
+                symbol,
                 currentCtx => {
                     RequireDependencyProvider(symbol, currentCtx);
                     var qualifier = qualifierExtractor.Extract(symbol, currentCtx);

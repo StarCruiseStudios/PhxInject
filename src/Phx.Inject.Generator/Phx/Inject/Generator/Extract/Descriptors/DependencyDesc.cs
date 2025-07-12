@@ -19,8 +19,10 @@ internal record DependencyDesc(
     IEnumerable<DependencyProviderDesc> Providers,
     SpecDesc InstantiatedSpecDesc
 ) : IDescriptor {
-    public Location Location => DependencyInterfaceType.TypeSymbol.Locations.First();
-    
+    public Location Location {
+        get => DependencyInterfaceType.TypeSymbol.Locations.First();
+    }
+
     public static void RequireDependency(
         ITypeSymbol symbol,
         Location declarationLocation,
@@ -60,7 +62,9 @@ internal record DependencyDesc(
             TypeModel containingInjectorInterfaceType,
             ExtractorContext extractorCtx
         ) {
-            return extractorCtx.UseChildContext(symbol,
+            return extractorCtx.UseChildContext(
+                "extracting dependency",
+                symbol,
                 currentCtx => {
                     RequireDependency(symbol, containingInjectorInterfaceType.Location, currentCtx);
 

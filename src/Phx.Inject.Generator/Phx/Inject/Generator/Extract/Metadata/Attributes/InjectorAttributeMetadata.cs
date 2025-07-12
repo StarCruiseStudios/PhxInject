@@ -8,72 +8,40 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal class InjectorAttributeMetadata : AttributeMetadata {
+internal record InjectorAttributeMetadata(
+    string? GeneratedClassName,
+    IReadOnlyList<TypeModel> Specifications,
+    AttributeMetadata AttributeMetadata
+) : IDescriptor {
     public const string InjectorAttributeClassName =
         $"{SourceGenerator.PhxInjectNamespace}.{nameof(InjectorAttribute)}";
 
-    public string? GeneratedClassName { get; }
-    public IReadOnlyList<TypeModel> Specifications { get; }
-    public InjectorAttributeMetadata(
-        string? generatedClassName,
-        IReadOnlyList<TypeModel> specifications,
-        ISymbol attributedSymbol,
-        AttributeData attributeData)
-        : base(attributedSymbol, attributeData) {
-        GeneratedClassName = generatedClassName;
-        Specifications = specifications;
-    }
+    public Location Location { get; } = AttributeMetadata.Location;
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        IResult<InjectorAttributeMetadata> Extract(ISymbol attributedSymbol);
-        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        InjectorAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
     public class Extractor : IExtractor {
-        public static IExtractor Instance = new Extractor(AttributeHelper.Instance);
+        public static readonly IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
+        private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
 
-        private readonly IAttributeHelper attributeHelper;
-
-        internal Extractor(IAttributeHelper attributeHelper) {
-            this.attributeHelper = attributeHelper;
+        internal Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) {
+            this.attributeExtractor = attributeExtractor;
         }
 
         public bool CanExtract(ISymbol attributedSymbol) {
-            return attributeHelper.HasAttribute(attributedSymbol, InjectorAttributeClassName);
+            return attributeExtractor.CanExtract(attributedSymbol, InjectorAttributeClassName);
         }
 
-        public IResult<InjectorAttributeMetadata> Extract(ISymbol attributedSymbol) {
-            return attributeHelper.ExpectSingleAttributeResult(
-                attributedSymbol,
-                InjectorAttributeClassName,
-                attributeData => {
-                    var generatedClassName = attributeData.ConstructorArguments
-                        .FirstOrDefault(argument => argument.Kind != TypedConstantKind.Array)
-                        .Value as string;
-
-                    var specifications = attributeData.ConstructorArguments
-                        .Where(argument => argument.Kind == TypedConstantKind.Array)
-                        .SelectMany(argument => argument.Values)
-                        .Select(type => type.Value as ITypeSymbol)
-                        .OfType<ITypeSymbol>()
-                        .Select(it => it.ToTypeModel())
-                        .ToImmutableList();
-
-                    return Result.Ok(new InjectorAttributeMetadata(generatedClassName,
-                        specifications,
-                        attributedSymbol,
-                        attributeData));
-                });
-        }
-
-        public void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+        public InjectorAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
             if (attributedSymbol is not ITypeSymbol {
                     TypeKind: TypeKind.Interface,
                     DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
@@ -84,6 +52,23 @@ internal class InjectorAttributeMetadata : AttributeMetadata {
                     attributedSymbol.Locations.First(),
                     generatorCtx);
             }
+
+            var attribute = attributeExtractor.ExtractOne(attributedSymbol, InjectorAttributeClassName, generatorCtx);
+            var generatedClassName = attribute.AttributeData.ConstructorArguments
+                .FirstOrDefault(argument => argument.Kind != TypedConstantKind.Array)
+                .Value as string;
+
+            var specifications = attribute.AttributeData.ConstructorArguments
+                .Where(argument => argument.Kind == TypedConstantKind.Array)
+                .SelectMany(argument => argument.Values)
+                .Select(type => type.Value as ITypeSymbol)
+                .OfType<ITypeSymbol>()
+                .Select(it => it.ToTypeModel())
+                .ToImmutableList();
+
+            return new InjectorAttributeMetadata(generatedClassName,
+                specifications,
+                attribute);
         }
     }
 }

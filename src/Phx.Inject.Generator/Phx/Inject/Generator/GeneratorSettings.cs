@@ -27,7 +27,7 @@ internal class GeneratorSettings {
         bool? allowConstructorFactories = null,
         PhxInjectAttributeMetadata? metadata = null
     ) {
-        Name = metadata?.AttributedSymbol.ToString() ?? "Default";
+        Name = metadata?.AttributeMetadata.AttributedSymbol.ToString() ?? "Default";
         Location = metadata?.Location ?? Location.None;
         TabSize = tabSize ?? PhxInjectAttribute.DefaultTabSize;
         GeneratedFileExtension = generatedFileExtension ?? PhxInjectAttribute.DefaultGeneratedFileExtension;

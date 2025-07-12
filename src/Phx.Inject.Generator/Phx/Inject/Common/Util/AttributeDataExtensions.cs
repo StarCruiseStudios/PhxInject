@@ -8,7 +8,7 @@
 
 using Microsoft.CodeAnalysis;
 
-namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
+namespace Phx.Inject.Common.Util;
 
 internal static class AttributeDataExtensions {
     public static INamedTypeSymbol GetNamedTypeSymbol(this AttributeData attributeData) {
@@ -19,10 +19,6 @@ internal static class AttributeDataExtensions {
     public static string GetFullyQualifiedName(this AttributeData attributeData) {
         return attributeData.AttributeClass?.ToString()
             ?? throw new InvalidOperationException("AttributeData does not have a valid AttributeClass.");
-    }
-
-    public static string GetFullyQualifiedName(this INamedTypeSymbol symbol) {
-        return symbol.ToString();
     }
 
     public static Location GetAttributeLocation(this AttributeData attributeData, ISymbol attributedSymbol) {

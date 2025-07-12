@@ -7,45 +7,35 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal class SpecificationAttributeMetadata : AttributeMetadata {
+internal record SpecificationAttributeMetadata(AttributeMetadata AttributeMetadata) : IDescriptor {
     public const string SpecificationAttributeClassName =
         $"{SourceGenerator.PhxInjectNamespace}.{nameof(SpecificationAttribute)}";
 
-    public SpecificationAttributeMetadata(ISymbol attributedSymbol, AttributeData attributeData)
-        : base(attributedSymbol, attributeData) { }
+    public Location Location { get; } = AttributeMetadata.Location;
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
-        IResult<SpecificationAttributeMetadata> Extract(ISymbol attributedSymbol);
-        void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
+        SpecificationAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
     public class Extractor : IExtractor {
-        public static IExtractor Instance = new Extractor(AttributeHelper.Instance);
-        private readonly IAttributeHelper attributeHelper;
+        public static readonly IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
+        private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
 
-        internal Extractor(IAttributeHelper attributeHelper) {
-            this.attributeHelper = attributeHelper;
+        internal Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) {
+            this.attributeExtractor = attributeExtractor;
         }
 
         public bool CanExtract(ISymbol attributedSymbol) {
-            return attributeHelper.HasAttribute(attributedSymbol, SpecificationAttributeClassName);
+            return attributeExtractor.CanExtract(attributedSymbol, SpecificationAttributeClassName);
         }
 
-        public IResult<SpecificationAttributeMetadata> Extract(ISymbol attributedSymbol) {
-            return attributeHelper.ExpectSingleAttributeResult(
-                attributedSymbol,
-                SpecificationAttributeClassName,
-                attributeData => Result.Ok(
-                    new SpecificationAttributeMetadata(attributedSymbol, attributeData)));
-        }
-
-        public void ValidateAttributedType(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
+        public SpecificationAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
             if (attributedSymbol is not { DeclaredAccessibility: Accessibility.Public or Accessibility.Internal }
                 or not ITypeSymbol { IsStatic: true, TypeKind: TypeKind.Class }
                 and not ITypeSymbol { TypeKind: TypeKind.Interface }
@@ -55,6 +45,10 @@ internal class SpecificationAttributeMetadata : AttributeMetadata {
                     attributedSymbol.Locations.First(),
                     generatorCtx);
             }
+
+            var attribute =
+                attributeExtractor.ExtractOne(attributedSymbol, SpecificationAttributeClassName, generatorCtx);
+            return new SpecificationAttributeMetadata(attribute);
         }
     }
 }
