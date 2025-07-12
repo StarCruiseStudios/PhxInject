@@ -48,5 +48,6 @@ internal static class TypeNames {
     public const string SpecificationAttributeClassName =
         $"{SourceGenerator.PhxInjectNamespace}.{nameof(SpecificationAttribute)}";
 
+    public const string ActionClassName = "Action";
     public const string StringClassName = "string";
 }

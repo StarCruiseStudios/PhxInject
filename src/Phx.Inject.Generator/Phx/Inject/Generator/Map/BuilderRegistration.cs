@@ -7,10 +7,11 @@
 // -----------------------------------------------------------------------------
 
 using Phx.Inject.Generator.Extract.Descriptors;
+using Phx.Inject.Generator.Extract.Metadata;
 
 namespace Phx.Inject.Generator.Map;
 
 internal record BuilderRegistration(
     SpecDesc Specification,
-    SpecBuilderDesc BuilderDesc
+    SpecBuilderMetadata BuilderMetadata
 );

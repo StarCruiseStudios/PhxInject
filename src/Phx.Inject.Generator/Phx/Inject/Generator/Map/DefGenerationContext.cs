@@ -154,8 +154,8 @@ internal record DefGenerationContext : IGeneratorContext {
                 builderRegistration.Specification.SpecType);
             return new SpecContainerBuilderInvocationDef(
                 specContainerType,
-                builderRegistration.BuilderDesc.GetSpecContainerBuilderName(this),
-                builderRegistration.BuilderDesc.Location);
+                builderRegistration.BuilderMetadata.GetSpecContainerBuilderName(this),
+                builderRegistration.BuilderMetadata.Location);
         }
 
         throw Diagnostics.IncompleteSpecification.AsException(

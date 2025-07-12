@@ -12,6 +12,7 @@ using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator;
 using Phx.Inject.Generator.Extract.Descriptors;
+using Phx.Inject.Generator.Extract.Metadata;
 
 namespace Phx.Inject.Common;
 
@@ -51,7 +52,7 @@ internal static class NameHelpers {
         return sb.ToString();
     }
 
-    public static string GetSpecContainerBuilderName(this SpecBuilderDesc builder, IGeneratorContext context) {
+    public static string GetSpecContainerBuilderName(this SpecBuilderMetadata builder, IGeneratorContext context) {
         var sb = builder.SpecBuilderMemberType switch {
             SpecBuilderMemberType.Method => new StringBuilder("Bld_"),
             SpecBuilderMemberType.Reference => new StringBuilder("RefBld_"),
