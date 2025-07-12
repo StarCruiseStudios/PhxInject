@@ -7,8 +7,6 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common.Exceptions;
-using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
@@ -32,17 +30,6 @@ internal record ChildInjectorAttributeMetadata(AttributeMetadata AttributeMetada
         }
 
         public ChildInjectorAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx) {
-            if (attributedSymbol is not IMethodSymbol {
-                    ReturnsVoid: false,
-                    DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
-                }
-            ) {
-                throw Diagnostics.InvalidSpecification.AsException(
-                    $"Child injector factory {attributedSymbol.Name} must be a public or internal method with a return type.",
-                    attributedSymbol.GetLocationOrDefault(),
-                    generatorCtx);
-            }
-
             var attribute =
                 attributeExtractor.ExtractOne(attributedSymbol, ChildInjectorAttributeClassName, generatorCtx);
             return new ChildInjectorAttributeMetadata(attribute);

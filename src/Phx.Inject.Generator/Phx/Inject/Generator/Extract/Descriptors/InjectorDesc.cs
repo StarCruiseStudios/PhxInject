@@ -23,8 +23,8 @@ internal record InjectorDesc(
     IEnumerable<TypeModel> SpecificationsTypes,
     TypeModel? DependencyInterfaceType,
     IEnumerable<InjectorProviderMetadata> Providers,
-    IEnumerable<InjectorBuilderDesc> Builders,
-    IEnumerable<InjectorChildFactoryDesc> ChildFactories,
+    IEnumerable<InjectorBuilderMetadata> Builders,
+    IEnumerable<InjectorChildFactoryMetadata> ChildFactories,
     Location Location
 ) : IDescriptor {
     public interface IExtractor {
@@ -35,30 +35,30 @@ internal record InjectorDesc(
     }
 
     public class Extractor : IExtractor {
-        private readonly InjectorBuilderDesc.IExtractor injectorBuilderExtractor;
         private readonly DependencyAttributeMetadata.IExtractor dependencyAttributeExtractor;
         private readonly InjectorAttributeMetadata.IExtractor injectorAttributeExtractor;
-        private readonly InjectorChildFactoryDesc.IExtractor injectorChildFactoryDescExtractor;
+        private readonly InjectorBuilderMetadata.IExtractor injectorBuilderExtractor;
+        private readonly InjectorChildFactoryMetadata.IExtractor injectorChildFactoryExtractor;
         private readonly InjectorProviderMetadata.IExtractor injectorProviderExtractor;
 
         public Extractor(
             InjectorProviderMetadata.IExtractor injectorProviderExtractor,
-            InjectorBuilderDesc.IExtractor injectorBuilderExtractor,
-            InjectorChildFactoryDesc.IExtractor injectorChildFactoryDescExtractor,
+            InjectorBuilderMetadata.IExtractor injectorBuilderExtractor,
+            InjectorChildFactoryMetadata.IExtractor injectorChildFactoryExtractor,
             DependencyAttributeMetadata.IExtractor dependencyAttributeExtractor,
             InjectorAttributeMetadata.IExtractor injectorAttributeExtractor
         ) {
             this.injectorProviderExtractor = injectorProviderExtractor;
             this.injectorBuilderExtractor = injectorBuilderExtractor;
-            this.injectorChildFactoryDescExtractor = injectorChildFactoryDescExtractor;
+            this.injectorChildFactoryExtractor = injectorChildFactoryExtractor;
             this.dependencyAttributeExtractor = dependencyAttributeExtractor;
             this.injectorAttributeExtractor = injectorAttributeExtractor;
         }
 
         public Extractor() : this(
             InjectorProviderMetadata.Extractor.Instance,
-            InjectorBuilderDesc.Extractor.Instance,
-            new InjectorChildFactoryDesc.Extractor(),
+            InjectorBuilderMetadata.Extractor.Instance,
+            InjectorChildFactoryMetadata.Extractor.Instance,
             DependencyAttributeMetadata.Extractor.Instance,
             InjectorAttributeMetadata.Extractor.Instance) { }
 
@@ -113,23 +113,22 @@ internal record InjectorDesc(
                                 .Extract(injectorInterfaceType, methodSymbol, currentCtx))
                         .ToImmutableList();
 
-                    IReadOnlyList<InjectorBuilderDesc> builders = injectorMethods
+                    IReadOnlyList<InjectorBuilderMetadata> builders = injectorMethods
+                        .Where(injectorBuilderExtractor.CanExtract)
                         .SelectCatching(
                             currentCtx.Aggregator,
-                            methodSymbol => $"extracting injector builder {injectorType}.{methodSymbol.Name}",
-                            method => injectorBuilderExtractor.Extract(method, currentCtx))
-                        .Where(builder => builder != null)
-                        .Select(builder => builder!)
+                            methodSymbol => $"extracting injector builder {injectorInterfaceType}.{methodSymbol.Name}",
+                            method => injectorBuilderExtractor.Extract(injectorInterfaceType, method, currentCtx))
                         .ToImmutableList();
 
-                    IReadOnlyList<InjectorChildFactoryDesc> childFactories = injectorMethods
-                        .Where(injectorChildFactoryDescExtractor.IsInjectorChildFactory)
+                    IReadOnlyList<InjectorChildFactoryMetadata> childFactories = injectorMethods
+                        .Where(injectorChildFactoryExtractor.CanExtract)
                         .SelectCatching(
                             currentCtx.Aggregator,
                             methodSymbol =>
                                 $"extracting injector child factory {injectorType}.{methodSymbol.Name}",
-                            methodSymbol => injectorChildFactoryDescExtractor.Extract(methodSymbol, currentCtx))
-                        .Select(childFactory => childFactory!)
+                            methodSymbol =>
+                                injectorChildFactoryExtractor.Extract(injectorInterfaceType, methodSymbol, currentCtx))
                         .ToImmutableList();
 
                     return new InjectorDesc(

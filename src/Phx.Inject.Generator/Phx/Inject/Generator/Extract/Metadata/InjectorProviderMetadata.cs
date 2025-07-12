@@ -70,15 +70,6 @@ internal record InjectorProviderMetadata(
         }
 
         private bool VerifyExtract(IMethodSymbol providerMethodSymbol, IGeneratorContext? generatorCtx) {
-            if (providerMethodSymbol.ReturnsVoid) {
-                return generatorCtx == null
-                    ? false
-                    : throw Diagnostics.InternalError.AsException(
-                        "Cannot extract provider from a method that returns void.",
-                        providerMethodSymbol.GetLocationOrDefault(),
-                        generatorCtx);
-            }
-
             if (childInjectorAttributeExtractor.CanExtract(providerMethodSymbol)) {
                 return generatorCtx == null
                     ? false
@@ -88,7 +79,26 @@ internal record InjectorProviderMetadata(
                         generatorCtx);
             }
 
+            if (providerMethodSymbol.ReturnsVoid) {
+                return generatorCtx == null
+                    ? false
+                    : throw Diagnostics.InternalError.AsException(
+                        $"Injector provider {providerMethodSymbol.Name} must have a return type.",
+                        providerMethodSymbol.GetLocationOrDefault(),
+                        generatorCtx);
+            }
+
             if (generatorCtx != null) {
+                if (providerMethodSymbol is not {
+                        DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
+                    }
+                ) {
+                    throw Diagnostics.InvalidSpecification.AsException(
+                        $"Injector provider {providerMethodSymbol.Name} must be a public or internal method.",
+                        providerMethodSymbol.GetLocationOrDefault(),
+                        generatorCtx);
+                }
+
                 if (providerMethodSymbol.Parameters.Length > 0) {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Injector provider {providerMethodSymbol.Name} must not have any parameters.",
