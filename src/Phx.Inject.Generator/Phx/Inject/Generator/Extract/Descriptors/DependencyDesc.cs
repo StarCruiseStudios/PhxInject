@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
 
@@ -20,7 +21,7 @@ internal record DependencyDesc(
     SpecDesc InstantiatedSpecDesc
 ) : IDescriptor {
     public Location Location {
-        get => DependencyInterfaceType.TypeSymbol.Locations.First();
+        get => DependencyInterfaceType.TypeSymbol.GetLocationOrDefault();
     }
 
     public static void RequireDependency(

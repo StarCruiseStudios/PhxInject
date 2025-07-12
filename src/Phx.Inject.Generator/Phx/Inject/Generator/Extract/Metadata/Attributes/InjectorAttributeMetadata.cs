@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
@@ -29,13 +30,8 @@ internal record InjectorAttributeMetadata(
         InjectorAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
-    public class Extractor : IExtractor {
+    public class Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) : IExtractor {
         public static readonly IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
-        private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
-
-        internal Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) {
-            this.attributeExtractor = attributeExtractor;
-        }
 
         public bool CanExtract(ISymbol attributedSymbol) {
             return attributeExtractor.CanExtract(attributedSymbol, InjectorAttributeClassName);
@@ -49,7 +45,7 @@ internal record InjectorAttributeMetadata(
             ) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Injector type {attributedSymbol.Name} must be a public or internal interface.",
-                    attributedSymbol.Locations.First(),
+                    attributedSymbol.GetLocationOrDefault(),
                     generatorCtx);
             }
 

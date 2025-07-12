@@ -27,7 +27,7 @@ internal static class IInjectionFrameExtensions {
                 sb.AppendLine()
                     .Append($"|   while {injectionFrame}");
             }
-            
+
             injectionFrame = injectionFrame.Parent;
         }
 
@@ -42,7 +42,7 @@ internal record InjectionFrame(
 ) : IInjectionFrame {
     public override string ToString() {
         return Symbol?.Let(it => {
-                var location = it.Locations.First();
+                var location = it.GetLocationOrDefault();
                 var typeName = it.ContainingNamespace + "." + it.Name;
 
                 return

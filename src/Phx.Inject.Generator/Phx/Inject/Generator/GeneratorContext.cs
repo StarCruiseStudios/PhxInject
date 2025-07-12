@@ -8,6 +8,7 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Common.Util;
 
 namespace Phx.Inject.Generator;
 
@@ -28,7 +29,7 @@ internal static class IGeneratorContextExtensions {
     }
 
     public static Location GetLocation(this IGeneratorContext generatorCtx) {
-        return generatorCtx.Symbol?.Locations.First() ?? Location.None;
+        return generatorCtx.Symbol.GetLocationOrDefault();
     }
 }
 

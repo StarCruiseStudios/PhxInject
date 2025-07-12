@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Metadata;
 
 namespace Phx.Inject.Generator.Extract;
@@ -31,7 +32,7 @@ internal static class MetadataHelpers {
     public static IReadOnlyList<QualifiedTypeModel> TryGetConstructorParameterQualifiedTypes(
         ITypeSymbol type,
         IGeneratorContext generatorCtx) {
-        var typeLocation = type.Locations.First();
+        var typeLocation = type.GetLocationOrDefault();
 
         if (type.IsStatic || type.IsAbstract || type.TypeKind == TypeKind.Interface) {
             return ImmutableList<QualifiedTypeModel>.Empty;

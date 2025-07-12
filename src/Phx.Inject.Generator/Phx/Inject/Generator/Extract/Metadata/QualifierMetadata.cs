@@ -9,6 +9,7 @@
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Descriptors;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
@@ -63,7 +64,7 @@ internal class QualifierMetadata : IDescriptor {
                 if (qualifierAttribute != null) {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Symbol {qualifiedSymbol.Name} can only have one Label or Qualifier attribute.",
-                        qualifiedSymbol.Locations.First(),
+                        qualifiedSymbol.GetLocationOrDefault(),
                         generatorCtx);
                 }
 

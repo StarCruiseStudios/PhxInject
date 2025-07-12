@@ -10,10 +10,14 @@ using Microsoft.CodeAnalysis;
 
 namespace Phx.Inject.Common.Util;
 
-internal static class ITypeSymbolExtensions {
+internal static class ISymbolExtensions {
     public static string GetFullyQualifiedName(this ITypeSymbol? symbol) {
         return symbol == null
             ? "[null]"
             : symbol.ToString();
+    }
+
+    public static Location GetLocationOrDefault(this ISymbol? symbol, Location? defaultLocation = null) {
+        return symbol?.Locations.FirstOrDefault() ?? defaultLocation ?? Location.None;
     }
 }

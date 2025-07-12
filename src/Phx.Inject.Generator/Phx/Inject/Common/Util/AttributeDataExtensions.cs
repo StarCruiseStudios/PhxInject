@@ -23,6 +23,6 @@ internal static class AttributeDataExtensions {
 
     public static Location GetAttributeLocation(this AttributeData attributeData, ISymbol attributedSymbol) {
         return attributeData.ApplicationSyntaxReference?.GetSyntax().GetLocation()
-            ?? attributedSymbol.Locations.First();
+            ?? attributedSymbol.GetLocationOrDefault();
     }
 }

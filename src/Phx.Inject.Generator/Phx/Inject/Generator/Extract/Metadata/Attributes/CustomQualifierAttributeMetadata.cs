@@ -27,21 +27,13 @@ internal record CustomQualifierAttributeMetadata(
         CustomQualifierAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
-    public class AttributeExtractor : IAttributeExtractor {
+    public class AttributeExtractor(
+        QualifierAttributeMetadata.IExtractor qualifierAttributeExtractor,
+        AttributeMetadata.IAttributeExtractor attributeExtractor
+    ) : IAttributeExtractor {
         public static readonly IAttributeExtractor Instance = new AttributeExtractor(
             QualifierAttributeMetadata.Extractor.Instance,
             AttributeMetadata.AttributeExtractor.Instance);
-
-        private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
-        private readonly QualifierAttributeMetadata.IExtractor qualifierAttributeExtractor;
-
-        internal AttributeExtractor(
-            QualifierAttributeMetadata.IExtractor qualifierAttributeExtractor,
-            AttributeMetadata.IAttributeExtractor attributeExtractor
-        ) {
-            this.qualifierAttributeExtractor = qualifierAttributeExtractor;
-            this.attributeExtractor = attributeExtractor;
-        }
 
         public bool CanExtract(ISymbol attributedSymbol) {
             return attributedSymbol.GetAttributes()
@@ -57,12 +49,12 @@ internal record CustomQualifierAttributeMetadata(
                 case 0:
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Type {attributedSymbol.Name} must have a custom qualifier attribute.",
-                        attributedSymbol.Locations.First(),
+                        attributedSymbol.GetLocationOrDefault(),
                         generatorCtx);
                 case > 1:
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Type {attributedSymbol.Name} can only have one custom qualifier attribute. Found {customQualifierAttributeData.Count}.",
-                        attributedSymbol.Locations.First(),
+                        attributedSymbol.GetLocationOrDefault(),
                         generatorCtx);
             }
 
@@ -84,7 +76,7 @@ internal record CustomQualifierAttributeMetadata(
                 if (namedSymbol.BaseType?.GetFullyQualifiedName() != TypeNames.AttributeClassName) {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Expected qualifier type {namedSymbol.Name} to be an Attribute type.",
-                        namedSymbol.Locations.First(),
+                        namedSymbol.GetLocationOrDefault(),
                         generatorCtx);
                 }
             }
@@ -126,14 +118,14 @@ internal record CustomQualifierAttributeMetadata(
             if (qualifierTypeSymbol is not INamedTypeSymbol qualifierTypeNameSymbol) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Expected qualifier type {qualifierTypeSymbol} to be a type.",
-                    attributedTypeSymbol.Locations.First(),
+                    attributedTypeSymbol.GetLocationOrDefault(),
                     generatorCtx);
             }
 
             if (qualifierTypeNameSymbol.BaseType?.GetFullyQualifiedName() != TypeNames.AttributeClassName) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Expected qualifier type {qualifierTypeNameSymbol.Name} to be an Attribute type.",
-                    qualifierTypeNameSymbol.Locations.First(),
+                    qualifierTypeNameSymbol.GetLocationOrDefault(),
                     generatorCtx);
             }
 

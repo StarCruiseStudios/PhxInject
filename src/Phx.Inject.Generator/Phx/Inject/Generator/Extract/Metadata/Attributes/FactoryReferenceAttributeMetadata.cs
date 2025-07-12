@@ -9,6 +9,7 @@
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
@@ -26,19 +27,12 @@ internal record FactoryReferenceAttributeMetadata(
         FactoryReferenceAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
-    public class Extractor : IExtractor {
+    public class Extractor(
+        AttributeMetadata.IAttributeExtractor attributeExtractor,
+        FactoryFabricationModeMetadata.IExtractor fabricationModeExtractor
+    ) : IExtractor {
         public static readonly IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance,
             FactoryFabricationModeMetadata.Extractor.Instance);
-
-        private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
-        private readonly FactoryFabricationModeMetadata.IExtractor fabricationModeExtractor;
-
-        internal Extractor(
-            AttributeMetadata.IAttributeExtractor attributeExtractor,
-            FactoryFabricationModeMetadata.IExtractor fabricationModeExtractor) {
-            this.attributeExtractor = attributeExtractor;
-            this.fabricationModeExtractor = fabricationModeExtractor;
-        }
 
         public bool CanExtract(ISymbol attributedSymbol) {
             return attributeExtractor.CanExtract(attributedSymbol, FactoryReferenceAttributeClassName);
@@ -56,7 +50,7 @@ internal record FactoryReferenceAttributeMetadata(
             ) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Factory reference {attributedSymbol.Name} must be a public or internal static property or field.",
-                    attributedSymbol.Locations.First(),
+                    attributedSymbol.GetLocationOrDefault(),
                     generatorCtx);
             }
 

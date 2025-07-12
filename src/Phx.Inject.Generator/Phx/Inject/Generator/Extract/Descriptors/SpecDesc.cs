@@ -64,7 +64,7 @@ internal record SpecDesc(
                 "extracting specification",
                 specSymbol,
                 currentCtx => {
-                    var specLocation = specSymbol.Locations.First();
+                    var specLocation = specSymbol.GetLocationOrDefault();
                     var specType = TypeModel.FromTypeSymbol(specSymbol);
 
                     var specAttribute = specificationAttributeExtractor
@@ -189,7 +189,7 @@ internal record SpecDesc(
             IReadOnlyList<QualifiedTypeModel> builderTypes,
             ExtractorContext extractorCtx
         ) {
-            var specLocation = injectorType.TypeSymbol.Locations.First();
+            var specLocation = injectorType.TypeSymbol.GetLocationOrDefault();
             var specType = MetadataHelpers.CreateConstructorSpecContainerType(injectorType);
 
             return extractorCtx.UseChildContext(
@@ -218,7 +218,7 @@ internal record SpecDesc(
                                         if (it.InputType != constructorType) {
                                             throw Diagnostics.InvalidSpecification.AsException(
                                                 $"Auto constructed type {constructorType} must link to itself. Found link with input type {it.InputType}.",
-                                                constructorType.TypeModel.TypeSymbol.Locations.First(),
+                                                constructorType.TypeModel.TypeSymbol.GetLocationOrDefault(),
                                                 currentCtx);
                                         }
                                     })))

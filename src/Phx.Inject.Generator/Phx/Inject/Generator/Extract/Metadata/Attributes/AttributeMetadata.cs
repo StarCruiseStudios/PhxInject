@@ -37,7 +37,7 @@ internal record AttributeMetadata(
         attributedSymbol,
         attributeTypeSymbol,
         new EmptyAttributeData(),
-        attributedSymbol.Locations.First()
+        attributedSymbol.GetLocationOrDefault()
     ) { }
 
     private class EmptyAttributeData : AttributeData {
@@ -66,14 +66,8 @@ internal record AttributeMetadata(
             IGeneratorContext generatorCtx);
     }
 
-    public class AttributeExtractor : IAttributeExtractor {
+    public class AttributeExtractor(IAttributeHelper attributeHelper) : IAttributeExtractor {
         public static readonly IAttributeExtractor Instance = new AttributeExtractor(AttributeHelper.Instance);
-
-        private readonly IAttributeHelper attributeHelper;
-
-        internal AttributeExtractor(IAttributeHelper attributeHelper) {
-            this.attributeHelper = attributeHelper;
-        }
 
         public bool CanExtract(ISymbol attributedSymbol, string attributeClassName) {
             return attributeHelper.HasAttribute(attributedSymbol, attributeClassName);
@@ -122,7 +116,7 @@ internal record AttributeMetadata(
             if (namedSymbol == null) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Expected attribute {attributeTypeSymbol} to be a type.",
-                    attributedSymbol.Locations.First(),
+                    attributedSymbol.GetLocationOrDefault(),
                     generatorCtx);
             }
 
@@ -180,11 +174,11 @@ internal record AttributeMetadata(
                 1 => create(attributes.Single()),
                 > 1 => throw Diagnostics.InvalidSpecification.AsException(
                     $"Type {symbol.Name} cannot have more than one {attributeClassName}. Found {attributes.Count}.",
-                    symbol.Locations.First(),
+                    symbol.GetLocationOrDefault(),
                     generatorCtx),
                 _ => throw Diagnostics.InvalidSpecification.AsException(
                     $"Type {symbol.Name} must have an {attributeClassName}.",
-                    symbol.Locations.First(),
+                    symbol.GetLocationOrDefault(),
                     generatorCtx)
             };
         }

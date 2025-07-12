@@ -9,6 +9,7 @@
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Metadata;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
@@ -29,7 +30,7 @@ internal record DependencyProviderDesc(
     }
 
     public Location Location {
-        get => Symbol.Locations.First();
+        get => Symbol.GetLocationOrDefault();
     }
 
     public static void RequireDependencyProvider(
@@ -42,7 +43,7 @@ internal record DependencyProviderDesc(
                 if (symbol.ReturnsVoid) {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Dependency provider {symbol.Name} must have a return type.",
-                        symbol.Locations.First(),
+                        symbol.GetLocationOrDefault(),
                         generatorCtx);
                 }
             },
@@ -50,7 +51,7 @@ internal record DependencyProviderDesc(
                 if (symbol.Parameters.Length > 0) {
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Dependency provider {symbol.Name} must not have any parameters.",
-                        symbol.Locations.First(),
+                        symbol.GetLocationOrDefault(),
                         generatorCtx);
                 }
             });

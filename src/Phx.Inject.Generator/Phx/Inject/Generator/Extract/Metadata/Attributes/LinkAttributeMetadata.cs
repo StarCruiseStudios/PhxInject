@@ -31,13 +31,8 @@ internal record LinkAttributeMetadata(
         IReadOnlyList<LinkAttributeMetadata> ExtractAll(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
-    public class Extractor : IExtractor {
+    public class Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) : IExtractor {
         public static readonly IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
-        private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
-
-        internal Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) {
-            this.attributeExtractor = attributeExtractor;
-        }
 
         public bool CanExtract(ISymbol attributedSymbol) {
             return attributeExtractor.CanExtract(attributedSymbol, LinkAttributeClassName);

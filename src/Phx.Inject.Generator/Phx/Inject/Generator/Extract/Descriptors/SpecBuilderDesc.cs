@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Metadata;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
@@ -50,7 +51,7 @@ internal record SpecBuilderDesc(
         ) { }
 
         public SpecBuilderDesc? ExtractBuilder(IMethodSymbol builderMethod, ExtractorContext context) {
-            var builderLocation = builderMethod.Locations.First();
+            var builderLocation = builderMethod.GetLocationOrDefault();
 
             if (!ValidateBuilder(builderMethod, builderLocation, context)) {
                 // This is not a builder method.
@@ -84,7 +85,7 @@ internal record SpecBuilderDesc(
         }
 
         public SpecBuilderDesc ExtractAutoBuilder(QualifiedTypeModel builderType, ExtractorContext context) {
-            var builderLocation = builderType.TypeModel.TypeSymbol.Locations.First();
+            var builderLocation = builderType.TypeModel.TypeSymbol.GetLocationOrDefault();
             IReadOnlyList<IMethodSymbol> builderMethods = builderType.TypeModel.TypeSymbol.GetMembers()
                 .OfType<IMethodSymbol>()
                 .Where(methodSymbol => builderAttributeExtractor.CanExtract(methodSymbol))
@@ -144,7 +145,7 @@ internal record SpecBuilderDesc(
         }
 
         public SpecBuilderDesc? ExtractBuilderReference(IPropertySymbol builderProperty, ExtractorContext context) {
-            var builderReferenceLocation = builderProperty.Locations.First();
+            var builderReferenceLocation = builderProperty.GetLocationOrDefault();
 
             if (!ValidateBuilderReference(builderProperty, builderReferenceLocation, context)) {
                 // This is not a builder reference.
@@ -167,7 +168,7 @@ internal record SpecBuilderDesc(
         }
 
         public SpecBuilderDesc? ExtractBuilderReference(IFieldSymbol builderField, ExtractorContext context) {
-            var builderReferenceLocation = builderField.Locations.First();
+            var builderReferenceLocation = builderField.GetLocationOrDefault();
 
             if (!ValidateBuilderReference(builderField, builderReferenceLocation, context)) {
                 // This is not a builder reference.

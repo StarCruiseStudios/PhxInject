@@ -9,6 +9,7 @@
 using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Metadata;
 
 namespace Phx.Inject.Common.Model;
@@ -19,12 +20,8 @@ internal record TypeModel(
     IReadOnlyList<TypeModel> TypeArguments,
     ITypeSymbol TypeSymbol
 ) {
-    private static readonly IImmutableSet<string> MultiBindTypes = ImmutableHashSet.CreateRange(new[] {
-        TypeNames.IReadOnlyListClassName, TypeNames.ISetClassName, TypeNames.IReadOnlyDictionaryClassName
-    });
-
     public Location Location {
-        get => TypeSymbol.Locations.First();
+        get => TypeSymbol.GetLocationOrDefault();
     }
 
     public string TypeName {

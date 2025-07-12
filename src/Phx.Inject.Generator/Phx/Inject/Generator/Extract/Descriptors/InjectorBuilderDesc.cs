@@ -9,6 +9,7 @@
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Metadata;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
@@ -41,7 +42,7 @@ internal record InjectorBuilderDesc(
                 "extracting injector activator",
                 builderMethod,
                 currentCtx => {
-                    var builderLocation = builderMethod.Locations.First();
+                    var builderLocation = builderMethod.GetLocationOrDefault();
 
                     if (!builderMethod.ReturnsVoid) {
                         // This is a provider, not a builder.

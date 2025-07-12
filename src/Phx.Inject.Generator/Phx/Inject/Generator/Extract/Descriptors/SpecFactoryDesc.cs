@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Metadata;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
@@ -111,7 +112,7 @@ internal record SpecFactoryDesc(
                 constructorType.TypeModel.TypeSymbol,
                 currentCtx => {
                     var constructorSymbol = constructorType.TypeModel.TypeSymbol;
-                    var constructorLocation = constructorSymbol.Locations.First();
+                    var constructorLocation = constructorSymbol.GetLocationOrDefault();
                     var factoryAttribute = factoryAttributeExtractor.CanExtract(constructorSymbol)
                         ? factoryAttributeExtractor.ExtractAutoFactory(constructorSymbol, currentCtx)
                         : null;
@@ -147,7 +148,7 @@ internal record SpecFactoryDesc(
                 "extracting specification factory method",
                 factoryMethod,
                 currentCtx => {
-                    var factoryLocation = factoryMethod.Locations.First();
+                    var factoryLocation = factoryMethod.GetLocationOrDefault();
 
                     if (!factoryAttributeExtractor.CanExtract(factoryMethod)) {
                         // This is not a factory.
@@ -195,7 +196,7 @@ internal record SpecFactoryDesc(
                 "extracting specification factory property",
                 factoryProperty,
                 currentCtx => {
-                    var factoryLocation = factoryProperty.Locations.First();
+                    var factoryLocation = factoryProperty.GetLocationOrDefault();
 
                     if (!factoryAttributeExtractor.CanExtract(factoryProperty)) {
                         // This is not a factory.
@@ -242,7 +243,7 @@ internal record SpecFactoryDesc(
                 "extracting specification factory reference property",
                 factoryReferenceProperty,
                 currentCtx => {
-                    var factoryReferenceLocation = factoryReferenceProperty.Locations.First();
+                    var factoryReferenceLocation = factoryReferenceProperty.GetLocationOrDefault();
 
                     if (!factoryReferenceAttributeExtractor.CanExtract(factoryReferenceProperty)) {
                         // This is not a factory reference.
@@ -290,7 +291,7 @@ internal record SpecFactoryDesc(
                 "extracting specification factory reference field",
                 factoryReferenceField,
                 currentCtx => {
-                    var factoryReferenceLocation = factoryReferenceField.Locations.First();
+                    var factoryReferenceLocation = factoryReferenceField.GetLocationOrDefault();
                     if (!factoryReferenceAttributeExtractor.CanExtract(factoryReferenceField)) {
                         // This is not a factory reference.
                         return null;

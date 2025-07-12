@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
@@ -52,12 +53,12 @@ internal record InjectorChildFactoryDesc(
                 "extracting injector child factory",
                 childInjectorMethod,
                 currentCtx => {
-                    var childInjectorLocation = childInjectorMethod.Locations.First();
+                    var childInjectorLocation = childInjectorMethod.GetLocationOrDefault();
 
                     if (!childInjectorAttributeExtractor.CanExtract(childInjectorMethod)) {
                         throw Diagnostics.InvalidSpecification.AsException(
                             $"Type {childInjectorMethod} must declare an {ChildInjectorAttributeMetadata.ChildInjectorAttributeClassName}.",
-                            childInjectorMethod.Locations.First(),
+                            childInjectorMethod.GetLocationOrDefault(),
                             currentCtx);
                     }
 

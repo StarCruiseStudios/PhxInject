@@ -25,13 +25,8 @@ internal record QualifierAttributeMetadata(AttributeMetadata AttributeMetadata) 
         QualifierAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
-    public class Extractor : IExtractor {
+    public class Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) : IExtractor {
         public static readonly IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
-        private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
-
-        internal Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) {
-            this.attributeExtractor = attributeExtractor;
-        }
 
         public bool CanExtract(ISymbol attributedSymbol) {
             return attributeExtractor.CanExtract(attributedSymbol, QualifierAttributeClassName);
@@ -41,14 +36,14 @@ internal record QualifierAttributeMetadata(AttributeMetadata AttributeMetadata) 
             if (attributedSymbol is not INamedTypeSymbol namedSymbol) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Expected qualifier type {attributedSymbol.Name} to be a type.",
-                    attributedSymbol.Locations.First(),
+                    attributedSymbol.GetLocationOrDefault(),
                     generatorCtx);
             }
 
             if (namedSymbol.BaseType?.GetFullyQualifiedName() != TypeNames.AttributeClassName) {
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Expected qualifier type {attributedSymbol.Name} to be an Attribute type.",
-                    attributedSymbol.Locations.First(),
+                    attributedSymbol.GetLocationOrDefault(),
                     generatorCtx);
             }
 

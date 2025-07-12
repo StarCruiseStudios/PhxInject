@@ -8,6 +8,7 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
@@ -23,13 +24,8 @@ internal record BuilderReferenceAttributeMetadata(AttributeMetadata AttributeMet
         BuilderReferenceAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
-    public class Extractor : IExtractor {
+    public class Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) : IExtractor {
         public static readonly IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
-        private readonly AttributeMetadata.IAttributeExtractor attributeExtractor;
-
-        internal Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) {
-            this.attributeExtractor = attributeExtractor;
-        }
 
         public bool CanExtract(ISymbol attributedSymbol) {
             return attributeExtractor.CanExtract(attributedSymbol, BuilderReferenceAttributeClassName);
@@ -49,7 +45,7 @@ internal record BuilderReferenceAttributeMetadata(AttributeMetadata AttributeMet
                 throw Diagnostics.InvalidSpecification.AsException(
                     $"Builder reference {attributedSymbol.Name} must be a public or internal static property or field."
                     + $"{attributedSymbol.IsStatic}, {attributedSymbol.DeclaredAccessibility}",
-                    attributedSymbol.Locations.First(),
+                    attributedSymbol.GetLocationOrDefault(),
                     generatorCtx);
             }
 
