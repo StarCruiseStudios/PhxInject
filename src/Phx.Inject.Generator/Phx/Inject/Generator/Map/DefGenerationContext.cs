@@ -21,7 +21,7 @@ internal record DefGenerationContext : IGeneratorContext {
     public InjectorMetadata Injector { get; }
     public IReadOnlyDictionary<TypeModel, InjectorMetadata> Injectors { get; }
     public IReadOnlyDictionary<TypeModel, SpecDesc> Specifications { get; }
-    public IReadOnlyDictionary<TypeModel, DependencyDesc> Dependencies { get; }
+    public IReadOnlyDictionary<TypeModel, DependencyMetadata> Dependencies { get; }
     public IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> FactoryRegistrations { get; set; }
     public IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> BuilderRegistrations { get; set; }
 
@@ -29,7 +29,7 @@ internal record DefGenerationContext : IGeneratorContext {
         InjectorMetadata injector,
         IReadOnlyDictionary<TypeModel, InjectorMetadata> injectors,
         IReadOnlyDictionary<TypeModel, SpecDesc> specifications,
-        IReadOnlyDictionary<TypeModel, DependencyDesc> dependencies,
+        IReadOnlyDictionary<TypeModel, DependencyMetadata> dependencies,
         IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> factoryRegistrations,
         IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations,
         IGeneratorContext parentContext
@@ -75,7 +75,7 @@ internal record DefGenerationContext : IGeneratorContext {
             this);
     }
 
-    public DependencyDesc GetDependency(TypeModel type, Location location) {
+    public DependencyMetadata GetDependency(TypeModel type, Location location) {
         if (Dependencies.TryGetValue(type, out var dep)) {
             return dep;
         }

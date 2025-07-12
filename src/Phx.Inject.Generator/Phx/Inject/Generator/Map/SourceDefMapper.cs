@@ -11,7 +11,6 @@ using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Extract.Descriptors;
 using Phx.Inject.Generator.Map.Definitions;
-using Phx.Inject.Generator.Render;
 
 namespace Phx.Inject.Generator.Map;
 
@@ -40,7 +39,10 @@ internal class SourceDefMapper {
                     injector => injector.InjectorInterfaceType,
                     generatorCtx);
                 var specDescMap = CreateTypeMap(
-                    sourceDesc.GetAllSpecDescs(),
+                    sourceDesc.dependencyDescs
+                        .Select(dep => dep.InstantiatedSpec)
+                        .Concat(sourceDesc.specDescs)
+                        .ToImmutableList(),
                     spec => spec.SpecType,
                     generatorCtx);
                 var dependencyDescMap = CreateTypeMap(

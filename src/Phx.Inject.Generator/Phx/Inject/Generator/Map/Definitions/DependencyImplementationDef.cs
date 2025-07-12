@@ -10,7 +10,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Generator.Extract.Descriptors;
+using Phx.Inject.Generator.Extract.Metadata;
 
 namespace Phx.Inject.Generator.Map.Definitions;
 
@@ -22,21 +22,21 @@ internal record DependencyImplementationDef(
 ) : IDefinition {
     public interface IMapper {
         DependencyImplementationDef Map(
-            DependencyDesc dependencyDesc,
+            DependencyMetadata dependencyMetadata,
             DefGenerationContext context
         );
     }
 
     public class Mapper : IMapper {
         public DependencyImplementationDef Map(
-            DependencyDesc dependencyDesc,
+            DependencyMetadata dependencyMetadata,
             DefGenerationContext context
         ) {
             var implementationType = TypeHelpers.CreateDependencyImplementationType(
                 context.Injector.InjectorType,
-                dependencyDesc.DependencyInterfaceType);
+                dependencyMetadata.DependencyInterfaceType);
 
-            IReadOnlyList<DependencyProviderMethodDef> providers = dependencyDesc.Providers.Select(provider => {
+            IReadOnlyList<DependencyProviderMethodDef> providers = dependencyMetadata.Providers.Select(provider => {
                     var specContainerFactoryInvocation = context.GetSpecContainerFactoryInvocation(
                         provider.ProvidedType,
                         provider.Location);
@@ -51,9 +51,9 @@ internal record DependencyImplementationDef(
 
             return new DependencyImplementationDef(
                 implementationType,
-                dependencyDesc.DependencyInterfaceType,
+                dependencyMetadata.DependencyInterfaceType,
                 providers,
-                dependencyDesc.Location);
+                dependencyMetadata.Location);
         }
     }
 }

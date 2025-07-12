@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Extract.Metadata;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Descriptors;
@@ -28,6 +29,10 @@ internal record SpecDesc(
 
     public interface IExtractor {
         SpecDesc Extract(ITypeSymbol specSymbol, ExtractorContext extractorCtx);
+        SpecDesc ExtractDependencySpec(
+            ITypeSymbol dependencySymbol,
+            IReadOnlyList<DependencyProviderMetadata> providers,
+            ExtractorContext extractorCtx);
     }
 
     public class Extractor : IExtractor {
@@ -147,6 +152,31 @@ internal record SpecDesc(
                         builders,
                         links);
                 });
+        }
+
+        // TODO: This was super hacky just to get it out of DependencyDesc.Extractor.
+        public SpecDesc ExtractDependencySpec(
+            ITypeSymbol dependencySymbol,
+            IReadOnlyList<DependencyProviderMetadata> providers,
+            ExtractorContext extractorCtx
+        ) {
+            IReadOnlyList<SpecFactoryDesc> specFactories = providers.Select(provider => new SpecFactoryDesc(
+                    provider.ProvidedType,
+                    provider.ProviderMethodName,
+                    SpecFactoryMemberType.Method,
+                    ImmutableList<QualifiedTypeModel>.Empty,
+                    ImmutableList<SpecFactoryRequiredPropertyDesc>.Empty,
+                    FactoryFabricationMode.Recurrent,
+                    provider.IsPartial,
+                    provider.Location))
+                .ToImmutableList();
+
+            return new SpecDesc(
+                dependencySymbol.ToTypeModel(),
+                SpecInstantiationMode.Instantiated,
+                specFactories,
+                ImmutableList<SpecBuilderDesc>.Empty,
+                ImmutableList<SpecLinkDesc>.Empty);
         }
     }
 

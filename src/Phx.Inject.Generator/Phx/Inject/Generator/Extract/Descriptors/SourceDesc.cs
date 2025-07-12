@@ -17,15 +17,8 @@ namespace Phx.Inject.Generator.Extract.Descriptors;
 internal record SourceDesc(
     IReadOnlyList<InjectorMetadata> injectorDescs,
     IReadOnlyList<SpecDesc> specDescs,
-    IReadOnlyList<DependencyDesc> dependencyDescs
+    IReadOnlyList<DependencyMetadata> dependencyDescs
 ) {
-    public IReadOnlyList<SpecDesc> GetAllSpecDescs() {
-        return dependencyDescs
-            .Select(dep => dep.InstantiatedSpecDesc)
-            .Concat(specDescs)
-            .ToImmutableList();
-    }
-
     public interface IExtractor {
         SourceDesc Extract(
             IReadOnlyList<ITypeSymbol> injectorCandidates,
@@ -34,27 +27,27 @@ internal record SourceDesc(
     }
 
     public class Extractor : IExtractor {
-        private readonly DependencyDesc.IExtractor dependencyDescExtractor;
+        private readonly DependencyMetadata.IExtractor dependencyDescExtractor;
         private readonly InjectorMetadata.IExtractor injectorDescExtractor;
         private readonly SpecDesc.IExtractor specDescExtractor;
         private readonly SpecificationAttributeMetadata.IExtractor specificationAttributeExtractor;
 
         public Extractor(
             InjectorMetadata.IExtractor injectorDescExtractor,
+            DependencyMetadata.IExtractor dependencyDescExtractor,
             SpecDesc.IExtractor specDescExtractor,
-            DependencyDesc.IExtractor dependencyDescExtractor,
             SpecificationAttributeMetadata.IExtractor specificationAttributeExtractor
         ) {
             this.injectorDescExtractor = injectorDescExtractor;
-            this.specDescExtractor = specDescExtractor;
             this.dependencyDescExtractor = dependencyDescExtractor;
+            this.specDescExtractor = specDescExtractor;
             this.specificationAttributeExtractor = specificationAttributeExtractor;
         }
 
         public Extractor() : this(
             InjectorMetadata.Extractor.Instance,
+            DependencyMetadata.Extractor.Instance,
             new SpecDesc.Extractor(),
-            new DependencyDesc.Extractor(),
             SpecificationAttributeMetadata.Extractor.Instance
         ) { }
 
@@ -74,7 +67,7 @@ internal record SourceDesc(
                 .ToImmutableList();
             extractorCtx.Log($"Discovered {injectorDescs.Count} injector types.");
 
-            IReadOnlyList<DependencyDesc> dependencyDescs = injectorDescs
+            IReadOnlyList<DependencyMetadata> dependencyDescs = injectorDescs
                 .Where(injectorDesc => injectorDesc.DependencyInterfaceType != null)
                 .SelectCatching(
                     extractorCtx.Aggregator,

@@ -46,7 +46,7 @@ internal record InjectionFrame(
                 var typeName = it.ContainingNamespace + "." + it.Name;
 
                 return
-                    $"{Description} for {typeName} {Path.GetFileName(location.GetLineSpan().Path)}({location.GetLineSpan().StartLinePosition})";
+                    $"{Description} in {Path.GetFileName(location.GetLineSpan().Path)}({location.GetLineSpan().StartLinePosition}): {typeName}";
             })
             ?? Description ?? "unknown injection frame";
     }

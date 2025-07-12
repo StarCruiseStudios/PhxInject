@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------------
-//  <copyright file="InjectorProviderMetadata.cs" company="Star Cruise Studios LLC">
+//  <copyright file="DependencyProviderMetadata.cs" company="Star Cruise Studios LLC">
 //      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
 //      Licensed under the Apache License, Version 2.0.
 //      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -15,10 +15,12 @@ using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Metadata;
 
-internal record InjectorProviderMetadata(
-    TypeModel InjectorInterfaceType,
-    QualifiedTypeModel ProvidedType,
+internal record DependencyProviderMetadata(
+    TypeModel DependencyInterface,
     string ProviderMethodName,
+    QualifiedTypeModel ProvidedType,
+    bool IsPartial,
+    PartialAttributeMetadata? PartialAttribute,
     IMethodSymbol ProviderMethodSymbol
 ) : IDescriptor {
     public Location Location {
@@ -26,82 +28,63 @@ internal record InjectorProviderMetadata(
     }
 
     public interface IExtractor {
-        bool CanExtract(IMethodSymbol providerMethodSymbol);
-        InjectorProviderMetadata Extract(
-            TypeModel injectorInterfaceType,
+        DependencyProviderMetadata Extract(
             IMethodSymbol providerMethodSymbol,
+            TypeModel dependencyInterface,
             ExtractorContext extractorCtx
         );
     }
 
     public class Extractor(
-        ChildInjectorAttributeMetadata.IExtractor childInjectorAttributeExtractor,
+        PartialAttributeMetadata.IExtractor partialAttributeExtractor,
         QualifierMetadata.IExtractor qualifierExtractor
     ) : IExtractor {
         public static readonly IExtractor Instance = new Extractor(
-            ChildInjectorAttributeMetadata.Extractor.Instance,
-            QualifierMetadata.Extractor.Instance);
+            PartialAttributeMetadata.Extractor.Instance,
+            QualifierMetadata.Extractor.Instance
+        );
 
-        public bool CanExtract(IMethodSymbol providerMethodSymbol) {
-            return VerifyExtract(providerMethodSymbol, null);
-        }
-
-        public InjectorProviderMetadata Extract(
-            TypeModel injectorInterfaceType,
+        public DependencyProviderMetadata Extract(
             IMethodSymbol providerMethodSymbol,
+            TypeModel dependencyInterface,
             ExtractorContext extractorCtx
         ) {
             return extractorCtx.UseChildContext(
-                $"extracting injector provider {providerMethodSymbol}",
+                $"extracting dependency provider {providerMethodSymbol}",
                 providerMethodSymbol,
                 currentCtx => {
                     VerifyExtract(providerMethodSymbol, currentCtx);
 
                     var qualifier = qualifierExtractor.Extract(providerMethodSymbol, currentCtx);
-                    var returnType = providerMethodSymbol.ReturnType.ToQualifiedTypeModel(qualifier);
+                    var providedType = providerMethodSymbol.ReturnType.ToQualifiedTypeModel(qualifier);
+                    var partialAttribute = partialAttributeExtractor.CanExtract(providerMethodSymbol)
+                        ? partialAttributeExtractor.Extract(providedType.TypeModel, providerMethodSymbol, currentCtx)
+                        : null;
                     var providerMethodName = providerMethodSymbol.Name;
+                    var isPartial = partialAttribute != null;
 
-                    return new InjectorProviderMetadata(
-                        injectorInterfaceType,
-                        returnType,
+                    return new DependencyProviderMetadata(
+                        dependencyInterface,
                         providerMethodName,
+                        providedType,
+                        isPartial,
+                        partialAttribute,
                         providerMethodSymbol);
                 });
         }
 
         private bool VerifyExtract(IMethodSymbol providerMethodSymbol, IGeneratorContext? generatorCtx) {
-            if (childInjectorAttributeExtractor.CanExtract(providerMethodSymbol)) {
-                return generatorCtx == null
-                    ? false
-                    : throw Diagnostics.InternalError.AsException(
-                        "Cannot extract injector provider from a child injector factory method.",
-                        providerMethodSymbol.GetLocationOrDefault(),
-                        generatorCtx);
-            }
-
-            if (providerMethodSymbol.ReturnsVoid) {
-                return generatorCtx == null
-                    ? false
-                    : throw Diagnostics.InternalError.AsException(
-                        $"Injector provider {providerMethodSymbol.Name} must have a return type.",
-                        providerMethodSymbol.GetLocationOrDefault(),
-                        generatorCtx);
-            }
-
             if (generatorCtx != null) {
-                if (providerMethodSymbol is not {
-                        DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
-                    }
-                ) {
+                if (providerMethodSymbol.ReturnsVoid) {
                     throw Diagnostics.InvalidSpecification.AsException(
-                        $"Injector provider {providerMethodSymbol.Name} must be a public or internal method.",
+                        $"Dependency provider {providerMethodSymbol.Name} must have a return type.",
                         providerMethodSymbol.GetLocationOrDefault(),
                         generatorCtx);
                 }
 
                 if (providerMethodSymbol.Parameters.Length > 0) {
                     throw Diagnostics.InvalidSpecification.AsException(
-                        $"Injector provider {providerMethodSymbol.Name} must not have any parameters.",
+                        $"Dependency provider {providerMethodSymbol.Name} must not have any parameters.",
                         providerMethodSymbol.GetLocationOrDefault(),
                         generatorCtx);
                 }

@@ -52,7 +52,7 @@ internal record InjectorChildFactoryMetadata(
             ExtractorContext extractorCtx
         ) {
             return extractorCtx.UseChildContext(
-                "extracting injector child factory",
+                $"extracting injector child factory {childInjectorMethod}",
                 childInjectorMethod,
                 currentCtx => {
                     VerifyExtract(childInjectorMethod, currentCtx);
