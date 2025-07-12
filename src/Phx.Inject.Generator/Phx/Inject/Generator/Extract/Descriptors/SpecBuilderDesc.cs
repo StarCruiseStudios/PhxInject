@@ -33,11 +33,11 @@ internal record SpecBuilderDesc(
     public class Extractor : IExtractor {
         private readonly BuilderAttributeMetadata.IExtractor builderAttributeExtractor;
         private readonly BuilderReferenceAttributeMetadata.IExtractor builderReferenceAttributeExtractor;
-        private readonly QualifierMetadata.IExtractor qualifierExtractor;
+        private readonly QualifierMetadata.IAttributeExtractor qualifierExtractor;
         public Extractor(
             BuilderAttributeMetadata.IExtractor builderAttributeExtractor,
             BuilderReferenceAttributeMetadata.IExtractor builderReferenceAttributeExtractor,
-            QualifierMetadata.IExtractor qualifierExtractor
+            QualifierMetadata.IAttributeExtractor qualifierExtractor
         ) {
             this.builderAttributeExtractor = builderAttributeExtractor;
             this.builderReferenceAttributeExtractor = builderReferenceAttributeExtractor;
@@ -47,7 +47,7 @@ internal record SpecBuilderDesc(
         public Extractor() : this(
             BuilderAttributeMetadata.Extractor.Instance,
             BuilderReferenceAttributeMetadata.Extractor.Instance,
-            QualifierMetadata.Extractor.Instance
+            QualifierMetadata.AttributeExtractor.Instance
         ) { }
 
         public SpecBuilderDesc? ExtractBuilder(IMethodSymbol builderMethod, ExtractorContext context) {

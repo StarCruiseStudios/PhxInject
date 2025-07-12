@@ -32,25 +32,17 @@ internal class QualifierMetadata : IDescriptor {
     }
     public Location Location { get; }
 
-    public interface IExtractor {
+    public interface IAttributeExtractor {
         QualifierMetadata Extract(ISymbol qualifiedSymbol, IGeneratorContext generatorCtx);
     }
 
-    public class Extractor : IExtractor {
-        public static readonly IExtractor Instance = new Extractor(
+    public class AttributeExtractor(
+        CustomQualifierAttributeMetadata.IAttributeExtractor qualifierAttributeTypeExtractor,
+        LabelAttributeMetadata.IAttributeExtractor labelAttributeExtractor
+    ) : IAttributeExtractor {
+        public static readonly IAttributeExtractor Instance = new AttributeExtractor(
             CustomQualifierAttributeMetadata.AttributeExtractor.Instance,
-            LabelAttributeMetadata.Extractor.Instance);
-
-        private readonly LabelAttributeMetadata.IExtractor labelAttributeExtractor;
-        private readonly CustomQualifierAttributeMetadata.IAttributeExtractor qualifierAttributeTypeExtractor;
-
-        internal Extractor(
-            CustomQualifierAttributeMetadata.IAttributeExtractor qualifierAttributeTypeExtractor,
-            LabelAttributeMetadata.IExtractor labelAttributeExtractor
-        ) {
-            this.qualifierAttributeTypeExtractor = qualifierAttributeTypeExtractor;
-            this.labelAttributeExtractor = labelAttributeExtractor;
-        }
+            LabelAttributeMetadata.AttributeExtractor.Instance);
 
         public QualifierMetadata Extract(ISymbol qualifiedSymbol, IGeneratorContext generatorCtx) {
             var labelAttribute = labelAttributeExtractor.CanExtract(qualifiedSymbol)
@@ -76,6 +68,53 @@ internal class QualifierMetadata : IDescriptor {
             }
 
             return NoQualifier;
+        }
+    }
+
+    public interface ICustomQualifierTypeExtractor {
+        QualifierMetadata Extract(
+            ISymbol attributedSymbol,
+            INamedTypeSymbol customQualifierTypeSymbol,
+            IGeneratorContext generatorCtx);
+    }
+
+    public class CustomQualifierTypeExtractor(
+        CustomQualifierAttributeMetadata.ITypeExtractor customQualifierAttributeTypeExtractor
+    ) : ICustomQualifierTypeExtractor {
+        public static readonly ICustomQualifierTypeExtractor Instance = new CustomQualifierTypeExtractor(
+            CustomQualifierAttributeMetadata.TypeExtractor.Instance);
+
+        public QualifierMetadata Extract(
+            ISymbol attributedSymbol,
+            INamedTypeSymbol customQualifierTypeSymbol,
+            IGeneratorContext generatorCtx) {
+            var customQualifierAttribute = customQualifierAttributeTypeExtractor.Extract(
+                attributedSymbol,
+                customQualifierTypeSymbol,
+                generatorCtx);
+            return new QualifierMetadata(customQualifierAttribute);
+        }
+    }
+
+    public interface ILabelStringExtractor {
+        QualifierMetadata Extract(string Label, AttributeMetadata attributeMetadata, IGeneratorContext generatorCtx);
+    }
+
+    public class LabelStringExtractor(
+        LabelAttributeMetadata.IStringExtractor labelAttributeStringExtractor
+    ) : ILabelStringExtractor {
+        public static readonly ILabelStringExtractor Instance = new LabelStringExtractor(
+            LabelAttributeMetadata.StringExtractor.Instance);
+
+        public QualifierMetadata Extract(
+            string Label,
+            AttributeMetadata attributeMetadata,
+            IGeneratorContext generatorCtx) {
+            var labelAttribute = labelAttributeStringExtractor.Extract(
+                Label,
+                attributeMetadata,
+                generatorCtx);
+            return new QualifierMetadata(labelAttribute);
         }
     }
 }

@@ -75,7 +75,7 @@ internal static class Diagnostics {
                 generatorExecutionContext);
         }
     }
-    
+
     internal sealed class FatalDiagnosticData : DiagnosticData {
         public FatalDiagnosticData(
             string Id,
@@ -84,7 +84,10 @@ internal static class Diagnostics {
             DiagnosticSeverity Severity
         ) : base(Id, Title, Category, Severity) { }
 
-        public override InjectionException AsException(string message, Location location, IGeneratorContext generatorExecutionContext) {
+        public override InjectionException AsException(
+            string message,
+            Location location,
+            IGeneratorContext generatorExecutionContext) {
             return AsFatalException(message, location, generatorExecutionContext);
         }
     }
@@ -115,7 +118,7 @@ internal static class Diagnostics {
                     location),
                 generatorExecutionContext);
         }
-        
+
         public virtual InjectionException AsFatalException(
             string message,
             Location location,
@@ -144,11 +147,11 @@ internal static class Diagnostics {
 
 internal static class GeneratorExecutionContextExtensions {
     public static void Log(
-        this IGeneratorContext generatorExecutionContext,
+        this IGeneratorContext generatorCtx,
         string message,
         Location? location = null
     ) {
-        generatorExecutionContext.ExecutionContext.ReportDiagnostic(
+        generatorCtx.ExecutionContext.ReportDiagnostic(
             Diagnostic.Create(
                 new DiagnosticDescriptor(
                     Diagnostics.DebugMessage.Id,
@@ -157,6 +160,6 @@ internal static class GeneratorExecutionContextExtensions {
                     Diagnostics.DebugMessage.Category,
                     Diagnostics.DebugMessage.Severity,
                     true),
-                location ?? generatorExecutionContext.GetLocation()));
+                location ?? generatorCtx.GetLocation()));
     }
 }

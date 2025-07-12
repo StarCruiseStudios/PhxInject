@@ -33,16 +33,17 @@ internal record TemplateGenerationContext : IGeneratorContext {
         Injectors = injectors;
         SpecContainers = specContainers;
         DependencyImplementations = dependencyImplementations;
+        Aggregator = parentContext.Aggregator;
         ParentContext = parentContext;
         ExecutionContext = parentContext.ExecutionContext;
-        Aggregator = parentContext.Aggregator;
+        ContextDepth = parentContext.ContextDepth + 1;
     }
     public string? Description { get; }
     public ISymbol? Symbol { get; }
+    public IExceptionAggregator Aggregator { get; set; }
     public IGeneratorContext? ParentContext { get; }
     public GeneratorExecutionContext ExecutionContext { get; }
-
-    public IExceptionAggregator Aggregator { get; set; }
+    public int ContextDepth { get; }
 
     public InjectorDef GetInjector(TypeModel type, Location location) {
         if (Injectors.TryGetValue(type, out var injector)) {

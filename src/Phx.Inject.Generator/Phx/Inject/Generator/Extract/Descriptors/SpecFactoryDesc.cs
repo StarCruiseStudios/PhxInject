@@ -46,7 +46,7 @@ internal record SpecFactoryDesc(
 
         var typeArguments = referenceTypeSymbol.TypeArguments;
 
-        var qualifier = QualifierMetadata.Extractor.Instance.Extract(factoryReferenceSymbol, extractorCtx);
+        var qualifier = QualifierMetadata.AttributeExtractor.Instance.Extract(factoryReferenceSymbol, extractorCtx);
         var returnTypeModel = TypeModel.FromTypeSymbol(typeArguments[typeArguments.Length - 1]);
         returnType = new QualifiedTypeModel(
             returnTypeModel,
@@ -123,7 +123,8 @@ internal record SpecFactoryDesc(
                         .GetRequiredPropertyQualifiedTypes(constructorSymbol, currentCtx)
                         .Select(property =>
                             new SpecFactoryRequiredPropertyDesc(property.Value, property.Key, constructorLocation));
-                    var qualifier = QualifierMetadata.Extractor.Instance.Extract(constructorSymbol, currentCtx);
+                    var qualifier =
+                        QualifierMetadata.AttributeExtractor.Instance.Extract(constructorSymbol, currentCtx);
                     var returnType = constructorType with {
                         Qualifier = qualifier
                     };
@@ -166,7 +167,7 @@ internal record SpecFactoryDesc(
                     var methodParameterTypes =
                         MetadataHelpers.TryGetMethodParametersQualifiedTypes(factoryMethod, currentCtx);
 
-                    var qualifier = QualifierMetadata.Extractor.Instance.Extract(factoryMethod, currentCtx);
+                    var qualifier = QualifierMetadata.AttributeExtractor.Instance.Extract(factoryMethod, currentCtx);
                     var returnTypeModel = TypeModel.FromTypeSymbol(factoryMethod.ReturnType);
                     var returnType = new QualifiedTypeModel(
                         returnTypeModel,
@@ -213,7 +214,7 @@ internal record SpecFactoryDesc(
 
                     var methodParameterTypes = ImmutableList.Create<QualifiedTypeModel>();
 
-                    var qualifier = QualifierMetadata.Extractor.Instance.Extract(factoryProperty, currentCtx);
+                    var qualifier = QualifierMetadata.AttributeExtractor.Instance.Extract(factoryProperty, currentCtx);
                     var returnTypeModel = TypeModel.FromTypeSymbol(factoryProperty.Type);
                     var returnType = new QualifiedTypeModel(
                         returnTypeModel,

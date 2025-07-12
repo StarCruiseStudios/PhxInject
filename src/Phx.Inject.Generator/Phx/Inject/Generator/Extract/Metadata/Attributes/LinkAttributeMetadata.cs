@@ -20,19 +20,37 @@ internal record LinkAttributeMetadata(
     string? InputLabel,
     INamedTypeSymbol? OutputQualifier,
     string? OutputLabel,
-    AttributeMetadata Attribute
+    AttributeMetadata AttributeMetadata
 ) : IDescriptor {
     public const string LinkAttributeClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(LinkAttribute)}";
 
-    public Location Location { get; } = Attribute.Location;
+    public Location Location { get; } = AttributeMetadata.Location;
+
+    public override string ToString() {
+        var inputType = InputQualifier != null
+            ? $"[@{InputQualifier}]{InputType}"
+            : InputLabel != null
+                ? $"[\"{InputLabel}\"]{InputType}"
+                : InputType.ToString();
+        var outputType = OutputQualifier != null
+            ? $"[@{OutputQualifier}]{OutputType}"
+            : OutputLabel != null
+                ? $"[\"{OutputLabel}\"]{OutputType}"
+                : OutputType.ToString();
+
+        return $"LinkAttribute: {InputType} -> {OutputType}";
+    }
 
     public interface IExtractor {
         bool CanExtract(ISymbol attributedSymbol);
         IReadOnlyList<LinkAttributeMetadata> ExtractAll(ISymbol attributedSymbol, IGeneratorContext generatorCtx);
     }
 
-    public class Extractor(AttributeMetadata.IAttributeExtractor attributeExtractor) : IExtractor {
-        public static readonly IExtractor Instance = new Extractor(AttributeMetadata.AttributeExtractor.Instance);
+    public class Extractor(
+        AttributeMetadata.IAttributeExtractor attributeExtractor
+    ) : IExtractor {
+        public static readonly IExtractor Instance = new Extractor(
+            AttributeMetadata.AttributeExtractor.Instance);
 
         public bool CanExtract(ISymbol attributedSymbol) {
             return attributeExtractor.CanExtract(attributedSymbol, LinkAttributeClassName);

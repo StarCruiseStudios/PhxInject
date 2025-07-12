@@ -27,14 +27,15 @@ internal record RenderContext : IGeneratorContext {
         Description = null;
         GeneratorSettings = generatorSettings;
         Symbol = symbol;
+        Aggregator = parentContext.Aggregator;
         ParentContext = parentContext;
         ExecutionContext = parentContext.ExecutionContext;
-        Aggregator = parentContext.Aggregator;
+        ContextDepth = parentContext.ContextDepth + 1;
     }
     public string? Description { get; }
     public ISymbol? Symbol { get; }
+    public IExceptionAggregator Aggregator { get; set; }
     public IGeneratorContext? ParentContext { get; }
     public GeneratorExecutionContext ExecutionContext { get; }
-
-    public IExceptionAggregator Aggregator { get; set; }
+    public int ContextDepth { get; }
 }

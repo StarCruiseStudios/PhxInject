@@ -18,6 +18,7 @@ internal interface IGeneratorContext {
     IExceptionAggregator Aggregator { get; }
     IGeneratorContext? ParentContext { get; }
     GeneratorExecutionContext ExecutionContext { get; }
+    int ContextDepth { get; }
 }
 
 internal static class IGeneratorContextExtensions {
@@ -46,9 +47,11 @@ internal class GeneratorContext : IGeneratorContext {
     public IGeneratorContext? ParentContext { get => null; }
 
     public GeneratorExecutionContext ExecutionContext { get; }
+    public int ContextDepth { get => 0; }
 
     public static void UseContext(GeneratorExecutionContext executionContext, Action<GeneratorContext> action) {
         var newContext = new GeneratorContext(executionContext);
+        newContext.Log(newContext.Description, Location.None);
         try {
             ExceptionAggregator.Try<object?>(
                 newContext.Description,

@@ -33,8 +33,8 @@ internal record InjectorBuilderMetadata(
         );
     }
 
-    public class Extractor(QualifierMetadata.IExtractor qualifierExtractor) : IExtractor {
-        public static IExtractor Instance { get; } = new Extractor(QualifierMetadata.Extractor.Instance);
+    public class Extractor(QualifierMetadata.IAttributeExtractor qualifierExtractor) : IExtractor {
+        public static IExtractor Instance { get; } = new Extractor(QualifierMetadata.AttributeExtractor.Instance);
 
         public bool CanExtract(IMethodSymbol builderMethodSymbol) {
             return VerifyExtract(builderMethodSymbol, null);

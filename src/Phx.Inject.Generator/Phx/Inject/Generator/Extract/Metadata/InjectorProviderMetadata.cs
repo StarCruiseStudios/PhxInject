@@ -36,11 +36,11 @@ internal record InjectorProviderMetadata(
 
     public class Extractor(
         ChildInjectorAttributeMetadata.IExtractor childInjectorAttributeExtractor,
-        QualifierMetadata.IExtractor qualifierExtractor
+        QualifierMetadata.IAttributeExtractor qualifierExtractor
     ) : IExtractor {
         public static readonly IExtractor Instance = new Extractor(
             ChildInjectorAttributeMetadata.Extractor.Instance,
-            QualifierMetadata.Extractor.Instance);
+            QualifierMetadata.AttributeExtractor.Instance);
 
         public bool CanExtract(IMethodSymbol providerMethodSymbol) {
             return VerifyExtract(providerMethodSymbol, null);

@@ -21,7 +21,7 @@ internal static class MetadataHelpers {
         IMethodSymbol methodSymbol,
         IGeneratorContext generatorCtx) {
         return methodSymbol.Parameters.Select(parameter => {
-                var qualifier = QualifierMetadata.Extractor.Instance.Extract(parameter, generatorCtx);
+                var qualifier = QualifierMetadata.AttributeExtractor.Instance.Extract(parameter, generatorCtx);
                 return new QualifiedTypeModel(
                     TypeModel.FromTypeSymbol(parameter.Type),
                     qualifier);
@@ -74,7 +74,7 @@ internal static class MetadataHelpers {
                 property => property.Name,
                 property => new QualifiedTypeModel(
                     TypeModel.FromTypeSymbol(property.Type),
-                    QualifierMetadata.Extractor.Instance.Extract(property, generatorCtx)
+                    QualifierMetadata.AttributeExtractor.Instance.Extract(property, generatorCtx)
                 )
             );
     }

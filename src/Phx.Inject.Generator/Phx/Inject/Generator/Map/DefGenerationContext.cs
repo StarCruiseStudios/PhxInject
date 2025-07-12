@@ -42,16 +42,17 @@ internal record DefGenerationContext : IGeneratorContext {
         FactoryRegistrations = factoryRegistrations;
         BuilderRegistrations = builderRegistrations;
         Symbol = null;
+        Aggregator = parentContext.Aggregator;
         ParentContext = parentContext;
         ExecutionContext = parentContext.ExecutionContext;
-        Aggregator = parentContext.Aggregator;
+        ContextDepth = parentContext.ContextDepth + 1;
     }
     public string? Description { get; }
     public ISymbol? Symbol { get; private init; }
+    public IExceptionAggregator Aggregator { get; set; }
     public IGeneratorContext? ParentContext { get; }
     public GeneratorExecutionContext ExecutionContext { get; }
-
-    public IExceptionAggregator Aggregator { get; set; }
+    public int ContextDepth { get; }
 
     public InjectorMetadata GetInjector(TypeModel type, Location location) {
         if (Injectors.TryGetValue(type, out var injector)) {

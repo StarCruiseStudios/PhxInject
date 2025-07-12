@@ -37,11 +37,11 @@ internal record DependencyProviderMetadata(
 
     public class Extractor(
         PartialAttributeMetadata.IExtractor partialAttributeExtractor,
-        QualifierMetadata.IExtractor qualifierExtractor
+        QualifierMetadata.IAttributeExtractor qualifierExtractor
     ) : IExtractor {
         public static readonly IExtractor Instance = new Extractor(
             PartialAttributeMetadata.Extractor.Instance,
-            QualifierMetadata.Extractor.Instance
+            QualifierMetadata.AttributeExtractor.Instance
         );
 
         public DependencyProviderMetadata Extract(
