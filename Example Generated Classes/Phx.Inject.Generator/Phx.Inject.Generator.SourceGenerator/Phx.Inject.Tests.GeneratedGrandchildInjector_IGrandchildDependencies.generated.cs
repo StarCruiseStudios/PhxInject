@@ -20,10 +20,10 @@ namespace Phx.Inject.Tests {
             return this;
         }
 
-        internal Phx.Inject.Tests.Data.Model.Node Fac_Node_GetNode(
+        internal Phx.Inject.Tests.Data.Model.Node PropFac_Node_Node(
                 Phx.Inject.Tests.GeneratedGrandchildInjector.SpecContainerCollection specContainers
         ) {
-            return instance.GetNode();
+            return instance.Node;
         }
     }
 }

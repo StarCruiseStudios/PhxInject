@@ -104,6 +104,7 @@ internal record DependencyImplementationTemplate(
                         return new DependencyProviderMethodTemplate(
                             provider.ProvidedType.NamespacedName,
                             provider.ProviderMethodName,
+                            provider.ProviderMemberType,
                             factoryInvocation,
                             provider.Location);
                     })

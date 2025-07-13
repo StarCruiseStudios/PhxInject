@@ -86,7 +86,7 @@ internal static class GrandchildSpecification {
 [Specification]
 internal interface IGrandchildDependencies {
     [Factory]
-    public Node GetNode();
+    public Node Node { get; }
 }
 
 [Injector(typeof(GrandchildSpecification))]

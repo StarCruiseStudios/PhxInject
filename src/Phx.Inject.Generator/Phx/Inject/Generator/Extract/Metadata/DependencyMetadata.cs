@@ -12,6 +12,7 @@ using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Extract.Descriptors;
+using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Metadata;
 
@@ -19,6 +20,7 @@ internal record DependencyMetadata(
     TypeModel DependencyInterfaceType,
     TypeModel ContainingInjectorInterfaceType,
     IEnumerable<DependencyProviderMetadata> Providers,
+    SpecificationAttributeMetadata SpecificationAttributeMetadata,
     ITypeSymbol DependencyTypeSymbol
 ) : IDescriptor {
     public Location Location {
@@ -34,9 +36,13 @@ internal record DependencyMetadata(
     }
 
     public class Extractor(
+        SpecificationAttributeMetadata.IExtractor specificationAttributeExtractor,
         DependencyProviderMetadata.IExtractor dependencyProviderExtractor
     ) : IExtractor {
-        public static readonly IExtractor Instance = new Extractor(DependencyProviderMetadata.Extractor.Instance);
+        public static readonly IExtractor Instance = new Extractor(
+            SpecificationAttributeMetadata.Extractor.Instance,
+            DependencyProviderMetadata.Extractor.Instance
+        );
 
         public DependencyMetadata Extract(
             ITypeSymbol dependencySymbol,
@@ -49,18 +55,30 @@ internal record DependencyMetadata(
                 currentCtx => {
                     VerifyExtract(dependencySymbol, containingInjectorInterfaceType.Location, currentCtx);
 
+                    var specificationAttribute = specificationAttributeExtractor
+                        .Extract(dependencySymbol, currentCtx);
                     var dependencyInterfaceType = dependencySymbol.ToTypeModel();
-                    IReadOnlyList<DependencyProviderMetadata> providers = dependencySymbol
-                        .GetMembers()
+                    var providerMembers = dependencySymbol.GetMembers();
+                    var providerMethods = providerMembers
                         .OfType<IMethodSymbol>()
+                        .Where(dependencyProviderExtractor.CanExtract)
                         .Select(method =>
-                            dependencyProviderExtractor.Extract(method, dependencyInterfaceType, currentCtx))
+                            dependencyProviderExtractor.Extract(method, currentCtx));
+
+                    var providerProperties = providerMembers
+                        .OfType<IPropertySymbol>()
+                        .Where(dependencyProviderExtractor.CanExtract)
+                        .Select(property =>
+                            dependencyProviderExtractor.Extract(property, currentCtx));
+                    IReadOnlyList<DependencyProviderMetadata> providers = providerMethods
+                        .Concat(providerProperties)
                         .ToImmutableList();
 
                     return new DependencyMetadata(
                         dependencyInterfaceType,
                         containingInjectorInterfaceType,
                         providers,
+                        specificationAttribute,
                         dependencySymbol);
                 });
         }
@@ -71,6 +89,13 @@ internal record DependencyMetadata(
                     throw Diagnostics.InvalidSpecification.AsException(
                         $"Dependency {symbol.Name} must be an interface.",
                         declarationLocation,
+                        currentCtx);
+                }
+
+                if (!specificationAttributeExtractor.CanExtract(symbol)) {
+                    throw Diagnostics.InvalidSpecification.AsException(
+                        $"Dependency {symbol.Name} must have a {Attributes.SpecificationAttributeMetadata.SpecificationAttributeClassName}.",
+                        symbol.GetLocationOrDefault(),
                         currentCtx);
                 }
             }

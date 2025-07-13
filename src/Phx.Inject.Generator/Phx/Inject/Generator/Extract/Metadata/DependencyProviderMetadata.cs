@@ -16,77 +16,112 @@ using Phx.Inject.Generator.Extract.Metadata.Attributes;
 namespace Phx.Inject.Generator.Extract.Metadata;
 
 internal record DependencyProviderMetadata(
-    TypeModel DependencyInterface,
-    string ProviderMethodName,
     QualifiedTypeModel ProvidedType,
+    string ProviderName,
+    DependencyProviderMemberType ProviderMemberType,
     bool IsPartial,
-    PartialAttributeMetadata? PartialAttribute,
-    IMethodSymbol ProviderMethodSymbol
+    PartialAttributeMetadata? PartialAttributeMetadata,
+    FactoryAttributeMetadata FactoryAttributeMetadata,
+    ISymbol ProviderSymbol
 ) : IDescriptor {
     public Location Location {
-        get => ProviderMethodSymbol.GetLocationOrDefault();
+        get => ProviderSymbol.GetLocationOrDefault();
     }
 
     public interface IExtractor {
+        bool CanExtract(ISymbol providerSymbol);
         DependencyProviderMetadata Extract(
-            IMethodSymbol providerMethodSymbol,
-            TypeModel dependencyInterface,
-            ExtractorContext parentCtx
-        );
+            ISymbol providerSymbol,
+            ExtractorContext parentCtx);
     }
 
     public class Extractor(
+        FactoryAttributeMetadata.IExtractor factoryAttributeExtractor,
         PartialAttributeMetadata.IExtractor partialAttributeExtractor,
         QualifierMetadata.IAttributeExtractor qualifierExtractor
     ) : IExtractor {
         public static readonly IExtractor Instance = new Extractor(
+            FactoryAttributeMetadata.Extractor.Instance,
             PartialAttributeMetadata.Extractor.Instance,
             QualifierMetadata.AttributeExtractor.Instance
         );
 
-        public DependencyProviderMetadata Extract(
-            IMethodSymbol providerMethodSymbol,
-            TypeModel dependencyInterface,
-            ExtractorContext parentCtx
-        ) {
-            return parentCtx.UseChildContext(
-                $"extracting dependency provider {providerMethodSymbol}",
-                providerMethodSymbol,
-                currentCtx => {
-                    VerifyExtract(providerMethodSymbol, currentCtx);
+        public bool CanExtract(ISymbol providerSymbol) {
+            return VerifyExtract(providerSymbol, null);
+        }
 
-                    var qualifier = qualifierExtractor.Extract(providerMethodSymbol, currentCtx);
-                    var providedType = providerMethodSymbol.ReturnType.ToQualifiedTypeModel(qualifier);
-                    var partialAttribute = partialAttributeExtractor.CanExtract(providerMethodSymbol)
-                        ? partialAttributeExtractor.Extract(providedType.TypeModel, providerMethodSymbol, currentCtx)
+        public DependencyProviderMetadata Extract(
+            ISymbol providerSymbol,
+            ExtractorContext parentCtx) {
+            return parentCtx.UseChildContext(
+                $"extracting dependency provider {providerSymbol}",
+                providerSymbol,
+                currentCtx => {
+                    VerifyExtract(providerSymbol, currentCtx);
+
+                    var factoryAttribute = factoryAttributeExtractor.ExtractFactory(providerSymbol, currentCtx);
+                    var (providerMemberType, returnTypeSymbol) = providerSymbol switch {
+                        IMethodSymbol methodSymbol => (DependencyProviderMemberType.Method, methodSymbol.ReturnType),
+                        IPropertySymbol propertySymbol => (DependencyProviderMemberType.Property, propertySymbol.Type),
+                        _ => throw Diagnostics.InvalidSpecification.AsException(
+                            $"Dependency provider {providerSymbol.Name} must be a method or property.",
+                            providerSymbol.GetLocationOrDefault(),
+                            currentCtx)
+                    };
+
+                    var qualifier = qualifierExtractor.Extract(providerSymbol, currentCtx);
+                    var providedType = returnTypeSymbol.ToQualifiedTypeModel(qualifier);
+                    var partialAttribute = partialAttributeExtractor.CanExtract(providerSymbol)
+                        ? partialAttributeExtractor.Extract(providedType.TypeModel, providerSymbol, currentCtx)
                         : null;
-                    var providerMethodName = providerMethodSymbol.Name;
+                    var providerName = providerSymbol.Name;
                     var isPartial = partialAttribute != null;
 
                     return new DependencyProviderMetadata(
-                        dependencyInterface,
-                        providerMethodName,
                         providedType,
+                        providerName,
+                        providerMemberType,
                         isPartial,
                         partialAttribute,
-                        providerMethodSymbol);
+                        factoryAttribute,
+                        providerSymbol);
                 });
         }
 
-        private bool VerifyExtract(IMethodSymbol providerMethodSymbol, IGeneratorContext? currentCtx) {
-            if (currentCtx != null) {
-                if (providerMethodSymbol.ReturnsVoid) {
-                    throw Diagnostics.InvalidSpecification.AsException(
-                        $"Dependency provider {providerMethodSymbol.Name} must have a return type.",
-                        providerMethodSymbol.GetLocationOrDefault(),
+        private bool VerifyExtract(ISymbol providerSymbol, IGeneratorContext? currentCtx) {
+            if (providerSymbol is not IMethodSymbol and not IPropertySymbol) {
+                return currentCtx == null
+                    ? false
+                    : throw Diagnostics.InvalidSpecification.AsException(
+                        $"Dependency provider {providerSymbol.Name} must be a property or method.",
+                        providerSymbol.GetLocationOrDefault(),
                         currentCtx);
-                }
+            }
 
-                if (providerMethodSymbol.Parameters.Length > 0) {
-                    throw Diagnostics.InvalidSpecification.AsException(
-                        $"Dependency provider {providerMethodSymbol.Name} must not have any parameters.",
-                        providerMethodSymbol.GetLocationOrDefault(),
+            if (!factoryAttributeExtractor.CanExtract(providerSymbol)) {
+                return currentCtx == null
+                    ? false
+                    : throw Diagnostics.InvalidSpecification.AsException(
+                        $"Dependency provider {providerSymbol.Name} must have a {FactoryAttributeMetadata.FactoryAttributeClassName}.",
+                        providerSymbol.GetLocationOrDefault(),
                         currentCtx);
+            }
+
+            if (currentCtx != null) {
+                if (providerSymbol is IMethodSymbol providerMethodSymbol) {
+                    if (providerMethodSymbol.ReturnsVoid) {
+                        throw Diagnostics.InvalidSpecification.AsException(
+                            $"Dependency provider {providerSymbol.Name} must have a return type.",
+                            providerSymbol.GetLocationOrDefault(),
+                            currentCtx);
+                    }
+
+                    if (providerMethodSymbol.Parameters.Length > 0) {
+                        throw Diagnostics.InvalidSpecification.AsException(
+                            $"Dependency provider {providerSymbol.Name} must not have any parameters.",
+                            providerSymbol.GetLocationOrDefault(),
+                            currentCtx);
+                    }
                 }
             }
 

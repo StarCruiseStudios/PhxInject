@@ -43,7 +43,8 @@ internal record DependencyImplementationDef(
 
                     return new DependencyProviderMethodDef(
                         provider.ProvidedType.TypeModel,
-                        provider.ProviderMethodName,
+                        provider.ProviderName,
+                        provider.ProviderMemberType,
                         specContainerFactoryInvocation,
                         provider.Location);
                 })

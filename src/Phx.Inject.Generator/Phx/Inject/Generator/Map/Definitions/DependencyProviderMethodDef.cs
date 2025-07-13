@@ -14,6 +14,7 @@ namespace Phx.Inject.Generator.Map.Definitions;
 internal record DependencyProviderMethodDef(
     TypeModel ProvidedType,
     string ProviderMethodName,
+    DependencyProviderMemberType ProviderMemberType,
     SpecContainerFactoryInvocationDef SpecContainerFactoryInvocation,
     Location Location
 ) : IDefinition;

@@ -112,8 +112,10 @@ Verify.That(Object.ReferenceEquals(myClass1a, myClass2).IsFalse());
 A child injector is an injector that is not constructed directly by the calling
 code, but that is constructed by another "parent" injector. This child injector
 will have access to the dependencies provided by the parent injector through an
-`Dependency` interface, but the parent will not have implicit access to
-dependencies provided by the child.
+`Dependency` specification interface, but the parent will not have implicit access to
+dependencies provided by the child. `Dependency` specifications can only define 
+Factories, not Factory References, Builders, or BuilderReferences, and the 
+factories cannot accept any arguments.
 
 ```csharp
 [Specification]
@@ -125,9 +127,11 @@ internal static ChildSpecification {
 
 /// The dependency interface defines the types that must be provided
 /// by the parent injector.
+[Specification]
 internal interface IChildDependencies {
     /// Qualifier attributes could also be used to differentiate dependencies
     /// with the same type.
+    [Factory]
     public int GetIntValue();
 }
 

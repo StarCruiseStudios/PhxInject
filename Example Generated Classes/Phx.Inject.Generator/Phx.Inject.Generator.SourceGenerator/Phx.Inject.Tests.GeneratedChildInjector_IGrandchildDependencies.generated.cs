@@ -16,8 +16,8 @@ namespace Phx.Inject.Tests {
             this.specContainers = specContainers;
         }
 
-        public Phx.Inject.Tests.Data.Model.Node GetNode() {
-            return specContainers.GeneratedChildInjector_ChildSpecification.Fac_Node_GetNode(specContainers);
+        public Phx.Inject.Tests.Data.Model.Node Node{
+            get => specContainers.GeneratedChildInjector_ChildSpecification.Fac_Node_GetNode(specContainers);
         }
     }
 }
