@@ -207,11 +207,11 @@ internal record SpecFactoryMetadata(
                         )
                     };
 
-                    if (factoryReferenceTypeSymbol is not INamedTypeSymbol {
-                            Name: TypeNames.FuncClassName
-                        } factoryReferenceNamedTypeSymbol) {
+                    if (factoryReferenceTypeSymbol is not INamedTypeSymbol factoryReferenceNamedTypeSymbol
+                        || factoryReferenceNamedTypeSymbol.GetFullyQualifiedBaseName() != TypeNames.FuncClassName
+                    ) {
                         throw Diagnostics.InvalidSpecification.AsException(
-                            $"Factory reference must be of type {TypeNames.FuncClassName}.",
+                            $"Factory reference of type {factoryReferenceTypeSymbol.GetFullyQualifiedBaseName()} must be of type {TypeNames.FuncClassName}.",
                             factoryReferenceSymbol.GetLocationOrDefault(),
                             currentCtx);
                     }

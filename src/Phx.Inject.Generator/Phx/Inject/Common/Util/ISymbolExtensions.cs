@@ -16,6 +16,12 @@ internal static class ISymbolExtensions {
             ? "[null]"
             : symbol.ToString();
     }
+    
+    public static string GetFullyQualifiedBaseName(this ITypeSymbol? symbol) {
+        return symbol == null
+            ? "[null]"
+            : $"{symbol.ContainingNamespace}.{symbol.Name}";
+    }
 
     public static Location GetLocationOrDefault(this ISymbol? symbol, Location? defaultLocation = null) {
         return symbol?.Locations.FirstOrDefault() ?? defaultLocation ?? Location.None;

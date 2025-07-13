@@ -168,11 +168,11 @@ internal record SpecBuilderMetadata(
                             currentCtx)
                     };
 
-                    if (builderReferenceTypeSymbol is not INamedTypeSymbol {
-                            Name: TypeNames.ActionClassName
-                        } builderReferenceNamedTypeSymbol) {
+                    if (builderReferenceTypeSymbol is not INamedTypeSymbol builderReferenceNamedTypeSymbol
+                        || builderReferenceTypeSymbol.GetFullyQualifiedBaseName() != TypeNames.ActionClassName
+                    ) {
                         throw Diagnostics.InvalidSpecification.AsException(
-                            $"Builder reference must be of type {TypeNames.ActionClassName}.",
+                            $"Builder reference of type {builderReferenceTypeSymbol.GetFullyQualifiedBaseName()} must be of type {TypeNames.ActionClassName}.",
                             builderReferenceSymbol.GetLocationOrDefault(),
                             currentCtx);
                     }

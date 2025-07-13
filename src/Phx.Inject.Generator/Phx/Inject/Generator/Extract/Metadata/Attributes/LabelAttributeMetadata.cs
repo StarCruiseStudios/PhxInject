@@ -38,7 +38,7 @@ internal record LabelAttributeMetadata(string Label, AttributeMetadata Attribute
         public LabelAttributeMetadata Extract(ISymbol attributedSymbol, IGeneratorContext currentCtx) {
             var attribute = attributeExtractor.ExtractOne(attributedSymbol, LabelAttributeClassName, currentCtx);
             var labels = attribute.AttributeData.ConstructorArguments
-                .Where(argument => argument.Type.GetFullyQualifiedName() == TypeNames.StringClassName)
+                .Where(argument => argument.Type.GetFullyQualifiedName() == TypeNames.StringPrimitiveTypeName)
                 .Select(argument => (string)argument.Value!)
                 .ToImmutableList();
 

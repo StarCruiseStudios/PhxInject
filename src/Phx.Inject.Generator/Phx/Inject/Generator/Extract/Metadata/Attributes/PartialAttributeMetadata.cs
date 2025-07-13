@@ -58,7 +58,7 @@ internal record PartialAttributeMetadata(AttributeMetadata AttributeMetadata) : 
 
             if (!PartialTypes.Contains(partialType.NamespacedBaseTypeName)) {
                 throw Diagnostics.InvalidSpecification.AsException(
-                    $"Partial factories must return one of [{string.Join(", ", PartialTypes)}].",
+                    $"Partial factorie of type {partialType.NamespacedBaseTypeName} must return one of [{string.Join(", ", PartialTypes)}].",
                     attributedSymbol.GetLocationOrDefault(),
                     currentCtx);
             }

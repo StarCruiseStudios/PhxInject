@@ -16,6 +16,8 @@ using Phx.Inject.Common.Util;
 namespace Phx.Inject.Generator.Extract.Metadata;
 
 internal static class FactoryFabricationModeMetadata {
+    public const string FabricationModeClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(FabricationMode)}";
+    
     internal interface IExtractor {
         FactoryFabricationMode Extract(
             ISymbol attributedSymbol,
@@ -31,7 +33,7 @@ internal static class FactoryFabricationModeMetadata {
             AttributeData attributeData,
             IGeneratorContext parentCtx) {
             IReadOnlyList<FactoryFabricationMode> fabricationModes = attributeData.ConstructorArguments
-                .Where(argument => argument.Type!.GetFullyQualifiedName() == TypeNames.FabricationModeClassName)
+                .Where(argument => argument.Type!.GetFullyQualifiedName() == FabricationModeClassName)
                 .Select(argument => (FactoryFabricationMode)argument.Value!)
                 .ToImmutableList();
 
