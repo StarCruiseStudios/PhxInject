@@ -208,14 +208,20 @@ internal record InjectorTemplate(
                             .ToImmutableList();
 
                     string? multiBindQualifiedTypeArgs = null;
+                    var isReadOnlySet = false;
                     if (invocationDef.FactoryInvocationDefs.Count > 1) {
                         multiBindQualifiedTypeArgs =
                             TypeHelpers.GetQualifiedTypeArgs(invocationDef.FactoryReturnType);
+                        isReadOnlySet =
+                            provider.SpecContainerFactoryInvocation.FactoryReturnType.TypeModel
+                                .NamespacedBaseTypeName
+                            == TypeNames.IReadOnlySetClassName;
                     }
 
                     var factoryInvocation = new SpecContainerFactoryInvocationTemplate(
                         singleInvocationTemplates,
                         multiBindQualifiedTypeArgs,
+                        isReadOnlySet,
                         invocationDef.RuntimeFactoryProvidedType?.NamespacedName,
                         invocationDef.Location);
 

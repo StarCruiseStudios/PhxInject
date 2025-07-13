@@ -62,7 +62,7 @@ namespace Phx.Inject.Tests {
         ) {
             var specContainers = parentSpecContainer.CreateNewFrame();
             return Phx.Inject.Tests.ContainerSpecification.GetNode(
-                Phx.Inject.InjectionUtil.Combine<Phx.Inject.Tests.Data.Model.IntLeaf> (
+                Phx.Inject.InjectionUtil.Combine<Phx.Inject.Tests.Data.Model.IntLeaf>(
                     specContainers.GeneratedContainerInjector_ContainerSpecification.Fac_IReadOnlyList_GetIntLeaf1(specContainers),
                     specContainers.GeneratedContainerInjector_ContainerSpecification.Fac_IReadOnlyList_GetIntLeaf2(specContainers)
                 ));

@@ -251,15 +251,19 @@ internal record SpecContainerTemplate(
                                 .ToImmutableList();
 
                         string? multiBindQualifiedTypeArgs = null;
+                        var isReadOnlySet = false;
                         if (argument.FactoryInvocationDefs.Count > 1) {
                             multiBindQualifiedTypeArgs =
                                 TypeHelpers.GetQualifiedTypeArgs(
                                     argument.FactoryReturnType);
+                            isReadOnlySet = argument.FactoryReturnType.TypeModel.NamespacedBaseTypeName
+                                == TypeNames.IReadOnlySetClassName;
                         }
 
                         return new SpecContainerFactoryInvocationTemplate(
                             singleInvocationTemplates,
                             multiBindQualifiedTypeArgs,
+                            isReadOnlySet,
                             argument.RuntimeFactoryProvidedType?.NamespacedName,
                             argument.Location);
                     })
@@ -307,15 +311,19 @@ internal record SpecContainerTemplate(
                     .ToImmutableList();
 
             string? multiBindQualifiedTypeArgs = null;
+            var isReadOnlySet = false;
             if (argument.FactoryInvocationDefs.Count > 1) {
                 multiBindQualifiedTypeArgs =
                     TypeHelpers.GetQualifiedTypeArgs(
                         argument.FactoryReturnType);
+                isReadOnlySet = argument.FactoryReturnType.TypeModel.NamespacedBaseTypeName
+                    == TypeNames.IReadOnlySetClassName;
             }
 
             return new SpecContainerFactoryInvocationTemplate(
                 singleInvocationTemplates,
                 multiBindQualifiedTypeArgs,
+                isReadOnlySet,
                 argument.RuntimeFactoryProvidedType?.NamespacedName,
                 argument.Location);
         }

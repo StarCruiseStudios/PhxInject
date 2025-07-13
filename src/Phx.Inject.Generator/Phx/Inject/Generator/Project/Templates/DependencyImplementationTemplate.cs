@@ -83,15 +83,21 @@ internal record DependencyImplementationTemplate(
                                 .ToImmutableList();
 
                         string? multiBindQualifiedTypeArgs = null;
+                        var isReadOnlySet = false;
                         if (provider.SpecContainerFactoryInvocation.FactoryInvocationDefs.Count > 1) {
                             multiBindQualifiedTypeArgs =
                                 TypeHelpers.GetQualifiedTypeArgs(
                                     provider.SpecContainerFactoryInvocation.FactoryReturnType);
+                            isReadOnlySet =
+                                provider.SpecContainerFactoryInvocation.FactoryReturnType.TypeModel
+                                    .NamespacedBaseTypeName
+                                == TypeNames.IReadOnlySetClassName;
                         }
 
                         var factoryInvocation = new SpecContainerFactoryInvocationTemplate(
                             singleInvocationTemplates,
                             multiBindQualifiedTypeArgs,
+                            isReadOnlySet,
                             provider.SpecContainerFactoryInvocation.RuntimeFactoryProvidedType?.NamespacedName,
                             provider.Location);
 

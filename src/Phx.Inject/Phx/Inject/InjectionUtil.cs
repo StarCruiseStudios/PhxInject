@@ -26,6 +26,22 @@ public static class InjectionUtil {
             });
     }
 
+    public static ISet<T> CombineReadOnlySet<T>(params IEnumerable<T>[] sets) {
+        return sets.Aggregate(new HashSet<T>(),
+            (acc, set) => {
+                foreach (var x in set) {
+                    if (acc.Contains(x)) {
+                        throw new InvalidOperationException(
+                            $"Injected set values must be unique. Found duplicate value {x}.");
+                    }
+
+                    acc.Add(x);
+                }
+
+                return acc;
+            });
+    }
+
     public static IReadOnlyDictionary<K, V> Combine<K, V>(params IReadOnlyDictionary<K, V>[] dicts) {
         var combinedDictionary = new Dictionary<K, V>();
         foreach (var dict in dicts) {

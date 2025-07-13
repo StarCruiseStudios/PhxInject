@@ -38,7 +38,7 @@ namespace Phx.Inject.Tests {
         }
 
         public System.Collections.Generic.IReadOnlyList<Phx.Inject.Tests.Data.Model.IntLeaf> GetIntLeaves() {
-            return Phx.Inject.InjectionUtil.Combine<Phx.Inject.Tests.Data.Model.IntLeaf> (
+            return Phx.Inject.InjectionUtil.Combine<Phx.Inject.Tests.Data.Model.IntLeaf>(
                 specContainers.GeneratedContainerInjector_ContainerSpecification.Fac_IReadOnlyList_GetIntLeaf1(specContainers),
                 specContainers.GeneratedContainerInjector_ContainerSpecification.Fac_IReadOnlyList_GetIntLeaf2(specContainers)
             );

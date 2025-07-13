@@ -44,6 +44,18 @@ public static class MultiBindSpecification {
 
     [Factory]
     [Partial]
+    internal static IReadOnlySet<ILeaf> GetSetLeaf1ReadOnly() {
+        return ImmutableHashSet.Create<ILeaf>(new IntLeaf(50));
+    }
+
+    [Factory]
+    [Partial]
+    internal static IReadOnlySet<ILeaf> GetSetLeaf2ReadOnly() {
+        return ImmutableHashSet.Create<ILeaf>(new IntLeaf(60));
+    }
+
+    [Factory]
+    [Partial]
     internal static IReadOnlyDictionary<string, ILeaf> GetDictLeaf1() {
         return new Dictionary<string, ILeaf> {
             {
@@ -67,6 +79,7 @@ public static class MultiBindSpecification {
 public interface IMultiBindInjector {
     IReadOnlyList<ILeaf> GetLeafList();
     ISet<ILeaf> GetLeafSet();
+    IReadOnlySet<ILeaf> GetLeafSetReadOnly();
     IReadOnlyDictionary<string, ILeaf> GetLeafDict();
 
     Factory<IReadOnlyList<ILeaf>> GetLeafListRuntimeFactory();
@@ -81,7 +94,7 @@ public class MultiBindTests : LoggingTestClass {
     public void MultiBindListIsInjected() {
         IMultiBindInjector injector = Given("A test injector.", () => new GeneratedMultiBindInjector());
 
-        IReadOnlyList<ILeaf> list = When("Getting a multibind list", () => injector.GetLeafList());
+        var list = When("Getting a multibind list", () => injector.GetLeafList());
 
         Then("The list contains the expected values",
             () => {
@@ -97,7 +110,7 @@ public class MultiBindTests : LoggingTestClass {
     public void MultiBindSetIsInjected() {
         IMultiBindInjector injector = Given("A test injector.", () => new GeneratedMultiBindInjector());
 
-        ISet<ILeaf> set = When("Getting a multibind set", () => injector.GetLeafSet());
+        var set = When("Getting a multibind set", () => injector.GetLeafSet());
 
         Then("The list contains the expected values",
             () => {
@@ -108,10 +121,25 @@ public class MultiBindTests : LoggingTestClass {
     }
 
     [Test]
+    public void MultiBindReadOnlySetIsInjected() {
+        IMultiBindInjector injector = Given("A test injector.", () => new GeneratedMultiBindInjector());
+
+        var set = When("Getting a multibind read only set", () => injector.GetLeafSetReadOnly());
+
+        Then("The list contains the expected values",
+            () => {
+                Verify.That(set.IsType<IReadOnlySet<ILeaf>>());
+                Verify.That(set.Count.IsEqualTo(2));
+                Verify.That(set.Any(leaf => (leaf as IntLeaf)?.Value == 50).IsTrue());
+                Verify.That(set.Any(leaf => (leaf as IntLeaf)?.Value == 60).IsTrue());
+            });
+    }
+
+    [Test]
     public void MultiBindDictIsInjected() {
         IMultiBindInjector injector = Given("A test injector.", () => new GeneratedMultiBindInjector());
 
-        IReadOnlyDictionary<string, ILeaf> dict = When("Getting a multibind list", () => injector.GetLeafDict());
+        var dict = When("Getting a multibind list", () => injector.GetLeafDict());
 
         Then("The list contains the expected values",
             () => {
@@ -126,8 +154,8 @@ public class MultiBindTests : LoggingTestClass {
     public void MultiBindListFactoryIsInjected() {
         IMultiBindInjector injector = Given("A test injector.", () => new GeneratedMultiBindInjector());
 
-        Factory<IReadOnlyList<ILeaf>> factory = When("Getting a multibind list", () => injector.GetLeafListRuntimeFactory());
-        IReadOnlyList<ILeaf> list = factory.Create();
+        var factory = When("Getting a multibind list", () => injector.GetLeafListRuntimeFactory());
+        var list = factory.Create();
 
         Then("The list contains the expected values",
             () => {
@@ -143,8 +171,8 @@ public class MultiBindTests : LoggingTestClass {
     public void MultiBindSetFactoryIsInjected() {
         IMultiBindInjector injector = Given("A test injector.", () => new GeneratedMultiBindInjector());
 
-        Factory<ISet<ILeaf>> factory = When("Getting a multibind set", () => injector.GetLeafSetRuntimeFactory());
-        ISet<ILeaf> set = factory.Create();
+        var factory = When("Getting a multibind set", () => injector.GetLeafSetRuntimeFactory());
+        var set = factory.Create();
 
         Then("The list contains the expected values",
             () => {
@@ -158,9 +186,9 @@ public class MultiBindTests : LoggingTestClass {
     public void MultiBindDictFactoryIsInjected() {
         IMultiBindInjector injector = Given("A test injector.", () => new GeneratedMultiBindInjector());
 
-        Factory<IReadOnlyDictionary<string, ILeaf>> factory = When("Getting a multibind list",
+        var factory = When("Getting a multibind list",
             () => injector.GetLeafDictRuntimeFactory());
-        IReadOnlyDictionary<string, ILeaf> dict = factory.Create();
+        var dict = factory.Create();
 
         Then("The list contains the expected values",
             () => {

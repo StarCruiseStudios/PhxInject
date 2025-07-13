@@ -13,12 +13,16 @@ namespace Phx.Inject.Common;
 internal static class TypeNames {
     public const string FactoryClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(Factory<object>)}";
     public const string InjectionUtilClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(InjectionUtil)}";
-    
+
     public const string ActionClassName = $"System.{nameof(Action)}";
     public const string AttributeClassName = $"System.{nameof(Attribute)}";
     public const string FuncClassName = $"System.{nameof(Func<object>)}";
-    public const string IReadOnlyDictionaryClassName = "System.Collections.Generic.IReadOnlyDictionary";
-    public const string IReadOnlyListClassName = "System.Collections.Generic.IReadOnlyList";
-    public const string ISetClassName = "System.Collections.Generic.ISet";
+
+    public const string IReadOnlyDictionaryClassName =
+        $"System.Collections.Generic.{nameof(IReadOnlyDictionary<object, object>)}";
+
+    public const string IReadOnlyListClassName = $"System.Collections.Generic.{nameof(IReadOnlyList<object>)}";
+    public const string IReadOnlySetClassName = "System.Collections.Generic.IReadOnlySet"; // Not in netstandard2.0
+    public const string ISetClassName = $"System.Collections.Generic.{nameof(ISet<object>)}";
     public const string StringPrimitiveTypeName = "string";
 }

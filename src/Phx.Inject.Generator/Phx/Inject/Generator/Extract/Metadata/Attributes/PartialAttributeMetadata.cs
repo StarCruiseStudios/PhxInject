@@ -19,9 +19,12 @@ namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 internal record PartialAttributeMetadata(AttributeMetadata AttributeMetadata) : IDescriptor {
     public const string PartialAttributeClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(PartialAttribute)}";
 
-    private static readonly IImmutableSet<string> PartialTypes = ImmutableHashSet.CreateRange(new[] {
-        TypeNames.IReadOnlyListClassName, TypeNames.ISetClassName, TypeNames.IReadOnlyDictionaryClassName
-    });
+    private static readonly IImmutableSet<string> PartialTypes = ImmutableHashSet.CreateRange([
+        TypeNames.IReadOnlyListClassName,
+        TypeNames.IReadOnlySetClassName,
+        TypeNames.IReadOnlyDictionaryClassName,
+        TypeNames.ISetClassName
+    ]);
 
     public Location Location { get; } = AttributeMetadata.Location;
 
@@ -58,7 +61,7 @@ internal record PartialAttributeMetadata(AttributeMetadata AttributeMetadata) : 
 
             if (!PartialTypes.Contains(partialType.NamespacedBaseTypeName)) {
                 throw Diagnostics.InvalidSpecification.AsException(
-                    $"Partial factorie of type {partialType.NamespacedBaseTypeName} must return one of [{string.Join(", ", PartialTypes)}].",
+                    $"Partial factory of type {partialType.NamespacedBaseTypeName} must return one of [{string.Join(", ", PartialTypes)}].",
                     attributedSymbol.GetLocationOrDefault(),
                     currentCtx);
             }

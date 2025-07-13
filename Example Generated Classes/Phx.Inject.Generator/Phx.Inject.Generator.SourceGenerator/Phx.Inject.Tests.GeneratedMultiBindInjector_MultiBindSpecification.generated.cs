@@ -39,6 +39,18 @@ namespace Phx.Inject.Tests {
             return Phx.Inject.Tests.MultiBindSpecification.GetSetLeaf2();
         }
 
+        internal System.Collections.Generic.IReadOnlySet<Phx.Inject.Tests.Data.Model.ILeaf> Fac_IReadOnlySet_GetSetLeaf1ReadOnly(
+                Phx.Inject.Tests.GeneratedMultiBindInjector.SpecContainerCollection specContainers
+        ) {
+            return Phx.Inject.Tests.MultiBindSpecification.GetSetLeaf1ReadOnly();
+        }
+
+        internal System.Collections.Generic.IReadOnlySet<Phx.Inject.Tests.Data.Model.ILeaf> Fac_IReadOnlySet_GetSetLeaf2ReadOnly(
+                Phx.Inject.Tests.GeneratedMultiBindInjector.SpecContainerCollection specContainers
+        ) {
+            return Phx.Inject.Tests.MultiBindSpecification.GetSetLeaf2ReadOnly();
+        }
+
         internal System.Collections.Generic.IReadOnlyDictionary<System.String,Phx.Inject.Tests.Data.Model.ILeaf> Fac_IReadOnlyDictionary_GetDictLeaf1(
                 Phx.Inject.Tests.GeneratedMultiBindInjector.SpecContainerCollection specContainers
         ) {

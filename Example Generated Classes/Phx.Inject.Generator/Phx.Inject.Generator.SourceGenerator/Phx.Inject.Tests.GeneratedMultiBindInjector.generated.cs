@@ -27,42 +27,50 @@ namespace Phx.Inject.Tests {
         }
 
         public System.Collections.Generic.IReadOnlyList<Phx.Inject.Tests.Data.Model.ILeaf> GetLeafList() {
-            return Phx.Inject.InjectionUtil.Combine<Phx.Inject.Tests.Data.Model.ILeaf> (
+            return Phx.Inject.InjectionUtil.Combine<Phx.Inject.Tests.Data.Model.ILeaf>(
                 specContainers.GeneratedMultiBindInjector_MultiBindSpecification.Fac_IReadOnlyList_GetListLeaf1(specContainers),
                 specContainers.GeneratedMultiBindInjector_MultiBindSpecification.Fac_IReadOnlyList_GetListLeaf2(specContainers)
             );
         }
 
         public System.Collections.Generic.ISet<Phx.Inject.Tests.Data.Model.ILeaf> GetLeafSet() {
-            return Phx.Inject.InjectionUtil.Combine<Phx.Inject.Tests.Data.Model.ILeaf> (
+            return Phx.Inject.InjectionUtil.Combine<Phx.Inject.Tests.Data.Model.ILeaf>(
                 specContainers.GeneratedMultiBindInjector_MultiBindSpecification.Fac_ISet_GetSetLeaf1(specContainers),
                 specContainers.GeneratedMultiBindInjector_MultiBindSpecification.Fac_ISet_GetSetLeaf2(specContainers)
             );
         }
 
+        public System.Collections.Generic.IReadOnlySet<Phx.Inject.Tests.Data.Model.ILeaf> GetLeafSetReadOnly() {
+            return System.Collections.Immutable.ImmutableHashSet.CreateRange<Phx.Inject.Tests.Data.Model.ILeaf>(
+                Phx.Inject.InjectionUtil.CombineReadOnlySet<Phx.Inject.Tests.Data.Model.ILeaf>(
+                    specContainers.GeneratedMultiBindInjector_MultiBindSpecification.Fac_IReadOnlySet_GetSetLeaf1ReadOnly(specContainers),
+                    specContainers.GeneratedMultiBindInjector_MultiBindSpecification.Fac_IReadOnlySet_GetSetLeaf2ReadOnly(specContainers))
+            );
+        }
+
         public System.Collections.Generic.IReadOnlyDictionary<System.String,Phx.Inject.Tests.Data.Model.ILeaf> GetLeafDict() {
-            return Phx.Inject.InjectionUtil.Combine<System.String, Phx.Inject.Tests.Data.Model.ILeaf> (
+            return Phx.Inject.InjectionUtil.Combine<System.String, Phx.Inject.Tests.Data.Model.ILeaf>(
                 specContainers.GeneratedMultiBindInjector_MultiBindSpecification.Fac_IReadOnlyDictionary_GetDictLeaf1(specContainers),
                 specContainers.GeneratedMultiBindInjector_MultiBindSpecification.Fac_IReadOnlyDictionary_GetDictLeaf2(specContainers)
             );
         }
 
         public Phx.Inject.Factory<System.Collections.Generic.IReadOnlyList<Phx.Inject.Tests.Data.Model.ILeaf>> GetLeafListRuntimeFactory() {
-            return new Phx.Inject.Factory<System.Collections.Generic.IReadOnlyList<Phx.Inject.Tests.Data.Model.ILeaf>>(() => Phx.Inject.InjectionUtil.Combine<Phx.Inject.Tests.Data.Model.ILeaf> (
+            return new Phx.Inject.Factory<System.Collections.Generic.IReadOnlyList<Phx.Inject.Tests.Data.Model.ILeaf>>(() => Phx.Inject.InjectionUtil.Combine<Phx.Inject.Tests.Data.Model.ILeaf>(
                 specContainers.GeneratedMultiBindInjector_MultiBindSpecification.Fac_IReadOnlyList_GetListLeaf1(specContainers),
                 specContainers.GeneratedMultiBindInjector_MultiBindSpecification.Fac_IReadOnlyList_GetListLeaf2(specContainers)
             ));
         }
 
         public Phx.Inject.Factory<System.Collections.Generic.ISet<Phx.Inject.Tests.Data.Model.ILeaf>> GetLeafSetRuntimeFactory() {
-            return new Phx.Inject.Factory<System.Collections.Generic.ISet<Phx.Inject.Tests.Data.Model.ILeaf>>(() => Phx.Inject.InjectionUtil.Combine<Phx.Inject.Tests.Data.Model.ILeaf> (
+            return new Phx.Inject.Factory<System.Collections.Generic.ISet<Phx.Inject.Tests.Data.Model.ILeaf>>(() => Phx.Inject.InjectionUtil.Combine<Phx.Inject.Tests.Data.Model.ILeaf>(
                 specContainers.GeneratedMultiBindInjector_MultiBindSpecification.Fac_ISet_GetSetLeaf1(specContainers),
                 specContainers.GeneratedMultiBindInjector_MultiBindSpecification.Fac_ISet_GetSetLeaf2(specContainers)
             ));
         }
 
         public Phx.Inject.Factory<System.Collections.Generic.IReadOnlyDictionary<System.String,Phx.Inject.Tests.Data.Model.ILeaf>> GetLeafDictRuntimeFactory() {
-            return new Phx.Inject.Factory<System.Collections.Generic.IReadOnlyDictionary<System.String,Phx.Inject.Tests.Data.Model.ILeaf>>(() => Phx.Inject.InjectionUtil.Combine<System.String, Phx.Inject.Tests.Data.Model.ILeaf> (
+            return new Phx.Inject.Factory<System.Collections.Generic.IReadOnlyDictionary<System.String,Phx.Inject.Tests.Data.Model.ILeaf>>(() => Phx.Inject.InjectionUtil.Combine<System.String, Phx.Inject.Tests.Data.Model.ILeaf>(
                 specContainers.GeneratedMultiBindInjector_MultiBindSpecification.Fac_IReadOnlyDictionary_GetDictLeaf1(specContainers),
                 specContainers.GeneratedMultiBindInjector_MultiBindSpecification.Fac_IReadOnlyDictionary_GetDictLeaf2(specContainers)
             ));

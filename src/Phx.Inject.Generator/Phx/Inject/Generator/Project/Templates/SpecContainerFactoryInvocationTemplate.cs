@@ -14,6 +14,7 @@ namespace Phx.Inject.Generator.Project.Templates;
 internal record SpecContainerFactoryInvocationTemplate(
     IReadOnlyList<SpecContainerFactorySingleInvocationTemplate> FactoryInvocationTemplates,
     string? multiBindQualifiedTypeArgs,
+    bool isReadOnlySet,
     string? runtimeFactoryProvidedTypeQualifiedName,
     Location Location
 ) : IRenderTemplate {
@@ -25,7 +26,18 @@ internal record SpecContainerFactoryInvocationTemplate(
         if (FactoryInvocationTemplates.Count == 1) {
             FactoryInvocationTemplates[0].Render(writer, renderCtx);
         } else {
-            writer.Append($"{TypeNames.InjectionUtilClassName}.{nameof(InjectionUtil.Combine)}<{multiBindQualifiedTypeArgs}> (");
+            if (isReadOnlySet) {
+                writer.Append(
+                    $"System.Collections.Immutable.ImmutableHashSet.CreateRange<{multiBindQualifiedTypeArgs}>(");
+                writer.IncreaseIndent(1);
+                writer.AppendLine();
+                writer.Append(
+                    $"{TypeNames.InjectionUtilClassName}.{nameof(InjectionUtil.CombineReadOnlySet)}<{multiBindQualifiedTypeArgs}>(");
+            } else {
+                writer.Append(
+                    $"{TypeNames.InjectionUtilClassName}.{nameof(InjectionUtil.Combine)}<{multiBindQualifiedTypeArgs}>(");
+            }
+
             writer.IncreaseIndent(1);
             writer.AppendLine();
             var isFirst = true;
@@ -37,6 +49,11 @@ internal record SpecContainerFactoryInvocationTemplate(
 
                 isFirst = false;
                 factoryInvocationTemplate.Render(writer, renderCtx);
+            }
+
+            if (isReadOnlySet) {
+                writer.Append(")");
+                writer.DecreaseIndent(1);
             }
 
             writer.DecreaseIndent(1);
