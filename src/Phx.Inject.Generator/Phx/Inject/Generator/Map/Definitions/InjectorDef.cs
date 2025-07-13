@@ -35,8 +35,8 @@ internal record InjectorDef(
         public InjectorDef Map(DefGenerationContext context) {
             IReadOnlyList<TypeModel> constructedSpecifications = context.Injector.SpecificationsTypes
                 .Where(spec => {
-                    var specDesc = context.GetSpec(spec, context.Injector.Location);
-                    return specDesc.InstantiationMode
+                    var specMetadata = context.GetSpec(spec, context.Injector.Location);
+                    return specMetadata.InstantiationMode
                         is SpecInstantiationMode.Instantiated
                         or SpecInstantiationMode.Dependency;
                 })

@@ -11,7 +11,6 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Generator.Extract.Descriptors;
 using Phx.Inject.Generator.Extract.Metadata;
 using Phx.Inject.Generator.Map.Definitions;
 
@@ -20,7 +19,7 @@ namespace Phx.Inject.Generator.Map;
 internal record DefGenerationContext : IGeneratorContext {
     public InjectorMetadata Injector { get; }
     public IReadOnlyDictionary<TypeModel, InjectorMetadata> Injectors { get; }
-    public IReadOnlyDictionary<TypeModel, SpecDesc> Specifications { get; }
+    public IReadOnlyDictionary<TypeModel, SpecMetadata> Specifications { get; }
     public IReadOnlyDictionary<TypeModel, DependencyMetadata> Dependencies { get; }
     public IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> FactoryRegistrations { get; set; }
     public IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> BuilderRegistrations { get; set; }
@@ -28,7 +27,7 @@ internal record DefGenerationContext : IGeneratorContext {
     public DefGenerationContext(
         InjectorMetadata injector,
         IReadOnlyDictionary<TypeModel, InjectorMetadata> injectors,
-        IReadOnlyDictionary<TypeModel, SpecDesc> specifications,
+        IReadOnlyDictionary<TypeModel, SpecMetadata> specifications,
         IReadOnlyDictionary<TypeModel, DependencyMetadata> dependencies,
         IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> factoryRegistrations,
         IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations,
@@ -65,7 +64,7 @@ internal record DefGenerationContext : IGeneratorContext {
             this);
     }
 
-    public SpecDesc GetSpec(TypeModel type, Location location) {
+    public SpecMetadata GetSpec(TypeModel type, Location location) {
         if (Specifications.TryGetValue(type, out var spec)) {
             return spec;
         }

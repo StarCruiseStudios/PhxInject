@@ -10,7 +10,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Generator.Extract.Descriptors;
+using Phx.Inject.Generator.Extract.Metadata;
 
 namespace Phx.Inject.Generator.Map.Definitions;
 
@@ -23,16 +23,16 @@ internal record SpecContainerDef(
     Location Location
 ) : IDefinition {
     public interface IMapper {
-        SpecContainerDef Map(SpecDesc specDesc, DefGenerationContext defGenerationCtx);
+        SpecContainerDef Map(SpecMetadata specMetadata, DefGenerationContext defGenerationCtx);
     }
 
     public class Mapper : IMapper {
-        public SpecContainerDef Map(SpecDesc specDesc, DefGenerationContext defGenerationCtx) {
+        public SpecContainerDef Map(SpecMetadata specMetadata, DefGenerationContext defGenerationCtx) {
             var specContainerType = TypeHelpers.CreateSpecContainerType(
                 defGenerationCtx.Injector.InjectorType,
-                specDesc.SpecType);
+                specMetadata.SpecType);
 
-            IReadOnlyList<SpecContainerFactoryDef> factories = specDesc.Factories.Select(factory => {
+            IReadOnlyList<SpecContainerFactoryDef> factories = specMetadata.Factories.Select(factory => {
                     IReadOnlyList<SpecContainerFactoryInvocationDef> arguments = factory.Parameters.Select(parameter =>
                             defGenerationCtx.GetSpecContainerFactoryInvocation(
                                 parameter,
@@ -62,7 +62,7 @@ internal record SpecContainerDef(
                 })
                 .ToImmutableList();
 
-            IReadOnlyList<SpecContainerBuilderDef> builders = specDesc.Builders.Select(builder => {
+            IReadOnlyList<SpecContainerBuilderDef> builders = specMetadata.Builders.Select(builder => {
                     IReadOnlyList<SpecContainerFactoryInvocationDef> arguments = builder.Parameters.Select(parameter =>
                             defGenerationCtx.GetSpecContainerFactoryInvocation(
                                 parameter,
@@ -82,11 +82,11 @@ internal record SpecContainerDef(
 
             return new SpecContainerDef(
                 specContainerType,
-                specDesc.SpecType,
-                specDesc.InstantiationMode,
+                specMetadata.SpecType,
+                specMetadata.InstantiationMode,
                 factories,
                 builders,
-                specDesc.Location);
+                specMetadata.Location);
         }
     }
 }

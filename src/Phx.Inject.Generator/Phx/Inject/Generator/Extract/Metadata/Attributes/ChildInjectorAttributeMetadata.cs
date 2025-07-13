@@ -7,11 +7,10 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal record ChildInjectorAttributeMetadata(AttributeMetadata AttributeMetadata) : IDescriptor {
+internal record ChildInjectorAttributeMetadata(AttributeMetadata AttributeMetadata) : IMetadata {
     public const string ChildInjectorAttributeClassName =
         $"{SourceGenerator.PhxInjectNamespace}.{nameof(ChildInjectorAttribute)}";
 

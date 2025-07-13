@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------------
-// <copyright file="AttributeDescriptors.cs" company="Star Cruise Studios LLC">
+// <copyright file="IAttributeMetadata.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2025 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
 //     See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -10,11 +10,10 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Util;
-using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal interface IAttributeMetadata : IDescriptor {
+internal interface IAttributeMetadata : IMetadata {
     ISymbol AttributedSymbol { get; }
     INamedTypeSymbol AttributeTypeSymbol { get; }
     AttributeData AttributeData { get; }

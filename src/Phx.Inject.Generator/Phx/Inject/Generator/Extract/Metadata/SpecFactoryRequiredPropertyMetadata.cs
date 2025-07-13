@@ -10,7 +10,6 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Common.Util;
-using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata;
 
@@ -18,7 +17,7 @@ internal record SpecFactoryRequiredPropertyMetadata(
     QualifiedTypeModel PropertyType,
     string PropertyName,
     IPropertySymbol PropertySymbol
-) : IDescriptor {
+) : IMetadata {
     public Location Location {
         get => PropertySymbol.GetLocationOrDefault();
     }

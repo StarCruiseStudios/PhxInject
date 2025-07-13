@@ -10,12 +10,11 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Common.Util;
-using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 internal record FactoryAttributeMetadata(FactoryFabricationMode FabricationMode, AttributeMetadata AttributeMetadata)
-    : IDescriptor {
+    : IMetadata {
     public const string FactoryAttributeClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(FactoryAttribute)}";
 
     public Location Location { get; } = AttributeMetadata.Location;

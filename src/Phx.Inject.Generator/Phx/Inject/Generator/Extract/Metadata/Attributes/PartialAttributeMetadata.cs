@@ -12,11 +12,10 @@ using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Common.Util;
-using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal record PartialAttributeMetadata(AttributeMetadata AttributeMetadata) : IDescriptor {
+internal record PartialAttributeMetadata(AttributeMetadata AttributeMetadata) : IMetadata {
     public const string PartialAttributeClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(PartialAttribute)}";
 
     private static readonly IImmutableSet<string> PartialTypes = ImmutableHashSet.CreateRange([

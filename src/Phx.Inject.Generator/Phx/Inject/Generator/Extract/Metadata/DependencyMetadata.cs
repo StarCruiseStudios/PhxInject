@@ -11,7 +11,6 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Common.Util;
-using Phx.Inject.Generator.Extract.Descriptors;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Metadata;
@@ -22,7 +21,7 @@ internal record DependencyMetadata(
     IEnumerable<DependencyProviderMetadata> Providers,
     SpecificationAttributeMetadata SpecificationAttributeMetadata,
     ITypeSymbol DependencyTypeSymbol
-) : IDescriptor {
+) : IMetadata {
     public Location Location {
         get => DependencyInterfaceType.TypeSymbol.GetLocationOrDefault();
     }
@@ -94,7 +93,7 @@ internal record DependencyMetadata(
 
                 if (!specificationAttributeExtractor.CanExtract(symbol)) {
                     throw Diagnostics.InvalidSpecification.AsException(
-                        $"Dependency {symbol.Name} must have a {Attributes.SpecificationAttributeMetadata.SpecificationAttributeClassName}.",
+                        $"Dependency {symbol.Name} must have a {SpecificationAttributeMetadata.SpecificationAttributeClassName}.",
                         symbol.GetLocationOrDefault(),
                         currentCtx);
                 }

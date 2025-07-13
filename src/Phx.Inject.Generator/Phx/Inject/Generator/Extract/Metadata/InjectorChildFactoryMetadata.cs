@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------------
-//  <copyright file="InjectorChildFactoryDescriptor.cs" company="Star Cruise Studios LLC">
+//  <copyright file="InjectorChildFactoryMetadata.cs" company="Star Cruise Studios LLC">
 //      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
 //      Licensed under the Apache License, Version 2.0.
 //      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -11,7 +11,6 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Common.Util;
-using Phx.Inject.Generator.Extract.Descriptors;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Metadata;
@@ -23,7 +22,7 @@ internal record InjectorChildFactoryMetadata(
     IReadOnlyList<TypeModel> Parameters,
     ChildInjectorAttributeMetadata Attribute,
     IMethodSymbol InjectorChildFactoryMethodSymbol
-) : IDescriptor {
+) : IMetadata {
     public Location Location {
         get => InjectorChildFactoryMethodSymbol.GetLocationOrDefault();
     }

@@ -12,7 +12,7 @@ using Phx.Inject.Common.Exceptions;
 namespace Phx.Inject.Generator.Extract;
 
 internal class ExtractorContext : IGeneratorContext {
-    public ExtractorContext(
+    private ExtractorContext(
         string? description,
         ISymbol? symbol,
         IGeneratorContext parentContext
@@ -32,7 +32,23 @@ internal class ExtractorContext : IGeneratorContext {
     public int ContextDepth { get; }
 
     public T UseChildContext<T>(string description, ISymbol symbol, Func<ExtractorContext, T> func) {
-        var childCtx = new ExtractorContext(description, symbol, this);
+        return UseChildContext(description, symbol, this, func);
+    }
+
+    public static T CreateExtractorContext<T>(
+        IGeneratorContext parentCtx,
+        Func<ExtractorContext, T> func
+    ) {
+        return UseChildContext(null, null, parentCtx, func);
+    }
+
+    private static T UseChildContext<T>(
+        string? description,
+        ISymbol? symbol,
+        IGeneratorContext parentCtx,
+        Func<ExtractorContext, T> func
+    ) {
+        var childCtx = new ExtractorContext(description, symbol, parentCtx);
         var message =
             $"{(childCtx.ContextDepth > 0 ? "|" : "")}{new string(' ', childCtx.ContextDepth * 2)}{description}";
         childCtx.Log(message, Location.None);

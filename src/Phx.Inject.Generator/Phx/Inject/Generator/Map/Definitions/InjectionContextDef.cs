@@ -10,7 +10,6 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Generator.Extract.Descriptors;
 using Phx.Inject.Generator.Extract.Metadata;
 
 namespace Phx.Inject.Generator.Map.Definitions;
@@ -55,32 +54,32 @@ internal record InjectionContextDef(
             var factoryRegistrations = new Dictionary<RegistrationIdentifier, List<FactoryRegistration>>();
             var builderRegistrations = new Dictionary<RegistrationIdentifier, BuilderRegistration>();
 
-            IReadOnlyList<SpecDesc> specDescs = parentCtx.Specifications.Values.ToImmutableList();
+            IReadOnlyList<SpecMetadata> specMetadata = parentCtx.Specifications.Values.ToImmutableList();
 
-            // Create a registration for all of the spec descriptors' factory and builder methods.
-            foreach (var specDesc in specDescs) {
-                var currentCtx = parentCtx.GetChildContext(specDesc.SpecType.TypeSymbol);
-                foreach (var factory in specDesc.Factories) {
+            // Create a registration for all of the spec metadata factory and builder methods.
+            foreach (var spec in specMetadata) {
+                var currentCtx = parentCtx.GetChildContext(spec.SpecType.TypeSymbol);
+                foreach (var factory in spec.Factories) {
                     var key = RegistrationIdentifier.FromQualifiedTypeModel(factory.ReturnType);
                     if (!factoryRegistrations.TryGetValue(key, out var registrationList)) {
                         registrationList = new List<FactoryRegistration>();
                         factoryRegistrations.Add(key, registrationList);
                     }
 
-                    registrationList.Add(new FactoryRegistration(specDesc, factory));
+                    registrationList.Add(new FactoryRegistration(spec, factory));
                 }
 
-                foreach (var builder in specDesc.Builders) {
+                foreach (var builder in spec.Builders) {
                     builderRegistrations.Add(
                         RegistrationIdentifier.FromQualifiedTypeModel(builder.BuiltType),
-                        new BuilderRegistration(specDesc, builder));
+                        new BuilderRegistration(spec, builder));
                 }
             }
 
-            // Create a registration for all of the spec descriptors' links. This must be done after all factory methods
+            // Create a registration for all of the spec metadata links. This must be done after all factory methods
             // have been registered to ensure that the link is valid.
-            foreach (var specDesc in specDescs) {
-                foreach (var link in specDesc.Links) {
+            foreach (var spec in specMetadata) {
+                foreach (var link in spec.Links) {
                     if (factoryRegistrations.TryGetValue(
                         RegistrationIdentifier.FromQualifiedTypeModel(link.InputType),
                         out var targetRegistration)) {
@@ -89,7 +88,7 @@ internal record InjectionContextDef(
                             targetRegistration);
                     } else {
                         throw Diagnostics.IncompleteSpecification.AsException(
-                            $"Cannot find factory for type {link.InputType} required by link in specification {specDesc.SpecType}.",
+                            $"Cannot find factory for type {link.InputType} required by link in specification {spec.SpecType}.",
                             link.Location,
                             parentCtx);
                     }
@@ -115,8 +114,8 @@ internal record InjectionContextDef(
 
             var injectorDef = injectorDefMapper.Map(generatorCtx);
 
-            IReadOnlyList<SpecContainerDef> specContainerDefs = specDescs
-                .Select(specDesc => specContainerDefMapper.Map(specDesc, generatorCtx))
+            IReadOnlyList<SpecContainerDef> specContainerDefs = specMetadata
+                .Select(specMetadata => specContainerDefMapper.Map(specMetadata, generatorCtx))
                 .ToImmutableList();
 
             IReadOnlyList<DependencyImplementationDef> dependencyImplementationDefs = injectorMetadata.ChildFactories

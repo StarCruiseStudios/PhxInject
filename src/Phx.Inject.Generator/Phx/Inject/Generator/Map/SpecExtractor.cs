@@ -10,30 +10,30 @@ using System.Collections.Immutable;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Extract;
-using Phx.Inject.Generator.Extract.Descriptors;
+using Phx.Inject.Generator.Extract.Metadata;
 
 namespace Phx.Inject.Generator.Map;
 
 internal interface ISpecDefMapper {
-    SpecDesc? ExtractConstructorSpecForContext(
+    SpecMetadata? ExtractConstructorSpecForContext(
         DefGenerationContext defGenerationCtx
     );
 }
 
 internal class SpecDefMapper : ISpecDefMapper {
-    private readonly SpecDesc.IAutoSpecExtractor autoSpecExtractor;
+    private readonly SpecMetadata.IAutoSpecExtractor autoSpecExtractor;
 
     public SpecDefMapper(
-        SpecDesc.IAutoSpecExtractor autoSpecExtractor
+        SpecMetadata.IAutoSpecExtractor autoSpecExtractor
     ) {
         this.autoSpecExtractor = autoSpecExtractor;
     }
 
     public SpecDefMapper() : this(
-        new SpecDesc.AutoSpecExtractor()
+        SpecMetadata.AutoSpecExtractor.Instance
     ) { }
 
-    public SpecDesc? ExtractConstructorSpecForContext(
+    public SpecMetadata? ExtractConstructorSpecForContext(
         DefGenerationContext defGenerationCtx
     ) {
         var providedTypes = new HashSet<QualifiedTypeModel>();
@@ -56,8 +56,8 @@ internal class SpecDefMapper : ISpecDefMapper {
             neededBuilders.Add(builder.BuiltType);
         }
 
-        foreach (var specDesc in defGenerationCtx.Specifications.Values) {
-            foreach (var factory in specDesc.Factories) {
+        foreach (var specMetadata in defGenerationCtx.Specifications.Values) {
+            foreach (var factory in specMetadata.Factories) {
                 providedTypes.Add(factory.ReturnType);
 
                 foreach (var parameterType in factory.Parameters) {
@@ -72,12 +72,12 @@ internal class SpecDefMapper : ISpecDefMapper {
                 }
             }
 
-            foreach (var link in specDesc.Links) {
+            foreach (var link in specMetadata.Links) {
                 providedTypes.Add(link.ReturnType);
                 neededTypes.Add(link.InputType);
             }
 
-            foreach (var builder in specDesc.Builders) {
+            foreach (var builder in specMetadata.Builders) {
                 providedBuilders.Add(builder.BuiltType);
 
                 foreach (var parameterType in builder.Parameters) {
@@ -109,11 +109,13 @@ internal class SpecDefMapper : ISpecDefMapper {
 
         var needsConstructorSpec = autoFactoryTypes.Any() || autoBuilderTypes.Any();
         return needsConstructorSpec
-            ? autoSpecExtractor.Extract(
-                defGenerationCtx.Injector.InjectorType,
-                autoFactoryTypes,
-                autoBuilderTypes,
-                new ExtractorContext("mapping specification", null, defGenerationCtx))
+            ? ExtractorContext.CreateExtractorContext(defGenerationCtx,
+                currentCtx =>
+                    autoSpecExtractor.Extract(
+                        defGenerationCtx.Injector.InjectorType,
+                        autoFactoryTypes,
+                        autoBuilderTypes,
+                        currentCtx))
             : null;
     }
 

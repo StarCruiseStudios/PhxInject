@@ -10,11 +10,10 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Util;
-using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal record QualifierAttributeMetadata(AttributeMetadata AttributeMetadata) : IDescriptor {
+internal record QualifierAttributeMetadata(AttributeMetadata AttributeMetadata) : IMetadata {
     public const string QualifierAttributeClassName =
         $"{SourceGenerator.PhxInjectNamespace}.{nameof(QualifierAttribute)}";
 

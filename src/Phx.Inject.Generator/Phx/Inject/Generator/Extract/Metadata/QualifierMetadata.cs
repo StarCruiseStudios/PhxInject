@@ -10,12 +10,11 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Common.Util;
-using Phx.Inject.Generator.Extract.Descriptors;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Metadata;
 
-internal class QualifierMetadata : IDescriptor {
+internal class QualifierMetadata : IMetadata {
     public static QualifierMetadata NoQualifier { get; } = new(Common.Model.NoQualifier.Instance, Location.None);
     public ITypeQualifierAttributeMetadata? Attribute { get; }
     public IQualifier Qualifier { get; }

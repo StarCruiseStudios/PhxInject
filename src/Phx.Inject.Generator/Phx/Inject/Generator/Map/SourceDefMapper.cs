@@ -9,7 +9,7 @@
 using System.Collections.Immutable;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Generator.Extract.Descriptors;
+using Phx.Inject.Generator.Extract.Metadata;
 using Phx.Inject.Generator.Map.Definitions;
 
 namespace Phx.Inject.Generator.Map;
@@ -27,47 +27,47 @@ internal class SourceDefMapper {
         : this(new SpecDefMapper(), generatorSettings) { }
 
     public IReadOnlyList<InjectionContextDef> Map(
-        SourceDesc sourceDesc,
+        SourceMetadata sourceMetadata,
         IGeneratorContext generatorCtx
     ) {
         return ExceptionAggregator.Try(
             "mapping source definition",
             generatorCtx,
             exceptionAggregator => {
-                var injectorDescMap = CreateTypeMap(
-                    sourceDesc.injectorDescs,
+                var injectorMetadataMap = CreateTypeMap(
+                    sourceMetadata.injectorMetadata,
                     injector => injector.InjectorInterfaceType,
                     generatorCtx);
-                var specDescMap = CreateTypeMap(
-                    sourceDesc.specDescs,
+                var specMetadataMap = CreateTypeMap(
+                    sourceMetadata.specMetadata,
                     spec => spec.SpecType,
                     generatorCtx);
-                var dependencyDescMap = CreateTypeMap(
-                    sourceDesc.dependencyDescs,
+                var dependencyMetadataMap = CreateTypeMap(
+                    sourceMetadata.dependencyMetadata,
                     dep => dep.DependencyInterfaceType,
                     generatorCtx);
 
-                return sourceDesc.injectorDescs.SelectCatching(
+                return sourceMetadata.injectorMetadata.SelectCatching(
                         exceptionAggregator,
-                        injectorDesc => $"extracting injector {injectorDesc.InjectorInterfaceType}",
-                        injectorDesc => {
-                            var injectorSpecDescMap = new Dictionary<TypeModel, SpecDesc>();
-                            foreach (var spec in injectorDesc.SpecificationsTypes) {
-                                if (!specDescMap.TryGetValue(spec, out var specDesc)) {
+                        injectorMetadata => $"extracting injector {injectorMetadata.InjectorInterfaceType}",
+                        injectorMetadata => {
+                            var injectorSpecMap = new Dictionary<TypeModel, SpecMetadata>();
+                            foreach (var specMetadata in injectorMetadata.SpecificationsTypes) {
+                                if (!specMetadataMap.TryGetValue(specMetadata, out var spec)) {
                                     throw Diagnostics.IncompleteSpecification.AsException(
-                                        $"Cannot find required specification type {spec} while generating injection for type {injectorDesc.InjectorInterfaceType}.",
-                                        injectorDesc.Location,
+                                        $"Cannot find required specification type {spec} while generating injection for type {injectorMetadata.InjectorInterfaceType}.",
+                                        injectorMetadata.Location,
                                         generatorCtx);
                                 }
 
-                                injectorSpecDescMap.Add(spec, specDesc);
+                                injectorSpecMap.Add(specMetadata, spec);
                             }
 
                             var defGenerationCtx = new DefGenerationContext(
-                                injectorDesc,
-                                injectorDescMap,
-                                injectorSpecDescMap,
-                                dependencyDescMap,
+                                injectorMetadata,
+                                injectorMetadataMap,
+                                injectorSpecMap,
+                                dependencyMetadataMap,
                                 ImmutableDictionary<RegistrationIdentifier, List<FactoryRegistration>>.Empty,
                                 ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
                                 generatorCtx);
@@ -77,7 +77,7 @@ internal class SourceDefMapper {
                                     specDefMapper.ExtractConstructorSpecForContext(defGenerationCtx);
 
                                 if (constructorSpec != null) {
-                                    injectorSpecDescMap.Add(constructorSpec.SpecType, constructorSpec);
+                                    injectorSpecMap.Add(constructorSpec.SpecType, constructorSpec);
                                 }
                             }
 

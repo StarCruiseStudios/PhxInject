@@ -11,12 +11,11 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Common.Util;
-using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 internal record DependencyAttributeMetadata(TypeModel DependencyType, AttributeMetadata AttributeMetadata)
-    : IDescriptor {
+    : IMetadata {
     public const string DependencyAttributeClassName =
         $"{SourceGenerator.PhxInjectNamespace}.{nameof(DependencyAttribute)}";
 

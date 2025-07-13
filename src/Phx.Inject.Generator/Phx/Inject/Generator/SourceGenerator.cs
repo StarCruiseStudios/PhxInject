@@ -11,7 +11,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Generator.Abstract;
-using Phx.Inject.Generator.Extract.Descriptors;
 using Phx.Inject.Generator.Extract.Metadata;
 using Phx.Inject.Generator.Map;
 using Phx.Inject.Generator.Project;
@@ -20,16 +19,16 @@ using Phx.Inject.Generator.Render;
 namespace Phx.Inject.Generator;
 
 [Generator]
-internal class SourceGenerator : ISourceGenerator {
+internal class SourceGenerator(
+    SourceMetadata.IExtractor sourceExtractor,
+    PhxInjectSettingsMetadata.IExtractor phxInjectSettingsExtractor
+) : ISourceGenerator {
     public const string PhxInjectNamespace = "Phx.Inject";
 
-    private readonly PhxInjectSettingsMetadata.IExtractor phxInjectSettingsExtractor;
-
-    public SourceGenerator(PhxInjectSettingsMetadata.IExtractor phxInjectSettingsExtractor) {
-        this.phxInjectSettingsExtractor = phxInjectSettingsExtractor;
-    }
-
-    public SourceGenerator() : this(new PhxInjectSettingsMetadata.Extractor()) { }
+    public SourceGenerator() : this(
+        SourceMetadata.Extractor.Instance,
+        PhxInjectSettingsMetadata.Extractor.Instance
+    ) { }
 
     public void Initialize(GeneratorInitializationContext generatorInitializationContext) {
         generatorInitializationContext.RegisterForSyntaxNotifications(() => new SourceSyntaxReceiver());
@@ -48,7 +47,7 @@ internal class SourceGenerator : ISourceGenerator {
                                 Location.None,
                                 currentCtx);
 
-                        // Extract: Syntax declarations to descriptors.
+                        // Extract: Syntax declarations to metadata.
                         IReadOnlyList<ITypeSymbol> settingsCandidates = syntaxReceiver.PhxInjectSettingsCandidates
                             .SelectCatching(
                                 currentCtx.Aggregator,
@@ -73,12 +72,12 @@ internal class SourceGenerator : ISourceGenerator {
 
                         var settings = phxInjectSettingsExtractor
                             .Extract(settingsCandidates, currentCtx);
-                        var sourceDesc = new SourceDesc.Extractor()
+                        var sourceMetadata = sourceExtractor
                             .Extract(injectorCandidates, specificationCandidates, currentCtx);
 
-                        // Map: Descriptors to defs.
+                        // Map: Metadata to defs.
                         var injectionContextDefs = new SourceDefMapper(settings)
-                            .Map(sourceDesc, currentCtx);
+                            .Map(sourceMetadata, currentCtx);
 
                         // Project: Defs to templates.
                         var templates = new SourceTemplateProjector()

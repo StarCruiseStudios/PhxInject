@@ -7,10 +7,9 @@
 // -----------------------------------------------------------------------------
 
 using Phx.Inject.Common.Model;
-using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
-internal interface ITypeQualifierAttributeMetadata : IDescriptor {
+internal interface ITypeQualifierAttributeMetadata : IMetadata {
     IQualifier Qualifier { get; }
 }

@@ -9,7 +9,6 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Model;
-using Phx.Inject.Generator.Extract.Descriptors;
 
 namespace Phx.Inject.Generator.Extract.Metadata.Attributes;
 
@@ -17,7 +16,7 @@ internal record InjectorAttributeMetadata(
     string? GeneratedClassName,
     IReadOnlyList<TypeModel> Specifications,
     AttributeMetadata AttributeMetadata
-) : IDescriptor {
+) : IMetadata {
     public const string InjectorAttributeClassName =
         $"{SourceGenerator.PhxInjectNamespace}.{nameof(InjectorAttribute)}";
 
