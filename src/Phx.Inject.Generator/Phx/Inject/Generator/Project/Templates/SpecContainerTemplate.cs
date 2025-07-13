@@ -183,7 +183,10 @@ internal record SpecContainerTemplate(
         ) {
             string? constructedSpecInterfaceQualifiedType = null;
             string? constructedSpecificationReference = null;
-            if (specContainerDef.SpecInstantiationMode == SpecInstantiationMode.Instantiated) {
+            if (specContainerDef.SpecInstantiationMode
+                is SpecInstantiationMode.Instantiated
+                or SpecInstantiationMode.Dependency
+            ) {
                 constructedSpecInterfaceQualifiedType = specContainerDef.SpecificationType.NamespacedName;
                 constructedSpecificationReference = SpecReferenceName;
             }

@@ -36,7 +36,9 @@ internal record InjectorDef(
             IReadOnlyList<TypeModel> constructedSpecifications = context.Injector.SpecificationsTypes
                 .Where(spec => {
                     var specDesc = context.GetSpec(spec, context.Injector.Location);
-                    return specDesc.InstantiationMode == SpecInstantiationMode.Instantiated;
+                    return specDesc.InstantiationMode
+                        is SpecInstantiationMode.Instantiated
+                        or SpecInstantiationMode.Dependency;
                 })
                 .Where(spec => context.Injector.DependencyInterfaceType != spec)
                 .ToImmutableList();

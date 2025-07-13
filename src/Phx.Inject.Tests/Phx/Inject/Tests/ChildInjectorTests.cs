@@ -53,11 +53,14 @@ internal static class ChildSpecification {
     }
 }
 
+[Specification]
 internal interface IChildDependencies {
     [Label(ParentSpecification.LeftLeaf)]
+    [Factory]
     public ILeaf GetLeftLeaf();
 
     [Label(ParentSpecification.RightLeaf)]
+    [Factory]
     public ILeaf GetRightLeaf();
 }
 
@@ -80,7 +83,9 @@ internal static class GrandchildSpecification {
     }
 }
 
+[Specification]
 internal interface IGrandchildDependencies {
+    [Factory]
     public Node GetNode();
 }
 

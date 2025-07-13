@@ -28,10 +28,6 @@ internal record SpecDesc(
 
     public interface IExtractor {
         SpecDesc Extract(ITypeSymbol specSymbol, ExtractorContext parentCtx);
-        SpecDesc ExtractDependencySpec(
-            ITypeSymbol dependencySymbol,
-            IReadOnlyList<DependencyProviderMetadata> providers,
-            ExtractorContext parentCtx);
     }
 
     public class Extractor : IExtractor {
@@ -77,9 +73,11 @@ internal record SpecDesc(
                     var specAttribute = specificationAttributeExtractor
                         .Extract(specSymbol, currentCtx);
 
-                    var specInstantiationMode = specSymbol.IsStatic
-                        ? SpecInstantiationMode.Static
-                        : SpecInstantiationMode.Instantiated;
+                    var specInstantiationMode = specSymbol switch {
+                        { TypeKind: TypeKind.Interface } => SpecInstantiationMode.Dependency,
+                        { IsStatic: true } => SpecInstantiationMode.Static,
+                        _ => SpecInstantiationMode.Instantiated
+                    };
 
                     IReadOnlyList<ISymbol> specMembers = specSymbol.GetMembers().ToImmutableList();
                     IReadOnlyList<IFieldSymbol> specFields = specMembers
@@ -153,34 +151,6 @@ internal record SpecDesc(
                         builders,
                         links);
                 });
-        }
-
-        // TODO: This was super hacky just to get it out of DependencyDesc.Extractor.
-        public SpecDesc ExtractDependencySpec(
-            ITypeSymbol dependencySymbol,
-            IReadOnlyList<DependencyProviderMetadata> providers,
-            ExtractorContext parentCtx
-        ) {
-            IReadOnlyList<SpecFactoryMetadata> specFactories = providers.Select(provider => new SpecFactoryMetadata(
-                    provider.ProvidedType,
-                    provider.ProviderMethodName,
-                    SpecFactoryMemberType.Method,
-                    ImmutableList<QualifiedTypeModel>.Empty,
-                    ImmutableList<SpecFactoryRequiredPropertyMetadata>.Empty,
-                    FactoryFabricationMode.Recurrent,
-                    provider.IsPartial,
-                    provider.PartialAttribute,
-                    null,
-                    null,
-                    provider.ProviderMethodSymbol))
-                .ToImmutableList();
-
-            return new SpecDesc(
-                dependencySymbol.ToTypeModel(),
-                SpecInstantiationMode.Instantiated,
-                specFactories,
-                ImmutableList<SpecBuilderMetadata>.Empty,
-                ImmutableList<SpecLinkMetadata>.Empty);
         }
     }
 

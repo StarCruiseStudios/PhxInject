@@ -19,7 +19,6 @@ internal record DependencyMetadata(
     TypeModel DependencyInterfaceType,
     TypeModel ContainingInjectorInterfaceType,
     IEnumerable<DependencyProviderMetadata> Providers,
-    SpecDesc InstantiatedSpec,
     ITypeSymbol DependencyTypeSymbol
 ) : IDescriptor {
     public Location Location {
@@ -35,12 +34,9 @@ internal record DependencyMetadata(
     }
 
     public class Extractor(
-        DependencyProviderMetadata.IExtractor dependencyProviderExtractor,
-        SpecDesc.IExtractor dependencySpecExtractor
+        DependencyProviderMetadata.IExtractor dependencyProviderExtractor
     ) : IExtractor {
-        public static readonly IExtractor Instance = new Extractor(
-            DependencyProviderMetadata.Extractor.Instance,
-            new SpecDesc.Extractor());
+        public static readonly IExtractor Instance = new Extractor(DependencyProviderMetadata.Extractor.Instance);
 
         public DependencyMetadata Extract(
             ITypeSymbol dependencySymbol,
@@ -61,14 +57,10 @@ internal record DependencyMetadata(
                             dependencyProviderExtractor.Extract(method, dependencyInterfaceType, currentCtx))
                         .ToImmutableList();
 
-                    var instantiatedSpec =
-                        dependencySpecExtractor.ExtractDependencySpec(dependencySymbol, providers, currentCtx);
-
                     return new DependencyMetadata(
                         dependencyInterfaceType,
                         containingInjectorInterfaceType,
                         providers,
-                        instantiatedSpec,
                         dependencySymbol);
                 });
         }

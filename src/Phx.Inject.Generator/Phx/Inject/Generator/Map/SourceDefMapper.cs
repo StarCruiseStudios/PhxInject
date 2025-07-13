@@ -39,10 +39,7 @@ internal class SourceDefMapper {
                     injector => injector.InjectorInterfaceType,
                     generatorCtx);
                 var specDescMap = CreateTypeMap(
-                    sourceDesc.dependencyDescs
-                        .Select(dep => dep.InstantiatedSpec)
-                        .Concat(sourceDesc.specDescs)
-                        .ToImmutableList(),
+                    sourceDesc.specDescs,
                     spec => spec.SpecType,
                     generatorCtx);
                 var dependencyDescMap = CreateTypeMap(

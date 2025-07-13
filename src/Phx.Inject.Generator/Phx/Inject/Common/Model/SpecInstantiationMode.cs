@@ -10,5 +10,6 @@ namespace Phx.Inject.Common.Model;
 
 internal enum SpecInstantiationMode {
     Static = 0,
-    Instantiated = 1
+    Instantiated = 1,
+    Dependency = 2
 }

@@ -185,7 +185,9 @@ internal record InjectorTemplate(
                 .ToImmutableList();
 
             IReadOnlyList<InjectorConstructorParameter> constructorParameters = specContainers.Where(specContainer =>
-                    specContainer.SpecInstantiationMode == SpecInstantiationMode.Instantiated)
+                    specContainer.SpecInstantiationMode
+                        is SpecInstantiationMode.Instantiated
+                        or SpecInstantiationMode.Dependency)
                 .Select(specContainer => specContainer.SpecificationType)
                 .Select(specType => new InjectorConstructorParameter(
                     specType.NamespacedName,
