@@ -166,7 +166,7 @@ internal record SpecDesc(
                     provider.ProviderMethodName,
                     SpecFactoryMemberType.Method,
                     ImmutableList<QualifiedTypeModel>.Empty,
-                    ImmutableList<SpecFactoryRequiredPropertyDesc>.Empty,
+                    ImmutableList<SpecFactoryRequiredPropertyMetadata>.Empty,
                     FactoryFabricationMode.Recurrent,
                     provider.IsPartial,
                     provider.PartialAttribute,

@@ -22,7 +22,7 @@ internal record SpecFactoryMetadata(
     string FactoryMemberName,
     SpecFactoryMemberType SpecFactoryMemberType,
     IEnumerable<QualifiedTypeModel> Parameters,
-    IEnumerable<SpecFactoryRequiredPropertyDesc> RequiredProperties,
+    IEnumerable<SpecFactoryRequiredPropertyMetadata> RequiredProperties,
     FactoryFabricationMode FabricationMode,
     bool isPartial,
     PartialAttributeMetadata? PartialAttributeMetadata,
@@ -100,7 +100,7 @@ internal record SpecFactoryMetadata(
                         })
                         .ToImmutableList();
 
-                    var requiredProperties = ImmutableList<SpecFactoryRequiredPropertyDesc>.Empty;
+                    var requiredProperties = ImmutableList<SpecFactoryRequiredPropertyMetadata>.Empty;
 
                     var qualifier = qualifierExtractor.Extract(factorySymbol, currentCtx);
                     var returnType = returnTypeSymbol.ToQualifiedTypeModel(qualifier);
@@ -231,7 +231,7 @@ internal record SpecFactoryMetadata(
                         })
                         .ToImmutableList();
 
-                    var requiredProperties = ImmutableList<SpecFactoryRequiredPropertyDesc>.Empty;
+                    var requiredProperties = ImmutableList<SpecFactoryRequiredPropertyMetadata>.Empty;
 
                     var qualifier = qualifierExtractor.Extract(factoryReferenceSymbol, currentCtx);
                     var returnType = typeArguments.Last().ToQualifiedTypeModel(qualifier);
@@ -295,11 +295,13 @@ internal record SpecFactoryMetadata(
     }
 
     public class AutoFactoryExtractor(
+        SpecFactoryRequiredPropertyMetadata.IExtractor requiredPropertyExtractor,
         QualifierMetadata.IAttributeExtractor qualifierExtractor,
         FactoryAttributeMetadata.IExtractor factoryAttributeExtractor
     ) : IAutoFactoryExtractor {
         public static readonly IAutoFactoryExtractor Instance =
             new AutoFactoryExtractor(
+                SpecFactoryRequiredPropertyMetadata.Extractor.Instance,
                 QualifierMetadata.AttributeExtractor.Instance,
                 FactoryAttributeMetadata.Extractor.Instance
             );
@@ -342,22 +344,11 @@ internal record SpecFactoryMetadata(
                         })
                         .ToImmutableList();
 
-                    IReadOnlyList<SpecFactoryRequiredPropertyDesc> requiredProperties = constructorTypeSymbol
+                    IReadOnlyList<SpecFactoryRequiredPropertyMetadata> requiredProperties = constructorTypeSymbol
                         .GetMembers()
                         .OfType<IPropertySymbol>()
-                        .Where(p => p is {
-                            IsRequired: true,
-                            SetMethod.DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
-                        })
-                        .Select(propertySymbol => {
-                            var qualifier = qualifierExtractor.Extract(propertySymbol, currentCtx);
-                            var requiredPropertyType = propertySymbol.Type.ToQualifiedTypeModel(qualifier);
-                            var name = propertySymbol.Name;
-                            return new SpecFactoryRequiredPropertyDesc(
-                                requiredPropertyType,
-                                name,
-                                constructorType.TypeModel.Location);
-                        })
+                        .Where(requiredPropertyExtractor.CanExtract)
+                        .Select(propertySymbol => requiredPropertyExtractor.Extract(propertySymbol, currentCtx))
                         .ToImmutableList();
 
                     var qualifier = qualifierExtractor.Extract(constructorTypeSymbol, currentCtx);
