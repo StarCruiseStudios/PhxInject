@@ -48,7 +48,7 @@ internal record DependencyMetadata(
             TypeModel containingInjectorInterfaceType,
             ExtractorContext parentCtx
         ) {
-            return parentCtx.UseChildContext(
+            return parentCtx.UseChildExtractorContext(
                 $"extracting dependency {containingInjectorInterfaceType} -> {dependencySymbol}",
                 dependencySymbol,
                 currentCtx => {

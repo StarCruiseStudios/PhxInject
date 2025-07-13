@@ -51,7 +51,7 @@ internal record SpecBuilderMetadata(
         }
 
         public SpecBuilderMetadata ExtractBuilder(IMethodSymbol builderMethod, ExtractorContext parentCtx) {
-            return parentCtx.UseChildContext(
+            return parentCtx.UseChildExtractorContext(
                 $"extracting specification builder {builderMethod}",
                 builderMethod,
                 currentCtx => {
@@ -150,7 +150,7 @@ internal record SpecBuilderMetadata(
         public SpecBuilderMetadata ExtractBuilderReference(
             ISymbol builderReferenceSymbol,
             ExtractorContext parentCtx) {
-            return parentCtx.UseChildContext(
+            return parentCtx.UseChildExtractorContext(
                 $"extracting specification builder reference {builderReferenceSymbol}",
                 builderReferenceSymbol,
                 currentCtx => {
@@ -253,7 +253,7 @@ internal record SpecBuilderMetadata(
             );
 
         public SpecBuilderMetadata ExtractBuilder(QualifiedTypeModel autoBuilderType, ExtractorContext parentCtx) {
-            return parentCtx.UseChildContext(
+            return parentCtx.UseChildExtractorContext(
                 $"extracting auto builder for type {autoBuilderType}",
                 autoBuilderType.TypeModel.TypeSymbol,
                 currentCtx => {

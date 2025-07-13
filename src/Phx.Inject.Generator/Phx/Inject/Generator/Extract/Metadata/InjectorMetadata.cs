@@ -62,7 +62,7 @@ internal record InjectorMetadata(
             ITypeSymbol injectorInterfaceSymbol,
             ExtractorContext parentCtx
         ) {
-            return parentCtx.UseChildContext(
+            return parentCtx.UseChildExtractorContext(
                 $"extracting injector {injectorInterfaceSymbol}",
                 injectorInterfaceSymbol,
                 currentCtx => {

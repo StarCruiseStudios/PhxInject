@@ -45,6 +45,18 @@ internal static class Diagnostics {
         InjectionCategory,
         DiagnosticSeverity.Error);
 
+    public static readonly DiagnosticData UnusedSpecification = new(
+        PhxInjectIdPrefix + "0500",
+        "One or more specifications were defined but not used in the injection.",
+        InjectionCategory,
+        DiagnosticSeverity.Warning);
+
+    public static readonly DiagnosticData AutoFactoryWithSpecification = new(
+        PhxInjectIdPrefix + "0501",
+        "An auto factory type was created when an explicit factory exists in an unused specification.",
+        InjectionCategory,
+        DiagnosticSeverity.Warning);
+
     public static readonly AggregateDiagnosticData AggregateError = new(
         PhxInjectIdPrefix + "1000",
         "One or more errors occurred during injection generation.",
@@ -131,6 +143,18 @@ internal static class Diagnostics {
                     currentCtx.GetFrame(),
                     location),
                 currentCtx);
+        }
+
+        public void AsWarning(
+            string message,
+            Location location,
+            IGeneratorContext currentCtx
+        ) {
+            currentCtx.ExecutionContext.ReportDiagnostic(
+                CreateDiagnostic(
+                    message,
+                    currentCtx.GetFrame(),
+                    location));
         }
 
         protected Diagnostic CreateDiagnostic(

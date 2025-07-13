@@ -11,15 +11,15 @@
 namespace Phx.Inject.Tests {
     internal partial class ConstructedChildInjector : Phx.Inject.Tests.IConstructedChildInjector {
         internal record SpecContainerCollection (
+                Phx.Inject.Tests.ConstructedChildInjector_ConstructedChildInjector_ConstructorFactories ConstructedChildInjector_ConstructedChildInjector_ConstructorFactories,
                 Phx.Inject.Tests.ConstructedChildInjector_IConstructedSpecification ConstructedChildInjector_IConstructedSpecification,
-                Phx.Inject.Tests.ConstructedChildInjector_NonConstructedSpecification ConstructedChildInjector_NonConstructedSpecification,
-                Phx.Inject.Tests.ConstructedChildInjector_ConstructedChildInjector_ConstructorFactories ConstructedChildInjector_ConstructedChildInjector_ConstructorFactories
+                Phx.Inject.Tests.ConstructedChildInjector_NonConstructedSpecification ConstructedChildInjector_NonConstructedSpecification
         ) {
             internal SpecContainerCollection CreateNewFrame() {
                 return new SpecContainerCollection(
+                        ConstructedChildInjector_ConstructedChildInjector_ConstructorFactories.CreateNewFrame(),
                         ConstructedChildInjector_IConstructedSpecification.CreateNewFrame(),
-                        ConstructedChildInjector_NonConstructedSpecification.CreateNewFrame(),
-                        ConstructedChildInjector_ConstructedChildInjector_ConstructorFactories.CreateNewFrame());
+                        ConstructedChildInjector_NonConstructedSpecification.CreateNewFrame());
             }
         }
 
@@ -29,9 +29,9 @@ namespace Phx.Inject.Tests {
                 Phx.Inject.Tests.IConstructedSpecification iConstructedSpecification
         ) {
             specContainers = new SpecContainerCollection(
+                    ConstructedChildInjector_ConstructedChildInjector_ConstructorFactories: new Phx.Inject.Tests.ConstructedChildInjector_ConstructedChildInjector_ConstructorFactories(),
                     ConstructedChildInjector_IConstructedSpecification: new Phx.Inject.Tests.ConstructedChildInjector_IConstructedSpecification(iConstructedSpecification),
-                    ConstructedChildInjector_NonConstructedSpecification: new Phx.Inject.Tests.ConstructedChildInjector_NonConstructedSpecification(),
-                    ConstructedChildInjector_ConstructedChildInjector_ConstructorFactories: new Phx.Inject.Tests.ConstructedChildInjector_ConstructedChildInjector_ConstructorFactories());
+                    ConstructedChildInjector_NonConstructedSpecification: new Phx.Inject.Tests.ConstructedChildInjector_NonConstructedSpecification());
         }
 
         public Phx.Inject.Tests.Data.Model.IntLeaf GetIntLeaf() {

@@ -35,17 +35,17 @@ namespace Phx.Inject.Tests {
             };
         }
 
-        internal Phx.Inject.Tests.Data.Model.IntLeaf CtorFac_IntLeaf_IntLeaf(
-                Phx.Inject.Tests.BuilderTestInjector.SpecContainerCollection specContainers
-        ) {
-            return new Phx.Inject.Tests.Data.Model.IntLeaf(
-                specContainers.BuilderTestInjector_CommonTestValueSpecification.Fac_Int32_GetInt(specContainers));
-        }
-
         internal Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode CtorFac_AutoTypeWithFabricationMode_AutoTypeWithFabricationMode(
                 Phx.Inject.Tests.BuilderTestInjector.SpecContainerCollection specContainers
         ) {
             return autoTypeWithFabricationMode ??= new Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode(
+                specContainers.BuilderTestInjector_CommonTestValueSpecification.Fac_Int32_GetInt(specContainers));
+        }
+
+        internal Phx.Inject.Tests.Data.Model.IntLeaf CtorFac_IntLeaf_IntLeaf(
+                Phx.Inject.Tests.BuilderTestInjector.SpecContainerCollection specContainers
+        ) {
+            return new Phx.Inject.Tests.Data.Model.IntLeaf(
                 specContainers.BuilderTestInjector_CommonTestValueSpecification.Fac_Int32_GetInt(specContainers));
         }
     }

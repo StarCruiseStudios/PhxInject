@@ -13,8 +13,9 @@ using Phx.Inject.Common.Util;
 namespace Phx.Inject.Generator;
 
 internal interface IGeneratorContext {
-    string? Description { get; }
-    ISymbol? Symbol { get; }
+    GeneratorSettings GeneratorSettings { get; }
+    string Description { get; }
+    ISymbol Symbol { get; }
     IExceptionAggregator Aggregator { get; }
     IGeneratorContext? ParentContext { get; }
     GeneratorExecutionContext ExecutionContext { get; }
@@ -34,23 +35,20 @@ internal static class IGeneratorContextExtensions {
     }
 }
 
-internal class GeneratorContext : IGeneratorContext {
+internal record GeneratorContext(GeneratorSettings GeneratorSettings, GeneratorExecutionContext ExecutionContext)
+    : IGeneratorContext {
     private IExceptionAggregator? aggregator;
-
-    private GeneratorContext(GeneratorExecutionContext executionContext) {
-        ExecutionContext = executionContext;
-    }
-    public string Description { get => $"generating injection source for {ExecutionContext.Compilation.AssemblyName}"; }
-    public ISymbol? Symbol { get => null; }
+    public string Description { get => $"generating injection source for {ExecutionContext.Compilation.Assembly}"; }
+    public ISymbol Symbol { get => ExecutionContext.Compilation.Assembly; }
     public IExceptionAggregator Aggregator { get => aggregator!; }
-
     public IGeneratorContext? ParentContext { get => null; }
-
-    public GeneratorExecutionContext ExecutionContext { get; }
     public int ContextDepth { get => 0; }
 
-    public static void UseContext(GeneratorExecutionContext executionContext, Action<GeneratorContext> action) {
-        var newCtx = new GeneratorContext(executionContext);
+    public static void UseContext(
+        GeneratorSettings generatorSettings,
+        GeneratorExecutionContext executionContext,
+        Action<GeneratorContext> action) {
+        var newCtx = new GeneratorContext(generatorSettings, executionContext);
         newCtx.Log(newCtx.Description, Location.None);
         try {
             ExceptionAggregator.Try<object?>(

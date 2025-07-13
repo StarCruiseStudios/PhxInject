@@ -12,6 +12,7 @@ namespace Phx.Inject.Common.Exceptions;
 
 internal interface IExceptionAggregator {
     void Aggregate(string message, params Action[] actions);
+    void Aggregate(string message, IEnumerable<Action> actions);
     IReadOnlyList<R> AggregateMany<T, R>(IEnumerable<T> elements, Func<T, string> elementDescription, Func<T, R> func);
 }
 
@@ -29,6 +30,10 @@ internal sealed class ExceptionAggregator : IExceptionAggregator {
     }
 
     public void Aggregate(string message, params Action[] actions) {
+        Aggregate(message, actions.AsEnumerable());
+    }
+
+    public void Aggregate(string message, IEnumerable<Action> actions) {
         foreach (var action in actions) {
             try {
                 action();

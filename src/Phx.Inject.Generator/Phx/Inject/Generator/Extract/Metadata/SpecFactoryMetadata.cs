@@ -21,7 +21,7 @@ internal record SpecFactoryMetadata(
     string FactoryMemberName,
     SpecFactoryMemberType SpecFactoryMemberType,
     IEnumerable<QualifiedTypeModel> Parameters,
-    IEnumerable<SpecFactoryRequiredPropertyMetadata> RequiredProperties,
+    IEnumerable<AutoFactoryRequiredPropertyMetadata> RequiredProperties,
     FactoryFabricationMode FabricationMode,
     bool isPartial,
     PartialAttributeMetadata? PartialAttributeMetadata,
@@ -63,7 +63,7 @@ internal record SpecFactoryMetadata(
             ISymbol factorySymbol,
             ExtractorContext parentCtx
         ) {
-            return parentCtx.UseChildContext(
+            return parentCtx.UseChildExtractorContext(
                 $"extracting specification factory {factorySymbol}",
                 factorySymbol,
                 currentCtx => {
@@ -99,7 +99,7 @@ internal record SpecFactoryMetadata(
                         })
                         .ToImmutableList();
 
-                    var requiredProperties = ImmutableList<SpecFactoryRequiredPropertyMetadata>.Empty;
+                    var requiredProperties = ImmutableList<AutoFactoryRequiredPropertyMetadata>.Empty;
 
                     var qualifier = qualifierExtractor.Extract(factorySymbol, currentCtx);
                     var returnType = returnTypeSymbol.ToQualifiedTypeModel(qualifier);
@@ -187,7 +187,7 @@ internal record SpecFactoryMetadata(
             ISymbol factoryReferenceSymbol,
             ExtractorContext parentCtx
         ) {
-            return parentCtx.UseChildContext(
+            return parentCtx.UseChildExtractorContext(
                 $"extracting specification factory reference {factoryReferenceSymbol}",
                 factoryReferenceSymbol,
                 currentCtx => {
@@ -230,7 +230,7 @@ internal record SpecFactoryMetadata(
                         })
                         .ToImmutableList();
 
-                    var requiredProperties = ImmutableList<SpecFactoryRequiredPropertyMetadata>.Empty;
+                    var requiredProperties = ImmutableList<AutoFactoryRequiredPropertyMetadata>.Empty;
 
                     var qualifier = qualifierExtractor.Extract(factoryReferenceSymbol, currentCtx);
                     var returnType = typeArguments.Last().ToQualifiedTypeModel(qualifier);
@@ -294,13 +294,13 @@ internal record SpecFactoryMetadata(
     }
 
     public class AutoFactoryExtractor(
-        SpecFactoryRequiredPropertyMetadata.IExtractor requiredPropertyExtractor,
+        AutoFactoryConstructorMetadata.IExtractor autoFactoryConstructorExtractor,
         QualifierMetadata.IAttributeExtractor qualifierExtractor,
         FactoryAttributeMetadata.IExtractor factoryAttributeExtractor
     ) : IAutoFactoryExtractor {
         public static readonly IAutoFactoryExtractor Instance =
             new AutoFactoryExtractor(
-                SpecFactoryRequiredPropertyMetadata.Extractor.Instance,
+                AutoFactoryConstructorMetadata.Extractor.Instance,
                 QualifierMetadata.AttributeExtractor.Instance,
                 FactoryAttributeMetadata.Extractor.Instance
             );
@@ -309,46 +309,19 @@ internal record SpecFactoryMetadata(
             QualifiedTypeModel constructorType,
             ExtractorContext parentCtx
         ) {
-            return parentCtx.UseChildContext(
+            return parentCtx.UseChildExtractorContext(
                 $"extracting auto factory {constructorType}",
                 constructorType.TypeModel.TypeSymbol,
                 currentCtx => {
-                    VerifyExtract(constructorType, currentCtx);
-
                     var constructorTypeSymbol = constructorType.TypeModel.TypeSymbol;
                     var factoryAttribute = factoryAttributeExtractor.CanExtract(constructorTypeSymbol)
                         ? factoryAttributeExtractor.ExtractAutoFactory(constructorTypeSymbol, currentCtx)
                         : null;
                     var fabricationMode = factoryAttribute?.FabricationMode ?? FactoryFabricationMode.Recurrent;
-                    IReadOnlyList<IMethodSymbol> constructors = constructorTypeSymbol
-                        .GetMembers()
-                        .OfType<IMethodSymbol>()
-                        .Where(m => m is {
-                            MethodKind: MethodKind.Constructor,
-                            DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
-                        })
-                        .ToImmutableList();
-                    if (constructors.Count != 1) {
-                        throw Diagnostics.InvalidSpecification.AsException(
-                            $"Auto injected type '{constructorTypeSymbol.Name}' must contain exactly one public or internal constructor",
-                            constructorType.TypeModel.Location,
-                            currentCtx);
-                    }
 
-                    var constructorMethod = constructors.Single();
-                    IReadOnlyList<QualifiedTypeModel> constructorParameterTypes = constructorMethod.Parameters
-                        .Select(parameter => {
-                            var qualifier = qualifierExtractor.Extract(parameter, currentCtx);
-                            return parameter.Type.ToQualifiedTypeModel(qualifier);
-                        })
-                        .ToImmutableList();
-
-                    IReadOnlyList<SpecFactoryRequiredPropertyMetadata> requiredProperties = constructorTypeSymbol
-                        .GetMembers()
-                        .OfType<IPropertySymbol>()
-                        .Where(requiredPropertyExtractor.CanExtract)
-                        .Select(propertySymbol => requiredPropertyExtractor.Extract(propertySymbol, currentCtx))
-                        .ToImmutableList();
+                    var constructor = autoFactoryConstructorExtractor.Extract(constructorTypeSymbol, currentCtx);
+                    var constructorParameterTypes = constructor.ParameterTypes;
+                    var requiredProperties = constructor.RequiredProperties;
 
                     var qualifier = qualifierExtractor.Extract(constructorTypeSymbol, currentCtx);
                     var returnType = constructorType with {
@@ -371,24 +344,6 @@ internal record SpecFactoryMetadata(
                         null,
                         constructorTypeSymbol);
                 });
-        }
-
-        private bool VerifyExtract(QualifiedTypeModel constructorType, ExtractorContext? currentCtx) {
-            if (currentCtx != null) {
-                if (constructorType.TypeModel.TypeSymbol is not {
-                        IsStatic: false,
-                        IsAbstract: false,
-                        TypeKind: TypeKind.Class,
-                        DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
-                    }) {
-                    throw Diagnostics.InvalidSpecification.AsException(
-                        $"Auto factory type {constructorType} must be a non-static, non-abstract, public or internal class.",
-                        constructorType.TypeModel.Location,
-                        currentCtx);
-                }
-            }
-
-            return true;
         }
     }
 }

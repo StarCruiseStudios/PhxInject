@@ -29,8 +29,9 @@ internal static class PhxInjectSettingsMetadata {
             IReadOnlyList<ITypeSymbol> settingsCandidates,
             IGeneratorContext parentCtx
         ) {
-            return ExtractorContext.CreateExtractorContext(
-                parentCtx,
+            return parentCtx.UseChildExtractorContext(
+                $"extracting PhxInject settings for assembly {parentCtx.ExecutionContext.Compilation.Assembly}",
+                parentCtx.ExecutionContext.Compilation.Assembly,
                 currentCtx => {
                     IReadOnlyList<GeneratorSettings> injectSettings = settingsCandidates
                         .Where(phxInjectAttributeExtractor.CanExtract)

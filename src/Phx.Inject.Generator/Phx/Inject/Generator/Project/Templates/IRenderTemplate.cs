@@ -16,26 +16,13 @@ internal interface IRenderTemplate : ISourceCodeElement {
     void Render(IRenderWriter writer, RenderContext renderCtx);
 }
 
-internal record RenderContext : IGeneratorContext {
-    public GeneratorSettings GeneratorSettings { get; }
-
-    public RenderContext(
-        GeneratorSettings generatorSettings,
-        ISymbol? symbol,
-        IGeneratorContext parentContext
-    ) {
-        Description = null;
-        GeneratorSettings = generatorSettings;
-        Symbol = symbol;
-        Aggregator = parentContext.Aggregator;
-        ParentContext = parentContext;
-        ExecutionContext = parentContext.ExecutionContext;
-        ContextDepth = parentContext.ContextDepth + 1;
-    }
-    public string? Description { get; }
-    public ISymbol? Symbol { get; }
-    public IExceptionAggregator Aggregator { get; set; }
-    public IGeneratorContext? ParentContext { get; }
-    public GeneratorExecutionContext ExecutionContext { get; }
-    public int ContextDepth { get; }
+internal record RenderContext(
+    GeneratorSettings GeneratorSettings,
+    ISymbol Symbol,
+    IGeneratorContext ParentContext
+) : IGeneratorContext {
+    public string Description { get; } = "Rendering";
+    public IExceptionAggregator Aggregator { get; set; } = ParentContext.Aggregator;
+    public GeneratorExecutionContext ExecutionContext { get; } = ParentContext.ExecutionContext;
+    public int ContextDepth { get; } = ParentContext.ContextDepth + 1;
 }

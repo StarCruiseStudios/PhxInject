@@ -13,37 +13,19 @@ using Phx.Inject.Generator.Map.Definitions;
 
 namespace Phx.Inject.Generator.Project;
 
-internal record TemplateGenerationContext : IGeneratorContext {
-    public InjectorDef Injector { get; }
-    public IReadOnlyDictionary<TypeModel, InjectorDef> Injectors { get; }
-    public IReadOnlyDictionary<TypeModel, SpecContainerDef> SpecContainers { get; }
-    public IReadOnlyDictionary<TypeModel, DependencyImplementationDef> DependencyImplementations { get; }
-
-    public TemplateGenerationContext(
-        InjectorDef injector,
-        IReadOnlyDictionary<TypeModel, InjectorDef> injectors,
-        IReadOnlyDictionary<TypeModel, SpecContainerDef> specContainers,
-        IReadOnlyDictionary<TypeModel, DependencyImplementationDef> dependencyImplementations,
-        ISymbol? symbol,
-        IGeneratorContext parentContext
-    ) {
-        Description = null;
-        Symbol = symbol;
-        Injector = injector;
-        Injectors = injectors;
-        SpecContainers = specContainers;
-        DependencyImplementations = dependencyImplementations;
-        Aggregator = parentContext.Aggregator;
-        ParentContext = parentContext;
-        ExecutionContext = parentContext.ExecutionContext;
-        ContextDepth = parentContext.ContextDepth + 1;
-    }
-    public string? Description { get; }
-    public ISymbol? Symbol { get; }
-    public IExceptionAggregator Aggregator { get; set; }
-    public IGeneratorContext? ParentContext { get; }
-    public GeneratorExecutionContext ExecutionContext { get; }
-    public int ContextDepth { get; }
+internal record TemplateGenerationContext(
+    InjectorDef Injector,
+    IReadOnlyDictionary<TypeModel, InjectorDef> Injectors,
+    IReadOnlyDictionary<TypeModel, SpecContainerDef> SpecContainers,
+    IReadOnlyDictionary<TypeModel, DependencyImplementationDef> DependencyImplementations,
+    ISymbol Symbol,
+    IGeneratorContext ParentContext
+) : IGeneratorContext {
+    public GeneratorSettings GeneratorSettings { get; } = ParentContext.GeneratorSettings;
+    public string Description { get; } = "template generation";
+    public IExceptionAggregator Aggregator { get; set; } = ParentContext.Aggregator;
+    public GeneratorExecutionContext ExecutionContext { get; } = ParentContext.ExecutionContext;
+    public int ContextDepth { get; } = ParentContext.ContextDepth + 1;
 
     public InjectorDef GetInjector(TypeModel type, Location location) {
         if (Injectors.TryGetValue(type, out var injector)) {

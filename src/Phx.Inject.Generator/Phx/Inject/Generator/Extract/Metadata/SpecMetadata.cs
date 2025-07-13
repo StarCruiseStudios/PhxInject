@@ -49,7 +49,7 @@ internal record SpecMetadata(
         );
 
         public SpecMetadata Extract(ITypeSymbol specSymbol, ExtractorContext parentCtx) {
-            return parentCtx.UseChildContext(
+            return parentCtx.UseChildExtractorContext(
                 $"extracting specification {specSymbol}",
                 specSymbol,
                 currentCtx => {
@@ -141,10 +141,14 @@ internal record SpecMetadata(
     }
 
     public interface IAutoSpecExtractor {
+        bool CanExtract(
+            TypeModel injectorType,
+            ISet<QualifiedTypeModel> neededFactoryTypes,
+            ISet<QualifiedTypeModel> neededBuilderTypes);
         SpecMetadata Extract(
             TypeModel injectorType,
-            IReadOnlyList<QualifiedTypeModel> constructorTypes,
-            IReadOnlyList<QualifiedTypeModel> builderTypes,
+            ISet<QualifiedTypeModel> factoryTypes,
+            ISet<QualifiedTypeModel> builderTypes,
             ExtractorContext parentCtx);
     }
 
@@ -159,13 +163,21 @@ internal record SpecMetadata(
             SpecLinkMetadata.Extractor.Instance
         );
 
+        public bool CanExtract(
+            TypeModel injectorType,
+            ISet<QualifiedTypeModel> neededFactoryTypes,
+            ISet<QualifiedTypeModel> neededBuilderTypes
+        ) {
+            return neededFactoryTypes.Any() || neededBuilderTypes.Any();
+        }
+
         public SpecMetadata Extract(
             TypeModel injectorType,
-            IReadOnlyList<QualifiedTypeModel> constructorTypes,
-            IReadOnlyList<QualifiedTypeModel> builderTypes,
+            ISet<QualifiedTypeModel> factoryTypes,
+            ISet<QualifiedTypeModel> builderTypes,
             ExtractorContext parentCtx
         ) {
-            return parentCtx.UseChildContext(
+            return parentCtx.UseChildExtractorContext(
                 $"extracting auto constructor specification for injector {injectorType}",
                 injectorType.TypeSymbol,
                 currentCtx => {
@@ -176,7 +188,7 @@ internal record SpecMetadata(
                     };
                     var specInstantiationMode = SpecInstantiationMode.Static;
 
-                    IReadOnlyList<SpecFactoryMetadata> autoConstructorFactories = constructorTypes
+                    IReadOnlyList<SpecFactoryMetadata> autoConstructorFactories = factoryTypes
                         .SelectCatching(
                             currentCtx.Aggregator,
                             constructorType => $"extracting auto constructor factory for type {constructorType}",
@@ -184,7 +196,7 @@ internal record SpecMetadata(
                                 autoFactoryExtractor.ExtractFactory(constructorType, currentCtx))
                         .ToImmutableList();
 
-                    IReadOnlyList<SpecLinkMetadata> links = constructorTypes
+                    IReadOnlyList<SpecLinkMetadata> links = factoryTypes
                         .Select(constructorTypeSymbol => constructorTypeSymbol.TypeModel)
                         .Where(specLinkExtractor.CanExtract)
                         .SelectMany(constructorType => specLinkExtractor.ExtractAll(constructorType, currentCtx))

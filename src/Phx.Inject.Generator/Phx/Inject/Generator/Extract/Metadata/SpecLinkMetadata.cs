@@ -53,7 +53,7 @@ internal record SpecLinkMetadata(
             TypeModel containingSpecificationType,
             ExtractorContext parentCtx
         ) {
-            return parentCtx.UseChildContext(
+            return parentCtx.UseChildExtractorContext(
                 $"extracting links from {containingSpecificationType}",
                 containingSpecificationType.TypeSymbol,
                 currentCtx => {

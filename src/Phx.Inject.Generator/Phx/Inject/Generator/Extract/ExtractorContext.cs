@@ -11,41 +11,22 @@ using Phx.Inject.Common.Exceptions;
 
 namespace Phx.Inject.Generator.Extract;
 
-internal class ExtractorContext : IGeneratorContext {
-    private ExtractorContext(
-        string? description,
-        ISymbol? symbol,
-        IGeneratorContext parentContext
-    ) {
-        Description = description;
-        Symbol = symbol;
-        Aggregator = parentContext.Aggregator;
-        ParentContext = parentContext;
-        ExecutionContext = parentContext.ExecutionContext;
-        ContextDepth = parentContext.ContextDepth + 1;
-    }
-    public string? Description { get; }
-    public ISymbol? Symbol { get; }
-    public IExceptionAggregator Aggregator { get; set; }
-    public IGeneratorContext? ParentContext { get; }
-    public GeneratorExecutionContext ExecutionContext { get; }
-    public int ContextDepth { get; }
+internal record ExtractorContext(
+    string Description,
+    ISymbol Symbol,
+    IGeneratorContext ParentContext
+) : IGeneratorContext {
+    public GeneratorSettings GeneratorSettings { get; } = ParentContext.GeneratorSettings;
+    public IExceptionAggregator Aggregator { get; set; } = ParentContext.Aggregator;
+    public GeneratorExecutionContext ExecutionContext { get; } = ParentContext.ExecutionContext;
+    public int ContextDepth { get; } = ParentContext.ContextDepth + 1;
+}
 
-    public T UseChildContext<T>(string description, ISymbol symbol, Func<ExtractorContext, T> func) {
-        return UseChildContext(description, symbol, this, func);
-    }
-
-    public static T CreateExtractorContext<T>(
-        IGeneratorContext parentCtx,
-        Func<ExtractorContext, T> func
-    ) {
-        return UseChildContext(null, null, parentCtx, func);
-    }
-
-    private static T UseChildContext<T>(
-        string? description,
-        ISymbol? symbol,
-        IGeneratorContext parentCtx,
+internal static class ExtractorContextExtensions {
+    public static T UseChildExtractorContext<T>(
+        this IGeneratorContext parentCtx,
+        string description,
+        ISymbol symbol,
         Func<ExtractorContext, T> func
     ) {
         var childCtx = new ExtractorContext(description, symbol, parentCtx);
@@ -53,7 +34,7 @@ internal class ExtractorContext : IGeneratorContext {
             $"{(childCtx.ContextDepth > 0 ? "|" : "")}{new string(' ', childCtx.ContextDepth * 2)}{description}";
         childCtx.Log(message, Location.None);
         return ExceptionAggregator.Try(
-            $"extracting {symbol}",
+            childCtx.Description,
             childCtx,
             exceptionAggregator => {
                 childCtx.Aggregator = exceptionAggregator;

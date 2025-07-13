@@ -16,12 +16,6 @@ namespace Phx.Inject.Tests {
             return this;
         }
 
-        internal Phx.Inject.Tests.Data.Model.AutoBuilderType CtorFac_AutoBuilderType_AutoBuilderType(
-                Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
-        ) {
-            return new Phx.Inject.Tests.Data.Model.AutoBuilderType();
-        }
-
         internal Phx.Inject.Tests.Data.Model.AutoType CtorFac_AutoType_AutoType(
                 Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
         ) {
@@ -41,6 +35,13 @@ namespace Phx.Inject.Tests {
             };
         }
 
+        internal Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode CtorFac_AutoTypeWithFabricationMode_AutoTypeWithFabricationMode(
+                Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
+        ) {
+            return autoTypeWithFabricationMode ??= new Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode(
+                specContainers.AutoDependencyTestInjector_CommonTestValueSpecification.Fac_Int32_GetInt(specContainers));
+        }
+
         internal Phx.Inject.Tests.Data.Model.IntLeaf CtorFac_IntLeaf_IntLeaf(
                 Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
         ) {
@@ -48,10 +49,18 @@ namespace Phx.Inject.Tests {
                 specContainers.AutoDependencyTestInjector_CommonTestValueSpecification.Fac_Int32_GetInt(specContainers));
         }
 
-        internal Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode CtorFac_AutoTypeWithFabricationMode_AutoTypeWithFabricationMode(
+        internal Phx.Inject.Tests.Data.Model.AutoBuilderType CtorFac_AutoBuilderType_AutoBuilderType(
                 Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
         ) {
-            return autoTypeWithFabricationMode ??= new Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode(
+            return new Phx.Inject.Tests.Data.Model.AutoBuilderType();
+        }
+
+        internal void DirBld_L_AutoBuilderType_AutoBuilderType_BuildCustomLabel(
+                Phx.Inject.Tests.Data.Model.AutoBuilderType target,
+                Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
+        ) {
+            Phx.Inject.Tests.Data.Model.AutoBuilderType.BuildCustomLabel(
+                target,
                 specContainers.AutoDependencyTestInjector_CommonTestValueSpecification.Fac_Int32_GetInt(specContainers));
         }
 
@@ -60,15 +69,6 @@ namespace Phx.Inject.Tests {
                 Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
         ) {
             Phx.Inject.Tests.Data.Model.AutoBuilderType.Build(
-                target,
-                specContainers.AutoDependencyTestInjector_CommonTestValueSpecification.Fac_Int32_GetInt(specContainers));
-        }
-
-        internal void DirBld_L_AutoBuilderType_AutoBuilderType_BuildCustomLabel(
-                Phx.Inject.Tests.Data.Model.AutoBuilderType target,
-                Phx.Inject.Tests.AutoDependencyTestInjector.SpecContainerCollection specContainers
-        ) {
-            Phx.Inject.Tests.Data.Model.AutoBuilderType.BuildCustomLabel(
                 target,
                 specContainers.AutoDependencyTestInjector_CommonTestValueSpecification.Fac_Int32_GetInt(specContainers));
         }

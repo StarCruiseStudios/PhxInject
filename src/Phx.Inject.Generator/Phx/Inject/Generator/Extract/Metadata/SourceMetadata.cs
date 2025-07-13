@@ -9,14 +9,16 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
 
 namespace Phx.Inject.Generator.Extract.Metadata;
 
 internal record SourceMetadata(
-    IReadOnlyList<InjectorMetadata> injectorMetadata,
-    IReadOnlyList<SpecMetadata> specMetadata,
-    IReadOnlyList<DependencyMetadata> dependencyMetadata
+    IReadOnlyList<InjectorMetadata> InjectorMetadata,
+    IReadOnlyList<SpecMetadata> SpecMetadata,
+    IReadOnlyList<DependencyMetadata> DependencyMetadata,
+    MetadataMap MetadataMap
 ) {
     public interface IExtractor {
         SourceMetadata Extract(
@@ -29,13 +31,15 @@ internal record SourceMetadata(
         InjectorMetadata.IExtractor injectorExtractor,
         DependencyMetadata.IExtractor dependencyExtractor,
         SpecMetadata.IExtractor specExtractor,
-        SpecificationAttributeMetadata.IExtractor specificationAttributeExtractor
+        SpecificationAttributeMetadata.IExtractor specificationAttributeExtractor,
+        MetadataMap.IExtractor metadataMapExtractor
     ) : IExtractor {
         public static readonly IExtractor Instance = new Extractor(
-            InjectorMetadata.Extractor.Instance,
-            DependencyMetadata.Extractor.Instance,
-            SpecMetadata.Extractor.Instance,
-            SpecificationAttributeMetadata.Extractor.Instance
+            Metadata.InjectorMetadata.Extractor.Instance,
+            Metadata.DependencyMetadata.Extractor.Instance,
+            Metadata.SpecMetadata.Extractor.Instance,
+            SpecificationAttributeMetadata.Extractor.Instance,
+            MetadataMap.Exractor.Instance
         );
 
         public SourceMetadata Extract(
@@ -43,19 +47,20 @@ internal record SourceMetadata(
             IReadOnlyList<ITypeSymbol> specificationCandidates,
             IGeneratorContext parentCtx
         ) {
-            return ExtractorContext.CreateExtractorContext(
-                parentCtx,
+            return parentCtx.UseChildExtractorContext(
+                $"extracting injection source for assembly {parentCtx.ExecutionContext.Compilation.Assembly}",
+                parentCtx.ExecutionContext.Compilation.Assembly,
                 currentCtx => {
-                    IReadOnlyList<InjectorMetadata> injectorMetadata = injectorCandidates
+                    IReadOnlyList<InjectorMetadata> injectorMetadataList = injectorCandidates
                         .Where(injectorExtractor.CanExtract)
                         .SelectCatching(
                             currentCtx.Aggregator,
                             injectorTypeSymbol => $"extracting injector from {injectorTypeSymbol}",
                             injectorTypeSymbol => injectorExtractor.Extract(injectorTypeSymbol, currentCtx))
                         .ToImmutableList();
-                    currentCtx.Log($"Discovered {injectorMetadata.Count} injector types.");
+                    currentCtx.Log($"Discovered {injectorMetadataList.Count} injector types.");
 
-                    IReadOnlyList<DependencyMetadata> dependencyMetadata = injectorMetadata
+                    IReadOnlyList<DependencyMetadata> dependencyMetadataList = injectorMetadataList
                         .Where(injectorMetadata => injectorMetadata.DependencyInterfaceType != null)
                         .SelectCatching(
                             currentCtx.Aggregator,
@@ -67,21 +72,63 @@ internal record SourceMetadata(
                                 return dependencyExtractor.Extract(dependencySymbol, injectorType, currentCtx);
                             })
                         .ToImmutableList();
-                    currentCtx.Log($"Discovered {dependencyMetadata.Count} dependency types.");
+                    currentCtx.Log($"Discovered {dependencyMetadataList.Count} dependency types.");
 
-                    IReadOnlyList<SpecMetadata> specMetadata = specificationCandidates
+                    IReadOnlyList<SpecMetadata> specMetadataList = specificationCandidates
                         .Where(specificationAttributeExtractor.CanExtract)
                         .SelectCatching(
                             currentCtx.Aggregator,
                             specificationTypeSymbol => $"extracting specification from {specificationTypeSymbol}",
                             specificationTypeSymbol => specExtractor.Extract(specificationTypeSymbol, currentCtx))
                         .ToImmutableList();
-                    currentCtx.Log($"Discovered {specMetadata.Count} specification types.");
+                    currentCtx.Log($"Discovered {specMetadataList.Count} specification types.");
+
+                    var metadataMap = metadataMapExtractor
+                        .Extract(injectorMetadataList,
+                            specMetadataList,
+                            dependencyMetadataList,
+                            currentCtx);
+                    try {
+                        var numInjectors = metadataMap.InjectorMetadataMap.Count;
+                        var numTotalInjectorSpecifications =
+                            metadataMap.InjectorSpecMetadataListMap.Values.Sum(it => it.Count);
+                        var uniqueInjectorSpecifications = metadataMap.InjectorSpecMetadataListMap.Values.Aggregate(
+                            new HashSet<TypeModel>(),
+                            (acc, set) => {
+                                acc.UnionWith(set.Keys);
+                                return acc;
+                            });
+                        var numUniqueInjectorSpecifications = uniqueInjectorSpecifications.Count;
+                        var numSpecifications = metadataMap.SpecMetadataMap.Count;
+                        var numAutoFactorySpecifications = metadataMap.AutoFactorySpecMetadataMap.Count;
+                        var numDependencies = metadataMap.DependencyMetadataMap.Count;
+                        var unusedSpecifications = metadataMap.SpecMetadataMap.Keys
+                            .Union(metadataMap.AutoFactorySpecMetadataMap.Keys)
+                            .Except(uniqueInjectorSpecifications)
+                            .ToImmutableHashSet();
+                        var numUnusedSpecifications = unusedSpecifications.Count;
+                        currentCtx.Log($"Mapped {numInjectors} injectors.");
+                        currentCtx.Log($"Mapped {numDependencies} injector dependencies.");
+                        currentCtx.Log(
+                            $"Mapped {numTotalInjectorSpecifications} injector specification types, {numUniqueInjectorSpecifications} unique.");
+                        currentCtx.Log(
+                            $"Mapped {numSpecifications} implicit specifications and {numAutoFactorySpecifications} auto factory specifications.");
+                        currentCtx.Log($"Found {numUnusedSpecifications} unused specifications.");
+                        foreach (var unusedSpecification in unusedSpecifications) {
+                            Diagnostics.UnusedSpecification.AsWarning(
+                                $"Specification {unusedSpecification} is not used by any injector.",
+                                unusedSpecification.Location,
+                                currentCtx);
+                        }
+                    } catch (Exception e) {
+                        currentCtx.Log(e.ToString());
+                    }
 
                     return new SourceMetadata(
-                        injectorMetadata,
-                        specMetadata,
-                        dependencyMetadata
+                        injectorMetadataList,
+                        specMetadataList,
+                        dependencyMetadataList,
+                        metadataMap
                     );
                 });
         }

@@ -11,6 +11,14 @@ using Phx.Inject.Tests.Data.Model;
 namespace Phx.Inject.Tests.Data;
 
 [Specification]
+public static class UnusedSpecification {
+    [Factory]
+    internal static int GetInt() {
+        return 12;
+    }
+}
+
+[Specification]
 [Link(typeof(IntLeaf), typeof(ILeaf))]
 [Link(typeof(ILeaf), typeof(ILeaf), OutputQualifier = typeof(QualifierAAttribute))]
 [Link(typeof(ILeaf), typeof(ILeaf), InputQualifier = typeof(QualifierAAttribute), OutputLabel = LabelA)]

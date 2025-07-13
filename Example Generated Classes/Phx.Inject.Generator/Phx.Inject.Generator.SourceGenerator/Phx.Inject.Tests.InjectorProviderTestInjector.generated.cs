@@ -11,13 +11,13 @@
 namespace Phx.Inject.Tests {
     internal partial class InjectorProviderTestInjector : Phx.Inject.Tests.IInjectorProviderTestInjector {
         internal record SpecContainerCollection (
-                Phx.Inject.Tests.Data.InjectorProviderTestInjector_CommonTestValueSpecification InjectorProviderTestInjector_CommonTestValueSpecification,
-                Phx.Inject.Tests.InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories
+                Phx.Inject.Tests.InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories,
+                Phx.Inject.Tests.Data.InjectorProviderTestInjector_CommonTestValueSpecification InjectorProviderTestInjector_CommonTestValueSpecification
         ) {
             internal SpecContainerCollection CreateNewFrame() {
                 return new SpecContainerCollection(
-                        InjectorProviderTestInjector_CommonTestValueSpecification.CreateNewFrame(),
-                        InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories.CreateNewFrame());
+                        InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories.CreateNewFrame(),
+                        InjectorProviderTestInjector_CommonTestValueSpecification.CreateNewFrame());
             }
         }
 
@@ -25,8 +25,8 @@ namespace Phx.Inject.Tests {
 
         public InjectorProviderTestInjector() {
             specContainers = new SpecContainerCollection(
-                    InjectorProviderTestInjector_CommonTestValueSpecification: new Phx.Inject.Tests.Data.InjectorProviderTestInjector_CommonTestValueSpecification(),
-                    InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories: new Phx.Inject.Tests.InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories());
+                    InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories: new Phx.Inject.Tests.InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories(),
+                    InjectorProviderTestInjector_CommonTestValueSpecification: new Phx.Inject.Tests.Data.InjectorProviderTestInjector_CommonTestValueSpecification());
         }
 
         public System.Int32 GetInt() {

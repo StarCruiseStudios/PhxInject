@@ -44,7 +44,7 @@ internal record InjectorBuilderMetadata(
             IMethodSymbol builderMethodSymbol,
             ExtractorContext parentCtx
         ) {
-            return parentCtx.UseChildContext(
+            return parentCtx.UseChildExtractorContext(
                 $"extracting injector builder {builderMethodSymbol}",
                 builderMethodSymbol,
                 currentCtx => {

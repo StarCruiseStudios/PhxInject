@@ -52,7 +52,7 @@ internal record DependencyProviderMetadata(
         public DependencyProviderMetadata Extract(
             ISymbol providerSymbol,
             ExtractorContext parentCtx) {
-            return parentCtx.UseChildContext(
+            return parentCtx.UseChildExtractorContext(
                 $"extracting dependency provider {providerSymbol}",
                 providerSymbol,
                 currentCtx => {

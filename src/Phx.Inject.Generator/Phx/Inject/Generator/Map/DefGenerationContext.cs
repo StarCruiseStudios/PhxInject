@@ -16,42 +16,21 @@ using Phx.Inject.Generator.Map.Definitions;
 
 namespace Phx.Inject.Generator.Map;
 
-internal record DefGenerationContext : IGeneratorContext {
-    public InjectorMetadata Injector { get; }
-    public IReadOnlyDictionary<TypeModel, InjectorMetadata> Injectors { get; }
-    public IReadOnlyDictionary<TypeModel, SpecMetadata> Specifications { get; }
-    public IReadOnlyDictionary<TypeModel, DependencyMetadata> Dependencies { get; }
-    public IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> FactoryRegistrations { get; set; }
-    public IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> BuilderRegistrations { get; set; }
-
-    public DefGenerationContext(
-        InjectorMetadata injector,
-        IReadOnlyDictionary<TypeModel, InjectorMetadata> injectors,
-        IReadOnlyDictionary<TypeModel, SpecMetadata> specifications,
-        IReadOnlyDictionary<TypeModel, DependencyMetadata> dependencies,
-        IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> factoryRegistrations,
-        IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> builderRegistrations,
-        IGeneratorContext parentContext
-    ) {
-        Description = null;
-        Injector = injector;
-        Injectors = injectors;
-        Specifications = specifications;
-        Dependencies = dependencies;
-        FactoryRegistrations = factoryRegistrations;
-        BuilderRegistrations = builderRegistrations;
-        Symbol = null;
-        Aggregator = parentContext.Aggregator;
-        ParentContext = parentContext;
-        ExecutionContext = parentContext.ExecutionContext;
-        ContextDepth = parentContext.ContextDepth + 1;
-    }
-    public string? Description { get; }
-    public ISymbol? Symbol { get; private init; }
-    public IExceptionAggregator Aggregator { get; set; }
-    public IGeneratorContext? ParentContext { get; }
-    public GeneratorExecutionContext ExecutionContext { get; }
-    public int ContextDepth { get; }
+internal record DefGenerationContext(
+    InjectorMetadata Injector,
+    IReadOnlyDictionary<TypeModel, InjectorMetadata> Injectors,
+    IReadOnlyDictionary<TypeModel, SpecMetadata> Specifications,
+    IReadOnlyDictionary<TypeModel, DependencyMetadata> Dependencies,
+    IReadOnlyDictionary<RegistrationIdentifier, List<FactoryRegistration>> FactoryRegistrations,
+    IReadOnlyDictionary<RegistrationIdentifier, BuilderRegistration> BuilderRegistrations,
+    IGeneratorContext ParentContext
+) : IGeneratorContext {
+    public GeneratorSettings GeneratorSettings { get; } = ParentContext.GeneratorSettings;
+    public string Description { get; } = "def generation";
+    public ISymbol Symbol { get; private init; } = ParentContext.ExecutionContext.Compilation.Assembly;
+    public IExceptionAggregator Aggregator { get; set; } = ParentContext.Aggregator;
+    public GeneratorExecutionContext ExecutionContext { get; } = ParentContext.ExecutionContext;
+    public int ContextDepth { get; } = ParentContext.ContextDepth + 1;
 
     public InjectorMetadata GetInjector(TypeModel type, Location location) {
         if (Injectors.TryGetValue(type, out var injector)) {
@@ -163,7 +142,7 @@ internal record DefGenerationContext : IGeneratorContext {
             this);
     }
 
-    public DefGenerationContext GetChildContext(ISymbol? symbol) {
+    public DefGenerationContext GetChildContext(ISymbol symbol) {
         return new DefGenerationContext(
             Injector,
             Injectors,

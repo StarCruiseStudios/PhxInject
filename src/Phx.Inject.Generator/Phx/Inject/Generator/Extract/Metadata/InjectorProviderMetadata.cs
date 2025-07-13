@@ -50,7 +50,7 @@ internal record InjectorProviderMetadata(
             IMethodSymbol providerMethodSymbol,
             ExtractorContext parentCtx
         ) {
-            return parentCtx.UseChildContext(
+            return parentCtx.UseChildExtractorContext(
                 $"extracting injector provider {providerMethodSymbol}",
                 providerMethodSymbol,
                 currentCtx => {

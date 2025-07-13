@@ -50,7 +50,7 @@ internal record InjectorChildFactoryMetadata(
             IMethodSymbol childInjectorMethod,
             ExtractorContext parentCtx
         ) {
-            return parentCtx.UseChildContext(
+            return parentCtx.UseChildExtractorContext(
                 $"extracting injector child factory {childInjectorMethod}",
                 childInjectorMethod,
                 currentCtx => {

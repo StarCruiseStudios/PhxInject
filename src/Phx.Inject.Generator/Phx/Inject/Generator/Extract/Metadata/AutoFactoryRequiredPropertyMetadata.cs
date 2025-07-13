@@ -13,7 +13,7 @@ using Phx.Inject.Common.Util;
 
 namespace Phx.Inject.Generator.Extract.Metadata;
 
-internal record SpecFactoryRequiredPropertyMetadata(
+internal record AutoFactoryRequiredPropertyMetadata(
     QualifiedTypeModel PropertyType,
     string PropertyName,
     IPropertySymbol PropertySymbol
@@ -24,7 +24,7 @@ internal record SpecFactoryRequiredPropertyMetadata(
 
     public interface IExtractor {
         bool CanExtract(IPropertySymbol propertySymbol);
-        SpecFactoryRequiredPropertyMetadata Extract(
+        AutoFactoryRequiredPropertyMetadata Extract(
             IPropertySymbol propertySymbol,
             ExtractorContext parentCtx
         );
@@ -36,11 +36,11 @@ internal record SpecFactoryRequiredPropertyMetadata(
             return VerifyExtract(propertySymbol, null);
         }
 
-        public SpecFactoryRequiredPropertyMetadata Extract(
+        public AutoFactoryRequiredPropertyMetadata Extract(
             IPropertySymbol propertySymbol,
             ExtractorContext parentCtx
         ) {
-            return parentCtx.UseChildContext(
+            return parentCtx.UseChildExtractorContext(
                 $"extracting auto factory required property {propertySymbol}",
                 propertySymbol,
                 currentCtx => {
@@ -49,7 +49,7 @@ internal record SpecFactoryRequiredPropertyMetadata(
                     var qualifier = qualifierExtractor.Extract(propertySymbol, currentCtx);
                     var propertyType = propertySymbol.Type.ToQualifiedTypeModel(qualifier);
 
-                    return new SpecFactoryRequiredPropertyMetadata(propertyType, propertySymbol.Name, propertySymbol);
+                    return new AutoFactoryRequiredPropertyMetadata(propertyType, propertySymbol.Name, propertySymbol);
                 });
         }
 
