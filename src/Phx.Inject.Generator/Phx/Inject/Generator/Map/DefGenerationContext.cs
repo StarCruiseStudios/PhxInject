@@ -116,8 +116,8 @@ internal record DefGenerationContext : IGeneratorContext {
                         reg.Specification.SpecType);
                     return new SpecContainerFactorySingleInvocationDef(
                         specContainerType,
-                        reg.FactoryDesc.GetSpecContainerFactoryName(this),
-                        reg.FactoryDesc.Location
+                        reg.FactoryMetadata.GetSpecContainerFactoryName(this),
+                        reg.FactoryMetadata.Location
                     );
                 })
                 .ToImmutableList();

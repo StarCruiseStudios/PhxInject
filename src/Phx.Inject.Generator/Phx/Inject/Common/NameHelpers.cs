@@ -11,7 +11,6 @@ using System.Text.RegularExpressions;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator;
-using Phx.Inject.Generator.Extract.Descriptors;
 using Phx.Inject.Generator.Extract.Metadata;
 
 namespace Phx.Inject.Common;
@@ -33,7 +32,7 @@ internal static class NameHelpers {
         return $"{injectorType.BaseTypeName}.{SpecContainerCollectionTypeName}";
     }
 
-    public static string GetSpecContainerFactoryName(this SpecFactoryDesc factory, IGeneratorContext currentCtx) {
+    public static string GetSpecContainerFactoryName(this SpecFactoryMetadata factory, IGeneratorContext currentCtx) {
         var sb = factory.SpecFactoryMemberType switch {
             SpecFactoryMemberType.Method => new StringBuilder("Fac_"),
             SpecFactoryMemberType.Property => new StringBuilder("PropFac_"),

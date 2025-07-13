@@ -97,13 +97,13 @@ internal record InjectionContextDef(
             }
 
             foreach (var factoryRegistration in factoryRegistrations.Values) {
-                if (factoryRegistration.Count > 1 && !factoryRegistration.All(it => it.FactoryDesc.isPartial)) {
+                if (factoryRegistration.Count > 1 && !factoryRegistration.All(it => it.FactoryMetadata.isPartial)) {
                     parentCtx.Aggregator.AggregateMany<FactoryRegistration, FactoryRegistration>(
                         factoryRegistration,
-                        registration => $"registering factory {registration.FactoryDesc.ReturnType}",
+                        registration => $"registering factory {registration.FactoryMetadata.ReturnType}",
                         registration => throw Diagnostics.InvalidSpecification.AsException(
-                            $"Factory for type {registration.FactoryDesc.ReturnType} must be unique or all factories must be partial.",
-                            registration.FactoryDesc.Location,
+                            $"Factory for type {registration.FactoryMetadata.ReturnType} must be unique or all factories must be partial.",
+                            registration.FactoryMetadata.Location,
                             parentCtx));
                 }
             }

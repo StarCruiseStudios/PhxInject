@@ -18,7 +18,7 @@ namespace Phx.Inject.Generator.Extract.Descriptors;
 internal record SpecDesc(
     TypeModel SpecType,
     SpecInstantiationMode InstantiationMode,
-    IEnumerable<SpecFactoryDesc> Factories,
+    IEnumerable<SpecFactoryMetadata> Factories,
     IEnumerable<SpecBuilderMetadata> Builders,
     IEnumerable<SpecLinkMetadata> Links
 ) : IDescriptor {
@@ -35,34 +35,34 @@ internal record SpecDesc(
     }
 
     public class Extractor : IExtractor {
-        private readonly SpecBuilderMetadata.IAutoBuilderExtractor autoBuilderExtractor;
         private readonly SpecBuilderMetadata.IBuilderExtractor specBuilderExtractor;
         private readonly SpecBuilderMetadata.IBuilderReferenceExtractor specBuilderReferenceExtractor;
-        private readonly SpecFactoryDesc.IExtractor specFactoryDescExtractor;
+        private readonly SpecFactoryMetadata.IFactoryExtractor specFactoryExtractor;
+        private readonly SpecFactoryMetadata.IFactoryReferenceExtractor specFactoryReferenceExtractor;
         private readonly SpecificationAttributeMetadata.IExtractor specificationAttributeExtractor;
         private readonly SpecLinkMetadata.IExtractor specLinkExtractor;
 
         public Extractor(
-            SpecBuilderMetadata.IAutoBuilderExtractor autoBuilderExtractor,
             SpecBuilderMetadata.IBuilderExtractor specBuilderExtractor,
             SpecBuilderMetadata.IBuilderReferenceExtractor specBuilderReferenceExtractor,
-            SpecFactoryDesc.IExtractor specFactoryDescExtractor,
+            SpecFactoryMetadata.IFactoryExtractor specFactoryExtractor,
+            SpecFactoryMetadata.IFactoryReferenceExtractor specFactoryReferenceExtractor,
             SpecLinkMetadata.IExtractor specLinkExtractor,
             SpecificationAttributeMetadata.IExtractor specificationAttributeExtractor
         ) {
-            this.autoBuilderExtractor = autoBuilderExtractor;
             this.specBuilderExtractor = specBuilderExtractor;
             this.specBuilderReferenceExtractor = specBuilderReferenceExtractor;
-            this.specFactoryDescExtractor = specFactoryDescExtractor;
+            this.specFactoryExtractor = specFactoryExtractor;
+            this.specFactoryReferenceExtractor = specFactoryReferenceExtractor;
             this.specLinkExtractor = specLinkExtractor;
             this.specificationAttributeExtractor = specificationAttributeExtractor;
         }
 
         public Extractor() : this(
-            SpecBuilderMetadata.AutoBuilderExtractor.Instance,
             SpecBuilderMetadata.BuilderExtractor.Instance,
             SpecBuilderMetadata.BuilderReferenceExtractor.Instance,
-            new SpecFactoryDesc.Extractor(),
+            SpecFactoryMetadata.FactoryExtractor.Instance,
+            SpecFactoryMetadata.FactoryReferenceExtractor.Instance,
             SpecLinkMetadata.Extractor.Instance,
             SpecificationAttributeMetadata.Extractor.Instance
         ) { }
@@ -92,29 +92,32 @@ internal record SpecDesc(
                         .OfType<IMethodSymbol>()
                         .ToImmutableList();
 
-                    IReadOnlyList<SpecFactoryDesc> factories = specFields
+                    IReadOnlyList<SpecFactoryMetadata> factories = specFields
+                        .Where(field => specFactoryReferenceExtractor.CanExtract(field))
                         .SelectCatching(
                             currentCtx.Aggregator,
                             field =>
                                 $"extracting specification factory reference field {specType}.{field.Name}",
-                            field => specFactoryDescExtractor.ExtractFactoryReference(field, currentCtx))
+                            field => specFactoryReferenceExtractor.ExtractFactoryReference(field, currentCtx))
                         .Concat(specProperties
+                            .Where(field => specFactoryReferenceExtractor.CanExtract(field))
                             .SelectCatching(
                                 currentCtx.Aggregator,
                                 prop =>
                                     $"extracting specification factory reference property {specType}.{prop.Name}",
-                                prop => specFactoryDescExtractor.ExtractFactoryReference(prop, currentCtx)))
+                                prop => specFactoryReferenceExtractor.ExtractFactoryReference(prop, currentCtx)))
                         .Concat(specProperties
+                            .Where(field => specFactoryExtractor.CanExtract(field))
                             .SelectCatching(
                                 currentCtx.Aggregator,
                                 prop => $"extracting specification factory property {specType}.{prop.Name}",
-                                prop => specFactoryDescExtractor.ExtractFactory(prop, currentCtx)))
+                                prop => specFactoryExtractor.ExtractFactory(prop, currentCtx)))
                         .Concat(specMethods
+                            .Where(field => specFactoryExtractor.CanExtract(field))
                             .SelectCatching(
                                 currentCtx.Aggregator,
                                 method => $"extracting specification factory method {specType}.{method.Name}",
-                                method => specFactoryDescExtractor.ExtractFactory(method, currentCtx)))
-                        .OfType<SpecFactoryDesc>()
+                                method => specFactoryExtractor.ExtractFactory(method, currentCtx)))
                         .ToImmutableList();
 
                     IReadOnlyList<SpecBuilderMetadata> builders = specFields
@@ -158,7 +161,7 @@ internal record SpecDesc(
             IReadOnlyList<DependencyProviderMetadata> providers,
             ExtractorContext parentCtx
         ) {
-            IReadOnlyList<SpecFactoryDesc> specFactories = providers.Select(provider => new SpecFactoryDesc(
+            IReadOnlyList<SpecFactoryMetadata> specFactories = providers.Select(provider => new SpecFactoryMetadata(
                     provider.ProvidedType,
                     provider.ProviderMethodName,
                     SpecFactoryMemberType.Method,
@@ -166,7 +169,10 @@ internal record SpecDesc(
                     ImmutableList<SpecFactoryRequiredPropertyDesc>.Empty,
                     FactoryFabricationMode.Recurrent,
                     provider.IsPartial,
-                    provider.Location))
+                    provider.PartialAttribute,
+                    null,
+                    null,
+                    provider.ProviderMethodSymbol))
                 .ToImmutableList();
 
             return new SpecDesc(
@@ -188,30 +194,22 @@ internal record SpecDesc(
 
     public class AutoSpecExtractor : IAutoSpecExtractor {
         private readonly SpecBuilderMetadata.IAutoBuilderExtractor autoBuilderExtractor;
-        private readonly SpecBuilderMetadata.IBuilderExtractor specBuilderExtractor;
-        private readonly SpecBuilderMetadata.IBuilderReferenceExtractor specBuilderReferenceExtractor;
-        private readonly SpecFactoryDesc.IExtractor specFactoryDescExtractor;
+        private readonly SpecFactoryMetadata.IAutoFactoryExtractor autoFactoryExtractor;
         private readonly SpecLinkMetadata.IExtractor specLinkExtractor;
 
         public AutoSpecExtractor(
             SpecBuilderMetadata.IAutoBuilderExtractor autoBuilderExtractor,
-            SpecBuilderMetadata.IBuilderExtractor specBuilderExtractor,
-            SpecBuilderMetadata.IBuilderReferenceExtractor specBuilderReferenceExtractor,
-            SpecFactoryDesc.IExtractor specFactoryDescExtractor,
+            SpecFactoryMetadata.IAutoFactoryExtractor autoFactoryExtractor,
             SpecLinkMetadata.IExtractor specLinkExtractor
         ) {
             this.autoBuilderExtractor = autoBuilderExtractor;
-            this.specBuilderExtractor = specBuilderExtractor;
-            this.specBuilderReferenceExtractor = specBuilderReferenceExtractor;
-            this.specFactoryDescExtractor = specFactoryDescExtractor;
+            this.autoFactoryExtractor = autoFactoryExtractor;
             this.specLinkExtractor = specLinkExtractor;
         }
 
         public AutoSpecExtractor() : this(
             SpecBuilderMetadata.AutoBuilderExtractor.Instance,
-            SpecBuilderMetadata.BuilderExtractor.Instance,
-            SpecBuilderMetadata.BuilderReferenceExtractor.Instance,
-            new SpecFactoryDesc.Extractor(),
+            SpecFactoryMetadata.AutoFactoryExtractor.Instance,
             SpecLinkMetadata.Extractor.Instance
         ) { }
 
@@ -229,12 +227,12 @@ internal record SpecDesc(
                 currentCtx => {
                     var specInstantiationMode = SpecInstantiationMode.Static;
 
-                    IReadOnlyList<SpecFactoryDesc> autoConstructorFactories = constructorTypes
+                    IReadOnlyList<SpecFactoryMetadata> autoConstructorFactories = constructorTypes
                         .SelectCatching(
                             currentCtx.Aggregator,
                             constructorType => $"extracting auto constructor factory for type {constructorType}",
                             constructorType =>
-                                specFactoryDescExtractor.ExtractAutoConstructorFactory(constructorType, currentCtx))
+                                autoFactoryExtractor.ExtractFactory(constructorType, currentCtx))
                         .ToImmutableList();
 
                     IReadOnlyList<SpecLinkMetadata> links = constructorTypes
