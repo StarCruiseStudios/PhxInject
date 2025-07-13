@@ -109,7 +109,7 @@ internal record SpecContainerFactoryTemplate(
                     writer.Append(" {")
                         .IncreaseIndent(1);
                     var isFirst = true;
-                    foreach (var property in RequiredProperties.OrderBy(p => p.PropertyName)) {
+                    foreach (var property in RequiredProperties.OrderBy(it => it.PropertyName)) {
                         if (isFirst) {
                             isFirst = false;
                         } else {

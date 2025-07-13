@@ -38,7 +38,7 @@ internal record InjectorTemplate(
         using (var collectionWriter = writer.GetCollectionWriter(
             new CollectionWriterProperties(
                 OpeningString: $"internal record {SpecContainerCollectionTypeName} ("))) {
-            foreach (var property in SpecContainerCollectionProperties) {
+            foreach (var property in SpecContainerCollectionProperties.OrderBy(it => it.PropertyTypeQualifiedName)) {
                 var elementWriter = collectionWriter.GetElementWriter();
                 elementWriter.Append($"{property.PropertyTypeQualifiedName} {property.PropertyName}");
             }
@@ -64,7 +64,7 @@ internal record InjectorTemplate(
                     OpeningString: $"return new {SpecContainerCollectionTypeName}(",
                     ClosingString: ");",
                     CloseWithNewline: false))) {
-                foreach (var property in SpecContainerCollectionProperties) {
+                foreach (var property in SpecContainerCollectionProperties.OrderBy(it => it.PropertyTypeQualifiedName)) {
                     var elementWriter = collectionWriter.GetElementWriter();
                     elementWriter.Append($"{property.PropertyName}.CreateNewFrame()");
                 }
@@ -113,7 +113,7 @@ internal record InjectorTemplate(
                 $"{SpecContainerCollectionReferenceName} = new {SpecContainerCollectionTypeName}(",
                 ClosingString: ");",
                 CloseWithNewline: false))) {
-            foreach (var property in SpecContainerCollectionProperties) {
+            foreach (var property in SpecContainerCollectionProperties.OrderBy(it => it.PropertyTypeQualifiedName)) {
                 var elementWriter = collectionWriter.GetElementWriter();
                 elementWriter.Append($"{property.PropertyName}: new {property.PropertyTypeQualifiedName}(");
                 if (property.ConstructorArgumentName != null) {
@@ -140,7 +140,7 @@ internal record InjectorTemplate(
         //      public ChildInjectorQualifiedInterfaceType ChildFactoryName() {
         //          return new ChildInjectorQualifiedImplementationType(new DependencyImplementation(specContainers));
         //      }
-        foreach (var memberTemplate in InjectorMemberTemplates) {
+        foreach (var memberTemplate in InjectorMemberTemplates.OrderBy(it => it.OrderKey)) {
             writer.AppendBlankLine();
             memberTemplate.Render(writer, renderCtx);
         }

@@ -34,11 +34,11 @@ namespace Phx.Inject.Tests {
                     ConstructedChildInjector_NonConstructedSpecification: new Phx.Inject.Tests.ConstructedChildInjector_NonConstructedSpecification());
         }
 
-        public Phx.Inject.Tests.Data.Model.IntLeaf GetIntLeaf() {
+        public Phx.Inject.Tests.Data.Model.ILeaf GetILeaf() {
             return specContainers.ConstructedChildInjector_NonConstructedSpecification.Fac_IntLeaf_GetIntLeaf(specContainers);
         }
 
-        public Phx.Inject.Tests.Data.Model.ILeaf GetILeaf() {
+        public Phx.Inject.Tests.Data.Model.IntLeaf GetIntLeaf() {
             return specContainers.ConstructedChildInjector_NonConstructedSpecification.Fac_IntLeaf_GetIntLeaf(specContainers);
         }
 

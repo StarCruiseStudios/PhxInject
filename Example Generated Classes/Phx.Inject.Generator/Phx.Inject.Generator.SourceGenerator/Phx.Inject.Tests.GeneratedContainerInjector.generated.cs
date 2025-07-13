@@ -29,19 +29,19 @@ namespace Phx.Inject.Tests {
                     GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories: new Phx.Inject.Tests.GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories());
         }
 
+        public System.Collections.Generic.IReadOnlyList<Phx.Inject.Tests.Data.Model.IntLeaf> GetIntLeaves() {
+            return Phx.Inject.InjectionUtil.Combine<Phx.Inject.Tests.Data.Model.IntLeaf>(
+                specContainers.GeneratedContainerInjector_ContainerSpecification.Fac_IReadOnlyList_GetIntLeaf1(specContainers),
+                specContainers.GeneratedContainerInjector_ContainerSpecification.Fac_IReadOnlyList_GetIntLeaf2(specContainers)
+            );
+        }
+
         public Phx.Inject.Tests.Data.Model.Node GetNode() {
             return specContainers.GeneratedContainerInjector_ContainerSpecification.Fac_Node_GetNode(specContainers);
         }
 
         public Phx.Inject.Tests.Data.Model.Node GetNodeWithScoped() {
             return specContainers.GeneratedContainerInjector_ContainerSpecification.Fac_L_WithScoped_Node_GetNode2(specContainers);
-        }
-
-        public System.Collections.Generic.IReadOnlyList<Phx.Inject.Tests.Data.Model.IntLeaf> GetIntLeaves() {
-            return Phx.Inject.InjectionUtil.Combine<Phx.Inject.Tests.Data.Model.IntLeaf>(
-                specContainers.GeneratedContainerInjector_ContainerSpecification.Fac_IReadOnlyList_GetIntLeaf1(specContainers),
-                specContainers.GeneratedContainerInjector_ContainerSpecification.Fac_IReadOnlyList_GetIntLeaf2(specContainers)
-            );
         }
 
         public Phx.Inject.Tests.Data.Model.StringLeaf GetStringLeaf() {

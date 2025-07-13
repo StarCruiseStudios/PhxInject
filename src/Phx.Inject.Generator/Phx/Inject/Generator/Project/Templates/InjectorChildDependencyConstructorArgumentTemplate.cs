@@ -16,6 +16,7 @@ internal record InjectorChildDependencyConstructorArgumentTemplate(
     string SpecContainerCollectionReferenceName,
     Location Location
 ) : IInjectorChildConstructorArgumentTemplate {
+    public string OrderKey { get; } = "argument";
     public void Render(IRenderWriter writer, RenderContext renderCtx) {
         writer.Append(
             $"{ArgumentName}: new {DependencyImplementationTypeQualifiedName}({SpecContainerCollectionReferenceName})");

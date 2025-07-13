@@ -24,6 +24,13 @@ namespace Phx.Inject.Tests {
                 specContainers.ConstructedChildInjector_ConstructedChildInjector_ConstructorFactories.CtorFac_AutoTypeWithFabricationMode_AutoTypeWithFabricationMode(specContainers));
         }
 
+        internal Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode CtorFac_AutoTypeWithFabricationMode_AutoTypeWithFabricationMode(
+                Phx.Inject.Tests.ConstructedChildInjector.SpecContainerCollection specContainers
+        ) {
+            return autoTypeWithFabricationMode ??= new Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode(
+                specContainers.ConstructedChildInjector_IConstructedSpecification.Fac_Int32_GetIntValue(specContainers));
+        }
+
         internal Phx.Inject.Tests.Data.Model.AutoTypeWithRequiredProperties CtorFac_AutoTypeWithRequiredProperties_AutoTypeWithRequiredProperties(
                 Phx.Inject.Tests.ConstructedChildInjector.SpecContainerCollection specContainers
         ) {
@@ -33,13 +40,6 @@ namespace Phx.Inject.Tests {
                 X = specContainers.ConstructedChildInjector_IConstructedSpecification.Fac_Int32_GetIntValue(specContainers),
                 Y = specContainers.ConstructedChildInjector_ConstructedChildInjector_ConstructorFactories.CtorFac_AutoTypeWithFabricationMode_AutoTypeWithFabricationMode(specContainers)
             };
-        }
-
-        internal Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode CtorFac_AutoTypeWithFabricationMode_AutoTypeWithFabricationMode(
-                Phx.Inject.Tests.ConstructedChildInjector.SpecContainerCollection specContainers
-        ) {
-            return autoTypeWithFabricationMode ??= new Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode(
-                specContainers.ConstructedChildInjector_IConstructedSpecification.Fac_Int32_GetIntValue(specContainers));
         }
     }
 }

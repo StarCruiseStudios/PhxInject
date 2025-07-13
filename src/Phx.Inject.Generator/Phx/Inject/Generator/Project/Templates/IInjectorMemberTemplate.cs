@@ -8,4 +8,6 @@
 
 namespace Phx.Inject.Generator.Project.Templates;
 
-internal interface IInjectorMemberTemplate : IRenderTemplate { }
+internal interface IInjectorMemberTemplate : IRenderTemplate {
+    public string OrderKey { get; }
+}

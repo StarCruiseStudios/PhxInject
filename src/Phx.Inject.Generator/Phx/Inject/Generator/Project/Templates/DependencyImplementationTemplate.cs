@@ -45,8 +45,7 @@ internal record DependencyImplementationTemplate(
 
         //      public DependencyType GetDependency() {
         //          return specContainers.SpecContainerReference.GetDependency(specContainers);
-        //      }
-        foreach (var method in DependencyProviderMethods) {
+        foreach (var method in DependencyProviderMethods.OrderBy(it => it.ProviderMethodName)) {
             writer.AppendBlankLine();
             method.Render(writer, renderCtx);
         }

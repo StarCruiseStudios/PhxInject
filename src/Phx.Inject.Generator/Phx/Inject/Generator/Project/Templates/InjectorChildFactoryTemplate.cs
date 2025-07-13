@@ -18,6 +18,7 @@ internal record InjectorChildFactoryTemplate(
     IEnumerable<IInjectorChildConstructorArgumentTemplate> ChildConstructorArguments,
     Location Location
 ) : IInjectorMemberTemplate {
+    public string OrderKey { get; } = MethodName;
     public void Render(IRenderWriter writer, RenderContext renderCtx) {
         writer.Append($"public {ChildInterfaceTypeQualifiedName} {MethodName}(");
 

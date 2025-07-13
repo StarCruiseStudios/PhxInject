@@ -16,6 +16,7 @@ internal record InjectorProviderTemplate(
     SpecContainerFactoryInvocationTemplate FactoryInvocationTemplate,
     Location Location
 ) : IInjectorMemberTemplate {
+    public string OrderKey { get; } = MethodName;
     public void Render(IRenderWriter writer, RenderContext renderCtx) {
         writer.AppendLine($"public {ReturnTypeQualifiedName} {MethodName}() {{")
             .IncreaseIndent(1)

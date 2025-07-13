@@ -15,6 +15,7 @@ internal record InjectorChildConstructedSpecConstructorArgumentTemplate(
     string SpecParameterName,
     Location Location
 ) : IInjectorChildConstructorArgumentTemplate {
+    public string OrderKey { get; } = "argument";
     public void Render(IRenderWriter writer, RenderContext renderCtx) {
         writer.Append($"{ArgumentName}: {SpecParameterName}");
     }

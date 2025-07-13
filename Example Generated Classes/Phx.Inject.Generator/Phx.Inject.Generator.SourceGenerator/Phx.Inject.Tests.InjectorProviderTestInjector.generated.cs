@@ -11,13 +11,13 @@
 namespace Phx.Inject.Tests {
     internal partial class InjectorProviderTestInjector : Phx.Inject.Tests.IInjectorProviderTestInjector {
         internal record SpecContainerCollection (
-                Phx.Inject.Tests.InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories,
-                Phx.Inject.Tests.Data.InjectorProviderTestInjector_CommonTestValueSpecification InjectorProviderTestInjector_CommonTestValueSpecification
+                Phx.Inject.Tests.Data.InjectorProviderTestInjector_CommonTestValueSpecification InjectorProviderTestInjector_CommonTestValueSpecification,
+                Phx.Inject.Tests.InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories
         ) {
             internal SpecContainerCollection CreateNewFrame() {
                 return new SpecContainerCollection(
-                        InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories.CreateNewFrame(),
-                        InjectorProviderTestInjector_CommonTestValueSpecification.CreateNewFrame());
+                        InjectorProviderTestInjector_CommonTestValueSpecification.CreateNewFrame(),
+                        InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories.CreateNewFrame());
             }
         }
 
@@ -25,12 +25,20 @@ namespace Phx.Inject.Tests {
 
         public InjectorProviderTestInjector() {
             specContainers = new SpecContainerCollection(
-                    InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories: new Phx.Inject.Tests.InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories(),
-                    InjectorProviderTestInjector_CommonTestValueSpecification: new Phx.Inject.Tests.Data.InjectorProviderTestInjector_CommonTestValueSpecification());
+                    InjectorProviderTestInjector_CommonTestValueSpecification: new Phx.Inject.Tests.Data.InjectorProviderTestInjector_CommonTestValueSpecification(),
+                    InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories: new Phx.Inject.Tests.InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories());
+        }
+
+        public Phx.Inject.Tests.Data.Model.TestGenericObject<System.Int32> GetGenericObject() {
+            return specContainers.InjectorProviderTestInjector_CommonTestValueSpecification.Fac_TestGenericObject_GetGenericObject(specContainers);
         }
 
         public System.Int32 GetInt() {
             return specContainers.InjectorProviderTestInjector_CommonTestValueSpecification.Fac_Int32_GetInt(specContainers);
+        }
+
+        public System.Int32 GetIntQualifierA() {
+            return specContainers.InjectorProviderTestInjector_CommonTestValueSpecification.Fac_A_Phx_Inject_Tests_Data_Model_QualifierAAttribute_Int32_GetIntQualifierA(specContainers);
         }
 
         public System.Int32 GetLabelAInt() {
@@ -39,14 +47,6 @@ namespace Phx.Inject.Tests {
 
         public System.String GetlabelAString() {
             return specContainers.InjectorProviderTestInjector_CommonTestValueSpecification.Fac_L_LabelA_String_GetStringLabelA(specContainers);
-        }
-
-        public System.Int32 GetIntQualifierA() {
-            return specContainers.InjectorProviderTestInjector_CommonTestValueSpecification.Fac_A_Phx_Inject_Tests_Data_Model_QualifierAAttribute_Int32_GetIntQualifierA(specContainers);
-        }
-
-        public Phx.Inject.Tests.Data.Model.TestGenericObject<System.Int32> GetGenericObject() {
-            return specContainers.InjectorProviderTestInjector_CommonTestValueSpecification.Fac_TestGenericObject_GetGenericObject(specContainers);
         }
     }
 }

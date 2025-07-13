@@ -36,13 +36,6 @@ namespace Phx.Inject.Tests {
             return int32 ??= Phx.Inject.Tests.ContainerSpecification.GetInt();
         }
 
-        internal Phx.Inject.Tests.Data.Model.StringLeaf Fac_StringLeaf_GetStringLeaf(
-                Phx.Inject.Tests.GeneratedContainerInjector.SpecContainerCollection specContainers
-        ) {
-            return stringLeaf ??= Phx.Inject.Tests.ContainerSpecification.GetStringLeaf(
-                specContainers.GeneratedContainerInjector_ContainerSpecification.Fac_Int32_GetInt(specContainers));
-        }
-
         internal System.Collections.Generic.IReadOnlyList<Phx.Inject.Tests.Data.Model.IntLeaf> Fac_IReadOnlyList_GetIntLeaf1(
                 Phx.Inject.Tests.GeneratedContainerInjector.SpecContainerCollection specContainers
         ) {
@@ -57,6 +50,15 @@ namespace Phx.Inject.Tests {
                 specContainers.GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers));
         }
 
+        internal Phx.Inject.Tests.Data.Model.Node Fac_L_WithScoped_Node_GetNode2(
+                Phx.Inject.Tests.GeneratedContainerInjector.SpecContainerCollection parentSpecContainer
+        ) {
+            var specContainers = parentSpecContainer.CreateNewFrame();
+            return Phx.Inject.Tests.ContainerSpecification.GetNode2(
+                specContainers.GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers),
+                specContainers.GeneratedContainerInjector_ContainerSpecification.Fac_StringLeaf_GetStringLeaf(specContainers));
+        }
+
         internal Phx.Inject.Tests.Data.Model.Node Fac_Node_GetNode(
                 Phx.Inject.Tests.GeneratedContainerInjector.SpecContainerCollection parentSpecContainer
         ) {
@@ -68,13 +70,11 @@ namespace Phx.Inject.Tests {
                 ));
         }
 
-        internal Phx.Inject.Tests.Data.Model.Node Fac_L_WithScoped_Node_GetNode2(
-                Phx.Inject.Tests.GeneratedContainerInjector.SpecContainerCollection parentSpecContainer
+        internal Phx.Inject.Tests.Data.Model.StringLeaf Fac_StringLeaf_GetStringLeaf(
+                Phx.Inject.Tests.GeneratedContainerInjector.SpecContainerCollection specContainers
         ) {
-            var specContainers = parentSpecContainer.CreateNewFrame();
-            return Phx.Inject.Tests.ContainerSpecification.GetNode2(
-                specContainers.GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers),
-                specContainers.GeneratedContainerInjector_ContainerSpecification.Fac_StringLeaf_GetStringLeaf(specContainers));
+            return stringLeaf ??= Phx.Inject.Tests.ContainerSpecification.GetStringLeaf(
+                specContainers.GeneratedContainerInjector_ContainerSpecification.Fac_Int32_GetInt(specContainers));
         }
     }
 }

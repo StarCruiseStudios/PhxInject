@@ -26,20 +26,20 @@ namespace Phx.Inject.Tests {
                     GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification: new Phx.Inject.Tests.GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification());
         }
 
-        public Phx.Inject.Tests.Data.Model.LeafFactory GetLeafFactory() {
-            return specContainers.GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification.Fac_LeafFactory_GetLeafFactory(specContainers);
-        }
-
-        public Phx.Inject.Factory<Phx.Inject.Tests.Data.Model.ILeaf> GetLeafRuntimeFactory() {
-            return new Phx.Inject.Factory<Phx.Inject.Tests.Data.Model.ILeaf>(() => specContainers.GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification.Fac_ILeaf_GetLeaf(specContainers));
-        }
-
         public Phx.Inject.Tests.Data.Model.LeafFactory GetLabeledLeafFactory() {
             return specContainers.GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification.Fac_L_LabeledLeaf_LeafFactory_GetLabeledLeafFactory(specContainers);
         }
 
         public Phx.Inject.Factory<Phx.Inject.Tests.Data.Model.ILeaf> GetLabeledLeafRuntimeFactory() {
             return new Phx.Inject.Factory<Phx.Inject.Tests.Data.Model.ILeaf>(() => specContainers.GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification.Fac_L_LabeledLeaf_ILeaf_GetLabeledLeaf(specContainers));
+        }
+
+        public Phx.Inject.Tests.Data.Model.LeafFactory GetLeafFactory() {
+            return specContainers.GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification.Fac_LeafFactory_GetLeafFactory(specContainers);
+        }
+
+        public Phx.Inject.Factory<Phx.Inject.Tests.Data.Model.ILeaf> GetLeafRuntimeFactory() {
+            return new Phx.Inject.Factory<Phx.Inject.Tests.Data.Model.ILeaf>(() => specContainers.GeneratedRuntimeFactoryInjector_RuntimeFactorySpecification.Fac_ILeaf_GetLeaf(specContainers));
         }
     }
 }

@@ -16,17 +16,17 @@ namespace Phx.Inject.Tests {
             return this;
         }
 
+        internal System.Int32 PropFac_Int32_IntValue(
+                Phx.Inject.Tests.GeneratedBuilderReferenceInjector.SpecContainerCollection specContainers
+        ) {
+            return Phx.Inject.Tests.BuilderReferenceSpec.IntValue;
+        }
+
         internal Phx.Inject.Tests.Data.Model.IntLeaf RefFac_IntLeaf_GetIntLeaf(
                 Phx.Inject.Tests.GeneratedBuilderReferenceInjector.SpecContainerCollection specContainers
         ) {
             return intLeaf ??= Phx.Inject.Tests.BuilderReferenceSpec.GetIntLeaf(
                 specContainers.GeneratedBuilderReferenceInjector_BuilderReferenceSpec.PropFac_Int32_IntValue(specContainers));
-        }
-
-        internal System.Int32 PropFac_Int32_IntValue(
-                Phx.Inject.Tests.GeneratedBuilderReferenceInjector.SpecContainerCollection specContainers
-        ) {
-            return Phx.Inject.Tests.BuilderReferenceSpec.IntValue;
         }
 
         internal void RefBld_L_Field_TestBuilderReferenceObject_BuildBuilderReferenceTypeField(

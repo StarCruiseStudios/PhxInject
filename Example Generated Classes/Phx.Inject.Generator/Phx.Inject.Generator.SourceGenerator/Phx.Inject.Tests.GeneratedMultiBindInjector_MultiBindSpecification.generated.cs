@@ -15,6 +15,18 @@ namespace Phx.Inject.Tests {
             return this;
         }
 
+        internal System.Collections.Generic.IReadOnlyDictionary<System.String,Phx.Inject.Tests.Data.Model.ILeaf> Fac_IReadOnlyDictionary_GetDictLeaf1(
+                Phx.Inject.Tests.GeneratedMultiBindInjector.SpecContainerCollection specContainers
+        ) {
+            return Phx.Inject.Tests.MultiBindSpecification.GetDictLeaf1();
+        }
+
+        internal System.Collections.Generic.IReadOnlyDictionary<System.String,Phx.Inject.Tests.Data.Model.ILeaf> Fac_IReadOnlyDictionary_GetDictLeaf2(
+                Phx.Inject.Tests.GeneratedMultiBindInjector.SpecContainerCollection specContainers
+        ) {
+            return Phx.Inject.Tests.MultiBindSpecification.GetDictLeaf2();
+        }
+
         internal System.Collections.Generic.IReadOnlyList<Phx.Inject.Tests.Data.Model.ILeaf> Fac_IReadOnlyList_GetListLeaf1(
                 Phx.Inject.Tests.GeneratedMultiBindInjector.SpecContainerCollection specContainers
         ) {
@@ -25,18 +37,6 @@ namespace Phx.Inject.Tests {
                 Phx.Inject.Tests.GeneratedMultiBindInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.MultiBindSpecification.GetListLeaf2();
-        }
-
-        internal System.Collections.Generic.ISet<Phx.Inject.Tests.Data.Model.ILeaf> Fac_ISet_GetSetLeaf1(
-                Phx.Inject.Tests.GeneratedMultiBindInjector.SpecContainerCollection specContainers
-        ) {
-            return Phx.Inject.Tests.MultiBindSpecification.GetSetLeaf1();
-        }
-
-        internal System.Collections.Generic.ISet<Phx.Inject.Tests.Data.Model.ILeaf> Fac_ISet_GetSetLeaf2(
-                Phx.Inject.Tests.GeneratedMultiBindInjector.SpecContainerCollection specContainers
-        ) {
-            return Phx.Inject.Tests.MultiBindSpecification.GetSetLeaf2();
         }
 
         internal System.Collections.Generic.IReadOnlySet<Phx.Inject.Tests.Data.Model.ILeaf> Fac_IReadOnlySet_GetSetLeaf1ReadOnly(
@@ -51,16 +51,16 @@ namespace Phx.Inject.Tests {
             return Phx.Inject.Tests.MultiBindSpecification.GetSetLeaf2ReadOnly();
         }
 
-        internal System.Collections.Generic.IReadOnlyDictionary<System.String,Phx.Inject.Tests.Data.Model.ILeaf> Fac_IReadOnlyDictionary_GetDictLeaf1(
+        internal System.Collections.Generic.ISet<Phx.Inject.Tests.Data.Model.ILeaf> Fac_ISet_GetSetLeaf1(
                 Phx.Inject.Tests.GeneratedMultiBindInjector.SpecContainerCollection specContainers
         ) {
-            return Phx.Inject.Tests.MultiBindSpecification.GetDictLeaf1();
+            return Phx.Inject.Tests.MultiBindSpecification.GetSetLeaf1();
         }
 
-        internal System.Collections.Generic.IReadOnlyDictionary<System.String,Phx.Inject.Tests.Data.Model.ILeaf> Fac_IReadOnlyDictionary_GetDictLeaf2(
+        internal System.Collections.Generic.ISet<Phx.Inject.Tests.Data.Model.ILeaf> Fac_ISet_GetSetLeaf2(
                 Phx.Inject.Tests.GeneratedMultiBindInjector.SpecContainerCollection specContainers
         ) {
-            return Phx.Inject.Tests.MultiBindSpecification.GetDictLeaf2();
+            return Phx.Inject.Tests.MultiBindSpecification.GetSetLeaf2();
         }
     }
 }

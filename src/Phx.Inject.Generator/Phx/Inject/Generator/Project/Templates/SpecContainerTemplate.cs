@@ -34,7 +34,7 @@ internal record SpecContainerTemplate(
         }
 
         //      private ScopedInstanceType? scopedInstanceType;
-        foreach (var instanceHolder in InstanceHolders) {
+        foreach (var instanceHolder in InstanceHolders.OrderBy(it => it.ReferenceName)) {
             // instanceHolder.isContainerScoped
             if (!hasContainerScopedReferences || instanceHolder.isContainerScoped) {
                 writer.AppendLine(
@@ -103,7 +103,7 @@ internal record SpecContainerTemplate(
                 writer.AppendLine($"var newFrame = new {SpecContainerClassName}();");
             }
 
-            foreach (var instanceHolder in InstanceHolders) {
+            foreach (var instanceHolder in InstanceHolders.OrderBy(it => it.ReferenceName)) {
                 if (!instanceHolder.isContainerScoped) {
                     writer.AppendLine(
                         $"newFrame.{instanceHolder.ReferenceName} = this.{instanceHolder.ReferenceName};");
@@ -195,7 +195,7 @@ internal record SpecContainerTemplate(
             var memberTemplates = new List<ISpecContainerMemberTemplate>();
 
             // Create factory methods and instance holder declarations.
-            foreach (var factoryMethod in specContainerDef.FactoryMethodDefs) {
+            foreach (var factoryMethod in specContainerDef.FactoryMethodDefs.OrderBy(it => it.SpecContainerFactoryMethodName)) {
                 string? instanceHolderReferenceName = null;
                 if (factoryMethod.FabricationMode == FactoryFabricationMode.Scoped
                     || factoryMethod.FabricationMode == FactoryFabricationMode.ContainerScoped) {
@@ -239,7 +239,7 @@ internal record SpecContainerTemplate(
             }
 
             // Create builder methods.
-            foreach (var builderMethod in specContainerDef.BuilderMethodDefs) {
+            foreach (var builderMethod in specContainerDef.BuilderMethodDefs.OrderBy(it => it.SpecContainerBuilderMethodName)) {
                 IReadOnlyList<SpecContainerFactoryInvocationTemplate> arguments = builderMethod.Arguments
                     .Select(argument => {
                         IReadOnlyList<SpecContainerFactorySingleInvocationTemplate> singleInvocationTemplates =

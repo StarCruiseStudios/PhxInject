@@ -10,25 +10,11 @@
 #nullable enable
 namespace Phx.Inject.Tests {
     internal class GeneratedFactoryReferenceInjector_FactoryReferenceSpec {
-        private Phx.Inject.Tests.Data.Model.StringLeaf? stringLeaf;
         private Phx.Inject.Tests.Data.Model.IntLeaf? intLeaf;
+        private Phx.Inject.Tests.Data.Model.StringLeaf? stringLeaf;
 
         internal GeneratedFactoryReferenceInjector_FactoryReferenceSpec CreateNewFrame() {
             return this;
-        }
-
-        internal Phx.Inject.Tests.Data.Model.StringLeaf RefFac_StringLeaf_GetStringLeaf(
-                Phx.Inject.Tests.GeneratedFactoryReferenceInjector.SpecContainerCollection specContainers
-        ) {
-            return stringLeaf ??= Phx.Inject.Tests.FactoryReferenceSpec.GetStringLeaf(
-                specContainers.GeneratedFactoryReferenceInjector_FactoryReferenceSpec.PropFac_String_StringValue(specContainers));
-        }
-
-        internal Phx.Inject.Tests.Data.Model.IntLeaf RefFac_IntLeaf_GetIntLeaf(
-                Phx.Inject.Tests.GeneratedFactoryReferenceInjector.SpecContainerCollection specContainers
-        ) {
-            return intLeaf ??= Phx.Inject.Tests.FactoryReferenceSpec.GetIntLeaf(
-                specContainers.GeneratedFactoryReferenceInjector_FactoryReferenceSpec.PropFac_Int32_IntValue(specContainers));
         }
 
         internal System.Int32 PropFac_Int32_IntValue(
@@ -41,6 +27,20 @@ namespace Phx.Inject.Tests {
                 Phx.Inject.Tests.GeneratedFactoryReferenceInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.FactoryReferenceSpec.StringValue;
+        }
+
+        internal Phx.Inject.Tests.Data.Model.IntLeaf RefFac_IntLeaf_GetIntLeaf(
+                Phx.Inject.Tests.GeneratedFactoryReferenceInjector.SpecContainerCollection specContainers
+        ) {
+            return intLeaf ??= Phx.Inject.Tests.FactoryReferenceSpec.GetIntLeaf(
+                specContainers.GeneratedFactoryReferenceInjector_FactoryReferenceSpec.PropFac_Int32_IntValue(specContainers));
+        }
+
+        internal Phx.Inject.Tests.Data.Model.StringLeaf RefFac_StringLeaf_GetStringLeaf(
+                Phx.Inject.Tests.GeneratedFactoryReferenceInjector.SpecContainerCollection specContainers
+        ) {
+            return stringLeaf ??= Phx.Inject.Tests.FactoryReferenceSpec.GetStringLeaf(
+                specContainers.GeneratedFactoryReferenceInjector_FactoryReferenceSpec.PropFac_String_StringValue(specContainers));
         }
     }
 }

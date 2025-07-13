@@ -11,13 +11,13 @@
 namespace Phx.Inject.Tests {
     internal partial class BuilderTestInjector : Phx.Inject.Tests.IBuilderTestInjector {
         internal record SpecContainerCollection (
-                Phx.Inject.Tests.Data.BuilderTestInjector_CommonTestValueSpecification BuilderTestInjector_CommonTestValueSpecification,
-                Phx.Inject.Tests.BuilderTestInjector_BuilderTestInjector_ConstructorFactories BuilderTestInjector_BuilderTestInjector_ConstructorFactories
+                Phx.Inject.Tests.BuilderTestInjector_BuilderTestInjector_ConstructorFactories BuilderTestInjector_BuilderTestInjector_ConstructorFactories,
+                Phx.Inject.Tests.Data.BuilderTestInjector_CommonTestValueSpecification BuilderTestInjector_CommonTestValueSpecification
         ) {
             internal SpecContainerCollection CreateNewFrame() {
                 return new SpecContainerCollection(
-                        BuilderTestInjector_CommonTestValueSpecification.CreateNewFrame(),
-                        BuilderTestInjector_BuilderTestInjector_ConstructorFactories.CreateNewFrame());
+                        BuilderTestInjector_BuilderTestInjector_ConstructorFactories.CreateNewFrame(),
+                        BuilderTestInjector_CommonTestValueSpecification.CreateNewFrame());
             }
         }
 
@@ -25,8 +25,8 @@ namespace Phx.Inject.Tests {
 
         public BuilderTestInjector() {
             specContainers = new SpecContainerCollection(
-                    BuilderTestInjector_CommonTestValueSpecification: new Phx.Inject.Tests.Data.BuilderTestInjector_CommonTestValueSpecification(),
-                    BuilderTestInjector_BuilderTestInjector_ConstructorFactories: new Phx.Inject.Tests.BuilderTestInjector_BuilderTestInjector_ConstructorFactories());
+                    BuilderTestInjector_BuilderTestInjector_ConstructorFactories: new Phx.Inject.Tests.BuilderTestInjector_BuilderTestInjector_ConstructorFactories(),
+                    BuilderTestInjector_CommonTestValueSpecification: new Phx.Inject.Tests.Data.BuilderTestInjector_CommonTestValueSpecification());
         }
 
         public void BuildTestBuilder(Phx.Inject.Tests.Data.Model.TestBuilderObject target) {
