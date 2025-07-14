@@ -40,14 +40,14 @@ namespace Phx.Inject.Tests {
                 Phx.Inject.Tests.GeneratedContainerInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.ContainerSpecification.GetIntLeaf1(
-                specContainers.GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers));
+                specContainers.GeneratedContainerInjector_IContainerInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers));
         }
 
         internal System.Collections.Generic.IReadOnlyList<Phx.Inject.Tests.Data.Model.IntLeaf> Fac_IReadOnlyList_GetIntLeaf2(
                 Phx.Inject.Tests.GeneratedContainerInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.ContainerSpecification.GetIntLeaf2(
-                specContainers.GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers));
+                specContainers.GeneratedContainerInjector_IContainerInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers));
         }
 
         internal Phx.Inject.Tests.Data.Model.Node Fac_L_WithScoped_Node_GetNode2(
@@ -55,7 +55,7 @@ namespace Phx.Inject.Tests {
         ) {
             var specContainers = parentSpecContainer.CreateNewFrame();
             return Phx.Inject.Tests.ContainerSpecification.GetNode2(
-                specContainers.GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers),
+                specContainers.GeneratedContainerInjector_IContainerInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers),
                 specContainers.GeneratedContainerInjector_ContainerSpecification.Fac_StringLeaf_GetStringLeaf(specContainers));
         }
 

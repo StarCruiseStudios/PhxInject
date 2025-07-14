@@ -6,6 +6,11 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+using System.Collections.Immutable;
+using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Common.Model;
+using Phx.Inject.Generator;
+
 namespace Phx.Inject.Common.Util;
 
 public static class IEnumerableExtensions {
@@ -13,5 +18,42 @@ public static class IEnumerableExtensions {
         return element == null
             ? source
             : source.Append(element);
+    }
+
+    public static IReadOnlyDictionary<TKey, IReadOnlyList<TValue>> ToImmutableMultiMap<TKey, TValue, TList>(
+        this IDictionary<TKey, TList> source
+    )
+        where TList : IEnumerable<TValue>, new()
+        where TKey : notnull {
+        return source.ToImmutableDictionary(
+            element => element.Key,
+            IReadOnlyList<TValue> (element) => element.Value.ToImmutableList());
+    }
+
+    internal static IReadOnlyDictionary<TypeModel, R> CreateTypeMap<T, R>(
+        this IEnumerable<T> elements,
+        Func<T, TypeModel> extractKey,
+        Func<T, R> extractValue,
+        IGeneratorContext generatorCtx
+    ) where R : ISourceCodeElement {
+        var map = ImmutableDictionary.CreateBuilder<TypeModel, R>();
+        elements.SelectCatching(
+                generatorCtx.Aggregator,
+                element => $"Mapping metadata for element {element}",
+                element => {
+                    var key = extractKey(element);
+                    if (map.ContainsKey(key)) {
+                        throw Diagnostics.InternalError.AsException(
+                            $"Duplicate metadata for type {typeof(T).Name}.",
+                            key.Location,
+                            generatorCtx);
+                    }
+
+                    var value = extractValue(element);
+                    map.Add(key, value);
+                    return (key, value);
+                })
+            .ToImmutableList();
+        return map.ToImmutable();
     }
 }

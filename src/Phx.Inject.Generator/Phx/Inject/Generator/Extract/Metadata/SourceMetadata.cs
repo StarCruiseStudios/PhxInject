@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
 using Phx.Inject.Generator.Extract.Metadata.Attributes;
+using Phx.Inject.Generator.Extract.Metadata.Map;
 
 namespace Phx.Inject.Generator.Extract.Metadata;
 
@@ -18,7 +19,7 @@ internal record SourceMetadata(
     IReadOnlyList<InjectorMetadata> InjectorMetadata,
     IReadOnlyList<SpecMetadata> SpecMetadata,
     IReadOnlyList<DependencyMetadata> DependencyMetadata,
-    MetadataMap MetadataMap
+    MetadataTypeMap MetadataTypeMap
 ) {
     public interface IExtractor {
         SourceMetadata Extract(
@@ -32,14 +33,14 @@ internal record SourceMetadata(
         DependencyMetadata.IExtractor dependencyExtractor,
         SpecMetadata.IExtractor specExtractor,
         SpecificationAttributeMetadata.IExtractor specificationAttributeExtractor,
-        MetadataMap.IExtractor metadataMapExtractor
+        MetadataTypeMap.IExtractor metadataMapExtractor
     ) : IExtractor {
         public static readonly IExtractor Instance = new Extractor(
             Metadata.InjectorMetadata.Extractor.Instance,
             Metadata.DependencyMetadata.Extractor.Instance,
             Metadata.SpecMetadata.Extractor.Instance,
             SpecificationAttributeMetadata.Extractor.Instance,
-            MetadataMap.Exractor.Instance
+            MetadataTypeMap.Extractor.Instance
         );
 
         public SourceMetadata Extract(
@@ -89,7 +90,6 @@ internal record SourceMetadata(
                             dependencyMetadataList,
                             currentCtx);
                     try {
-                        var numInjectors = metadataMap.InjectorMetadataMap.Count;
                         var numTotalInjectorSpecifications =
                             metadataMap.InjectorSpecMetadataListMap.Values.Sum(it => it.Count);
                         var uniqueInjectorSpecifications = metadataMap.InjectorSpecMetadataListMap.Values.Aggregate(
@@ -98,22 +98,17 @@ internal record SourceMetadata(
                                 acc.UnionWith(set.Keys);
                                 return acc;
                             });
-                        var numUniqueInjectorSpecifications = uniqueInjectorSpecifications.Count;
-                        var numSpecifications = metadataMap.SpecMetadataMap.Count;
-                        var numAutoFactorySpecifications = metadataMap.AutoFactorySpecMetadataMap.Count;
-                        var numDependencies = metadataMap.DependencyMetadataMap.Count;
                         var unusedSpecifications = metadataMap.SpecMetadataMap.Keys
                             .Union(metadataMap.AutoFactorySpecMetadataMap.Keys)
                             .Except(uniqueInjectorSpecifications)
                             .ToImmutableHashSet();
-                        var numUnusedSpecifications = unusedSpecifications.Count;
-                        currentCtx.Log($"Mapped {numInjectors} injectors.");
-                        currentCtx.Log($"Mapped {numDependencies} injector dependencies.");
+                        currentCtx.Log($"Mapped {metadataMap.InjectorMetadataMap.Count} injectors.");
+                        currentCtx.Log($"Mapped {metadataMap.DependencyMetadataMap.Count} injector dependencies.");
                         currentCtx.Log(
-                            $"Mapped {numTotalInjectorSpecifications} injector specification types, {numUniqueInjectorSpecifications} unique.");
+                            $"Mapped {numTotalInjectorSpecifications} injector specification types, {uniqueInjectorSpecifications.Count} unique.");
                         currentCtx.Log(
-                            $"Mapped {numSpecifications} implicit specifications and {numAutoFactorySpecifications} auto factory specifications.");
-                        currentCtx.Log($"Found {numUnusedSpecifications} unused specifications.");
+                            $"Mapped {metadataMap.SpecMetadataMap.Count} explicit specifications and {metadataMap.AutoFactorySpecMetadataMap.Count} auto factory specifications.");
+                        currentCtx.Log($"Found {unusedSpecifications.Count} unused specifications.");
                         foreach (var unusedSpecification in unusedSpecifications) {
                             Diagnostics.UnusedSpecification.AsWarning(
                                 $"Specification {unusedSpecification} is not used by any injector.",

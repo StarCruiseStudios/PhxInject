@@ -148,12 +148,13 @@ internal static class Diagnostics {
         public void AsWarning(
             string message,
             Location location,
-            IGeneratorContext currentCtx
+            IGeneratorContext currentCtx,
+            bool includeFrame = false
         ) {
             currentCtx.ExecutionContext.ReportDiagnostic(
                 CreateDiagnostic(
                     message,
-                    currentCtx.GetFrame(),
+                    includeFrame ? currentCtx.GetFrame() : null,
                     location));
         }
 

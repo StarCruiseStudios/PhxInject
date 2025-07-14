@@ -26,8 +26,8 @@ namespace Phx.Inject.Tests {
                 Phx.Inject.Tests.ConstructedChildInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.NonConstructedSpecification.GetOuterType(
-                specContainers.ConstructedChildInjector_ConstructedChildInjector_ConstructorFactories.CtorFac_AutoType_AutoType(specContainers),
-                specContainers.ConstructedChildInjector_ConstructedChildInjector_ConstructorFactories.CtorFac_AutoTypeWithRequiredProperties_AutoTypeWithRequiredProperties(specContainers));
+                specContainers.ConstructedChildInjector_IConstructedChildInjector_ConstructorFactories.CtorFac_AutoType_AutoType(specContainers),
+                specContainers.ConstructedChildInjector_IConstructedChildInjector_ConstructorFactories.CtorFac_AutoTypeWithRequiredProperties_AutoTypeWithRequiredProperties(specContainers));
         }
     }
 }

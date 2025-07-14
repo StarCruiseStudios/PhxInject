@@ -9,9 +9,9 @@
 
 #nullable enable
 namespace Phx.Inject.Tests {
-    internal class GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories {
+    internal class GeneratedContainerInjector_IContainerInjector_ConstructorFactories {
 
-        internal GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories CreateNewFrame() {
+        internal GeneratedContainerInjector_IContainerInjector_ConstructorFactories CreateNewFrame() {
             return this;
         }
 

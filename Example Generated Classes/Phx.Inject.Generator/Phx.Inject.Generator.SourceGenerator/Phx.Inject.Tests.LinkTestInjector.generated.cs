@@ -12,12 +12,12 @@ namespace Phx.Inject.Tests {
     internal partial class LinkTestInjector : Phx.Inject.Tests.ILinkTestInjector {
         internal record SpecContainerCollection (
                 Phx.Inject.Tests.Data.LinkTestInjector_CommonTestValueSpecification LinkTestInjector_CommonTestValueSpecification,
-                Phx.Inject.Tests.LinkTestInjector_LinkTestInjector_ConstructorFactories LinkTestInjector_LinkTestInjector_ConstructorFactories
+                Phx.Inject.Tests.LinkTestInjector_ILinkTestInjector_ConstructorFactories LinkTestInjector_ILinkTestInjector_ConstructorFactories
         ) {
             internal SpecContainerCollection CreateNewFrame() {
                 return new SpecContainerCollection(
                         LinkTestInjector_CommonTestValueSpecification.CreateNewFrame(),
-                        LinkTestInjector_LinkTestInjector_ConstructorFactories.CreateNewFrame());
+                        LinkTestInjector_ILinkTestInjector_ConstructorFactories.CreateNewFrame());
             }
         }
 
@@ -26,23 +26,23 @@ namespace Phx.Inject.Tests {
         public LinkTestInjector() {
             specContainers = new SpecContainerCollection(
                     LinkTestInjector_CommonTestValueSpecification: new Phx.Inject.Tests.Data.LinkTestInjector_CommonTestValueSpecification(),
-                    LinkTestInjector_LinkTestInjector_ConstructorFactories: new Phx.Inject.Tests.LinkTestInjector_LinkTestInjector_ConstructorFactories());
+                    LinkTestInjector_ILinkTestInjector_ConstructorFactories: new Phx.Inject.Tests.LinkTestInjector_ILinkTestInjector_ConstructorFactories());
         }
 
         public Phx.Inject.Tests.Data.Model.ILeaf GetDoubleLinkedType() {
-            return specContainers.LinkTestInjector_LinkTestInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers);
+            return specContainers.LinkTestInjector_ILinkTestInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers);
         }
 
         public Phx.Inject.Tests.Data.Model.ILeaf GetLinkedType() {
-            return specContainers.LinkTestInjector_LinkTestInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers);
+            return specContainers.LinkTestInjector_ILinkTestInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers);
         }
 
         public Phx.Inject.Tests.Data.Model.ILeaf GetQualifiedLinkedType() {
-            return specContainers.LinkTestInjector_LinkTestInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers);
+            return specContainers.LinkTestInjector_ILinkTestInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers);
         }
 
         public Phx.Inject.Tests.Data.Model.ILeaf GetTripleLinkedType() {
-            return specContainers.LinkTestInjector_LinkTestInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers);
+            return specContainers.LinkTestInjector_ILinkTestInjector_ConstructorFactories.CtorFac_IntLeaf_IntLeaf(specContainers);
         }
     }
 }

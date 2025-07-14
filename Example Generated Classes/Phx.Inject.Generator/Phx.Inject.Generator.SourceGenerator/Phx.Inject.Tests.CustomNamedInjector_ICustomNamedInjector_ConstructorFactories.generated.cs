@@ -9,10 +9,10 @@
 
 #nullable enable
 namespace Phx.Inject.Tests {
-    internal class CustomNamedInjector_CustomNamedInjector_ConstructorFactories {
+    internal class CustomNamedInjector_ICustomNamedInjector_ConstructorFactories {
         private Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode? autoTypeWithFabricationMode;
 
-        internal CustomNamedInjector_CustomNamedInjector_ConstructorFactories CreateNewFrame() {
+        internal CustomNamedInjector_ICustomNamedInjector_ConstructorFactories CreateNewFrame() {
             return this;
         }
 
@@ -21,7 +21,7 @@ namespace Phx.Inject.Tests {
         ) {
             return new Phx.Inject.Tests.Data.Model.AutoType(
                 specContainers.CustomNamedInjector_CommonTestValueSpecification.Fac_Int32_GetInt(specContainers),
-                specContainers.CustomNamedInjector_CustomNamedInjector_ConstructorFactories.CtorFac_AutoTypeWithFabricationMode_AutoTypeWithFabricationMode(specContainers));
+                specContainers.CustomNamedInjector_ICustomNamedInjector_ConstructorFactories.CtorFac_AutoTypeWithFabricationMode_AutoTypeWithFabricationMode(specContainers));
         }
 
         internal Phx.Inject.Tests.Data.Model.AutoTypeWithFabricationMode CtorFac_AutoTypeWithFabricationMode_AutoTypeWithFabricationMode(
@@ -35,10 +35,10 @@ namespace Phx.Inject.Tests {
                 Phx.Inject.Tests.CustomNamedInjector.SpecContainerCollection specContainers
         ) {
             return new Phx.Inject.Tests.Data.Model.AutoTypeWithRequiredProperties(
-                specContainers.CustomNamedInjector_CustomNamedInjector_ConstructorFactories.CtorFac_AutoType_AutoType(specContainers)
+                specContainers.CustomNamedInjector_ICustomNamedInjector_ConstructorFactories.CtorFac_AutoType_AutoType(specContainers)
             ) {
                 X = specContainers.CustomNamedInjector_CommonTestValueSpecification.Fac_Int32_GetInt(specContainers),
-                Y = specContainers.CustomNamedInjector_CustomNamedInjector_ConstructorFactories.CtorFac_AutoTypeWithFabricationMode_AutoTypeWithFabricationMode(specContainers)
+                Y = specContainers.CustomNamedInjector_ICustomNamedInjector_ConstructorFactories.CtorFac_AutoTypeWithFabricationMode_AutoTypeWithFabricationMode(specContainers)
             };
         }
 

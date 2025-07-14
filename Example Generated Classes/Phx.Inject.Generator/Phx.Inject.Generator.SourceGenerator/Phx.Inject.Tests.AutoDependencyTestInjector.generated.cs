@@ -11,12 +11,12 @@
 namespace Phx.Inject.Tests {
     internal partial class AutoDependencyTestInjector : Phx.Inject.Tests.IAutoDependencyTestInjector {
         internal record SpecContainerCollection (
-                Phx.Inject.Tests.AutoDependencyTestInjector_AutoDependencyTestInjector_ConstructorFactories AutoDependencyTestInjector_AutoDependencyTestInjector_ConstructorFactories,
+                Phx.Inject.Tests.AutoDependencyTestInjector_IAutoDependencyTestInjector_ConstructorFactories AutoDependencyTestInjector_IAutoDependencyTestInjector_ConstructorFactories,
                 Phx.Inject.Tests.Data.AutoDependencyTestInjector_CommonTestValueSpecification AutoDependencyTestInjector_CommonTestValueSpecification
         ) {
             internal SpecContainerCollection CreateNewFrame() {
                 return new SpecContainerCollection(
-                        AutoDependencyTestInjector_AutoDependencyTestInjector_ConstructorFactories.CreateNewFrame(),
+                        AutoDependencyTestInjector_IAutoDependencyTestInjector_ConstructorFactories.CreateNewFrame(),
                         AutoDependencyTestInjector_CommonTestValueSpecification.CreateNewFrame());
             }
         }
@@ -25,20 +25,20 @@ namespace Phx.Inject.Tests {
 
         public AutoDependencyTestInjector() {
             specContainers = new SpecContainerCollection(
-                    AutoDependencyTestInjector_AutoDependencyTestInjector_ConstructorFactories: new Phx.Inject.Tests.AutoDependencyTestInjector_AutoDependencyTestInjector_ConstructorFactories(),
+                    AutoDependencyTestInjector_IAutoDependencyTestInjector_ConstructorFactories: new Phx.Inject.Tests.AutoDependencyTestInjector_IAutoDependencyTestInjector_ConstructorFactories(),
                     AutoDependencyTestInjector_CommonTestValueSpecification: new Phx.Inject.Tests.Data.AutoDependencyTestInjector_CommonTestValueSpecification());
         }
 
         public void BuildAutoBuilderType(Phx.Inject.Tests.Data.Model.AutoBuilderType target) {
-            specContainers.AutoDependencyTestInjector_AutoDependencyTestInjector_ConstructorFactories.DirBld_AutoBuilderType_Build(target, specContainers);
+            specContainers.AutoDependencyTestInjector_IAutoDependencyTestInjector_ConstructorFactories.DirBld_AutoBuilderType_Build(target, specContainers);
         }
 
         public void BuildLabeledAutoBuilderType(Phx.Inject.Tests.Data.Model.AutoBuilderType target) {
-            specContainers.AutoDependencyTestInjector_AutoDependencyTestInjector_ConstructorFactories.DirBld_L_AutoBuilderType_AutoBuilderType_BuildCustomLabel(target, specContainers);
+            specContainers.AutoDependencyTestInjector_IAutoDependencyTestInjector_ConstructorFactories.DirBld_L_AutoBuilderType_AutoBuilderType_BuildCustomLabel(target, specContainers);
         }
 
         public Phx.Inject.Tests.Data.Model.AutoBuilderType GetAutoBuilderType() {
-            return specContainers.AutoDependencyTestInjector_AutoDependencyTestInjector_ConstructorFactories.CtorFac_AutoBuilderType_AutoBuilderType(specContainers);
+            return specContainers.AutoDependencyTestInjector_IAutoDependencyTestInjector_ConstructorFactories.CtorFac_AutoBuilderType_AutoBuilderType(specContainers);
         }
 
         public Phx.Inject.Tests.Data.Model.OuterType GetOuterType() {

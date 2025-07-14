@@ -12,12 +12,12 @@ namespace Phx.Inject.Tests {
     internal partial class GeneratedContainerInjector : Phx.Inject.Tests.IContainerInjector {
         internal record SpecContainerCollection (
                 Phx.Inject.Tests.GeneratedContainerInjector_ContainerSpecification GeneratedContainerInjector_ContainerSpecification,
-                Phx.Inject.Tests.GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories
+                Phx.Inject.Tests.GeneratedContainerInjector_IContainerInjector_ConstructorFactories GeneratedContainerInjector_IContainerInjector_ConstructorFactories
         ) {
             internal SpecContainerCollection CreateNewFrame() {
                 return new SpecContainerCollection(
                         GeneratedContainerInjector_ContainerSpecification.CreateNewFrame(),
-                        GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories.CreateNewFrame());
+                        GeneratedContainerInjector_IContainerInjector_ConstructorFactories.CreateNewFrame());
             }
         }
 
@@ -26,7 +26,7 @@ namespace Phx.Inject.Tests {
         public GeneratedContainerInjector() {
             specContainers = new SpecContainerCollection(
                     GeneratedContainerInjector_ContainerSpecification: new Phx.Inject.Tests.GeneratedContainerInjector_ContainerSpecification(),
-                    GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories: new Phx.Inject.Tests.GeneratedContainerInjector_GeneratedContainerInjector_ConstructorFactories());
+                    GeneratedContainerInjector_IContainerInjector_ConstructorFactories: new Phx.Inject.Tests.GeneratedContainerInjector_IContainerInjector_ConstructorFactories());
         }
 
         public System.Collections.Generic.IReadOnlyList<Phx.Inject.Tests.Data.Model.IntLeaf> GetIntLeaves() {

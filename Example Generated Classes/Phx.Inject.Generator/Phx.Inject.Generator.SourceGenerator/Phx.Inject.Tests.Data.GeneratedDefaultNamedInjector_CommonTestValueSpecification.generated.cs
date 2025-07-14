@@ -43,8 +43,8 @@ namespace Phx.Inject.Tests.Data {
                 Phx.Inject.Tests.GeneratedDefaultNamedInjector.SpecContainerCollection specContainers
         ) {
             return Phx.Inject.Tests.Data.CommonTestValueSpecification.GetOuterType(
-                specContainers.GeneratedDefaultNamedInjector_GeneratedDefaultNamedInjector_ConstructorFactories.CtorFac_AutoType_AutoType(specContainers),
-                specContainers.GeneratedDefaultNamedInjector_GeneratedDefaultNamedInjector_ConstructorFactories.CtorFac_AutoTypeWithRequiredProperties_AutoTypeWithRequiredProperties(specContainers));
+                specContainers.GeneratedDefaultNamedInjector_IDefaultNamedInjector_ConstructorFactories.CtorFac_AutoType_AutoType(specContainers),
+                specContainers.GeneratedDefaultNamedInjector_IDefaultNamedInjector_ConstructorFactories.CtorFac_AutoTypeWithRequiredProperties_AutoTypeWithRequiredProperties(specContainers));
         }
 
         internal Phx.Inject.Tests.Data.Model.TestGenericObject<System.Int32> Fac_TestGenericObject_GetGenericObject(

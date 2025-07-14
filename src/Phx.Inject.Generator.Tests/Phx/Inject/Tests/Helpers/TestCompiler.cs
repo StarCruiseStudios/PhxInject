@@ -53,7 +53,7 @@ public static class TestCompiler {
             }
         }
 
-        return Compile(builder.ToImmutableArray(), generators);
+        return Compile(builder.ToImmutable(), generators);
     }
 
     private static SyntaxTree ParseText(string text) {
@@ -61,7 +61,7 @@ public static class TestCompiler {
     }
 
     private static Compilation Compile(IEnumerable<SyntaxTree> syntaxTrees, ISourceGenerator[] generators) {
-        MetadataReference[] references = Directory.GetFiles(TestContext.CurrentContext.TestDirectory, "*.dll")
+        var references = Directory.GetFiles(TestContext.CurrentContext.TestDirectory, "*.dll")
             .Select(filePath => MetadataReference.CreateFromFile(filePath))
             .Concat(
                 new MetadataReference[] {

@@ -12,12 +12,12 @@ namespace Phx.Inject.Tests {
     internal partial class InjectorProviderTestInjector : Phx.Inject.Tests.IInjectorProviderTestInjector {
         internal record SpecContainerCollection (
                 Phx.Inject.Tests.Data.InjectorProviderTestInjector_CommonTestValueSpecification InjectorProviderTestInjector_CommonTestValueSpecification,
-                Phx.Inject.Tests.InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories
+                Phx.Inject.Tests.InjectorProviderTestInjector_IInjectorProviderTestInjector_ConstructorFactories InjectorProviderTestInjector_IInjectorProviderTestInjector_ConstructorFactories
         ) {
             internal SpecContainerCollection CreateNewFrame() {
                 return new SpecContainerCollection(
                         InjectorProviderTestInjector_CommonTestValueSpecification.CreateNewFrame(),
-                        InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories.CreateNewFrame());
+                        InjectorProviderTestInjector_IInjectorProviderTestInjector_ConstructorFactories.CreateNewFrame());
             }
         }
 
@@ -26,7 +26,7 @@ namespace Phx.Inject.Tests {
         public InjectorProviderTestInjector() {
             specContainers = new SpecContainerCollection(
                     InjectorProviderTestInjector_CommonTestValueSpecification: new Phx.Inject.Tests.Data.InjectorProviderTestInjector_CommonTestValueSpecification(),
-                    InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories: new Phx.Inject.Tests.InjectorProviderTestInjector_InjectorProviderTestInjector_ConstructorFactories());
+                    InjectorProviderTestInjector_IInjectorProviderTestInjector_ConstructorFactories: new Phx.Inject.Tests.InjectorProviderTestInjector_IInjectorProviderTestInjector_ConstructorFactories());
         }
 
         public Phx.Inject.Tests.Data.Model.TestGenericObject<System.Int32> GetGenericObject() {

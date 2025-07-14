@@ -11,12 +11,12 @@
 namespace Phx.Inject.Tests {
     internal partial class BuilderTestInjector : Phx.Inject.Tests.IBuilderTestInjector {
         internal record SpecContainerCollection (
-                Phx.Inject.Tests.BuilderTestInjector_BuilderTestInjector_ConstructorFactories BuilderTestInjector_BuilderTestInjector_ConstructorFactories,
+                Phx.Inject.Tests.BuilderTestInjector_IBuilderTestInjector_ConstructorFactories BuilderTestInjector_IBuilderTestInjector_ConstructorFactories,
                 Phx.Inject.Tests.Data.BuilderTestInjector_CommonTestValueSpecification BuilderTestInjector_CommonTestValueSpecification
         ) {
             internal SpecContainerCollection CreateNewFrame() {
                 return new SpecContainerCollection(
-                        BuilderTestInjector_BuilderTestInjector_ConstructorFactories.CreateNewFrame(),
+                        BuilderTestInjector_IBuilderTestInjector_ConstructorFactories.CreateNewFrame(),
                         BuilderTestInjector_CommonTestValueSpecification.CreateNewFrame());
             }
         }
@@ -25,7 +25,7 @@ namespace Phx.Inject.Tests {
 
         public BuilderTestInjector() {
             specContainers = new SpecContainerCollection(
-                    BuilderTestInjector_BuilderTestInjector_ConstructorFactories: new Phx.Inject.Tests.BuilderTestInjector_BuilderTestInjector_ConstructorFactories(),
+                    BuilderTestInjector_IBuilderTestInjector_ConstructorFactories: new Phx.Inject.Tests.BuilderTestInjector_IBuilderTestInjector_ConstructorFactories(),
                     BuilderTestInjector_CommonTestValueSpecification: new Phx.Inject.Tests.Data.BuilderTestInjector_CommonTestValueSpecification());
         }
 

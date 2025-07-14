@@ -22,14 +22,14 @@ internal class SourceDefMapper {
             "mapping source definition",
             generatorCtx,
             exceptionAggregator => {
-                var injectorMetadataMap = sourceMetadata.MetadataMap.InjectorMetadataMap;
-                var dependencyMetadataMap = sourceMetadata.MetadataMap.DependencyMetadataMap;
+                var injectorMetadataMap = sourceMetadata.MetadataTypeMap.InjectorMetadataMap;
+                var dependencyMetadataMap = sourceMetadata.MetadataTypeMap.DependencyMetadataMap;
 
-                return sourceMetadata.InjectorMetadata.SelectCatching(
+                return sourceMetadata.MetadataTypeMap.InjectorMetadataMap.Values.SelectCatching(
                         exceptionAggregator,
                         injectorMetadata => $"extracting injector {injectorMetadata.InjectorInterfaceType}",
                         injectorMetadata => {
-                            if (!sourceMetadata.MetadataMap
+                            if (!sourceMetadata.MetadataTypeMap
                                 .InjectorSpecMetadataListMap.TryGetValue(injectorMetadata.InjectorInterfaceType,
                                     out var injectorSpecMap)
                             ) {
