@@ -21,13 +21,15 @@ namespace Phx.Inject.Generator;
 [Generator]
 internal class SourceGenerator(
     PhxInjectSettingsMetadata.IExtractor phxInjectSettingsExtractor,
-    SourceMetadata.IExtractor sourceExtractor
+    SourceMetadata.IExtractor sourceExtractor,
+    SourceDefMapper sourceDefMapper
 ) : ISourceGenerator {
     public const string PhxInjectNamespace = "Phx.Inject";
 
     public SourceGenerator() : this(
         PhxInjectSettingsMetadata.Extractor.Instance,
-        SourceMetadata.Extractor.Instance
+        SourceMetadata.Extractor.Instance,
+        SourceDefMapper.Instance
     ) { }
 
     public void Initialize(GeneratorInitializationContext generatorInitializationContext) {
@@ -80,8 +82,7 @@ internal class SourceGenerator(
                             .Extract(injectorCandidates, specificationCandidates, currentCtx);
 
                         // Map: Metadata to defs.
-                        var injectionContextDefs = new SourceDefMapper()
-                            .Map(sourceMetadata, currentCtx);
+                        var injectionContextDefs = sourceDefMapper.Map(sourceMetadata, currentCtx);
 
                         // Project: Defs to templates.
                         var templates = new SourceTemplateProjector()
