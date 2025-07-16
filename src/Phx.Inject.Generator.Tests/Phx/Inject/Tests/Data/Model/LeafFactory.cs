@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 namespace Phx.Inject.Tests.Data.Model;
+using System;
 
 public class LeafFactory {
     private readonly Func<ILeaf> leafFactory;

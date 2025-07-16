@@ -10,14 +10,19 @@ using Phx.Inject.Tests.Data.Model;
 
 namespace Phx.Inject.Tests.Data.Inject;
 
+[Specification]
 internal interface IChildDependencies {
     [Label(ParentSpecification.LeftLeaf)]
+    [Factory]
     public ILeaf GetLeftLeaf();
 
     [Label(ParentSpecification.RightLeaf)]
+    [Factory]
     public ILeaf GetRightLeaf();
 }
 
+[Specification]
 internal interface IGrandchildDependencies {
+    [Factory]
     public Node GetNode();
 }

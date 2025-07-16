@@ -7,19 +7,18 @@
 // -----------------------------------------------------------------------------
 
 using System.Collections.Immutable;
-using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Testing;
 using NUnit.Framework;
 
 namespace Phx.Inject.Tests.Helpers;
 
 public static class TestCompiler {
-    private static readonly CSharpParseOptions ParserOptions = new(LanguageVersion.CSharp9);
-
+    private static readonly CSharpParseOptions ParserOptions = new(LanguageVersion.CSharp10);
     private static readonly CSharpCompilationOptions CompilationOptions = new(
-        OutputKind.ConsoleApplication,
+        OutputKind.DynamicallyLinkedLibrary,
         nullableContextOptions: NullableContextOptions.Enable);
 
     public static Compilation CompileDirectory(string directory, params ISourceGenerator[] generators) {
@@ -61,14 +60,13 @@ public static class TestCompiler {
     }
 
     private static Compilation Compile(IEnumerable<SyntaxTree> syntaxTrees, ISourceGenerator[] generators) {
-        var references = Directory.GetFiles(TestContext.CurrentContext.TestDirectory, "*.dll")
-            .Select(filePath => MetadataReference.CreateFromFile(filePath))
+        var references = ReferenceAssemblies.Net.Net50
+            .ResolveAsync(null, default)
+            .Result
             .Concat(
-                new MetadataReference[] {
-                    MetadataReference.CreateFromFile(
-                        typeof(Binder).GetTypeInfo()
-                            .Assembly.Location)
-                })
+                Directory.GetFiles(TestContext.CurrentContext.TestDirectory, "*.dll")
+                .Where(it => !it.EndsWith("Phx.Inject.Generator.Tests.dll"))
+                .Select(filePath => MetadataReference.CreateFromFile(filePath)))
             .ToArray();
 
         var compilation = CSharpCompilation.Create(

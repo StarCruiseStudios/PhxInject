@@ -89,9 +89,9 @@ public class GeneratorTests : LoggingTestClass {
             }
         }
 
-        // Then("No errors were found during compilation.",
-        //     () =>
-        //         Verify.That(diagnostics.Where(it => it.Severity == DiagnosticSeverity.Error).Count().IsEqualTo(0)));
+        Then("No errors were found during compilation.",
+            () =>
+                Verify.That(diagnostics.Where(it => it.Severity >= DiagnosticSeverity.Warning).Count().IsEqualTo(0)));
 
         return compilation;
     }
