@@ -23,6 +23,9 @@ internal record InjectionContextDef(
     public interface IMapper {
         InjectionContextDef Map(
             InjectorMetadata injectorMetadata,
+            IReadOnlyDictionary<TypeModel, InjectorMetadata> injectors,
+            IReadOnlyDictionary<TypeModel, SpecMetadata> specifications,
+            IReadOnlyDictionary<TypeModel, DependencyMetadata> dependencies,
             DefGenerationContext parentCtx
         );
     }
@@ -49,12 +52,15 @@ internal record InjectionContextDef(
 
         public InjectionContextDef Map(
             InjectorMetadata injectorMetadata,
+            IReadOnlyDictionary<TypeModel, InjectorMetadata> injectors,
+            IReadOnlyDictionary<TypeModel, SpecMetadata> specifications,
+            IReadOnlyDictionary<TypeModel, DependencyMetadata> dependencies,
             DefGenerationContext parentCtx
         ) {
             var factoryRegistrations = new Dictionary<RegistrationIdentifier, List<FactoryRegistration>>();
             var builderRegistrations = new Dictionary<RegistrationIdentifier, List<BuilderRegistration>>();
 
-            IReadOnlyList<SpecMetadata> specMetadata = parentCtx.Specifications.Values.ToImmutableList();
+            IReadOnlyList<SpecMetadata> specMetadata = specifications.Values.ToImmutableList();
 
             // Create a registration for all of the spec metadata factory and builder methods.
             foreach (var spec in specMetadata) {
@@ -75,7 +81,7 @@ internal record InjectionContextDef(
                         registrationList = new List<BuilderRegistration>();
                         builderRegistrations.Add(key, registrationList);
                     }
-                    
+
                     registrationList.Add(new BuilderRegistration(spec, builder));
                 }
             }
@@ -115,6 +121,7 @@ internal record InjectionContextDef(
                         });
                 }
             }
+
             foreach (var element in builderRegistrations) {
                 var builderRegistrationIdentifier = element.Key;
                 var builderRegistration = element.Value;
@@ -132,33 +139,44 @@ internal record InjectionContextDef(
                 }
             }
 
-            var generatorCtx = parentCtx with {
-                FactoryRegistrations = factoryRegistrations,
-                BuilderRegistrations = builderRegistrations
-                    .Select(it => new KeyValuePair<RegistrationIdentifier, BuilderRegistration>(it.Key, it.Value.Single()))
+            var injectionRegistrations = new InjectorRegistrations(
+                factoryRegistrations,
+                builderRegistrations
+                    .Select(it =>
+                        new KeyValuePair<RegistrationIdentifier, BuilderRegistration>(it.Key, it.Value.Single()))
                     .ToImmutableDictionary()
-            };
+            );
 
-            var injectorDef = injectorDefMapper.Map(generatorCtx);
+            var injectorDef =
+                injectorDefMapper.Map(injectorMetadata, injectionRegistrations, specifications, parentCtx);
 
             IReadOnlyList<SpecContainerDef> specContainerDefs = specMetadata
-                .Select(specMetadata => specContainerDefMapper.Map(specMetadata, generatorCtx))
+                .Select(specMetadata =>
+                    specContainerDefMapper.Map(injectorMetadata, specMetadata, injectionRegistrations, parentCtx))
                 .ToImmutableList();
 
             IReadOnlyList<DependencyImplementationDef> dependencyImplementationDefs = injectorMetadata.ChildFactories
-                .Select(childFactory => generatorCtx.GetInjector(
+                .Select(childFactory => GetInjector(
+                    injectorMetadata,
+                    injectors,
                     childFactory.ChildInjectorType,
-                    childFactory.Location))
+                    childFactory.Location,
+                    parentCtx))
                 .Select(childInjector => childInjector.DependencyInterfaceType)
                 .OfType<TypeModel>()
                 .GroupBy(dependencyType => dependencyType)
                 .Select(dependencyTypeGroup => dependencyTypeGroup.First())
-                .Select(dependencyType => generatorCtx.GetDependency(
+                .Select(dependencyType => GetDependency(
+                    injectorMetadata,
+                    dependencies,
                     dependencyType,
-                    injectorMetadata.Location))
+                    injectorMetadata.Location,
+                    parentCtx))
                 .Select(dependency => dependencyImplementationDefMapper.Map(
+                    injectorMetadata,
+                    injectionRegistrations,
                     dependency,
-                    generatorCtx))
+                    parentCtx))
                 .ToImmutableList();
 
             return new InjectionContextDef(
@@ -166,6 +184,38 @@ internal record InjectionContextDef(
                 specContainerDefs,
                 dependencyImplementationDefs,
                 injectorMetadata.Location);
+        }
+
+        public InjectorMetadata GetInjector(
+            InjectorMetadata injector,
+            IReadOnlyDictionary<TypeModel, InjectorMetadata> injectors,
+            TypeModel type,
+            Location location,
+            IGeneratorContext currentCtx) {
+            if (injectors.TryGetValue(type, out var injectorMetadata)) {
+                return injectorMetadata;
+            }
+
+            throw Diagnostics.IncompleteSpecification.AsException(
+                $"Cannot find required injector type {type} while generating injection for type {injector.InjectorInterfaceType}.",
+                location,
+                currentCtx);
+        }
+
+        public DependencyMetadata GetDependency(
+            InjectorMetadata Injector,
+            IReadOnlyDictionary<TypeModel, DependencyMetadata> Dependencies,
+            TypeModel type,
+            Location location,
+            IGeneratorContext currentCtx) {
+            if (Dependencies.TryGetValue(type, out var dep)) {
+                return dep;
+            }
+
+            throw Diagnostics.IncompleteSpecification.AsException(
+                $"Cannot find required dependency type {type} while generating injection for type {Injector.InjectorInterfaceType}.",
+                location,
+                currentCtx);
         }
     }
 }

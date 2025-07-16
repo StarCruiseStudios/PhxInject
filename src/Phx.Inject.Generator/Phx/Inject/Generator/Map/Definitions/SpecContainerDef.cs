@@ -23,32 +23,47 @@ internal record SpecContainerDef(
     Location Location
 ) : IDefinition {
     public interface IMapper {
-        SpecContainerDef Map(SpecMetadata specMetadata, DefGenerationContext defGenerationCtx);
+        SpecContainerDef Map(
+            InjectorMetadata injector,
+            SpecMetadata specMetadata,
+            InjectorRegistrations injectorRegistrations,
+            DefGenerationContext currentCtx);
     }
 
     public class Mapper : IMapper {
-        public SpecContainerDef Map(SpecMetadata specMetadata, DefGenerationContext defGenerationCtx) {
+        public SpecContainerDef Map(
+            InjectorMetadata injector,
+            SpecMetadata specMetadata,
+            InjectorRegistrations injectorRegistrations,
+            DefGenerationContext currentCtx
+        ) {
             var specContainerType = TypeHelpers.CreateSpecContainerType(
-                defGenerationCtx.Injector.InjectorType,
+                injector.InjectorType,
                 specMetadata.SpecType);
 
             IReadOnlyList<SpecContainerFactoryDef> factories = specMetadata.Factories.Select(factory => {
                     IReadOnlyList<SpecContainerFactoryInvocationDef> arguments = factory.Parameters.Select(parameter =>
-                            defGenerationCtx.GetSpecContainerFactoryInvocation(
+                            TypeHelpers.GetSpecContainerFactoryInvocation(
+                                injector,
+                                injectorRegistrations,
                                 parameter,
-                                factory.Location))
+                                factory.Location,
+                                currentCtx))
                         .ToImmutableList();
                     IReadOnlyList<SpecContainerFactoryRequiredPropertyDef> requiredProperties = factory
                         .RequiredProperties
                         .Select(property =>
                             new SpecContainerFactoryRequiredPropertyDef(
                                 property.PropertyName,
-                                defGenerationCtx.GetSpecContainerFactoryInvocation(
+                                TypeHelpers.GetSpecContainerFactoryInvocation(
+                                    injector,
+                                    injectorRegistrations,
                                     property.PropertyType,
-                                    factory.Location),
+                                    factory.Location,
+                                    currentCtx),
                                 factory.Location))
                         .ToImmutableList();
-                    var specContainerFactoryMethodName = factory.GetSpecContainerFactoryName(defGenerationCtx);
+                    var specContainerFactoryMethodName = factory.GetSpecContainerFactoryName(currentCtx);
 
                     return new SpecContainerFactoryDef(
                         factory.ReturnType,
@@ -64,11 +79,14 @@ internal record SpecContainerDef(
 
             IReadOnlyList<SpecContainerBuilderDef> builders = specMetadata.Builders.Select(builder => {
                     IReadOnlyList<SpecContainerFactoryInvocationDef> arguments = builder.Parameters.Select(parameter =>
-                            defGenerationCtx.GetSpecContainerFactoryInvocation(
+                            TypeHelpers.GetSpecContainerFactoryInvocation(
+                                injector,
+                                injectorRegistrations,
                                 parameter,
-                                builder.Location))
+                                builder.Location,
+                                currentCtx))
                         .ToImmutableList();
-                    var specContainerBuilderMethodName = builder.GetSpecContainerBuilderName(defGenerationCtx);
+                    var specContainerBuilderMethodName = builder.GetSpecContainerBuilderName(currentCtx);
 
                     return new SpecContainerBuilderDef(
                         builder.BuiltType.TypeModel,

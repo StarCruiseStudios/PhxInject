@@ -8,11 +8,67 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator;
+using Phx.Inject.Generator.Extract.Metadata;
+using Phx.Inject.Generator.Map;
+using Phx.Inject.Generator.Map.Definitions;
 
 namespace Phx.Inject.Common;
 
 internal static class TypeHelpers {
+    public static SpecContainerFactoryInvocationDef GetSpecContainerFactoryInvocation(
+        InjectorMetadata Injector,
+        InjectorRegistrations injectorRegistrations,
+        QualifiedTypeModel returnedType,
+        Location location,
+        IGeneratorContext generatorContext
+    ) {
+        if (injectorRegistrations.FactoryRegistrations.Count == 0) {
+            throw Diagnostics.InternalError.AsFatalException(
+                $"Cannot search factory for type {returnedType} before factory registrations are created  while generating injection for type {Injector.InjectorInterfaceType}.",
+                location,
+                generatorContext);
+        }
+
+        TypeModel? runtimeFactoryProvidedType = null;
+        var factoryType = returnedType;
+        if (returnedType.TypeModel.NamespacedBaseTypeName == TypeNames.FactoryClassName) {
+            factoryType = returnedType with {
+                TypeModel = returnedType.TypeModel.TypeArguments.Single()
+            };
+            runtimeFactoryProvidedType = factoryType.TypeModel;
+        }
+
+        var key = RegistrationIdentifier.FromQualifiedTypeModel(factoryType);
+        if (injectorRegistrations.FactoryRegistrations.TryGetValue(key, out var factoryRegistration)) {
+            IReadOnlyList<SpecContainerFactorySingleInvocationDef> singleInvocationDefs = factoryRegistration
+                .Select(reg => {
+                    var specContainerType = CreateSpecContainerType(
+                        Injector.InjectorType,
+                        reg.Specification.SpecType);
+                    return new SpecContainerFactorySingleInvocationDef(
+                        specContainerType,
+                        reg.FactoryMetadata.GetSpecContainerFactoryName(generatorContext),
+                        reg.FactoryMetadata.Location
+                    );
+                })
+                .ToImmutableList();
+
+            return new SpecContainerFactoryInvocationDef(
+                singleInvocationDefs,
+                factoryType,
+                runtimeFactoryProvidedType,
+                location);
+        }
+
+        throw Diagnostics.IncompleteSpecification.AsException(
+            $"Cannot find factory for type {factoryType} while generating injection for type {Injector.InjectorInterfaceType}.",
+            location,
+            generatorContext);
+    }
+
     public static bool IsAutoFactoryEligible(QualifiedTypeModel type) {
         var typeSymbol = type.TypeModel.TypeSymbol;
         var isVisible = typeSymbol.DeclaredAccessibility == Accessibility.Public
@@ -37,7 +93,6 @@ internal static class TypeHelpers {
             TypeArguments = ImmutableList<TypeModel>.Empty
         };
     }
-
 
     public static TypeModel CreateSpecContainerCollectionType(TypeModel injectorType) {
         var specContainerCollectionTypeName = injectorType.GetSpecContainerCollectionTypeName();

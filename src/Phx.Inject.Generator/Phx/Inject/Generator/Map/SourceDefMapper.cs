@@ -14,7 +14,7 @@ using Phx.Inject.Generator.Map.Definitions;
 namespace Phx.Inject.Generator.Map;
 
 internal class SourceDefMapper(InjectionContextDef.IMapper injectionContextDefMapper) {
-    public static readonly SourceDefMapper Instance = new SourceDefMapper(new InjectionContextDef.Mapper());
+    public static readonly SourceDefMapper Instance = new(new InjectionContextDef.Mapper());
     public IReadOnlyList<InjectionContextDef> Map(
         SourceMetadata sourceMetadata,
         IGeneratorContext generatorCtx
@@ -40,16 +40,13 @@ internal class SourceDefMapper(InjectionContextDef.IMapper injectionContextDefMa
                                     generatorCtx);
                             }
 
-                            var defGenerationCtx = new DefGenerationContext(
-                                injectorMetadata,
+                            var defGenerationCtx = new DefGenerationContext(generatorCtx);
+
+                            return injectionContextDefMapper.Map(injectorMetadata,
                                 injectorMetadataMap,
                                 injectorSpecMap,
                                 dependencyMetadataMap,
-                                ImmutableDictionary<RegistrationIdentifier, List<FactoryRegistration>>.Empty,
-                                ImmutableDictionary<RegistrationIdentifier, BuilderRegistration>.Empty,
-                                generatorCtx);
-
-                            return injectionContextDefMapper.Map(injectorMetadata, defGenerationCtx);
+                                defGenerationCtx);
                         })
                     .ToImmutableList();
             });

@@ -9,7 +9,9 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Common.Model;
+using Phx.Inject.Generator.Extract.Metadata;
 
 namespace Phx.Inject.Generator.Map.Definitions;
 
@@ -28,26 +30,42 @@ internal record InjectorDef(
         = TypeHelpers.CreateSpecContainerCollectionType(InjectorType);
 
     public interface IMapper {
-        InjectorDef Map(DefGenerationContext context);
+        InjectorDef Map(
+            InjectorMetadata injector,
+            InjectorRegistrations injectorRegistrations,
+            IReadOnlyDictionary<TypeModel, SpecMetadata> specifications,
+            DefGenerationContext currentCtx);
     }
 
     public class Mapper : IMapper {
-        public InjectorDef Map(DefGenerationContext context) {
-            IReadOnlyList<TypeModel> constructedSpecifications = context.Injector.SpecificationsTypes
+        public InjectorDef Map(
+            InjectorMetadata injector,
+            InjectorRegistrations injectorRegistrations,
+            IReadOnlyDictionary<TypeModel, SpecMetadata> specifications,
+            DefGenerationContext currentCtx) {
+            IReadOnlyList<TypeModel> constructedSpecifications = injector.SpecificationsTypes
                 .Where(spec => {
-                    var specMetadata = context.GetSpec(spec, context.Injector.Location);
+                    var specMetadata = GetSpec(
+                        injector,
+                        specifications,
+                        spec,
+                        injector.Location,
+                        currentCtx);
                     return specMetadata.InstantiationMode
                         is SpecInstantiationMode.Instantiated
                         or SpecInstantiationMode.Dependency;
                 })
-                .Where(spec => context.Injector.DependencyInterfaceType != spec)
+                .Where(spec => injector.DependencyInterfaceType != spec)
                 .ToImmutableList();
 
-            IReadOnlyList<InjectorProviderDef> providers = context.Injector.Providers
+            IReadOnlyList<InjectorProviderDef> providers = injector.Providers
                 .Select(provider => {
-                    var factoryInvocation = context.GetSpecContainerFactoryInvocation(
+                    var factoryInvocation = TypeHelpers.GetSpecContainerFactoryInvocation(
+                        injector,
+                        injectorRegistrations,
                         provider.ProvidedType,
-                        provider.Location);
+                        provider.Location,
+                        currentCtx);
 
                     return new InjectorProviderDef(
                         provider.ProvidedType,
@@ -57,12 +75,15 @@ internal record InjectorDef(
                 })
                 .ToImmutableList();
 
-            IReadOnlyList<InjectorBuilderDef> builders = context.Injector.Builders
+            IReadOnlyList<InjectorBuilderDef> builders = injector.Builders
                 .Select(builder => {
-                    var builderInvocation = context.GetSpecContainerBuilderInvocation(
-                        context.Injector.InjectorType,
+                    var builderInvocation = GetSpecContainerBuilderInvocation(
+                        injector,
+                        injectorRegistrations,
+                        injector.InjectorType,
                         builder.BuiltType,
-                        builder.Location);
+                        builder.Location,
+                        currentCtx);
 
                     return new InjectorBuilderDef(
                         builder.BuiltType,
@@ -72,7 +93,7 @@ internal record InjectorDef(
                 })
                 .ToImmutableList();
 
-            IReadOnlyList<InjectorChildFactoryDef> childFactories = context.Injector.ChildFactories
+            IReadOnlyList<InjectorChildFactoryDef> childFactories = injector.ChildFactories
                 .Select(factory => new InjectorChildFactoryDef(
                     factory.ChildInjectorType,
                     factory.InjectorChildFactoryMethodName,
@@ -81,15 +102,64 @@ internal record InjectorDef(
                 .ToImmutableList();
 
             return new InjectorDef(
-                context.Injector.InjectorType,
-                context.Injector.InjectorInterfaceType,
-                context.Injector.SpecificationsTypes,
+                injector.InjectorType,
+                injector.InjectorInterfaceType,
+                injector.SpecificationsTypes,
                 constructedSpecifications,
-                context.Injector.DependencyInterfaceType,
+                injector.DependencyInterfaceType,
                 providers,
                 builders,
                 childFactories,
-                context.Injector.Location);
+                injector.Location);
+        }
+
+        public SpecContainerBuilderInvocationDef GetSpecContainerBuilderInvocation(
+            InjectorMetadata Injector,
+            InjectorRegistrations injectorRegistrations,
+            TypeModel injectorType,
+            QualifiedTypeModel builtType,
+            Location location,
+            IGeneratorContext currentCtx
+        ) {
+            if (injectorRegistrations.BuilderRegistrations.Count == 0) {
+                throw Diagnostics.InternalError.AsFatalException(
+                    $"Cannot search for builder for type {builtType} before builder registrations are created  while generating injection for type {Injector.InjectorInterfaceType}.",
+                    location,
+                    currentCtx);
+            }
+
+            var key = RegistrationIdentifier.FromQualifiedTypeModel(builtType);
+            if (injectorRegistrations.BuilderRegistrations.TryGetValue(key, out var builderRegistration)) {
+                var specContainerType = TypeHelpers.CreateSpecContainerType(
+                    injectorType,
+                    builderRegistration.Specification.SpecType);
+                return new SpecContainerBuilderInvocationDef(
+                    specContainerType,
+                    builderRegistration.BuilderMetadata.GetSpecContainerBuilderName(currentCtx),
+                    builderRegistration.BuilderMetadata.Location);
+            }
+
+            throw Diagnostics.IncompleteSpecification.AsException(
+                $"Cannot find builder for type {builtType} while generating injection for type {Injector.InjectorInterfaceType}.",
+                location,
+                currentCtx);
+        }
+
+        public SpecMetadata GetSpec(
+            InjectorMetadata Injector,
+            IReadOnlyDictionary<TypeModel, SpecMetadata> specifications,
+            TypeModel type,
+            Location location,
+            IGeneratorContext currentCtx
+        ) {
+            if (specifications.TryGetValue(type, out var spec)) {
+                return spec;
+            }
+
+            throw Diagnostics.IncompleteSpecification.AsException(
+                $"Cannot find required specification type {type} while generating injection for type {Injector.InjectorInterfaceType}.",
+                location,
+                currentCtx);
         }
     }
 }

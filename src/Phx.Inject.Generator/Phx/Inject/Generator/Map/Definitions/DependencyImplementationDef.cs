@@ -22,6 +22,8 @@ internal record DependencyImplementationDef(
 ) : IDefinition {
     public interface IMapper {
         DependencyImplementationDef Map(
+            InjectorMetadata injector,
+            InjectorRegistrations injectorRegistrations,
             DependencyMetadata dependencyMetadata,
             DefGenerationContext currentCtx
         );
@@ -29,17 +31,22 @@ internal record DependencyImplementationDef(
 
     public class Mapper : IMapper {
         public DependencyImplementationDef Map(
+            InjectorMetadata injector,
+            InjectorRegistrations injectorRegistrations,
             DependencyMetadata dependencyMetadata,
             DefGenerationContext currentCtx
         ) {
             var implementationType = TypeHelpers.CreateDependencyImplementationType(
-                currentCtx.Injector.InjectorType,
+                injector.InjectorType,
                 dependencyMetadata.DependencyInterfaceType);
 
             IReadOnlyList<DependencyProviderMethodDef> providers = dependencyMetadata.Providers.Select(provider => {
-                    var specContainerFactoryInvocation = currentCtx.GetSpecContainerFactoryInvocation(
+                    var specContainerFactoryInvocation = TypeHelpers.GetSpecContainerFactoryInvocation(
+                        injector,
+                        injectorRegistrations,
                         provider.ProvidedType,
-                        provider.Location);
+                        provider.Location,
+                        currentCtx);
 
                     return new DependencyProviderMethodDef(
                         provider.ProvidedType.TypeModel,
