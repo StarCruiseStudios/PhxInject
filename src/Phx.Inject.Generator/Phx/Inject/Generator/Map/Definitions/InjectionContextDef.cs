@@ -52,7 +52,7 @@ internal record InjectionContextDef(
             DefGenerationContext parentCtx
         ) {
             var factoryRegistrations = new Dictionary<RegistrationIdentifier, List<FactoryRegistration>>();
-            var builderRegistrations = new Dictionary<RegistrationIdentifier, BuilderRegistration>();
+            var builderRegistrations = new Dictionary<RegistrationIdentifier, List<BuilderRegistration>>();
 
             IReadOnlyList<SpecMetadata> specMetadata = parentCtx.Specifications.Values.ToImmutableList();
 
@@ -70,9 +70,13 @@ internal record InjectionContextDef(
                 }
 
                 foreach (var builder in spec.Builders) {
-                    builderRegistrations.Add(
-                        RegistrationIdentifier.FromQualifiedTypeModel(builder.BuiltType),
-                        new BuilderRegistration(spec, builder));
+                    var key = RegistrationIdentifier.FromQualifiedTypeModel(builder.BuiltType);
+                    if (!builderRegistrations.TryGetValue(key, out var registrationList)) {
+                        registrationList = new List<BuilderRegistration>();
+                        builderRegistrations.Add(key, registrationList);
+                    }
+                    
+                    registrationList.Add(new BuilderRegistration(spec, builder));
                 }
             }
 
@@ -95,21 +99,44 @@ internal record InjectionContextDef(
                 }
             }
 
-            foreach (var factoryRegistration in factoryRegistrations.Values) {
+            foreach (var element in factoryRegistrations) {
+                var factoryRegistrationIdentifier = element.Key;
+                var factoryRegistration = element.Value;
                 if (factoryRegistration.Count > 1 && !factoryRegistration.All(it => it.FactoryMetadata.isPartial)) {
                     parentCtx.Aggregator.AggregateMany<FactoryRegistration, FactoryRegistration>(
                         factoryRegistration,
                         registration => $"registering factory {registration.FactoryMetadata.ReturnType}",
-                        registration => throw Diagnostics.InvalidSpecification.AsException(
-                            $"Factory for type {registration.FactoryMetadata.ReturnType} must be unique or all factories must be partial.",
-                            registration.FactoryMetadata.Location,
-                            parentCtx));
+                        registration => {
+                            factoryRegistrations.Remove(factoryRegistrationIdentifier);
+                            throw Diagnostics.InvalidSpecification.AsException(
+                                $"Factory for type {registration.FactoryMetadata.ReturnType} must be unique or all factories must be partial.",
+                                registration.FactoryMetadata.Location,
+                                parentCtx);
+                        });
+                }
+            }
+            foreach (var element in builderRegistrations) {
+                var builderRegistrationIdentifier = element.Key;
+                var builderRegistration = element.Value;
+                if (builderRegistration.Count > 1) {
+                    parentCtx.Aggregator.AggregateMany<BuilderRegistration, BuilderRegistration>(
+                        builderRegistration,
+                        registration => $"registering builder {registration.BuilderMetadata.BuiltType}",
+                        registration => {
+                            builderRegistrations.Remove(builderRegistrationIdentifier);
+                            throw Diagnostics.InvalidSpecification.AsException(
+                                $"Builder for type {registration.BuilderMetadata.BuiltType} must be unique.",
+                                registration.BuilderMetadata.Location,
+                                parentCtx);
+                        });
                 }
             }
 
             var generatorCtx = parentCtx with {
                 FactoryRegistrations = factoryRegistrations,
                 BuilderRegistrations = builderRegistrations
+                    .Select(it => new KeyValuePair<RegistrationIdentifier, BuilderRegistration>(it.Key, it.Value.Single()))
+                    .ToImmutableDictionary()
             };
 
             var injectorDef = injectorDefMapper.Map(generatorCtx);
