@@ -25,7 +25,7 @@ public static class TestCompiler {
         OutputKind.DynamicallyLinkedLibrary,
         nullableContextOptions: NullableContextOptions.Enable);
 
-    public static Compilation CompileDirectory(string directory, params IIncrementalGenerator[] generators) {
+    public static Compilation CompileDirectory(string directory, ReferenceAssemblies referenceAssemblies, params IIncrementalGenerator[] generators) {
         var directoryAbsolutePath = Path.Combine(TestContext.CurrentContext.TestDirectory, directory);
         var enumerationOptions = new EnumerationOptions {
             RecurseSubdirectories = true
@@ -36,11 +36,12 @@ public static class TestCompiler {
             .Select(ParseText)
             .ToImmutableList();
 
-        return Compile(syntaxTrees, generators);
+        return Compile(syntaxTrees, referenceAssemblies, generators);
     }
 
     public static Compilation CompileText(
         string text,
+        ReferenceAssemblies referenceAssemblies, 
         string[]? additionalFiles = null,
         params IIncrementalGenerator[] generators
     ) {
@@ -56,15 +57,15 @@ public static class TestCompiler {
             }
         }
 
-        return Compile(builder.ToImmutable(), generators);
+        return Compile(builder.ToImmutable(), referenceAssemblies, generators);
     }
 
     private static SyntaxTree ParseText(string text) {
         return CSharpSyntaxTree.ParseText(text, ParserOptions, encoding: Encoding.UTF8);
     }
 
-    private static Compilation Compile(IEnumerable<SyntaxTree> syntaxTrees, IIncrementalGenerator[] generators) {
-        var references = ReferenceAssemblies.NetStandard.NetStandard20
+    private static Compilation Compile(IEnumerable<SyntaxTree> syntaxTrees, ReferenceAssemblies referenceAssemblies, IIncrementalGenerator[] generators) {
+        var references = referenceAssemblies
             .ResolveAsync(null, default)
             .Result
             .Concat(
