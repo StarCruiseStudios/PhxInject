@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="Cobalt.props" Condition="Exists('Cobalt.props')" />
+    <ItemGroup>
+        <ProjectReference Include="..\Phx.Inject.Generator.Legacy\Phx.Inject.Generator.Legacy.csproj" />
+        <ProjectReference Include="..\Phx.Inject\Phx.Inject.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.*">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="Phx\Inject\Tests\Data\**\*.*">
+            <Link>Phx\Inject\Tests\Data\%(Filename)%(Extension)</Link>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)\nlog.config" CopyToOutputDirectory="Always" />
+    </ItemGroup>
+
+    <Target Name="EnsureBuildFileImports" BeforeTargets="PrepareForBuild">
+        <PropertyGroup>
+            <ErrorText>This package relies on imported build files that are not found. Missing: {0}</ErrorText>
+        </PropertyGroup>
+        <Error Condition="!Exists('Cobalt.props')" Text="$([System.String]::Format('$(ErrorText)', 'Cobalt.props'))" />
+    </Target>
+</Project>

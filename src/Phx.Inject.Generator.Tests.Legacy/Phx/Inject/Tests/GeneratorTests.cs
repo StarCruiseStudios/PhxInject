@@ -90,21 +90,8 @@ public class GeneratorTests : LoggingTestClass {
         }
 
         Then("No errors were found during compilation.",
-            () => {
-                var errorDiagnostics = diagnostics
-                    .Where(it => it.Severity >= DiagnosticSeverity.Error)
-                    .ToImmutableList();
-                
-                if (errorDiagnostics.Any()) {
-                    Log("Errors diagnostics:");
-                    foreach (var error in errorDiagnostics) {
-                        Log(error.ToString());
-                    }
-                }
-                
-                Verify.That(errorDiagnostics.Count().IsEqualTo(0));
-            });
-                
+            () =>
+                Verify.That(diagnostics.Where(it => it.Severity >= DiagnosticSeverity.Warning).Count().IsEqualTo(0)));
 
         return compilation;
     }
