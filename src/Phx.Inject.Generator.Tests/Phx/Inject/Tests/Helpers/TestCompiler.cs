@@ -19,7 +19,7 @@ using Phx.Validation;
 namespace Phx.Inject.Tests.Helpers;
 
 public static class TestCompiler {
-    private static readonly CSharpParseOptions ParserOptions = new(LanguageVersion.CSharp10);
+    private static readonly CSharpParseOptions ParserOptions = new(LanguageVersion.CSharp13);
 
     private static readonly CSharpCompilationOptions CompilationOptions = new(
         OutputKind.DynamicallyLinkedLibrary,
@@ -64,7 +64,7 @@ public static class TestCompiler {
     }
 
     private static Compilation Compile(IEnumerable<SyntaxTree> syntaxTrees, IIncrementalGenerator[] generators) {
-        var references = ReferenceAssemblies.Net.Net50
+        var references = ReferenceAssemblies.NetStandard.NetStandard20
             .ResolveAsync(null, default)
             .Result
             .Concat(
