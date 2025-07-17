@@ -19,7 +19,7 @@
 
     <ItemGroup>
         <!-- Keep these packages as private assets so they aren't included in the Nuget package. -->
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.*">
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="4.14.0">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
@@ -29,7 +29,7 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-      <ProjectReference Include="..\Phx.Inject\Phx.Inject.csproj" />
+        <ProjectReference Include="..\Phx.Inject\Phx.Inject.csproj" />
     </ItemGroup>
 
     <Target Name="EnsureBuildFileImports" BeforeTargets="PrepareForBuild">

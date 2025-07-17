@@ -10,6 +10,9 @@ using Phx.Inject.Tests.Data.Model;
 
 namespace Phx.Inject.Tests.Data.Inject;
 
+[PhxInject(TabSize = 3)]
+internal class GeneratorSettings { }
+
 [Specification]
 internal interface IChildDependencies {
     [Label(ParentSpecification.LeftLeaf)]

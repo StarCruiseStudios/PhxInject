@@ -7,7 +7,7 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Generator;
+using Phx.Inject.Generator.Incremental.Model;
 
 namespace Phx.Inject.Common.Exceptions;
 
@@ -70,22 +70,6 @@ internal static class Diagnostics {
             string Category,
             DiagnosticSeverity Severity
         ) : base(Id, Title, Category, Severity) { }
-
-        public AggregateInjectionException AsAggregateException(
-            string message,
-            IReadOnlyList<InjectionException> exceptions,
-            IGeneratorContext currentCtx
-        ) {
-            var msg = string.Join("\n -> ", exceptions.Select(it => it.Message));
-            return new AggregateInjectionException(
-                message,
-                CreateDiagnostic(
-                    message + "\n -> " + msg,
-                    null,
-                    currentCtx.GetLocation()),
-                exceptions,
-                currentCtx);
-        }
     }
 
     internal sealed class FatalDiagnosticData : DiagnosticData {
@@ -95,13 +79,6 @@ internal static class Diagnostics {
             string Category,
             DiagnosticSeverity Severity
         ) : base(Id, Title, Category, Severity) { }
-
-        public override InjectionException AsException(
-            string message,
-            Location location,
-            IGeneratorContext currentCtx) {
-            return AsFatalException(message, location, currentCtx);
-        }
     }
 
     internal class DiagnosticData {
@@ -117,74 +94,13 @@ internal static class Diagnostics {
             this.Severity = Severity;
         }
 
-        public virtual InjectionException AsException(
+        public Diagnostic CreateDiagnostic(
             string message,
-            Location location,
-            IGeneratorContext currentCtx
-        ) {
-            return new InjectionException(
-                message,
-                CreateDiagnostic(
-                    message,
-                    currentCtx.GetFrame(),
-                    location),
-                currentCtx);
-        }
-
-        public virtual InjectionException AsFatalException(
-            string message,
-            Location location,
-            IGeneratorContext currentCtx
-        ) {
-            return new FatalInjectionException(
-                message,
-                CreateDiagnostic(
-                    message,
-                    currentCtx.GetFrame(),
-                    location),
-                currentCtx);
-        }
-
-        public void AsWarning(
-            string message,
-            Location location,
-            IGeneratorContext currentCtx,
-            bool includeFrame = false
-        ) {
-            currentCtx.ExecutionContext.ReportDiagnostic(
-                CreateDiagnostic(
-                    message,
-                    includeFrame ? currentCtx.GetFrame() : null,
-                    location));
-        }
-
-        protected Diagnostic CreateDiagnostic(
-            string message,
-            IInjectionFrame? frame,
-            Location? location = null
+            SourceLocation? location = null
         ) {
             return Diagnostic.Create(
-                new DiagnosticDescriptor(Id, Title, message + frame.GetInjectionFrameStack(), Category, Severity, true),
-                location ?? Location.None);
+                new DiagnosticDescriptor(Id, Title, message, Category, Severity, true),
+                location?.Location ?? Location.None);
         }
-    }
-}
-
-internal static class GeneratorExecutionContextExtensions {
-    public static void Log(
-        this IGeneratorContext currentCtx,
-        string message,
-        Location? location = null
-    ) {
-        currentCtx.ExecutionContext.ReportDiagnostic(
-            Diagnostic.Create(
-                new DiagnosticDescriptor(
-                    Diagnostics.DebugMessage.Id,
-                    Diagnostics.DebugMessage.Title,
-                    message,
-                    Diagnostics.DebugMessage.Category,
-                    Diagnostics.DebugMessage.Severity,
-                    true),
-                location ?? currentCtx.GetLocation()));
     }
 }

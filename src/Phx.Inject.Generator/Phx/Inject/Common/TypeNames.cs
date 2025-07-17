@@ -6,13 +6,13 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
-using Phx.Inject.Generator;
+using Phx.Inject.Generator.Incremental;
 
 namespace Phx.Inject.Common;
 
 internal static class TypeNames {
-    public const string FactoryClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(Factory<object>)}";
-    public const string InjectionUtilClassName = $"{SourceGenerator.PhxInjectNamespace}.{nameof(InjectionUtil)}";
+    public const string FactoryClassName = $"{PhxInject.NamespaceName}.{nameof(Factory<object>)}";
+    public const string InjectionUtilClassName = $"{PhxInject.NamespaceName}.{nameof(InjectionUtil)}";
 
     public const string ActionClassName = $"System.{nameof(Action)}";
     public const string AttributeClassName = $"System.{nameof(Attribute)}";

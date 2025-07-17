@@ -9,8 +9,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using NUnit.Framework;
-using Phx.Inject.Generator;
-using Phx.Inject.Generator.Render;
+using Phx.Inject.Generator.Incremental;
 using Phx.Inject.Tests.Helpers;
 using Phx.Test;
 using Phx.Validation;
@@ -75,7 +74,7 @@ public class GeneratorTests : LoggingTestClass {
     }
 
     private Compilation CompileCode() {
-        var generator = Given("A source generator.", () => new SourceGenerator());
+        var generator = Given("A source generator.", () => new IncrementalSourceGenerator());
         var rootDirectory = Given("A directory with source files.", () => TestFiles.RootDirectory);
 
         var compilation = When(
@@ -94,17 +93,16 @@ public class GeneratorTests : LoggingTestClass {
                 var errorDiagnostics = diagnostics
                     .Where(it => it.Severity >= DiagnosticSeverity.Error)
                     .ToImmutableList();
-                
+
                 if (errorDiagnostics.Any()) {
                     Log("Errors diagnostics:");
                     foreach (var error in errorDiagnostics) {
                         Log(error.ToString());
                     }
                 }
-                
+
                 Verify.That(errorDiagnostics.Count().IsEqualTo(0));
             });
-                
 
         return compilation;
     }
