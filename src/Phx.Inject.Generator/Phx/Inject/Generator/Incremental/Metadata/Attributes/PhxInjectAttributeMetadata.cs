@@ -34,13 +34,14 @@ internal record PhxInjectAttributeMetadata(
         public static readonly ValuesProvider Instance = new();
 
         public bool CanProvide(SyntaxNode syntaxNode, CancellationToken cancellationToken) {
-            // Relies on the generator pipeline to ensure this is a PhxInjectAttribute.
+            // Generator pipeline ensures this is a PhxInjectAttribute.
             return true;
         }
 
         public PhxInjectAttributeMetadata Transform(
             GeneratorAttributeSyntaxContext context,
-            CancellationToken cancellationToken) {
+            CancellationToken cancellationToken
+        ) {
             var attributeData = context.Attributes.First();
             var targetSymbol = context.TargetSymbol;
             var attributeMetadata = AttributeMetadata.Create(targetSymbol, attributeData);

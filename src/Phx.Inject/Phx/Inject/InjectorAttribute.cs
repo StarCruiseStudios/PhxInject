@@ -17,15 +17,17 @@ public class InjectorAttribute : Attribute {
     ///     default value of "GeneratedXyz" will be used, where Xyz is the annotated interface's name with
     ///     the leading "I" removed, if there is one.
     /// </remarks>
-    public string? GeneratedClassName { get; }
+    public string? GeneratedClassName { get; set; } = null;
 
     /// <summary> A collection of specification types used by this injector. </summary>
     public IEnumerable<Type> Specifications { get; }
 
     /// <summary> Initializes a new instance of the <see cref="InjectorAttribute"/> class. </summary>
     /// <param name="specifications"> A collection of specification types used by this injector. </param>
-    public InjectorAttribute(params Type[] specifications) : this(null, specifications) { }
-
+    public InjectorAttribute(params Type[] specifications) {
+        Specifications = specifications;
+    }
+    
     /// <summary> Initializes a new instance of the <see cref="InjectorAttribute"/> class. </summary>
     /// <param name="generatedClassName"> The name to use for the generated injector class. </param>
     /// <param name="specifications"> A collection of specification types used by this injector. </param>

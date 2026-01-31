@@ -47,8 +47,10 @@ internal class IncrementalSourceGenerator(
 
         generatorInitializationContext.RegisterSourceOutput(phxInjectSettingsPipeline,
             (sourceProductionContext, phxInjectSettings) => {
-                // sourceProductionContext.AddSource("settings.txt",
-                //     $"Phx.Inject.Generator: Using settings: {phxInjectSettings}");
+                sourceProductionContext.AddSource("settings.cs",
+                    $"class TestSettings {{\n" +
+                    $"  private string x = \"Phx.Inject.Generator: Using settings: {phxInjectSettings}\";\n" +
+                    $"\n}}");
                 sourceProductionContext.ReportDiagnostic(Diagnostics.DebugMessage.CreateDiagnostic(
                     $"Phx.Inject.Generator: Using settings: {phxInjectSettings}",
                     phxInjectSettings.Location));

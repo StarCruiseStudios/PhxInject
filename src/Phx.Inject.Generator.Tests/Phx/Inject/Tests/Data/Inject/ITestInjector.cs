@@ -11,11 +11,12 @@ using Phx.Inject.Tests.Data.Model;
 namespace Phx.Inject.Tests.Data.Inject;
 
 [Injector(
-    "CustomInjector",
     typeof(RootSpecification),
     typeof(LazySpecification),
     typeof(LeafSpecification),
-    typeof(LeafLinks))]
+    typeof(LeafLinks),
+    GeneratedClassName = "CustomInjector"
+)]
 internal interface ITestInjector {
     public Root GetRoot();
 
