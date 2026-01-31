@@ -1,0 +1,17 @@
+<!--
+  <copyright file="Phx.Inject.csproj" company="Star Cruise Studios LLC">
+      Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.
+      Licensed under the Apache License, Version 2.0.
+      See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
+  </copyright>
+-->
+
+<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="Cobalt.props" Condition="Exists('Cobalt.props')" />
+    <Target Name="EnsureBuildFileImports" BeforeTargets="PrepareForBuild">
+        <PropertyGroup>
+            <ErrorText>This package relies on imported build files that are not found. Missing: {0}</ErrorText>
+        </PropertyGroup>
+        <Error Condition="!Exists('Cobalt.props')" Text="$([System.String]::Format('$(ErrorText)', 'Cobalt.props'))" />
+    </Target>
+</Project>

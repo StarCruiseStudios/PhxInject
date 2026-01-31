@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phx.Inject.Generator.Tests.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phx.Inject.Tests.Legacy", "src\Phx.Inject.Tests.Legacy\Phx.Inject.Tests.Legacy.csproj", "{BE109B3D-4132-4E8A-A0E4-30EE8B6B15CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phx.Inject.Legacy", "src\Phx.Inject.Legacy\Phx.Inject.Legacy.csproj", "{6F4AAD8A-BBE7-42A8-B013-6BB46C6E2AF6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,6 +115,18 @@ Global
 		{BE109B3D-4132-4E8A-A0E4-30EE8B6B15CF}.Release|x64.Build.0 = Release|Any CPU
 		{BE109B3D-4132-4E8A-A0E4-30EE8B6B15CF}.Release|x86.ActiveCfg = Release|Any CPU
 		{BE109B3D-4132-4E8A-A0E4-30EE8B6B15CF}.Release|x86.Build.0 = Release|Any CPU
+		{6F4AAD8A-BBE7-42A8-B013-6BB46C6E2AF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F4AAD8A-BBE7-42A8-B013-6BB46C6E2AF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F4AAD8A-BBE7-42A8-B013-6BB46C6E2AF6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6F4AAD8A-BBE7-42A8-B013-6BB46C6E2AF6}.Debug|x64.Build.0 = Debug|Any CPU
+		{6F4AAD8A-BBE7-42A8-B013-6BB46C6E2AF6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6F4AAD8A-BBE7-42A8-B013-6BB46C6E2AF6}.Debug|x86.Build.0 = Debug|Any CPU
+		{6F4AAD8A-BBE7-42A8-B013-6BB46C6E2AF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F4AAD8A-BBE7-42A8-B013-6BB46C6E2AF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F4AAD8A-BBE7-42A8-B013-6BB46C6E2AF6}.Release|x64.ActiveCfg = Release|Any CPU
+		{6F4AAD8A-BBE7-42A8-B013-6BB46C6E2AF6}.Release|x64.Build.0 = Release|Any CPU
+		{6F4AAD8A-BBE7-42A8-B013-6BB46C6E2AF6}.Release|x86.ActiveCfg = Release|Any CPU
+		{6F4AAD8A-BBE7-42A8-B013-6BB46C6E2AF6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,5 +139,6 @@ Global
 		{C73C68D2-AD38-44F9-AA1C-1EF4F7C94255} = {C5B303DF-87DB-4835-AED9-9CACF543A0F4}
 		{0137432B-A644-4CE1-9C06-44B790CD353B} = {C5B303DF-87DB-4835-AED9-9CACF543A0F4}
 		{BE109B3D-4132-4E8A-A0E4-30EE8B6B15CF} = {C5B303DF-87DB-4835-AED9-9CACF543A0F4}
+		{6F4AAD8A-BBE7-42A8-B013-6BB46C6E2AF6} = {C5B303DF-87DB-4835-AED9-9CACF543A0F4}
 	EndGlobalSection
 EndGlobal

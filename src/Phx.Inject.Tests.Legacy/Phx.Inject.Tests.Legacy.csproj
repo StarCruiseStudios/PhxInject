@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <Import Project="Cobalt.props" Condition="Exists('Cobalt.props')" />
     <ItemGroup>
-        <ProjectReference Include="..\Phx.Inject\Phx.Inject.csproj" />
+        <ProjectReference Include="..\Phx.Inject.Legacy\Phx.Inject.Legacy.csproj" />
         <ProjectReference Include="..\Phx.Inject.Generator.Legacy\Phx.Inject.Generator.Legacy.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
 

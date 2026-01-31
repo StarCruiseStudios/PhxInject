@@ -27,7 +27,7 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-        <ProjectReference Include="..\Phx.Inject\Phx.Inject.csproj" />
+        <ProjectReference Include="..\Phx.Inject.Legacy\Phx.Inject.Legacy.csproj" />
     </ItemGroup>
 
     <Target Name="EnsureBuildFileImports" BeforeTargets="PrepareForBuild">

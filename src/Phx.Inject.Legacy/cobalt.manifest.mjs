@@ -26,8 +26,8 @@ export default {
   },
   configure: async (cobalt, context) => {
     cobalt.config.set('project', {
-      artifact: {artifact: 'Phx.Inject.Generator.Legacy', version: '0.9.1'},
-      description: 'Roslyn based Dependency Injection Generator.',
+      artifact: {artifact: 'Phx.Inject.Legacy', version: '0.9.2'},
+      description: 'Roslyn based Dependency Injection.',
       packageProjectUrl: 'https://github.com/StarCruiseStudios/PhxInject',
       tags: 'phxlib,starcruisestudios',
       repositoryUrl: 'https://github.com/StarCruiseStudios/PhxInject',
@@ -36,12 +36,7 @@ export default {
       props: {
         ImplicitUsings: 'enable',
         RootNamespace: '',
-        EnforceExtendedAnalyzerRules: 'true',
       }
     });
-    cobalt.dependencies.add(
-      context.versions.microsoft.codeanalysis.csharp.csharp,
-      {artifact: 'Phx.Inject.Legacy', versionRange: '0.9.2'}
-    );
   }
 }
