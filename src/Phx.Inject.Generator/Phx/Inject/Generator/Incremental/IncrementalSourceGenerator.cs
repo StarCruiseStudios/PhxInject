@@ -8,6 +8,7 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
+using Phx.Inject.Generator.Incremental.Metadata;
 using Phx.Inject.Generator.Incremental.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Model;
 
@@ -23,20 +24,21 @@ internal static class PhxInject {
 /// </summary>
 [Generator(LanguageNames.CSharp)]
 internal class IncrementalSourceGenerator(
-    PhxInjectAttributeMetadata.IValuesProvider phxInjectAttributeValuesProvider,
-    PhxInjectSettings.IValuesProvider phxInjectSettingsValuesProvider
+    IAttributeValuesProvider<PhxInjectAttributeMetadata> phxInjectAttributeValuesProvider,
+    PhxInjectSettings.IValuesProvider phxInjectSettingsValuesProvider,
+    IAttributeValuesProvider<InjectorAttributeMetadata> injectorAttributeValuesProvider,
+    InjectorInterfaceMetadata.IValuesProvider injectorInterfaceValuesProvider
 ) : IIncrementalGenerator {
     public IncrementalSourceGenerator() : this(
         PhxInjectAttributeMetadata.ValuesProvider.Instance,
-        PhxInjectSettings.ValuesProvider.Instance
+        PhxInjectSettings.ValuesProvider.Instance,
+        InjectorAttributeMetadata.ValuesProvider.Instance,
+        InjectorInterfaceMetadata.ValuesProvider.Instance
     ) { }
 
     public void Initialize(IncrementalGeneratorInitializationContext generatorInitializationContext) {
         var phxInjectSettingsPipeline = generatorInitializationContext.SyntaxProvider
-            .ForAttributeWithMetadataName(
-                PhxInjectAttributeMetadata.AttributeClassName,
-                phxInjectAttributeValuesProvider.CanProvide,
-                phxInjectAttributeValuesProvider.Transform)
+            .ForAttribute(phxInjectAttributeValuesProvider)
             .Select(phxInjectSettingsValuesProvider.Transform)
             .Collect()
             .Select((settings, cancellationToken) => settings.Length switch {
@@ -45,15 +47,23 @@ internal class IncrementalSourceGenerator(
                 _ => throw new InvalidOperationException("Only one PhxInject attribute is allowed per assembly.")
             });
 
-        generatorInitializationContext.RegisterSourceOutput(phxInjectSettingsPipeline,
-            (sourceProductionContext, phxInjectSettings) => {
-                sourceProductionContext.AddSource("settings.cs",
-                    $"class TestSettings {{\n" +
-                    $"  private string x = \"Phx.Inject.Generator: Using settings: {phxInjectSettings}\";\n" +
-                    $"\n}}");
+        var injectorPipeline = generatorInitializationContext.SyntaxProvider
+            .ForAttribute(injectorAttributeValuesProvider)
+            .Select(injectorInterfaceValuesProvider.Transform);
+
+        generatorInitializationContext.RegisterSourceOutput(injectorPipeline.Combine(phxInjectSettingsPipeline),
+            (sourceProductionContext, pair) => {
+                var injector = pair.Left;
+                var settings = pair.Right;
+                
+                sourceProductionContext.AddSource($"{injector.InjectorInterfaceType.NamespacedBaseTypeName}.settings.cs",
+                    $"/// <remarks>\n" +
+                    $"///     Phx.Inject.Generator: Using settings: {settings}\n" +
+                    $"/// </remarks>\n" +
+                    $"class Generated{injector.InjectorInterfaceType.BaseTypeName} {{ }}");
                 sourceProductionContext.ReportDiagnostic(Diagnostics.DebugMessage.CreateDiagnostic(
-                    $"Phx.Inject.Generator: Using settings: {phxInjectSettings}",
-                    phxInjectSettings.Location));
+                    $"Phx.Inject.Generator: Using settings: {settings}",
+                    settings.Location));
             });
     }
 }

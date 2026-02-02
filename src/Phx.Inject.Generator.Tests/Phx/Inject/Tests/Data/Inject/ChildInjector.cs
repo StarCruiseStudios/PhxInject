@@ -11,7 +11,7 @@ using Phx.Inject.Tests.Data.Model;
 namespace Phx.Inject.Tests.Data.Inject;
 
 [Injector(typeof(ParentSpecification))]
-internal interface IParentInjector {
+interface IParentInjector {
     [ChildInjector]
     public IChildInjector GetChildInjector();
 }

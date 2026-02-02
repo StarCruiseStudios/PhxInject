@@ -17,21 +17,14 @@ internal record PhxInjectAttributeMetadata(
     bool? NullableEnabled,
     bool? AllowConstructorFactories,
     AttributeMetadata AttributeMetadata
-) : ISourceCodeElement {
-    public static readonly string AttributeClassName =
-        $"{PhxInject.NamespaceName}.{nameof(PhxInjectAttribute)}";
-
+) : IAttributeElement {
     public SourceLocation Location { get; } = AttributeMetadata.Location;
 
-    public interface IValuesProvider {
-        bool CanProvide(SyntaxNode syntaxNode, CancellationToken cancellationToken);
-        PhxInjectAttributeMetadata Transform(
-            GeneratorAttributeSyntaxContext context,
-            CancellationToken cancellationToken);
-    }
-
-    public class ValuesProvider : IValuesProvider {
+    public class ValuesProvider : IAttributeValuesProvider<PhxInjectAttributeMetadata> {
         public static readonly ValuesProvider Instance = new();
+
+        public string AttributeClassName  { get; } =
+            $"{PhxInject.NamespaceName}.{nameof(PhxInjectAttribute)}";
 
         public bool CanProvide(SyntaxNode syntaxNode, CancellationToken cancellationToken) {
             // Generator pipeline ensures this is a PhxInjectAttribute.

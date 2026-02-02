@@ -8,7 +8,7 @@
 
 namespace Phx.Inject.Generator.Incremental.Model;
 
-public interface ISourceCodeElement {
+internal interface ISourceCodeElement {
     /// <summary> Gets the source location of the element. </summary>
     SourceLocation Location { get; }
 }
