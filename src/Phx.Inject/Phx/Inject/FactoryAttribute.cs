@@ -26,7 +26,7 @@ public class FactoryAttribute : Attribute {
     /// <param name="fabricationMode">
     ///     The <see cref="FabricationMode"/> used when invoking this factory method more than once.
     /// </param>
-    public FactoryAttribute(FabricationMode fabricationMode = FabricationMode.Recurrent) {
+    public FactoryAttribute(FabricationMode fabricationMode) {
         FabricationMode = fabricationMode;
     }
 }

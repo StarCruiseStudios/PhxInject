@@ -1,9 +1,9 @@
 ﻿using Microsoft.CodeAnalysis;
-using Phx.Inject.Generator.Incremental.Model;
+using Phx.Inject.Generator.Incremental.Metadata.Attributes;
 
-namespace Phx.Inject.Generator.Incremental.Metadata.Attributes;
+namespace Phx.Inject.Generator.Incremental.Syntax;
 
-internal interface IAttributeValuesProvider<out T> where T : IAttributeElement {
+internal interface IAttributeSyntaxValuesProvider<out T> where T : IAttributeElement {
     string AttributeClassName { get; }
     bool CanProvide(SyntaxNode syntaxNode, CancellationToken cancellationToken);
     T Transform(
@@ -14,11 +14,11 @@ internal interface IAttributeValuesProvider<out T> where T : IAttributeElement {
 internal static class AttributeSyntaxProviderExtensions {
     public static IncrementalValuesProvider<T> ForAttribute<T>(
         this SyntaxValueProvider syntaxProvider,
-        IAttributeValuesProvider<T> valuesProvider
+        IAttributeSyntaxValuesProvider<T> syntaxValuesProvider
     ) where T : IAttributeElement {
         return syntaxProvider.ForAttributeWithMetadataName(
-            valuesProvider.AttributeClassName,
-            valuesProvider.CanProvide,
-            valuesProvider.Transform);
+            syntaxValuesProvider.AttributeClassName,
+            syntaxValuesProvider.CanProvide,
+            syntaxValuesProvider.Transform);
     }
 }

@@ -2,9 +2,8 @@
 
 namespace Phx.Inject.Generator.Incremental.Metadata.Attributes;
 
-internal record InjectorAttributeMetadata(
-    string? GeneratedClassName,
-    IReadOnlyList<TypeModel> Specifications,
+internal record QualifierAttributeMetadata(
+    TypeModel QualifierType,
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
     public SourceLocation Location { get; } = AttributeMetadata.Location;

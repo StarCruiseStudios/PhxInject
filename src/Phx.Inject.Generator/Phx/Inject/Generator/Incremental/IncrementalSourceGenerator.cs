@@ -11,6 +11,7 @@ using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Generator.Incremental.Metadata;
 using Phx.Inject.Generator.Incremental.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Model;
+using Phx.Inject.Generator.Incremental.Syntax;
 
 namespace Phx.Inject.Generator.Incremental;
 
@@ -24,21 +25,21 @@ internal static class PhxInject {
 /// </summary>
 [Generator(LanguageNames.CSharp)]
 internal class IncrementalSourceGenerator(
-    IAttributeValuesProvider<PhxInjectAttributeMetadata> phxInjectAttributeValuesProvider,
+    IAttributeSyntaxValuesProvider<PhxInjectAttributeMetadata> phxInjectAttributeSyntaxValuesProvider,
     PhxInjectSettings.IValuesProvider phxInjectSettingsValuesProvider,
-    IAttributeValuesProvider<InjectorAttributeMetadata> injectorAttributeValuesProvider,
+    IAttributeSyntaxValuesProvider<InjectorAttributeMetadata> injectorAttributeSyntaxValuesProvider,
     InjectorInterfaceMetadata.IValuesProvider injectorInterfaceValuesProvider
 ) : IIncrementalGenerator {
     public IncrementalSourceGenerator() : this(
-        PhxInjectAttributeMetadata.ValuesProvider.Instance,
+        PhxInjectAttributeSyntaxValuesProvider.Instance,
         PhxInjectSettings.ValuesProvider.Instance,
-        InjectorAttributeMetadata.ValuesProvider.Instance,
+        InjectorAttributeSyntaxValuesProvider.Instance,
         InjectorInterfaceMetadata.ValuesProvider.Instance
     ) { }
 
     public void Initialize(IncrementalGeneratorInitializationContext generatorInitializationContext) {
         var phxInjectSettingsPipeline = generatorInitializationContext.SyntaxProvider
-            .ForAttribute(phxInjectAttributeValuesProvider)
+            .ForAttribute(phxInjectAttributeSyntaxValuesProvider)
             .Select(phxInjectSettingsValuesProvider.Transform)
             .Collect()
             .Select((settings, cancellationToken) => settings.Length switch {
@@ -48,7 +49,7 @@ internal class IncrementalSourceGenerator(
             });
 
         var injectorPipeline = generatorInitializationContext.SyntaxProvider
-            .ForAttribute(injectorAttributeValuesProvider)
+            .ForAttribute(injectorAttributeSyntaxValuesProvider)
             .Select(injectorInterfaceValuesProvider.Transform);
 
         generatorInitializationContext.RegisterSourceOutput(injectorPipeline.Combine(phxInjectSettingsPipeline),
