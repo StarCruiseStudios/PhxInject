@@ -13,4 +13,4 @@ namespace Phx.Inject;
 ///     child injector.
 /// </summary>
 [AttributeUsage(AttributeTargets.Interface)]
-public class InjectorDependency : Attribute { }
+public class InjectorDependencyAttribute : Attribute { }

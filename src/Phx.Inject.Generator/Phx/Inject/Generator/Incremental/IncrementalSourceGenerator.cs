@@ -27,12 +27,14 @@ internal static class PhxInject {
 internal class IncrementalSourceGenerator(
     IAttributeSyntaxValuesProvider<PhxInjectAttributeMetadata> phxInjectAttributeSyntaxValuesProvider,
     PhxInjectSettingsMetadata.IValuesProvider phxInjectSettingsValuesProvider,
-    IAttributeSyntaxValuesProvider<InjectorInterfaceMetadata> injectorInterfaceSyntaxValuesProvider
+    IAttributeSyntaxValuesProvider<InjectorInterfaceMetadata> injectorInterfaceSyntaxValuesProvider,
+    IAttributeSyntaxValuesProvider<InjectorDependencyInterfaceMetadata> injectorDependencyInterfaceSyntaxValuesProvider
 ) : IIncrementalGenerator {
     public IncrementalSourceGenerator() : this(
         PhxInjectAttributeSyntaxValuesProvider.Instance,
         PhxInjectSettingsMetadata.ValuesProvider.Instance,
-        InjectorInterfaceSyntaxValuesProvider.Instance
+        InjectorInterfaceSyntaxValuesProvider.Instance,
+        InjectorDependencyInterfaceSyntaxValuesProvider.Instance
     ) { }
 
     public void Initialize(IncrementalGeneratorInitializationContext generatorInitializationContext) {
@@ -45,23 +47,44 @@ internal class IncrementalSourceGenerator(
                 1 => settings[0],
                 _ => throw new InvalidOperationException("Only one PhxInject attribute is allowed per assembly.")
             });
-
-        var injectorPipeline = generatorInitializationContext.SyntaxProvider
-            .ForAttribute(injectorInterfaceSyntaxValuesProvider);
-
-        generatorInitializationContext.RegisterSourceOutput(injectorPipeline.Combine(phxInjectSettingsPipeline),
-            (sourceProductionContext, pair) => {
-                var injector = pair.Left;
-                var settings = pair.Right;
-                
-                sourceProductionContext.AddSource($"{injector.InjectorInterfaceType.NamespacedBaseTypeName}.settings.cs",
+        generatorInitializationContext.RegisterSourceOutput(phxInjectSettingsPipeline,
+            (sourceProductionContext, settings) => {
+                sourceProductionContext.AddSource($"GeneratorSettings.cs",
                     $"/// <remarks>\n" +
                     $"///     Phx.Inject.Generator: Using settings: {settings}\n" +
                     $"/// </remarks>\n" +
-                    $"class Generated{injector.InjectorInterfaceType.BaseTypeName} {{ }}");
-                sourceProductionContext.ReportDiagnostic(Diagnostics.DebugMessage.CreateDiagnostic(
-                    $"Phx.Inject.Generator: Using settings: {settings}",
-                    settings.Location.Value));
+                    $"class GeneratorSettings{{ }}");
             });
+
+        var injectorPipeline = generatorInitializationContext.SyntaxProvider
+            .ForAttribute(injectorInterfaceSyntaxValuesProvider);
+        generatorInitializationContext.RegisterSourceOutput(injectorPipeline,
+            (sourceProductionContext, injector) => {
+                sourceProductionContext.AddSource($"Generated{injector.InjectorInterfaceType.NamespacedBaseTypeName}.cs",
+                    $"class Generated{injector.InjectorInterfaceType.BaseTypeName} {{ }}");
+            });
+        
+        var injectorDependencyPipeline = generatorInitializationContext.SyntaxProvider
+            .ForAttribute(injectorDependencyInterfaceSyntaxValuesProvider);
+        generatorInitializationContext.RegisterSourceOutput(injectorDependencyPipeline,
+            (sourceProductionContext, injectorDependency) => {
+                sourceProductionContext.AddSource($"Generated{injectorDependency.InjectorDependencyInterfaceType.NamespacedBaseTypeName}.cs",
+                    $"class Generated{injectorDependency.InjectorDependencyInterfaceType.BaseTypeName} {{ }}");
+            });
+
+        // generatorInitializationContext.RegisterSourceOutput(injectorPipeline.Combine(phxInjectSettingsPipeline),
+        //     (sourceProductionContext, pair) => {
+        //         var injector = pair.Left;
+        //         var settings = pair.Right;
+        //         
+        //         sourceProductionContext.AddSource($"{injector.InjectorInterfaceType.NamespacedBaseTypeName}.settings.cs",
+        //             $"/// <remarks>\n" +
+        //             $"///     Phx.Inject.Generator: Using settings: {settings}\n" +
+        //             $"/// </remarks>\n" +
+        //             $"class Generated{injector.InjectorInterfaceType.BaseTypeName} {{ }}");
+        //         sourceProductionContext.ReportDiagnostic(Diagnostics.DebugMessage.CreateDiagnostic(
+        //             $"Phx.Inject.Generator: Using settings: {settings}",
+        //             settings.Location.Value));
+        //     });
     }
 }
