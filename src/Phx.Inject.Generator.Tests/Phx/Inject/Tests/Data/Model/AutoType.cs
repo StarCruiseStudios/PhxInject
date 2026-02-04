@@ -18,7 +18,7 @@ internal class AutoType {
     }
 }
 
-[Factory(FabricationMode.Scoped)]
+[AutoFactory(FabricationMode.Scoped)]
 public class AutoTypeWithFabricationMode {
     public int X { get; } = 10;
 }

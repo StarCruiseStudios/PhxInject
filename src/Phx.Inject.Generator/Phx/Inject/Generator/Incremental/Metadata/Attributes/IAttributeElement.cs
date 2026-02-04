@@ -1,4 +1,4 @@
-﻿using Phx.Inject.Generator.Incremental.Model;
+﻿using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Metadata.Attributes;
 

@@ -6,9 +6,11 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-namespace Phx.Inject.Generator.Incremental.Model;
+using Microsoft.CodeAnalysis;
+
+namespace Phx.Inject.Generator.Incremental.Util;
 
 internal interface ISourceCodeElement {
     /// <summary> Gets the source location of the element. </summary>
-    SourceLocation Location { get; }
+    GeneratorIgnored<Location> Location { get; }
 }

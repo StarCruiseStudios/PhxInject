@@ -39,7 +39,7 @@ public class AutoType : IAutoType {
     }
 }
 
-[Factory(FabricationMode.Scoped)]
+[AutoFactory(FabricationMode.Scoped)]
 public class AutoTypeWithFabricationMode {
     public int X { get; }
 

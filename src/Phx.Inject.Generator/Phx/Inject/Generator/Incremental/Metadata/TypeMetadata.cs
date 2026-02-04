@@ -1,14 +1,15 @@
 ﻿using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Incremental.Util;
 
-namespace Phx.Inject.Generator.Incremental.Model;
+namespace Phx.Inject.Generator.Incremental.Metadata;
 
-internal record TypeModel(
+internal record TypeMetadata(
     string NamespaceName,
     string BaseTypeName,
-    IReadOnlyList<TypeModel> TypeArguments,
-    SourceLocation Location
+    IReadOnlyList<TypeMetadata> TypeArguments,
+    GeneratorIgnored<Location> Location
 ) : ISourceCodeElement {
 
     public string TypeName {
@@ -32,7 +33,7 @@ internal record TypeModel(
         get => $"{NamespaceName}.{TypeName}";
     }
     
-    public virtual bool Equals(TypeModel? other) {
+    public virtual bool Equals(TypeMetadata? other) {
         if (other is null) {
             return false;
         }
@@ -60,30 +61,30 @@ internal record TypeModel(
         return NamespacedName;
     }
     
-    public static TypeModel FromTypeSymbol(ITypeSymbol typeSymbol) {
+    public static TypeMetadata FromTypeSymbol(ITypeSymbol typeSymbol) {
         return typeSymbol.ToTypeModel();
     }
 }
 
 internal static class TypeSymbolExtensions {
-    public static TypeModel ToTypeModel(this ITypeSymbol typeSymbol) {
+    public static TypeMetadata ToTypeModel(this ITypeSymbol typeSymbol) {
         var name = typeSymbol.Name;
 
-        IReadOnlyList<TypeModel> typeArguments = typeSymbol is INamedTypeSymbol namedTypeSymbol
+        IReadOnlyList<TypeMetadata> typeArguments = typeSymbol is INamedTypeSymbol namedTypeSymbol
             ? namedTypeSymbol.TypeArguments
                 .Select(argumentType => argumentType.ToTypeModel())
                 .ToImmutableList()
-            : ImmutableList<TypeModel>.Empty;
+            : ImmutableList<TypeMetadata>.Empty;
 
         if (typeSymbol.ContainingType != null) {
             var containingType = typeSymbol.ContainingType.ToTypeModel();
             name = $"{containingType.TypeName}.{name}";
         }
 
-        return new TypeModel(
+        return new TypeMetadata(
             typeSymbol.ContainingNamespace.ToString(),
             name,
             typeArguments,
-            new SourceLocation(typeSymbol.Locations.FirstOrDefault() ?? Location.None));
+            typeSymbol.Locations.FirstOrDefault().OrNone().GeneratorIgnored());
     }
 }

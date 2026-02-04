@@ -6,7 +6,9 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Metadata.Attributes;
+using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Model;
 
@@ -34,7 +36,7 @@ internal record PhxInjectSettings(
     bool NullableEnabled,
     bool DisableAutoSpecification,
     PhxInjectAttributeMetadata? AttributeMetadata,
-    SourceLocation Location
+    GeneratorIgnored<Location> Location
 ) : ISourceCodeElement {
     /// <summary> Initializes a new instance of the <see cref="PhxInjectSettings"/> class. </summary>
     /// <param name="attributeMetadata">
@@ -50,7 +52,7 @@ internal record PhxInjectSettings(
         attributeMetadata?.NullableEnabled ?? PhxInjectAttribute.DefaultNullableEnabled,
         attributeMetadata?.AllowConstructorFactories ?? PhxInjectAttribute.DefaultAllowConstructorFactories,
         attributeMetadata,
-        (attributeMetadata?.Location).OrDefault()
+        (attributeMetadata?.Location).OrNone()
     ) { }
 
     public interface IValuesProvider {

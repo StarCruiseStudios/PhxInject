@@ -1,10 +1,11 @@
-﻿using Phx.Inject.Generator.Incremental.Model;
+﻿using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Metadata.Attributes;
 
 internal record QualifierAttributeMetadata(
-    TypeModel QualifierType,
+    TypeMetadata QualifierType,
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
-    public SourceLocation Location { get; } = AttributeMetadata.Location;
+    public GeneratorIgnored<Location> Location { get; } = AttributeMetadata.Location;
 }

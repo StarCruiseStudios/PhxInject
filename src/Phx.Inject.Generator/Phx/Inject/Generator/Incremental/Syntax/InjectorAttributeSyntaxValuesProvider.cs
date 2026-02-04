@@ -1,8 +1,8 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Phx.Inject.Generator.Incremental.Metadata;
 using Phx.Inject.Generator.Incremental.Metadata.Attributes;
-using Phx.Inject.Generator.Incremental.Model;
 
 namespace Phx.Inject.Generator.Incremental.Syntax;
 
@@ -50,7 +50,7 @@ internal class InjectorAttributeSyntaxValuesProvider : IAttributeSyntaxValuesPro
             .ToImmutableList();
             
         return new InjectorAttributeMetadata(
-            targetSymbol.ToTypeModel(),
+            // targetSymbol.ToTypeModel(),
             generatedClassName,
             specifications,
             attributeMetadata);

@@ -7,7 +7,7 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Generator.Incremental.Model;
+using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Common.Exceptions;
 
@@ -96,11 +96,11 @@ internal static class Diagnostics {
 
         public Diagnostic CreateDiagnostic(
             string message,
-            SourceLocation? location = null
+            Location? location = null
         ) {
             return Diagnostic.Create(
                 new DiagnosticDescriptor(Id, Title, message, Category, Severity, true),
-                location?.Location ?? Location.None);
+                location.OrNone());
         }
     }
 }

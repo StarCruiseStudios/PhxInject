@@ -7,8 +7,6 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common.Exceptions;
-using Phx.Inject.Generator.Incremental.Metadata;
 using Phx.Inject.Generator.Incremental.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Model;
 using Phx.Inject.Generator.Incremental.Syntax;
@@ -27,14 +25,14 @@ internal static class PhxInject {
 internal class IncrementalSourceGenerator(
     IAttributeSyntaxValuesProvider<PhxInjectAttributeMetadata> phxInjectAttributeSyntaxValuesProvider,
     PhxInjectSettings.IValuesProvider phxInjectSettingsValuesProvider,
-    IAttributeSyntaxValuesProvider<InjectorAttributeMetadata> injectorAttributeSyntaxValuesProvider,
-    InjectorInterfaceMetadata.IValuesProvider injectorInterfaceValuesProvider
+    IAttributeSyntaxValuesProvider<InjectorAttributeMetadata> injectorAttributeSyntaxValuesProvider
+    // InjectorInterfaceMetadata.IValuesProvider injectorInterfaceValuesProvider
 ) : IIncrementalGenerator {
     public IncrementalSourceGenerator() : this(
         PhxInjectAttributeSyntaxValuesProvider.Instance,
         PhxInjectSettings.ValuesProvider.Instance,
-        InjectorAttributeSyntaxValuesProvider.Instance,
-        InjectorInterfaceMetadata.ValuesProvider.Instance
+        InjectorAttributeSyntaxValuesProvider.Instance
+        // InjectorInterfaceMetadata.ValuesProvider.Instance
     ) { }
 
     public void Initialize(IncrementalGeneratorInitializationContext generatorInitializationContext) {
@@ -49,22 +47,22 @@ internal class IncrementalSourceGenerator(
             });
 
         var injectorPipeline = generatorInitializationContext.SyntaxProvider
-            .ForAttribute(injectorAttributeSyntaxValuesProvider)
-            .Select(injectorInterfaceValuesProvider.Transform);
+            .ForAttribute(injectorAttributeSyntaxValuesProvider);
+            // .Select(injectorInterfaceValuesProvider.Transform);
 
         generatorInitializationContext.RegisterSourceOutput(injectorPipeline.Combine(phxInjectSettingsPipeline),
             (sourceProductionContext, pair) => {
                 var injector = pair.Left;
                 var settings = pair.Right;
                 
-                sourceProductionContext.AddSource($"{injector.InjectorInterfaceType.NamespacedBaseTypeName}.settings.cs",
-                    $"/// <remarks>\n" +
-                    $"///     Phx.Inject.Generator: Using settings: {settings}\n" +
-                    $"/// </remarks>\n" +
-                    $"class Generated{injector.InjectorInterfaceType.BaseTypeName} {{ }}");
-                sourceProductionContext.ReportDiagnostic(Diagnostics.DebugMessage.CreateDiagnostic(
-                    $"Phx.Inject.Generator: Using settings: {settings}",
-                    settings.Location));
+                // sourceProductionContext.AddSource($"{injector.InjectorInterfaceType.NamespacedBaseTypeName}.settings.cs",
+                //     $"/// <remarks>\n" +
+                //     $"///     Phx.Inject.Generator: Using settings: {settings}\n" +
+                //     $"/// </remarks>\n" +
+                //     $"class Generated{injector.InjectorInterfaceType.BaseTypeName} {{ }}");
+                // sourceProductionContext.ReportDiagnostic(Diagnostics.DebugMessage.CreateDiagnostic(
+                //     $"Phx.Inject.Generator: Using settings: {settings}",
+                //     settings.Location));
             });
     }
 }

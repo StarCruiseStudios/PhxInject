@@ -1,0 +1,15 @@
+﻿using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Incremental.Metadata.Attributes;
+using Phx.Inject.Generator.Incremental.Util;
+
+namespace Phx.Inject.Generator.Incremental.Metadata.Injector;
+
+internal record InjectorInterfaceMetadata(
+    TypeMetadata InjectorInterfaceType,
+    IEnumerable<InjectorProviderMetadata> Providers,
+    IEnumerable<InjectorActivatorMetadata> Activators,
+    IEnumerable<InjectorChildProviderMetadata> ChildFactories,
+    InjectorAttributeMetadata InjectorAttributeMetadata,
+    DependencyAttributeMetadata? DependencyAttributeMetadata,
+    GeneratorIgnored<Location> Location
+) : ISourceCodeElement { }

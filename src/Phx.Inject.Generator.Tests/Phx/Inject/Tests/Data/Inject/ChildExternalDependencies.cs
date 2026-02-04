@@ -13,7 +13,7 @@ namespace Phx.Inject.Tests.Data.Inject;
 [PhxInject(TabSize = 3)]
 internal class GeneratorSettings { }
 
-[Specification]
+[InjectorDependency]
 internal interface IChildDependencies {
     [Label(ParentSpecification.LeftLeaf)]
     [Factory]
@@ -24,7 +24,7 @@ internal interface IChildDependencies {
     public ILeaf GetRightLeaf();
 }
 
-[Specification]
+[InjectorDependency]
 internal interface IGrandchildDependencies {
     [Factory]
     public Node GetNode();

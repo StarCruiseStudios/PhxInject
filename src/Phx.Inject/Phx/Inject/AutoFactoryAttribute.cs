@@ -9,24 +9,24 @@
 namespace Phx.Inject;
 
 /// <summary>
-///     Annotates a factory method that will be invoked to construct a given dependency.
+///     Annotates a type or constructor that will be invoked to construct a given dependency.
 /// </summary>
-[AttributeUsage(AttributeTargets.Method | AttributeTargets.Property)]
-public class FactoryAttribute : Attribute {
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Constructor)]
+public class AutoFactoryAttribute : Attribute {
     /// <summary>
     ///     Indicates the <see cref="FabricationMode"/> used when invoking this factory method more than
     ///     once.
     /// </summary>
     public FabricationMode FabricationMode { get; set; } = FabricationMode.Recurrent;
     
-    /// <summary> Initializes a new instance of the <see cref="FactoryAttribute"/> class. </summary>
-    public FactoryAttribute() { }
+    /// <summary> Initializes a new instance of the <see cref="AutoFactoryAttribute"/> class. </summary>
+    public AutoFactoryAttribute() { }
     
-    /// <summary> Initializes a new instance of the <see cref="FactoryAttribute"/> class. </summary>
+    /// <summary> Initializes a new instance of the <see cref="AutoFactoryAttribute"/> class. </summary>
     /// <param name="fabricationMode">
     ///     The <see cref="FabricationMode"/> used when invoking this factory method more than once.
     /// </param>
-    public FactoryAttribute(FabricationMode fabricationMode) {
+    public AutoFactoryAttribute(FabricationMode fabricationMode) {
         FabricationMode = fabricationMode;
     }
 }
