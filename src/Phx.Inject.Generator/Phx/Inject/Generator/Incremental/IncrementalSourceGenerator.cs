@@ -7,8 +7,8 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Incremental.Metadata;
 using Phx.Inject.Generator.Incremental.Metadata.Attributes;
-using Phx.Inject.Generator.Incremental.Model;
 using Phx.Inject.Generator.Incremental.Syntax;
 
 namespace Phx.Inject.Generator.Incremental;
@@ -24,13 +24,13 @@ internal static class PhxInject {
 [Generator(LanguageNames.CSharp)]
 internal class IncrementalSourceGenerator(
     IAttributeSyntaxValuesProvider<PhxInjectAttributeMetadata> phxInjectAttributeSyntaxValuesProvider,
-    PhxInjectSettings.IValuesProvider phxInjectSettingsValuesProvider,
+    PhxInjectSettingsMetadata.IValuesProvider phxInjectSettingsValuesProvider,
     IAttributeSyntaxValuesProvider<InjectorAttributeMetadata> injectorAttributeSyntaxValuesProvider
     // InjectorInterfaceMetadata.IValuesProvider injectorInterfaceValuesProvider
 ) : IIncrementalGenerator {
     public IncrementalSourceGenerator() : this(
         PhxInjectAttributeSyntaxValuesProvider.Instance,
-        PhxInjectSettings.ValuesProvider.Instance,
+        PhxInjectSettingsMetadata.ValuesProvider.Instance,
         InjectorAttributeSyntaxValuesProvider.Instance
         // InjectorInterfaceMetadata.ValuesProvider.Instance
     ) { }
@@ -41,7 +41,7 @@ internal class IncrementalSourceGenerator(
             .Select(phxInjectSettingsValuesProvider.Transform)
             .Collect()
             .Select((settings, cancellationToken) => settings.Length switch {
-                0 => new PhxInjectSettings(null),
+                0 => new PhxInjectSettingsMetadata(null),
                 1 => settings[0],
                 _ => throw new InvalidOperationException("Only one PhxInject attribute is allowed per assembly.")
             });

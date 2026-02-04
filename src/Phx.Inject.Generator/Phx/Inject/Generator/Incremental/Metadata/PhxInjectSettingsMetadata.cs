@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Util;
 
-namespace Phx.Inject.Generator.Incremental.Model;
+namespace Phx.Inject.Generator.Incremental.Metadata;
 
 /// <summary> Defines the available settings for Phx.Inject source generation. </summary>
 /// <param name="Name"> The display name of the settings instance. </param>
@@ -29,7 +29,7 @@ namespace Phx.Inject.Generator.Incremental.Model;
 ///     settings.
 /// </param>
 /// <param name="Location"> The source location of the settings definition. </param>
-internal record PhxInjectSettings(
+internal record PhxInjectSettingsMetadata(
     string Name,
     int TabSize,
     string GeneratedFileExtension,
@@ -38,12 +38,12 @@ internal record PhxInjectSettings(
     PhxInjectAttributeMetadata? AttributeMetadata,
     GeneratorIgnored<Location> Location
 ) : ISourceCodeElement {
-    /// <summary> Initializes a new instance of the <see cref="PhxInjectSettings"/> class. </summary>
+    /// <summary> Initializes a new instance of the <see cref="PhxInjectSettingsMetadata"/> class. </summary>
     /// <param name="attributeMetadata">
     ///     The <see cref="PhxInjectAttributeMetadata"/> that defines the settings. The default settings
     ///     will be used if <c> null </c>.
     /// </param>
-    public PhxInjectSettings(
+    public PhxInjectSettingsMetadata(
         PhxInjectAttributeMetadata? attributeMetadata
     ) : this(
         attributeMetadata?.AttributeMetadata.TargetName ?? "Default",
@@ -56,16 +56,16 @@ internal record PhxInjectSettings(
     ) { }
 
     public interface IValuesProvider {
-        PhxInjectSettings Transform(PhxInjectAttributeMetadata context, CancellationToken cancellationToken);
+        PhxInjectSettingsMetadata Transform(PhxInjectAttributeMetadata context, CancellationToken cancellationToken);
     }
 
     public class ValuesProvider : IValuesProvider {
         public static readonly ValuesProvider Instance = new();
 
-        public PhxInjectSettings Transform(
+        public PhxInjectSettingsMetadata Transform(
             PhxInjectAttributeMetadata attributeMetadata,
             CancellationToken cancellationToken) {
-            return new PhxInjectSettings(attributeMetadata);
+            return new PhxInjectSettingsMetadata(attributeMetadata);
         }
     }
 }
