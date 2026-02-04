@@ -11,6 +11,7 @@ using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Generator.Incremental.Metadata;
 using Phx.Inject.Generator.Incremental.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Metadata.Injector;
+using Phx.Inject.Generator.Incremental.Metadata.Specification;
 using Phx.Inject.Generator.Incremental.Syntax;
 
 namespace Phx.Inject.Generator.Incremental;
@@ -28,13 +29,17 @@ internal class IncrementalSourceGenerator(
     IAttributeSyntaxValuesProvider<PhxInjectAttributeMetadata> phxInjectAttributeSyntaxValuesProvider,
     PhxInjectSettingsMetadata.IValuesProvider phxInjectSettingsValuesProvider,
     IAttributeSyntaxValuesProvider<InjectorInterfaceMetadata> injectorInterfaceSyntaxValuesProvider,
-    IAttributeSyntaxValuesProvider<InjectorDependencyInterfaceMetadata> injectorDependencyInterfaceSyntaxValuesProvider
+    IAttributeSyntaxValuesProvider<InjectorDependencyInterfaceMetadata> injectorDependencyInterfaceSyntaxValuesProvider,
+    IAttributeSyntaxValuesProvider<SpecClassMetadata> specClassSyntaxValuesProvider,
+    IAttributeSyntaxValuesProvider<SpecInterfaceMetadata> specInterfaceSyntaxValuesProvider
 ) : IIncrementalGenerator {
     public IncrementalSourceGenerator() : this(
         PhxInjectAttributeSyntaxValuesProvider.Instance,
         PhxInjectSettingsMetadata.ValuesProvider.Instance,
         InjectorInterfaceSyntaxValuesProvider.Instance,
-        InjectorDependencyInterfaceSyntaxValuesProvider.Instance
+        InjectorDependencyInterfaceSyntaxValuesProvider.Instance,
+        SpecClassSyntaxValuesProvider.Instance,
+        SpecInterfaceSyntaxValuesProvider.Instance
     ) { }
 
     public void Initialize(IncrementalGeneratorInitializationContext generatorInitializationContext) {
@@ -70,6 +75,22 @@ internal class IncrementalSourceGenerator(
             (sourceProductionContext, injectorDependency) => {
                 sourceProductionContext.AddSource($"Generated{injectorDependency.InjectorDependencyInterfaceType.NamespacedBaseTypeName}.cs",
                     $"class Generated{injectorDependency.InjectorDependencyInterfaceType.BaseTypeName} {{ }}");
+            });
+        
+        var specClassPipeline = generatorInitializationContext.SyntaxProvider
+            .ForAttribute(specClassSyntaxValuesProvider);
+        generatorInitializationContext.RegisterSourceOutput(specClassPipeline,
+            (sourceProductionContext, specClass) => {
+                sourceProductionContext.AddSource($"Generated{specClass.SpecType.NamespacedBaseTypeName}.cs",
+                    $"class Generated{specClass.SpecType.BaseTypeName} {{ }}");
+            });
+        
+        var specInterfacePipeline = generatorInitializationContext.SyntaxProvider
+            .ForAttribute(specInterfaceSyntaxValuesProvider);
+        generatorInitializationContext.RegisterSourceOutput(specInterfacePipeline,
+            (sourceProductionContext, specInterface) => {
+                sourceProductionContext.AddSource($"Generated{specInterface.SpecInterfaceType.NamespacedBaseTypeName}.cs",
+                    $"class Generated{specInterface.SpecInterfaceType.BaseTypeName} {{ }}");
             });
 
         // generatorInitializationContext.RegisterSourceOutput(injectorPipeline.Combine(phxInjectSettingsPipeline),
