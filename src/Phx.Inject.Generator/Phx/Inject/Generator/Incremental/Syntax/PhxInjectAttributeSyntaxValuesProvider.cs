@@ -40,9 +40,6 @@ internal class PhxInjectAttributeSyntaxValuesProvider : IAttributeSyntaxValuesPr
             attributeData.NamedArguments
                 .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.NullableEnabled))
                 .Value.Value as bool?,
-            attributeData.NamedArguments
-                .FirstOrDefault(arg => arg.Key == nameof(PhxInjectAttribute.AllowConstructorFactories))
-                .Value.Value as bool?,
             attributeMetadata);
     }
 }

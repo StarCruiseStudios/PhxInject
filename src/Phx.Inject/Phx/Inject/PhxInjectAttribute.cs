@@ -13,10 +13,8 @@ public class PhxInjectAttribute : Attribute {
     public const int DefaultTabSize = 4;
     public const string DefaultGeneratedFileExtension = "generated.cs";
     public const bool DefaultNullableEnabled = true;
-    public const bool DefaultAllowConstructorFactories = true;
 
     public int TabSize { get; set; } = DefaultTabSize;
     public string GeneratedFileExtension { get; set; } = DefaultGeneratedFileExtension;
     public bool NullableEnabled { get; set; } = DefaultNullableEnabled;
-    public bool AllowConstructorFactories { get; set; } = DefaultAllowConstructorFactories;
 }

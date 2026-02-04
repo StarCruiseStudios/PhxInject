@@ -15,7 +15,6 @@ internal record PhxInjectAttributeMetadata(
     int? TabSize,
     string? GeneratedFileExtension,
     bool? NullableEnabled,
-    bool? AllowConstructorFactories,
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
     public GeneratorIgnored<Location> Location { get; } = AttributeMetadata.Location;

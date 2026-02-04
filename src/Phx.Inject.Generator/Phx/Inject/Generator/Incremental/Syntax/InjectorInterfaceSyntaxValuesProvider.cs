@@ -9,19 +9,21 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Incremental.Metadata;
 using Phx.Inject.Generator.Incremental.Metadata.Attributes;
+using Phx.Inject.Generator.Incremental.Metadata.Injector;
+using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Syntax;
 
-internal class InjectorAttributeSyntaxValuesProvider : IAttributeSyntaxValuesProvider<InjectorAttributeMetadata> {
-    public static readonly InjectorAttributeSyntaxValuesProvider Instance = new();
+internal class InjectorInterfaceSyntaxValuesProvider : IAttributeSyntaxValuesProvider<InjectorInterfaceMetadata> {
+    public static readonly InjectorInterfaceSyntaxValuesProvider Instance = new();
 
     public string AttributeClassName { get; } =
         $"{PhxInject.NamespaceName}.{nameof(InjectorAttribute)}";
 
     public bool CanProvide(SyntaxNode syntaxNode, CancellationToken cancellationToken) {
-        // Generator pipeline ensures this is an InjectorAttribute.
         if (syntaxNode is InterfaceDeclarationSyntax { Modifiers: var modifiers }) {
             return modifiers
                 .All(it => it.ValueText switch {
@@ -34,12 +36,36 @@ internal class InjectorAttributeSyntaxValuesProvider : IAttributeSyntaxValuesPro
         return false;
     }
 
-    public InjectorAttributeMetadata Transform(
+    public InjectorInterfaceMetadata Transform(
         GeneratorAttributeSyntaxContext context,
         CancellationToken cancellationToken
     ) {
-        var attributeData = context.Attributes.First();
         var targetSymbol = (ITypeSymbol)context.TargetSymbol;
+        var attributes = targetSymbol.GetAttributes();
+        
+        var injectorInterfaceType = targetSymbol.ToTypeModel();
+        var providers = ImmutableArray<InjectorProviderMetadata>.Empty;
+        var activators = ImmutableArray<InjectorActivatorMetadata>.Empty;
+        var childFactories = ImmutableArray<InjectorChildProviderMetadata>.Empty;
+        var injectorAttributeMetadata = GetInjectorAttributeMetadata(targetSymbol, attributes);
+        DependencyAttributeMetadata? dependencyAttributeMetadata = null;
+        return new InjectorInterfaceMetadata(
+            injectorInterfaceType,
+            providers,
+            activators,
+            childFactories,
+            injectorAttributeMetadata,
+            dependencyAttributeMetadata,
+            targetSymbol.GetLocationOrDefault().GeneratorIgnored()
+        );
+    }
+
+    private InjectorAttributeMetadata GetInjectorAttributeMetadata(
+        ITypeSymbol targetSymbol,
+        IEnumerable<AttributeData> attributes
+    ) {
+        var attributeData = attributes
+            .First(attribute => attribute.GetFullyQualifiedName() == AttributeClassName);
         var attributeMetadata = AttributeMetadata.Create(targetSymbol, attributeData);
 
         var generatedClassName = attributeData.NamedArguments
@@ -58,7 +84,6 @@ internal class InjectorAttributeSyntaxValuesProvider : IAttributeSyntaxValuesPro
             .ToImmutableList();
             
         return new InjectorAttributeMetadata(
-            // targetSymbol.ToTypeModel(),
             generatedClassName,
             specifications,
             attributeMetadata);

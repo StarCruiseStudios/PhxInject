@@ -7,8 +7,10 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Generator.Incremental.Metadata;
 using Phx.Inject.Generator.Incremental.Metadata.Attributes;
+using Phx.Inject.Generator.Incremental.Metadata.Injector;
 using Phx.Inject.Generator.Incremental.Syntax;
 
 namespace Phx.Inject.Generator.Incremental;
@@ -25,14 +27,12 @@ internal static class PhxInject {
 internal class IncrementalSourceGenerator(
     IAttributeSyntaxValuesProvider<PhxInjectAttributeMetadata> phxInjectAttributeSyntaxValuesProvider,
     PhxInjectSettingsMetadata.IValuesProvider phxInjectSettingsValuesProvider,
-    IAttributeSyntaxValuesProvider<InjectorAttributeMetadata> injectorAttributeSyntaxValuesProvider
-    // InjectorInterfaceMetadata.IValuesProvider injectorInterfaceValuesProvider
+    IAttributeSyntaxValuesProvider<InjectorInterfaceMetadata> injectorInterfaceSyntaxValuesProvider
 ) : IIncrementalGenerator {
     public IncrementalSourceGenerator() : this(
         PhxInjectAttributeSyntaxValuesProvider.Instance,
         PhxInjectSettingsMetadata.ValuesProvider.Instance,
-        InjectorAttributeSyntaxValuesProvider.Instance
-        // InjectorInterfaceMetadata.ValuesProvider.Instance
+        InjectorInterfaceSyntaxValuesProvider.Instance
     ) { }
 
     public void Initialize(IncrementalGeneratorInitializationContext generatorInitializationContext) {
@@ -47,22 +47,21 @@ internal class IncrementalSourceGenerator(
             });
 
         var injectorPipeline = generatorInitializationContext.SyntaxProvider
-            .ForAttribute(injectorAttributeSyntaxValuesProvider);
-            // .Select(injectorInterfaceValuesProvider.Transform);
+            .ForAttribute(injectorInterfaceSyntaxValuesProvider);
 
         generatorInitializationContext.RegisterSourceOutput(injectorPipeline.Combine(phxInjectSettingsPipeline),
             (sourceProductionContext, pair) => {
                 var injector = pair.Left;
                 var settings = pair.Right;
                 
-                // sourceProductionContext.AddSource($"{injector.InjectorInterfaceType.NamespacedBaseTypeName}.settings.cs",
-                //     $"/// <remarks>\n" +
-                //     $"///     Phx.Inject.Generator: Using settings: {settings}\n" +
-                //     $"/// </remarks>\n" +
-                //     $"class Generated{injector.InjectorInterfaceType.BaseTypeName} {{ }}");
-                // sourceProductionContext.ReportDiagnostic(Diagnostics.DebugMessage.CreateDiagnostic(
-                //     $"Phx.Inject.Generator: Using settings: {settings}",
-                //     settings.Location));
+                sourceProductionContext.AddSource($"{injector.InjectorInterfaceType.NamespacedBaseTypeName}.settings.cs",
+                    $"/// <remarks>\n" +
+                    $"///     Phx.Inject.Generator: Using settings: {settings}\n" +
+                    $"/// </remarks>\n" +
+                    $"class Generated{injector.InjectorInterfaceType.BaseTypeName} {{ }}");
+                sourceProductionContext.ReportDiagnostic(Diagnostics.DebugMessage.CreateDiagnostic(
+                    $"Phx.Inject.Generator: Using settings: {settings}",
+                    settings.Location.Value));
             });
     }
 }

@@ -19,11 +19,6 @@ namespace Phx.Inject.Generator.Incremental.Metadata;
 /// <param name="NullableEnabled">
 ///     A value indicating whether nullable values should be enabled in the generated source.
 /// </param>
-/// <param name="DisableAutoSpecification">
-///     A value indicating whether factories and builders can be automatically generated from specified
-///     source. If <c> true </c> only factories, builders, and links defined in a specification will be
-///     considered for injection.
-/// </param>
 /// <param name="AttributeMetadata">
 ///     The <see cref="PhxInjectAttributeMetadata"/> used to generate the
 ///     settings.
@@ -34,7 +29,6 @@ internal record PhxInjectSettingsMetadata(
     int TabSize,
     string GeneratedFileExtension,
     bool NullableEnabled,
-    bool DisableAutoSpecification,
     PhxInjectAttributeMetadata? AttributeMetadata,
     GeneratorIgnored<Location> Location
 ) : ISourceCodeElement {
@@ -50,7 +44,6 @@ internal record PhxInjectSettingsMetadata(
         attributeMetadata?.TabSize ?? PhxInjectAttribute.DefaultTabSize,
         attributeMetadata?.GeneratedFileExtension ?? PhxInjectAttribute.DefaultGeneratedFileExtension,
         attributeMetadata?.NullableEnabled ?? PhxInjectAttribute.DefaultNullableEnabled,
-        attributeMetadata?.AllowConstructorFactories ?? PhxInjectAttribute.DefaultAllowConstructorFactories,
         attributeMetadata,
         (attributeMetadata?.Location).OrNone()
     ) { }
