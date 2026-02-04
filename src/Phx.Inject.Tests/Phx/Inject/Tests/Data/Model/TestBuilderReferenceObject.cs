@@ -11,6 +11,7 @@ namespace Phx.Inject.Tests.Data.Model;
 public class TestBuilderReferenceObject {
     public int Value { get; set; }
 
+    [AutoBuilder]
     public static void Inject(TestBuilderReferenceObject target, int value) {
         target.Value = value;
     }

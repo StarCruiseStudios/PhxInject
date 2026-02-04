@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
 using Phx.Inject.Generator.Incremental.Metadata;
 using Phx.Inject.Generator.Incremental.Metadata.Attributes;
+using Phx.Inject.Generator.Incremental.Metadata.Auto;
 using Phx.Inject.Generator.Incremental.Metadata.Injector;
 using Phx.Inject.Generator.Incremental.Metadata.Specification;
 using Phx.Inject.Generator.Incremental.Syntax;
@@ -31,7 +32,9 @@ internal class IncrementalSourceGenerator(
     IAttributeSyntaxValuesProvider<InjectorInterfaceMetadata> injectorInterfaceSyntaxValuesProvider,
     IAttributeSyntaxValuesProvider<InjectorDependencyInterfaceMetadata> injectorDependencyInterfaceSyntaxValuesProvider,
     IAttributeSyntaxValuesProvider<SpecClassMetadata> specClassSyntaxValuesProvider,
-    IAttributeSyntaxValuesProvider<SpecInterfaceMetadata> specInterfaceSyntaxValuesProvider
+    IAttributeSyntaxValuesProvider<SpecInterfaceMetadata> specInterfaceSyntaxValuesProvider,
+    IAttributeSyntaxValuesProvider<AutoFactoryMetadata> autoFactorySyntaxValuesProvider,
+    IAttributeSyntaxValuesProvider<AutoBuilderMetadata> autoBuilderSyntaxValuesProvider
 ) : IIncrementalGenerator {
     public IncrementalSourceGenerator() : this(
         PhxInjectAttributeSyntaxValuesProvider.Instance,
@@ -39,7 +42,9 @@ internal class IncrementalSourceGenerator(
         InjectorInterfaceSyntaxValuesProvider.Instance,
         InjectorDependencyInterfaceSyntaxValuesProvider.Instance,
         SpecClassSyntaxValuesProvider.Instance,
-        SpecInterfaceSyntaxValuesProvider.Instance
+        SpecInterfaceSyntaxValuesProvider.Instance,
+        AutoFactorySyntaxValuesProvider.Instance,
+        AutoBuilderSyntaxValuesProvider.Instance
     ) { }
 
     public void Initialize(IncrementalGeneratorInitializationContext generatorInitializationContext) {
@@ -91,6 +96,22 @@ internal class IncrementalSourceGenerator(
             (sourceProductionContext, specInterface) => {
                 sourceProductionContext.AddSource($"Generated{specInterface.SpecInterfaceType.NamespacedBaseTypeName}.cs",
                     $"class Generated{specInterface.SpecInterfaceType.BaseTypeName} {{ }}");
+            });
+        
+        var autoFactoryPipeline = generatorInitializationContext.SyntaxProvider
+            .ForAttribute(autoFactorySyntaxValuesProvider);
+        generatorInitializationContext.RegisterSourceOutput(autoFactoryPipeline,
+            (sourceProductionContext, autoFactory) => {
+                sourceProductionContext.AddSource($"Generated{autoFactory.AutoFactoryType.TypeMetadata.NamespacedBaseTypeName}.cs",
+                    $"class Generated{autoFactory.AutoFactoryType.TypeMetadata.BaseTypeName} {{ }}");
+            });
+        
+        var autoBuilderPipeline = generatorInitializationContext.SyntaxProvider
+            .ForAttribute(autoBuilderSyntaxValuesProvider);
+        generatorInitializationContext.RegisterSourceOutput(autoBuilderPipeline,
+            (sourceProductionContext, autoBuilder) => {
+                sourceProductionContext.AddSource($"Generated{autoBuilder.BuiltType.TypeMetadata.NamespacedBaseTypeName}{autoBuilder.AutoBuilderMethodName}.cs",
+                    $"class Generated{autoBuilder.BuiltType.TypeMetadata.BaseTypeName}{autoBuilder.AutoBuilderMethodName} {{ }}");
             });
 
         // generatorInitializationContext.RegisterSourceOutput(injectorPipeline.Combine(phxInjectSettingsPipeline),
