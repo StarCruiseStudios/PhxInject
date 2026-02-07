@@ -14,6 +14,7 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Auto;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Specification;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline;
+using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Auto;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Settings;
 
@@ -35,7 +36,7 @@ internal class IncrementalSourceGenerator(
     IAttributeSyntaxValuesProvider<SpecClassMetadata> specClassSyntaxValuesProvider,
     IAttributeSyntaxValuesProvider<SpecInterfaceMetadata> specInterfaceSyntaxValuesProvider,
     IAttributeSyntaxValuesProvider<AutoFactoryMetadata> autoFactorySyntaxValuesProvider,
-    IAttributeSyntaxValuesProvider<AutoBuilderMetadata> autoBuilderSyntaxValuesProvider
+    ISyntaxValuesPipeline<AutoBuilderMetadata> autoBuilderPipeline
 ) : IIncrementalGenerator {
     public IncrementalSourceGenerator() : this(
         PhxInjectSettingsPipeline.Instance,
@@ -44,7 +45,7 @@ internal class IncrementalSourceGenerator(
         SpecClassSyntaxValuesProvider.Instance,
         SpecInterfaceSyntaxValuesProvider.Instance,
         AutoFactorySyntaxValuesProvider.Instance,
-        AutoBuilderSyntaxValuesProvider.Instance
+        AutoBuilderPipeline.Instance
     ) { }
 
     public void Initialize(IncrementalGeneratorInitializationContext generatorInitializationContext) {
@@ -98,9 +99,8 @@ internal class IncrementalSourceGenerator(
                     $"class Generated{autoFactory.AutoFactoryType.TypeMetadata.BaseTypeName} {{ }}");
             });
         
-        var autoBuilderPipeline = generatorInitializationContext.SyntaxProvider
-            .ForAttribute(autoBuilderSyntaxValuesProvider);
-        generatorInitializationContext.RegisterSourceOutput(autoBuilderPipeline,
+        var autoBuilderPipelineSegment = autoBuilderPipeline.Select(generatorInitializationContext.SyntaxProvider);
+        generatorInitializationContext.RegisterSourceOutput(autoBuilderPipelineSegment,
             (sourceProductionContext, autoBuilder) => {
                 sourceProductionContext.AddSource($"Generated{autoBuilder.BuiltType.TypeMetadata.NamespacedBaseTypeName}{autoBuilder.AutoBuilderMethodName}.cs",
                     $"class Generated{autoBuilder.BuiltType.TypeMetadata.BaseTypeName}{autoBuilder.AutoBuilderMethodName} {{ }}");
