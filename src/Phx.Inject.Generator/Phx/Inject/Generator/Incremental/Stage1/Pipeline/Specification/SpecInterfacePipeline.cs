@@ -10,9 +10,9 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Common.Util;
-using Phx.Inject.Generator.Incremental.Stage1.Metadata;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Specification;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 using Phx.Inject.Generator.Incremental.Util;
 

@@ -10,9 +10,9 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Common.Util;
-using Phx.Inject.Generator.Incremental.Stage1.Metadata;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Auto;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 using Phx.Inject.Generator.Incremental.Util;
 
@@ -44,7 +44,7 @@ internal class AutoFactoryPipeline(
                 var autoFactoryAttributeMetadata =
                     autoFactoryAttributeTransformer.Transform(targetSymbol, context.Attributes);
 
-                var autoFactoryType = new QualifiedTypeMetadata(targetSymbol.ToTypeModel(), null, null);
+                var autoFactoryType = new QualifiedTypeMetadata(targetSymbol.ToTypeModel(), NoQualifierMetadata.Instance);
                 var parameters = ImmutableArray<QualifiedTypeMetadata>.Empty;
                 var requiredProperties = ImmutableArray<AutoFactoryRequiredPropertyMetadata>.Empty;
                 return new AutoFactoryMetadata(

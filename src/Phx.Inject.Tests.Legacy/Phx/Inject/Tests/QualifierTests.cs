@@ -13,7 +13,7 @@ using Phx.Validation;
 
 namespace Phx.Inject.Tests;
 
-#region
+#region injector
 
 [Specification]
 internal static class QualifierSpecification {

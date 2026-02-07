@@ -10,14 +10,13 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Common.Util;
-using Phx.Inject.Generator.Incremental.Stage1.Metadata;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
-using Phx.Inject.Generator.Incremental.Stage1.Metadata.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Specification;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 using Phx.Inject.Generator.Incremental.Util;
 
-namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Injector;
+namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Specification;
 
 internal class InjectorDependencyPipeline(
     IAttributeTransformer<InjectorDependencyAttributeMetadata> injectorDependencyAttributeTransformer

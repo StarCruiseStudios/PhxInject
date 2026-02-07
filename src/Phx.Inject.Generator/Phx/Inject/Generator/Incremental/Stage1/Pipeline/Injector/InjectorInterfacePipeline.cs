@@ -10,19 +10,21 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Common.Util;
-using Phx.Inject.Generator.Incremental.Stage1.Metadata;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Injector;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Injector;
 
 internal class InjectorInterfacePipeline(
-    IAttributeTransformer<InjectorAttributeMetadata> injectorAttributeTransformer
+    IAttributeTransformer<InjectorAttributeMetadata> injectorAttributeTransformer,
+    InjectorProviderTransformer injectorProviderTransformer
 ) : ISyntaxValuesPipeline<InjectorInterfaceMetadata> {
     public static readonly InjectorInterfacePipeline Instance = new(
-        InjectorAttributeTransformer.Instance);
+        InjectorAttributeTransformer.Instance,
+        InjectorProviderTransformer.Instance);
     
     public IncrementalValuesProvider<InjectorInterfaceMetadata> Select(SyntaxValueProvider syntaxProvider) {
         return syntaxProvider.ForAttributeWithMetadataName(
@@ -45,7 +47,11 @@ internal class InjectorInterfacePipeline(
                     injectorAttributeTransformer.Transform(targetSymbol, context.Attributes);
 
                 var injectorInterfaceType = targetSymbol.ToTypeModel();
-                var providers = ImmutableArray<InjectorProviderMetadata>.Empty;
+                var providers = targetSymbol.GetMembers()
+                    .OfType<IMethodSymbol>()
+                    .Where(injectorProviderTransformer.CanTransform)
+                    .Select(injectorProviderTransformer.Transform)
+                    .ToImmutableList();
                 var activators = ImmutableArray<InjectorActivatorMetadata>.Empty;
                 var childFactories = ImmutableArray<InjectorChildProviderMetadata>.Empty;
                 DependencyAttributeMetadata? dependencyAttributeMetadata = null;

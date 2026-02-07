@@ -10,9 +10,9 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Common.Util;
-using Phx.Inject.Generator.Incremental.Stage1.Metadata;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Auto;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 using Phx.Inject.Generator.Incremental.Util;
 
@@ -41,7 +41,7 @@ internal class AutoBuilderPipeline(
                 var autoBuilderAttributeMetadata =
                     autoBuilderAttributeTransformer.Transform(targetSymbol, context.Attributes);
 
-                var autoBuilderType = new QualifiedTypeMetadata(targetSymbol.ReturnType.ToTypeModel(), null, null);
+                var autoBuilderType = new QualifiedTypeMetadata(targetSymbol.ReturnType.ToTypeModel(), NoQualifierMetadata.Instance);
                 var parameters = ImmutableArray<QualifiedTypeMetadata>.Empty;
                 return new AutoBuilderMetadata(
                     targetSymbol.Name,

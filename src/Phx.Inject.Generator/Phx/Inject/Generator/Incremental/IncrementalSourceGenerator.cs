@@ -7,8 +7,6 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common.Exceptions;
-using Phx.Inject.Generator.Incremental.Stage1;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Auto;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Injector;

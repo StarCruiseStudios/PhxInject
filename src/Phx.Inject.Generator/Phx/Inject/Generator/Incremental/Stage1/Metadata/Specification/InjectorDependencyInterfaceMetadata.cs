@@ -8,10 +8,10 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
-using Phx.Inject.Generator.Incremental.Stage1.Metadata.Specification;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
 using Phx.Inject.Generator.Incremental.Util;
 
-namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Injector;
+namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Specification;
 
 internal record InjectorDependencyInterfaceMetadata(
     TypeMetadata InjectorDependencyInterfaceType,

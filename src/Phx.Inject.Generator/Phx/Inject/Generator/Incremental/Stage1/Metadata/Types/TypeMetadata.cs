@@ -11,7 +11,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Util;
 
-namespace Phx.Inject.Generator.Incremental.Stage1.Metadata;
+namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
 
 internal record TypeMetadata(
     string NamespaceName,

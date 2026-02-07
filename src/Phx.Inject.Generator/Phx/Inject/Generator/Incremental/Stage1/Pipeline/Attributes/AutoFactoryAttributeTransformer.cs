@@ -8,7 +8,6 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
-using Phx.Inject.Generator.Incremental.Stage1.Metadata;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Util;
 using static Phx.Inject.Generator.Incremental.PhxInject;
