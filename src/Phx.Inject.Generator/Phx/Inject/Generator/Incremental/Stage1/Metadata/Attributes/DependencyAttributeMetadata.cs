@@ -16,5 +16,7 @@ internal record DependencyAttributeMetadata(
     TypeMetadata DependencyType,
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
+    public const string AttributeClassName = $"{PhxInject.NamespaceName}.{nameof(DependencyAttribute)}";
+    
     public GeneratorIgnored<Location> Location { get; } = AttributeMetadata.Location;
 }

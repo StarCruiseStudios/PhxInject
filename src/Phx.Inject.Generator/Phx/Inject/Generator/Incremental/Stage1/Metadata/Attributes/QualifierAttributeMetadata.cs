@@ -16,5 +16,7 @@ internal record QualifierAttributeMetadata(
     TypeMetadata QualifierType,
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
+    public const string AttributeClassName = $"{PhxInject.NamespaceName}.{nameof(QualifierAttribute)}";
+    
     public GeneratorIgnored<Location> Location { get; } = AttributeMetadata.Location;
 }

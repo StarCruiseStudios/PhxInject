@@ -15,5 +15,7 @@ internal record LabelAttributeMetadata(
     string Label,
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
+    public const string AttributeClassName = $"{PhxInject.NamespaceName}.{nameof(LabelAttribute)}";
+    
     public GeneratorIgnored<Location> Location { get; } = AttributeMetadata.Location;
 }

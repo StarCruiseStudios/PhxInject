@@ -14,5 +14,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 internal record ChildInjectorAttributeMetadata(
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
+    public const string AttributeClassName = $"{PhxInject.NamespaceName}.{nameof(ChildInjectorAttribute)}";
+    
     public GeneratorIgnored<Location> Location { get; } = AttributeMetadata.Location;
 }
