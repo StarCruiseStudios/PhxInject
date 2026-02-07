@@ -8,39 +8,32 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Validators;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Injector;
 
 internal class InjectorInterfacePipeline(
+    ICodeElementValidator elementValidator,
     IAttributeTransformer<InjectorAttributeMetadata> injectorAttributeTransformer,
     InjectorProviderTransformer injectorProviderTransformer
 ) : ISyntaxValuesPipeline<InjectorInterfaceMetadata> {
     public static readonly InjectorInterfacePipeline Instance = new(
+        new InterfaceElementValidator(
+            CodeElementAccessibility.PublicOrInternal
+        ),
         InjectorAttributeTransformer.Instance,
         InjectorProviderTransformer.Instance);
     
     public IncrementalValuesProvider<InjectorInterfaceMetadata> Select(SyntaxValueProvider syntaxProvider) {
         return syntaxProvider.ForAttributeWithMetadataName(
             PhxInjectAttributeMetadata.AttributeClassName,
-            (syntaxNode, _) => {
-                if (syntaxNode is InterfaceDeclarationSyntax { Modifiers: var modifiers }) {
-                    return modifiers
-                        .All(it => it.ValueText switch {
-                            "private" or "protected" => false,
-                            "internal" or "public" => true,
-                            _ => true
-                        });
-                }
-
-                return false;
-            },
+            (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
                 var injectorAttributeMetadata =

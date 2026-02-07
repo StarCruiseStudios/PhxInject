@@ -24,22 +24,21 @@ internal record AttributeMetadataPair(
 }
 
 internal interface IAttributeMetadataTransformer {
-    bool HasAttribute(IEnumerable<AttributeData> attributes, string attributeClassName);
+    bool HasAttribute(ISymbol targetSymbol, string attributeClassName);
     IReadOnlyList<AttributeMetadataPair> GetAttributes(
         ISymbol targetSymbol,
         IEnumerable<AttributeData> attributes,
         string attributeClassName);
-    AttributeMetadataPair ExpectSingleAttribute(
+    AttributeMetadataPair? SingleAttributeOrNull(
         ISymbol targetSymbol,
-        IEnumerable<AttributeData> attributes,
         string attributeClassName);
 }
 
 internal class AttributeMetadataTransformer : IAttributeMetadataTransformer {
     public static readonly AttributeMetadataTransformer Instance = new();
     
-    public bool HasAttribute(IEnumerable<AttributeData> attributes, string attributeClassName) {
-        return attributes.Any(a => a.GetFullyQualifiedName() == attributeClassName);
+    public bool HasAttribute(ISymbol targetSymbol, string attributeClassName) {
+        return targetSymbol.GetAttributes().Any(a => a.GetFullyQualifiedName() == attributeClassName);
     }
 
     public IReadOnlyList<AttributeMetadataPair> GetAttributes(
@@ -52,13 +51,12 @@ internal class AttributeMetadataTransformer : IAttributeMetadataTransformer {
             .ToImmutableList();
     }
 
-    public AttributeMetadataPair ExpectSingleAttribute(
+    public AttributeMetadataPair? SingleAttributeOrNull(
         ISymbol targetSymbol,
-        IEnumerable<AttributeData> attributes,
         string attributeClassName
     ) {
-        var attributeData = attributes
-            .Single(attributeData => attributeData.GetNamedTypeSymbol().GetFullyQualifiedBaseName() == attributeClassName);
-        return AttributeMetadataPair.From(targetSymbol, attributeData);
+        var attributeData = targetSymbol.GetAttributes()
+            .SingleOrDefault(attributeData => attributeData.GetNamedTypeSymbol().GetFullyQualifiedBaseName() == attributeClassName);
+        return attributeData != null ? AttributeMetadataPair.From(targetSymbol, attributeData) : null;
     }
 }

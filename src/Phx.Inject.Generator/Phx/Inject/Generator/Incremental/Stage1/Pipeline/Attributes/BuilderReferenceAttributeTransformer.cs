@@ -13,17 +13,20 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 
 internal class BuilderReferenceAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
-) : IAttributeTransformer<BuilderReferenceAttributeMetadata> {
+) : IAttributeTransformer<BuilderReferenceAttributeMetadata>, IAttributeChecker {
     public static BuilderReferenceAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance
     );
 
+    public bool HasAttribute(ISymbol targetSymbol) {
+        return attributeMetadataTransformer.HasAttribute(targetSymbol, BuilderReferenceAttributeMetadata.AttributeClassName);
+    }
+
     public BuilderReferenceAttributeMetadata Transform(ISymbol targetSymbol) {
-        var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
+        var (attributeData, attributeMetadata) = attributeMetadataTransformer.SingleAttributeOrNull(
             targetSymbol,
-            targetSymbol.GetAttributes(),
             BuilderReferenceAttributeMetadata.AttributeClassName
-        );
+        ) ?? throw new InvalidOperationException($"Expected single {BuilderReferenceAttributeMetadata.AttributeClassName} attribute on {targetSymbol.Name}");
         
         return new BuilderReferenceAttributeMetadata(attributeMetadata);
     }

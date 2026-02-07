@@ -9,20 +9,23 @@
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Validators;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Settings;
 
 internal class PhxInjectSettingsPipeline(
+    ICodeElementValidator elementValidator,
     IAttributeTransformer<PhxInjectAttributeMetadata> phxInjectAttributeTransformer
 ) : ISyntaxValuePipeline<PhxInjectSettingsMetadata> {
     public static readonly PhxInjectSettingsPipeline Instance = new(
+        NoopCodeElementValidator.Instance,
         PhxInjectAttributeTransformer.Instance);
 
     public IncrementalValueProvider<PhxInjectSettingsMetadata> Select(SyntaxValueProvider syntaxProvider) {
         return syntaxProvider.ForAttributeWithMetadataName<PhxInjectAttributeMetadata>(
             PhxInjectAttributeMetadata.AttributeClassName,
-            (_, _) => true,
+            (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => phxInjectAttributeTransformer.Transform(context.TargetSymbol))
             .Select((attributeMetadata, _) => new PhxInjectSettingsMetadata(attributeMetadata))
             .Collect()

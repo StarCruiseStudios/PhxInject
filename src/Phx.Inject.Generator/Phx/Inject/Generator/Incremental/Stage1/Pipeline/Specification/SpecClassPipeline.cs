@@ -13,32 +13,27 @@ using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Specification;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Validators;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Specification;
 
 internal class SpecClassPipeline(
+    ICodeElementValidator elementValidator,
     IAttributeTransformer<SpecificationAttributeMetadata> specificationAttributeTransformer
 ) : ISyntaxValuesPipeline<SpecClassMetadata> {
     public static readonly SpecClassPipeline Instance = new(
+        new ClassElementValidator(
+            CodeElementAccessibility.PublicOrInternal,
+            isStatic: true
+        ),
         SpecificationAttributeTransformer.Instance);
     
     public IncrementalValuesProvider<SpecClassMetadata> Select(SyntaxValueProvider syntaxProvider) {
         return syntaxProvider.ForAttributeWithMetadataName(
             SpecificationAttributeMetadata.AttributeClassName,
-            (syntaxNode, _) => {
-                if (syntaxNode is ClassDeclarationSyntax { Modifiers: var modifiers }) {
-                    return modifiers
-                        .All(it => it.ValueText switch {
-                            "private" or "protected" => false,
-                            "internal" or "public" => true,
-                            _ => true
-                        }) && modifiers.Any(it => it.ValueText == "static");
-                }
-                
-                return false;
-            },
+            (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
                 var specificationAttributeMetadata =

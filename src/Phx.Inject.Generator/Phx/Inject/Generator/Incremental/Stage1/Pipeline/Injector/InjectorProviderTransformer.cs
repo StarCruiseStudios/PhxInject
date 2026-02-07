@@ -10,20 +10,22 @@ using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Validators;
 using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Injector;
 
-internal class InjectorProviderTransformer {
-    public static readonly InjectorProviderTransformer Instance = new();
+internal class InjectorProviderTransformer(ICodeElementValidator elementValidator) {
+    public static readonly InjectorProviderTransformer Instance = new(
+        new MethodElementValidator(
+            CodeElementAccessibility.PublicOrInternal,
+            isStatic: false,
+            maxParameterCount:0,
+            returnsVoid: true
+        ));
 
     public bool CanTransform(IMethodSymbol methodSymbol) {
-        return methodSymbol is {
-            ReturnsVoid: false,
-            IsStatic: false,
-            Parameters.Length: 0,
-            DeclaredAccessibility: Accessibility.Public or Accessibility.Internal
-        };
+        return elementValidator.IsValidSymbol(methodSymbol);
     }
 
     public InjectorProviderMetadata Transform(IMethodSymbol methodSymbol) {

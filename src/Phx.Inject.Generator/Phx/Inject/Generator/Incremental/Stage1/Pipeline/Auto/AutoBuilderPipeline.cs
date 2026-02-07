@@ -13,29 +13,27 @@ using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Auto;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Validators;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Auto;
 
 internal class AutoBuilderPipeline(
+    ICodeElementValidator elementValidator,
     IAttributeTransformer<AutoBuilderAttributeMetadata> autoBuilderAttributeTransformer
 ) : ISyntaxValuesPipeline<AutoBuilderMetadata> {
     public static readonly AutoBuilderPipeline Instance = new(
+        new MethodElementValidator(
+            CodeElementAccessibility.PublicOrInternal,
+            isAbstract: false
+        ),
         AutoBuilderAttributeTransformer.Instance);
     
     public IncrementalValuesProvider<AutoBuilderMetadata> Select(SyntaxValueProvider syntaxProvider) {
         return syntaxProvider.ForAttributeWithMetadataName(
             AutoBuilderAttributeMetadata.AttributeClassName,
-            (syntaxNode, _) => {
-                if (syntaxNode is MethodDeclarationSyntax { Modifiers: var modifiers }) {
-                    return modifiers
-                        .Any(it => it.ValueText is "internal" or "public")
-                        && modifiers.All(it => it.ValueText is not "private" and not "protected" and not "abstract");
-                }
-                
-                return false;
-            },
+            (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => {
                 var targetSymbol = (IMethodSymbol)context.TargetSymbol;
                 var autoBuilderAttributeMetadata =

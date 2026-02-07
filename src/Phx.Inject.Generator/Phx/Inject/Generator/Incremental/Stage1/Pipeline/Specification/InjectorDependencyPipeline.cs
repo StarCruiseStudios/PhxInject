@@ -13,32 +13,26 @@ using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Specification;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Validators;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Specification;
 
 internal class InjectorDependencyPipeline(
+    ICodeElementValidator elementValidator,
     IAttributeTransformer<InjectorDependencyAttributeMetadata> injectorDependencyAttributeTransformer
 ) : ISyntaxValuesPipeline<InjectorDependencyInterfaceMetadata> {
     public static readonly InjectorDependencyPipeline Instance = new(
+        new InterfaceElementValidator(
+            CodeElementAccessibility.PublicOrInternal
+        ),
         InjectorDependencyAttributeTransformer.Instance);
     
     public IncrementalValuesProvider<InjectorDependencyInterfaceMetadata> Select(SyntaxValueProvider syntaxProvider) {
         return syntaxProvider.ForAttributeWithMetadataName(
             InjectorDependencyAttributeMetadata.AttributeClassName,
-            (syntaxNode, _) => {
-                if (syntaxNode is InterfaceDeclarationSyntax { Modifiers: var modifiers }) {
-                    return modifiers
-                        .All(it => it.ValueText switch {
-                            "private" or "protected" => false,
-                            "internal" or "public" => true,
-                            _ => true
-                        });
-                }
-                
-                return false;
-            },
+            (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
                 var injectorDependencyAttributeMetadata =

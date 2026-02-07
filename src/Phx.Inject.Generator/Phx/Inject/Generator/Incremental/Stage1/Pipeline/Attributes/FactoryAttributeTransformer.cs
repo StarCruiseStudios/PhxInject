@@ -16,19 +16,22 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 
 internal class FactoryAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
-) : IAttributeTransformer<FactoryAttributeMetadata> {
+) : IAttributeTransformer<FactoryAttributeMetadata>, IAttributeChecker {
     public static FactoryAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance
     );
 
     private const string FabricationModeClassName = $"{NamespaceName}.{nameof(FabricationMode)}";
 
+    public bool HasAttribute(ISymbol targetSymbol) {
+        return attributeMetadataTransformer.HasAttribute(targetSymbol, FactoryAttributeMetadata.AttributeClassName);
+    }
+
     public FactoryAttributeMetadata Transform(ISymbol targetSymbol) {
-        var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
+        var (attributeData, attributeMetadata) = attributeMetadataTransformer.SingleAttributeOrNull(
             targetSymbol,
-            targetSymbol.GetAttributes(),
             FactoryAttributeMetadata.AttributeClassName
-        );
+        ) ?? throw new InvalidOperationException($"Expected single {FactoryAttributeMetadata.AttributeClassName} attribute on {targetSymbol.Name}");
 
         var fabricationMode =
             attributeData.GetNamedArgument<FabricationMode?>(nameof(FactoryAttribute.FabricationMode))

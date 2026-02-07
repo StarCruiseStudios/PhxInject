@@ -15,17 +15,20 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 
 internal class QualifierAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
-) : IAttributeTransformer<QualifierAttributeMetadata> {
+) : IAttributeTransformer<QualifierAttributeMetadata>, IAttributeChecker {
     public static QualifierAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance
     );
 
+    public bool HasAttribute(ISymbol targetSymbol) {
+        return attributeMetadataTransformer.HasAttribute(targetSymbol, QualifierAttributeMetadata.AttributeClassName);
+    }
+
     public QualifierAttributeMetadata Transform(ISymbol targetSymbol) {
-        var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
+        var (attributeData, attributeMetadata) = attributeMetadataTransformer.SingleAttributeOrNull(
             targetSymbol,
-            targetSymbol.GetAttributes(),
             QualifierAttributeMetadata.AttributeClassName
-        );
+        ) ?? throw new InvalidOperationException($"Expected single {QualifierAttributeMetadata.AttributeClassName} attribute on {targetSymbol.Name}");
 
         var qualifierType = attributeData.GetConstructorArgument<ITypeSymbol>(
             argument => argument.Kind != TypedConstantKind.Array

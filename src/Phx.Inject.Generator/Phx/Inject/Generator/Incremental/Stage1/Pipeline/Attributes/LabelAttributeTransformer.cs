@@ -14,17 +14,20 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 
 internal class LabelAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
-) : IAttributeTransformer<LabelAttributeMetadata> {
+) : IAttributeTransformer<LabelAttributeMetadata>, IAttributeChecker {
     public static LabelAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance
     );
 
+    public bool HasAttribute(ISymbol targetSymbol) {
+        return attributeMetadataTransformer.HasAttribute(targetSymbol, LabelAttributeMetadata.AttributeClassName);
+    }
+
     public LabelAttributeMetadata Transform(ISymbol targetSymbol) {
-        var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
+        var (attributeData, attributeMetadata) = attributeMetadataTransformer.SingleAttributeOrNull(
             targetSymbol,
-            targetSymbol.GetAttributes(),
             LabelAttributeMetadata.AttributeClassName
-        );
+        ) ?? throw new InvalidOperationException($"Expected single {LabelAttributeMetadata.AttributeClassName} attribute on {targetSymbol.Name}");
 
         var label = attributeData.GetConstructorArgument<string>(
             argument => argument.Kind != TypedConstantKind.Array

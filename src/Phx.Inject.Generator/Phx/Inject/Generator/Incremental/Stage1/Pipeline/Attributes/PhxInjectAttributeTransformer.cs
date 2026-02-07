@@ -14,17 +14,20 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 
 internal class PhxInjectAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
-) : IAttributeTransformer<PhxInjectAttributeMetadata> {
+) : IAttributeTransformer<PhxInjectAttributeMetadata>, IAttributeChecker {
     public static PhxInjectAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance
     );
 
+    public bool HasAttribute(ISymbol targetSymbol) {
+        return attributeMetadataTransformer.HasAttribute(targetSymbol, PhxInjectAttributeMetadata.AttributeClassName);
+    }
+
     public PhxInjectAttributeMetadata Transform(ISymbol targetSymbol) {
-        var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
+        var (attributeData, attributeMetadata) = attributeMetadataTransformer.SingleAttributeOrNull(
             targetSymbol,
-            targetSymbol.GetAttributes(),
             PhxInjectAttributeMetadata.AttributeClassName
-        );
+        ) ?? throw new InvalidOperationException($"Expected single {PhxInjectAttributeMetadata.AttributeClassName} attribute on {targetSymbol.Name}");
         
         return new PhxInjectAttributeMetadata(
             attributeData.GetNamedIntArgument(nameof(PhxInjectAttribute.TabSize)),

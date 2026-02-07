@@ -15,17 +15,20 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 
 internal class LinkAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
-) : IAttributeTransformer<LinkAttributeMetadata> {
+) : IAttributeTransformer<LinkAttributeMetadata>, IAttributeChecker {
     public static LinkAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance
     );
 
+    public bool HasAttribute(ISymbol targetSymbol) {
+        return attributeMetadataTransformer.HasAttribute(targetSymbol, LinkAttributeMetadata.AttributeClassName);
+    }
+
     public LinkAttributeMetadata Transform(ISymbol targetSymbol) {
-        var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
+        var (attributeData, attributeMetadata) = attributeMetadataTransformer.SingleAttributeOrNull(
             targetSymbol,
-            targetSymbol.GetAttributes(),
             LinkAttributeMetadata.AttributeClassName
-        );
+        ) ?? throw new InvalidOperationException($"Expected single {LinkAttributeMetadata.AttributeClassName} attribute on {targetSymbol.Name}");
 
         var constructorArgs = attributeData
             .GetConstructorArguments<ITypeSymbol>(argument => argument.Kind != TypedConstantKind.Array)
