@@ -6,33 +6,42 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 
-internal class PhxInjectAttributeTransformer(
+internal class InjectorAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
-) : IAttributeTransformer<PhxInjectAttributeMetadata> {
-    public static PhxInjectAttributeTransformer Instance { get; } = new(
+) : IAttributeTransformer<InjectorAttributeMetadata> {
+    public static InjectorAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance
     );
 
-    public PhxInjectAttributeMetadata Transform(
+    public InjectorAttributeMetadata Transform(
         ISymbol targetSymbol,
         IEnumerable<AttributeData> attributes
     ) {
         var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,
             attributes,
-            PhxInjectAttributeMetadata.AttributeClassName
+            InjectorAttributeMetadata.AttributeClassName
         );
         
-        return new PhxInjectAttributeMetadata(
-            attributeData.GetNamedIntArgument(nameof(PhxInjectAttribute.TabSize)),
-            attributeData.GetNamedArgument<string>(nameof(PhxInjectAttribute.GeneratedFileExtension)),
-            attributeData.GetNamedBoolArgument(nameof(PhxInjectAttribute.NullableEnabled)),
+        var generatedClassName = attributeData.GetNamedArgument<string>(nameof(InjectorAttribute.GeneratedClassName))
+                                 ?? attributeData.GetConstructorArgument<string>(argument => argument.Kind != TypedConstantKind.Array);
+            
+        var specifications = attributeData
+            .GetConstructorArguments<ITypeSymbol>(argument => argument.Kind != TypedConstantKind.Array)
+            .Select(it => it.ToTypeModel())
+            .ToImmutableList();
+        
+        return new InjectorAttributeMetadata(
+            generatedClassName,
+            specifications,
             attributeMetadata);
     }
 }

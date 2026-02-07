@@ -16,5 +16,8 @@ internal record InjectorAttributeMetadata(
     IReadOnlyList<TypeMetadata> Specifications,
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
+    public const string AttributeClassName =
+        $"{PhxInject.NamespaceName}.{nameof(InjectorAttribute)}";
+    
     public GeneratorIgnored<Location> Location { get; } = AttributeMetadata.Location;
 }

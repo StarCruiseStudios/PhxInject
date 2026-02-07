@@ -17,7 +17,7 @@ internal record PhxInjectAttributeMetadata(
     bool? NullableEnabled,
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
-    public static string AttributeClassName  { get; } =
+    public const string AttributeClassName  =
         $"{PhxInject.NamespaceName}.{nameof(PhxInjectAttribute)}";
 
     public GeneratorIgnored<Location> Location { get; } = AttributeMetadata.Location;

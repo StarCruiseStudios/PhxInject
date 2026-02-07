@@ -7,8 +7,9 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Util;
 
-namespace Phx.Inject.Common.Util;
+namespace Phx.Inject.Generator.Incremental.Util;
 
 internal static class AttributeDataExtensions {
     public static INamedTypeSymbol GetNamedTypeSymbol(this AttributeData attributeData) {
@@ -38,13 +39,20 @@ internal static class AttributeDataExtensions {
             .Value.Value as bool?;
     }
     
-    public static string? GetNamedStringArgument(this AttributeData attributeData, string argumentName) {
+    public static T? GetNamedArgument<T>(this AttributeData attributeData, string argumentName) where T : class {
         return attributeData.NamedArguments
             .FirstOrDefault(arg => arg.Key == argumentName)
-            .Value.Value as string;
+            .Value.Value as T;
     }
     
     public static T? GetConstructorArgument<T>(this AttributeData attributeData, Func<TypedConstant, bool> predicate) where T : class {
         return attributeData.ConstructorArguments.FirstOrDefault(predicate).Value as T;
+    }
+    
+    public static IEnumerable<T> GetConstructorArguments<T>(this AttributeData attributeData, Func<TypedConstant, bool> predicate) where T : class {
+        return attributeData.ConstructorArguments.Where(predicate)
+                .SelectMany(argument => argument.Values)
+                .Select(value => value.Value as T)
+                .OfType<T>();
     }
 }
