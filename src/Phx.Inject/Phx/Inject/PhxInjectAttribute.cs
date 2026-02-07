@@ -8,7 +8,7 @@
 
 namespace Phx.Inject;
 
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public class PhxInjectAttribute : Attribute {
     public const int DefaultTabSize = 4;
     public const string DefaultGeneratedFileExtension = "generated.cs";

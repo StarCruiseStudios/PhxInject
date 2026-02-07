@@ -13,5 +13,5 @@ namespace Phx.Inject;
 ///     List, Set, or Dictionary to indicate that multiple factories with the same type and qualifiers
 ///     should be combined into a single dependency.
 /// </summary>
-[AttributeUsage(AttributeTargets.Method | AttributeTargets.Property)]
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Property, Inherited = false)]
 public class PartialAttribute : Attribute { }

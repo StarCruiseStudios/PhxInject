@@ -12,5 +12,5 @@ namespace Phx.Inject;
 ///     Annotates a builder method that will be invoked to complete the construction of a given
 ///     dependency.
 /// </summary>
-[AttributeUsage(AttributeTargets.Method)]
+[AttributeUsage(AttributeTargets.Method, Inherited = false)]
 public class AutoBuilderAttribute : Attribute { }

@@ -12,7 +12,7 @@ namespace Phx.Inject;
 ///     Annotates a factory method or dependency with a unique label used to discriminate them from
 ///     other dependencies with the same type.
 /// </summary>
-[AttributeUsage(QualifierAttribute.Usage)]
+[AttributeUsage(QualifierAttribute.Usage, Inherited = false)]
 public class LabelAttribute : Attribute {
     /// <summary> The unique name for this label. </summary>
     public string Label { get; }

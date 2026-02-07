@@ -12,5 +12,5 @@ namespace Phx.Inject;
 ///     Annotates a specification class that contains factory methods and links used to construct a
 ///     DAG.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, Inherited = false)]
 public class SpecificationAttribute : Attribute { }

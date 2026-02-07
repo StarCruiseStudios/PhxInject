@@ -11,7 +11,7 @@ namespace Phx.Inject;
 /// <summary>
 ///     Annotates a type or constructor that will be invoked to construct a given dependency.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Constructor)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Constructor, Inherited = false)]
 public class AutoFactoryAttribute : Attribute {
     /// <summary>
     ///     Indicates the <see cref="FabricationMode"/> used when invoking this factory method more than
