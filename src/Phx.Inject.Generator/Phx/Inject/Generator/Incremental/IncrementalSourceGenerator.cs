@@ -8,12 +8,13 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Exceptions;
-using Phx.Inject.Generator.Incremental.Metadata;
-using Phx.Inject.Generator.Incremental.Metadata.Attributes;
-using Phx.Inject.Generator.Incremental.Metadata.Auto;
-using Phx.Inject.Generator.Incremental.Metadata.Injector;
-using Phx.Inject.Generator.Incremental.Metadata.Specification;
-using Phx.Inject.Generator.Incremental.Syntax;
+using Phx.Inject.Generator.Incremental.Stage1;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Auto;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Injector;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Specification;
+using Phx.Inject.Generator.Incremental.Stage1.Pipeline;
+using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Settings;
 
 namespace Phx.Inject.Generator.Incremental;
 
@@ -27,8 +28,7 @@ internal static class PhxInject {
 /// </summary>
 [Generator(LanguageNames.CSharp)]
 internal class IncrementalSourceGenerator(
-    IAttributeSyntaxValuesProvider<PhxInjectAttributeMetadata> phxInjectAttributeSyntaxValuesProvider,
-    PhxInjectSettingsMetadata.IValuesProvider phxInjectSettingsValuesProvider,
+    ISyntaxValuePipeline<PhxInjectSettingsMetadata> phxInjectSettingsPipeline,
     IAttributeSyntaxValuesProvider<InjectorInterfaceMetadata> injectorInterfaceSyntaxValuesProvider,
     IAttributeSyntaxValuesProvider<InjectorDependencyInterfaceMetadata> injectorDependencyInterfaceSyntaxValuesProvider,
     IAttributeSyntaxValuesProvider<SpecClassMetadata> specClassSyntaxValuesProvider,
@@ -37,8 +37,7 @@ internal class IncrementalSourceGenerator(
     IAttributeSyntaxValuesProvider<AutoBuilderMetadata> autoBuilderSyntaxValuesProvider
 ) : IIncrementalGenerator {
     public IncrementalSourceGenerator() : this(
-        PhxInjectAttributeSyntaxValuesProvider.Instance,
-        PhxInjectSettingsMetadata.ValuesProvider.Instance,
+        PhxInjectSettingsPipeline.Instance,
         InjectorInterfaceSyntaxValuesProvider.Instance,
         InjectorDependencyInterfaceSyntaxValuesProvider.Instance,
         SpecClassSyntaxValuesProvider.Instance,
@@ -48,16 +47,9 @@ internal class IncrementalSourceGenerator(
     ) { }
 
     public void Initialize(IncrementalGeneratorInitializationContext generatorInitializationContext) {
-        var phxInjectSettingsPipeline = generatorInitializationContext.SyntaxProvider
-            .ForAttribute(phxInjectAttributeSyntaxValuesProvider)
-            .Select(phxInjectSettingsValuesProvider.Transform)
-            .Collect()
-            .Select((settings, cancellationToken) => settings.Length switch {
-                0 => new PhxInjectSettingsMetadata(null),
-                1 => settings[0],
-                _ => throw new InvalidOperationException("Only one PhxInject attribute is allowed per assembly.")
-            });
-        generatorInitializationContext.RegisterSourceOutput(phxInjectSettingsPipeline,
+
+        var phxInjectSettingsPipelineInstance = phxInjectSettingsPipeline.Select(generatorInitializationContext.SyntaxProvider);
+        generatorInitializationContext.RegisterSourceOutput(phxInjectSettingsPipelineInstance,
             (sourceProductionContext, settings) => {
                 sourceProductionContext.AddSource($"GeneratorSettings.cs",
                     $"/// <remarks>\n" +
