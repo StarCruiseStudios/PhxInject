@@ -36,7 +36,7 @@ internal class IncrementalSourceGenerator(
     ISyntaxValuesPipeline<InjectorDependencyInterfaceMetadata> injectorDependencyPipeline,
     ISyntaxValuesPipeline<SpecClassMetadata> specClassPipeline,
     ISyntaxValuesPipeline<SpecInterfaceMetadata> specInterfacePipeline,
-    // ISyntaxValuesPipeline<AutoFactoryMetadata> autoFactoryPipeline,
+    ISyntaxValuesPipeline<AutoFactoryMetadata> autoFactoryPipeline,
     ISyntaxValuesPipeline<AutoBuilderMetadata> autoBuilderPipeline
 ) : IIncrementalGenerator {
     public IncrementalSourceGenerator() : this(
@@ -45,7 +45,7 @@ internal class IncrementalSourceGenerator(
         InjectorDependencyPipeline.Instance,
         SpecClassPipeline.Instance,
         SpecInterfacePipeline.Instance,
-        // AutoFactoryPipeline.Instance,
+        AutoFactoryPipeline.Instance,
         AutoBuilderPipeline.Instance
     ) { }
 
@@ -89,12 +89,12 @@ internal class IncrementalSourceGenerator(
                     $"class Generated{specInterface.SpecInterfaceType.BaseTypeName} {{ }}");
             });
         
-        // var autoFactoryPipelineSegment = autoFactoryPipeline.Select(generatorInitializationContext.SyntaxProvider);
-        // generatorInitializationContext.RegisterSourceOutput(autoFactoryPipelineSegment,
-        //     (sourceProductionContext, autoFactory) => {
-        //         // sourceProductionContext.AddSource($"Generated{autoFactory.AutoFactoryType.TypeMetadata.NamespacedBaseTypeName}.cs",
-        //         //     $"class Generated{autoFactory.AutoFactoryType.TypeMetadata.BaseTypeName} {{ }}");
-        //     });
+        var autoFactoryPipelineSegment = autoFactoryPipeline.Select(generatorInitializationContext.SyntaxProvider);
+        generatorInitializationContext.RegisterSourceOutput(autoFactoryPipelineSegment,
+            (sourceProductionContext, autoFactory) => {
+                sourceProductionContext.AddSource($"Generated{autoFactory.AutoFactoryType.TypeMetadata.NamespacedBaseTypeName}.cs",
+                    $"class Generated{autoFactory.AutoFactoryType.TypeMetadata.BaseTypeName} {{ }}");
+            });
         
         var autoBuilderPipelineSegment = autoBuilderPipeline.Select(generatorInitializationContext.SyntaxProvider);
         generatorInitializationContext.RegisterSourceOutput(autoBuilderPipelineSegment,
