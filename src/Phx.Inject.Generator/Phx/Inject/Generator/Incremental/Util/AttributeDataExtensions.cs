@@ -39,20 +39,23 @@ internal static class AttributeDataExtensions {
             .Value.Value as bool?;
     }
     
-    public static T? GetNamedArgument<T>(this AttributeData attributeData, string argumentName) where T : class {
+    public static T? GetNamedArgument<T>(this AttributeData attributeData, string argumentName) {
         return attributeData.NamedArguments
             .FirstOrDefault(arg => arg.Key == argumentName)
-            .Value.Value as T;
+            .Value.Value is T t ? t : default; 
     }
     
     public static T? GetConstructorArgument<T>(this AttributeData attributeData, Func<TypedConstant, bool> predicate) where T : class {
         return attributeData.ConstructorArguments.FirstOrDefault(predicate).Value as T;
     }
     
-    public static IEnumerable<T> GetConstructorArguments<T>(this AttributeData attributeData, Func<TypedConstant, bool> predicate) where T : class {
+    public static T GetConstructorArgument<T>(this AttributeData attributeData, Func<TypedConstant, bool> predicate, T defaultValue) {
+        return attributeData.ConstructorArguments.FirstOrDefault(predicate).Value is T t ? t : defaultValue;
+    }
+    
+    public static IEnumerable<T> GetConstructorArguments<T>(this AttributeData attributeData, Func<TypedConstant, bool> predicate) {
         return attributeData.ConstructorArguments.Where(predicate)
                 .SelectMany(argument => argument.Values)
-                .Select(value => value.Value as T)
                 .OfType<T>();
     }
 }

@@ -8,6 +8,7 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Util;
+using static Phx.Inject.Generator.Incremental.PhxInject;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 
@@ -15,5 +16,7 @@ internal record AutoFactoryAttributeMetadata(
     FabricationMode FabricationMode,
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
+    public const string AttributeClassName = $"{NamespaceName}.{nameof(AutoFactoryAttribute)}";
+    
     public GeneratorIgnored<Location> Location { get; } = AttributeMetadata.Location;
 }

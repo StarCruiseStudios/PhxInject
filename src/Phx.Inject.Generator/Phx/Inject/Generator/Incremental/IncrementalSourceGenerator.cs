@@ -17,6 +17,7 @@ using Phx.Inject.Generator.Incremental.Stage1.Pipeline;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Auto;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Settings;
+using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Specification;
 
 namespace Phx.Inject.Generator.Incremental;
 
@@ -32,19 +33,19 @@ internal static class PhxInject {
 internal class IncrementalSourceGenerator(
     ISyntaxValuePipeline<PhxInjectSettingsMetadata> phxInjectSettingsPipeline,
     ISyntaxValuesPipeline<InjectorInterfaceMetadata> injectorPipeline,
-    IAttributeSyntaxValuesProvider<InjectorDependencyInterfaceMetadata> injectorDependencyInterfaceSyntaxValuesProvider,
-    IAttributeSyntaxValuesProvider<SpecClassMetadata> specClassSyntaxValuesProvider,
-    IAttributeSyntaxValuesProvider<SpecInterfaceMetadata> specInterfaceSyntaxValuesProvider,
-    IAttributeSyntaxValuesProvider<AutoFactoryMetadata> autoFactorySyntaxValuesProvider,
+    ISyntaxValuesPipeline<InjectorDependencyInterfaceMetadata> injectorDependencyPipeline,
+    ISyntaxValuesPipeline<SpecClassMetadata> specClassPipeline,
+    ISyntaxValuesPipeline<SpecInterfaceMetadata> specInterfacePipeline,
+    // ISyntaxValuesPipeline<AutoFactoryMetadata> autoFactoryPipeline,
     ISyntaxValuesPipeline<AutoBuilderMetadata> autoBuilderPipeline
 ) : IIncrementalGenerator {
     public IncrementalSourceGenerator() : this(
         PhxInjectSettingsPipeline.Instance,
         InjectorInterfacePipeline.Instance,
-        InjectorDependencyInterfaceSyntaxValuesProvider.Instance,
-        SpecClassSyntaxValuesProvider.Instance,
-        SpecInterfaceSyntaxValuesProvider.Instance,
-        AutoFactorySyntaxValuesProvider.Instance,
+        InjectorDependencyPipeline.Instance,
+        SpecClassPipeline.Instance,
+        SpecInterfacePipeline.Instance,
+        // AutoFactoryPipeline.Instance,
         AutoBuilderPipeline.Instance
     ) { }
 
@@ -67,37 +68,33 @@ internal class IncrementalSourceGenerator(
                     $"class Generated{injector.InjectorInterfaceType.BaseTypeName} {{ }}");
             });
         
-        var injectorDependencyPipeline = generatorInitializationContext.SyntaxProvider
-            .ForAttribute(injectorDependencyInterfaceSyntaxValuesProvider);
-        generatorInitializationContext.RegisterSourceOutput(injectorDependencyPipeline,
+        var injectorDependencyPipelineSegment = injectorDependencyPipeline.Select(generatorInitializationContext.SyntaxProvider);
+        generatorInitializationContext.RegisterSourceOutput(injectorDependencyPipelineSegment,
             (sourceProductionContext, injectorDependency) => {
                 sourceProductionContext.AddSource($"Generated{injectorDependency.InjectorDependencyInterfaceType.NamespacedBaseTypeName}.cs",
                     $"class Generated{injectorDependency.InjectorDependencyInterfaceType.BaseTypeName} {{ }}");
             });
         
-        var specClassPipeline = generatorInitializationContext.SyntaxProvider
-            .ForAttribute(specClassSyntaxValuesProvider);
-        generatorInitializationContext.RegisterSourceOutput(specClassPipeline,
+        var specClassPipelineSegment = specClassPipeline.Select(generatorInitializationContext.SyntaxProvider);
+        generatorInitializationContext.RegisterSourceOutput(specClassPipelineSegment,
             (sourceProductionContext, specClass) => {
                 sourceProductionContext.AddSource($"Generated{specClass.SpecType.NamespacedBaseTypeName}.cs",
                     $"class Generated{specClass.SpecType.BaseTypeName} {{ }}");
             });
         
-        var specInterfacePipeline = generatorInitializationContext.SyntaxProvider
-            .ForAttribute(specInterfaceSyntaxValuesProvider);
-        generatorInitializationContext.RegisterSourceOutput(specInterfacePipeline,
+        var specInterfacePipelineSegment = specInterfacePipeline.Select(generatorInitializationContext.SyntaxProvider);
+        generatorInitializationContext.RegisterSourceOutput(specInterfacePipelineSegment,
             (sourceProductionContext, specInterface) => {
                 sourceProductionContext.AddSource($"Generated{specInterface.SpecInterfaceType.NamespacedBaseTypeName}.cs",
                     $"class Generated{specInterface.SpecInterfaceType.BaseTypeName} {{ }}");
             });
         
-        var autoFactoryPipeline = generatorInitializationContext.SyntaxProvider
-            .ForAttribute(autoFactorySyntaxValuesProvider);
-        generatorInitializationContext.RegisterSourceOutput(autoFactoryPipeline,
-            (sourceProductionContext, autoFactory) => {
-                sourceProductionContext.AddSource($"Generated{autoFactory.AutoFactoryType.TypeMetadata.NamespacedBaseTypeName}.cs",
-                    $"class Generated{autoFactory.AutoFactoryType.TypeMetadata.BaseTypeName} {{ }}");
-            });
+        // var autoFactoryPipelineSegment = autoFactoryPipeline.Select(generatorInitializationContext.SyntaxProvider);
+        // generatorInitializationContext.RegisterSourceOutput(autoFactoryPipelineSegment,
+        //     (sourceProductionContext, autoFactory) => {
+        //         // sourceProductionContext.AddSource($"Generated{autoFactory.AutoFactoryType.TypeMetadata.NamespacedBaseTypeName}.cs",
+        //         //     $"class Generated{autoFactory.AutoFactoryType.TypeMetadata.BaseTypeName} {{ }}");
+        //     });
         
         var autoBuilderPipelineSegment = autoBuilderPipeline.Select(generatorInitializationContext.SyntaxProvider);
         generatorInitializationContext.RegisterSourceOutput(autoBuilderPipelineSegment,

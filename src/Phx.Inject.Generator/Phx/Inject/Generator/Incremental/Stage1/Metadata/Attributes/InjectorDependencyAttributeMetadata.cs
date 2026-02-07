@@ -8,11 +8,14 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Util;
+using static Phx.Inject.Generator.Incremental.PhxInject;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 
 internal record InjectorDependencyAttributeMetadata(
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
+    public const string AttributeClassName = $"{NamespaceName}.{nameof(InjectorDependencyAttribute)}";
+    
     public GeneratorIgnored<Location> Location { get; } = AttributeMetadata.Location;
 }
