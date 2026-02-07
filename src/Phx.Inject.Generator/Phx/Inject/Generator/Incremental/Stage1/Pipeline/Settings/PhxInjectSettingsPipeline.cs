@@ -23,7 +23,7 @@ internal class PhxInjectSettingsPipeline(
         return syntaxProvider.ForAttributeWithMetadataName<PhxInjectAttributeMetadata>(
             PhxInjectAttributeMetadata.AttributeClassName,
             (_, _) => true,
-            (context, _) => phxInjectAttributeTransformer.Transform(context.TargetSymbol, context.Attributes))
+            (context, _) => phxInjectAttributeTransformer.Transform(context.TargetSymbol))
             .Select((attributeMetadata, _) => new PhxInjectSettingsMetadata(attributeMetadata))
             .Collect()
             .Select((settings, cancellationToken) => settings.Length switch {

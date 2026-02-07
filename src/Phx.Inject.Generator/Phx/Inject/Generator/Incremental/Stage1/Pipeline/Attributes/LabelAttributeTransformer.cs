@@ -19,13 +19,10 @@ internal class LabelAttributeTransformer(
         AttributeMetadataTransformer.Instance
     );
 
-    public LabelAttributeMetadata Transform(
-        ISymbol targetSymbol,
-        IEnumerable<AttributeData> attributes
-    ) {
+    public LabelAttributeMetadata Transform(ISymbol targetSymbol) {
         var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,
-            attributes,
+            targetSymbol.GetAttributes(),
             LabelAttributeMetadata.AttributeClassName
         );
 

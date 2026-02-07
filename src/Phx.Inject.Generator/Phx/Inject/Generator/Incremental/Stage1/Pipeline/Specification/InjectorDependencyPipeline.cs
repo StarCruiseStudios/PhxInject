@@ -42,7 +42,7 @@ internal class InjectorDependencyPipeline(
             (context, _) => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
                 var injectorDependencyAttributeMetadata =
-                    injectorDependencyAttributeTransformer.Transform(targetSymbol, context.Attributes);
+                    injectorDependencyAttributeTransformer.Transform(targetSymbol);
 
                 var injectorDependencyInterfaceType = targetSymbol.ToTypeModel();
                 var factoryMethods = ImmutableArray<SpecFactoryMethodMetadata>.Empty;

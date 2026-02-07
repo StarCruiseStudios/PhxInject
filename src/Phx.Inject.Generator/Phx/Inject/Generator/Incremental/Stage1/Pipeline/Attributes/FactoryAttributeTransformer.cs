@@ -23,13 +23,10 @@ internal class FactoryAttributeTransformer(
 
     private const string FabricationModeClassName = $"{NamespaceName}.{nameof(FabricationMode)}";
 
-    public FactoryAttributeMetadata Transform(
-        ISymbol targetSymbol,
-        IEnumerable<AttributeData> attributes
-    ) {
+    public FactoryAttributeMetadata Transform(ISymbol targetSymbol) {
         var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,
-            attributes,
+            targetSymbol.GetAttributes(),
             FactoryAttributeMetadata.AttributeClassName
         );
 

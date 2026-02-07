@@ -21,13 +21,10 @@ internal class InjectorAttributeTransformer(
         AttributeMetadataTransformer.Instance
     );
 
-    public InjectorAttributeMetadata Transform(
-        ISymbol targetSymbol,
-        IEnumerable<AttributeData> attributes
-    ) {
+    public InjectorAttributeMetadata Transform(ISymbol targetSymbol) {
         var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,
-            attributes,
+            targetSymbol.GetAttributes(),
             InjectorAttributeMetadata.AttributeClassName
         );
         

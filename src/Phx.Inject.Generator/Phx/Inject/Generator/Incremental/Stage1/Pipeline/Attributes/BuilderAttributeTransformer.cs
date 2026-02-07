@@ -18,13 +18,10 @@ internal class BuilderAttributeTransformer(
         AttributeMetadataTransformer.Instance
     );
 
-    public BuilderAttributeMetadata Transform(
-        ISymbol targetSymbol,
-        IEnumerable<AttributeData> attributes
-    ) {
+    public BuilderAttributeMetadata Transform(ISymbol targetSymbol) {
         var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,
-            attributes,
+            targetSymbol.GetAttributes(),
             BuilderAttributeMetadata.AttributeClassName
         );
         

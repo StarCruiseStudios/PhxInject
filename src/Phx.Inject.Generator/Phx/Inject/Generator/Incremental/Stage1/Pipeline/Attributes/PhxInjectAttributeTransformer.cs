@@ -19,13 +19,10 @@ internal class PhxInjectAttributeTransformer(
         AttributeMetadataTransformer.Instance
     );
 
-    public PhxInjectAttributeMetadata Transform(
-        ISymbol targetSymbol,
-        IEnumerable<AttributeData> attributes
-    ) {
+    public PhxInjectAttributeMetadata Transform(ISymbol targetSymbol) {
         var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,
-            attributes,
+            targetSymbol.GetAttributes(),
             PhxInjectAttributeMetadata.AttributeClassName
         );
         

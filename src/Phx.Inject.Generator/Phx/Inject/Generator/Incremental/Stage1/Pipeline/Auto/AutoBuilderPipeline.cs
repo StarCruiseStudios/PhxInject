@@ -39,7 +39,7 @@ internal class AutoBuilderPipeline(
             (context, _) => {
                 var targetSymbol = (IMethodSymbol)context.TargetSymbol;
                 var autoBuilderAttributeMetadata =
-                    autoBuilderAttributeTransformer.Transform(targetSymbol, context.Attributes);
+                    autoBuilderAttributeTransformer.Transform(targetSymbol);
 
                 var autoBuilderType = new QualifiedTypeMetadata(targetSymbol.ReturnType.ToTypeModel(), NoQualifierMetadata.Instance);
                 var parameters = ImmutableArray<QualifiedTypeMetadata>.Empty;

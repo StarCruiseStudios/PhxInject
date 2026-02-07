@@ -44,7 +44,7 @@ internal class InjectorInterfacePipeline(
             (context, _) => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
                 var injectorAttributeMetadata =
-                    injectorAttributeTransformer.Transform(targetSymbol, context.Attributes);
+                    injectorAttributeTransformer.Transform(targetSymbol);
 
                 var injectorInterfaceType = targetSymbol.ToTypeModel();
                 var providers = targetSymbol.GetMembers()

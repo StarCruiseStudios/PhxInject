@@ -42,7 +42,7 @@ internal class SpecClassPipeline(
             (context, _) => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
                 var specificationAttributeMetadata =
-                    specificationAttributeTransformer.Transform(targetSymbol, context.Attributes);
+                    specificationAttributeTransformer.Transform(targetSymbol);
 
                 var specInterfaceType = targetSymbol.ToTypeModel();
                 var factoryMethods = ImmutableArray<SpecFactoryMethodMetadata>.Empty;

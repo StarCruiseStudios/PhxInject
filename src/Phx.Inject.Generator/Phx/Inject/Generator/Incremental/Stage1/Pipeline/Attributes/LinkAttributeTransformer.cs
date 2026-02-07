@@ -20,13 +20,10 @@ internal class LinkAttributeTransformer(
         AttributeMetadataTransformer.Instance
     );
 
-    public LinkAttributeMetadata Transform(
-        ISymbol targetSymbol,
-        IEnumerable<AttributeData> attributes
-    ) {
+    public LinkAttributeMetadata Transform(ISymbol targetSymbol) {
         var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,
-            attributes,
+            targetSymbol.GetAttributes(),
             LinkAttributeMetadata.AttributeClassName
         );
 

@@ -18,13 +18,10 @@ internal class SpecificationAttributeTransformer(
         AttributeMetadataTransformer.Instance
     );
 
-    public SpecificationAttributeMetadata Transform(
-        ISymbol targetSymbol,
-        IEnumerable<AttributeData> attributes
-    ) {
+    public SpecificationAttributeMetadata Transform(ISymbol targetSymbol) {
         var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,
-            attributes,
+            targetSymbol.GetAttributes(),
             SpecificationAttributeMetadata.AttributeClassName
         );
         

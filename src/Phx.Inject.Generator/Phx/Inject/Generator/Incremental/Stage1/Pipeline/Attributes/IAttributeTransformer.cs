@@ -12,8 +12,5 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 
 internal interface IAttributeTransformer<out TAttributeMetadata> where TAttributeMetadata : IAttributeElement {
-    TAttributeMetadata Transform(
-        ISymbol targetSymbol,
-        IEnumerable<AttributeData> attributes
-    );
+    TAttributeMetadata Transform(ISymbol targetSymbol);
 }

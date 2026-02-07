@@ -42,7 +42,7 @@ internal class AutoFactoryPipeline(
             (context, _) => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
                 var autoFactoryAttributeMetadata =
-                    autoFactoryAttributeTransformer.Transform(targetSymbol, context.Attributes);
+                    autoFactoryAttributeTransformer.Transform(targetSymbol);
 
                 var autoFactoryType = new QualifiedTypeMetadata(targetSymbol.ToTypeModel(), NoQualifierMetadata.Instance);
                 var parameters = ImmutableArray<QualifiedTypeMetadata>.Empty;
