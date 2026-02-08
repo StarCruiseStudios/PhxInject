@@ -23,7 +23,8 @@ internal class InjectorInterfacePipeline(
     IAttributeTransformer<InjectorAttributeMetadata> injectorAttributeTransformer,
     InjectorProviderTransformer injectorProviderTransformer,
     InjectorActivatorTransformer injectorActivatorTransformer,
-    InjectorChildProviderTransformer injectorChildProviderTransformer
+    InjectorChildProviderTransformer injectorChildProviderTransformer,
+    DependencyAttributeTransformer dependencyAttributeTransformer
 ) : ISyntaxValuesPipeline<InjectorInterfaceMetadata> {
     public static readonly InjectorInterfacePipeline Instance = new(
         new InterfaceElementValidator(
@@ -32,7 +33,8 @@ internal class InjectorInterfacePipeline(
         InjectorAttributeTransformer.Instance,
         InjectorProviderTransformer.Instance,
         InjectorActivatorTransformer.Instance,
-        InjectorChildProviderTransformer.Instance);
+        InjectorChildProviderTransformer.Instance,
+        DependencyAttributeTransformer.Instance);
     
     public IncrementalValuesProvider<InjectorInterfaceMetadata> Select(SyntaxValueProvider syntaxProvider) {
         return syntaxProvider.ForAttributeWithMetadataName(
@@ -59,7 +61,10 @@ internal class InjectorInterfacePipeline(
                     .Where(injectorChildProviderTransformer.CanTransform)
                     .Select(injectorChildProviderTransformer.Transform)
                     .ToImmutableList();
-                DependencyAttributeMetadata? dependencyAttributeMetadata = null;
+                var dependencyAttributeMetadata =
+                    dependencyAttributeTransformer.HasAttribute(targetSymbol)
+                        ? dependencyAttributeTransformer.Transform(targetSymbol)
+                        : null;
                 return new InjectorInterfaceMetadata(
                     injectorInterfaceType,
                     providers,
