@@ -55,7 +55,7 @@ internal static class AttributeDataExtensions {
     
     public static IEnumerable<T> GetConstructorArguments<T>(this AttributeData attributeData, Func<TypedConstant, bool> predicate) {
         return attributeData.ConstructorArguments.Where(predicate)
-                .Select(argument => argument.Values)
+                .Select(argument => argument.Value)
                 .OfType<T>();
     }
 }

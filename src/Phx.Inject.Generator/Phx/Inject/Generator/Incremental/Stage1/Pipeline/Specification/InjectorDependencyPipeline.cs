@@ -21,13 +21,17 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Specification;
 
 internal class InjectorDependencyPipeline(
     ICodeElementValidator elementValidator,
-    IAttributeTransformer<InjectorDependencyAttributeMetadata> injectorDependencyAttributeTransformer
+    IAttributeTransformer<InjectorDependencyAttributeMetadata> injectorDependencyAttributeTransformer,
+    SpecFactoryMethodTransformer specFactoryMethodTransformer,
+    SpecFactoryPropertyTransformer specFactoryPropertyTransformer
 ) : ISyntaxValuesPipeline<InjectorDependencyInterfaceMetadata> {
     public static readonly InjectorDependencyPipeline Instance = new(
         new InterfaceElementValidator(
             CodeElementAccessibility.PublicOrInternal
         ),
-        InjectorDependencyAttributeTransformer.Instance);
+        InjectorDependencyAttributeTransformer.Instance,
+        SpecFactoryMethodTransformer.Instance,
+        SpecFactoryPropertyTransformer.Instance);
     
     public IncrementalValuesProvider<InjectorDependencyInterfaceMetadata> Select(SyntaxValueProvider syntaxProvider) {
         return syntaxProvider.ForAttributeWithMetadataName(
@@ -39,8 +43,21 @@ internal class InjectorDependencyPipeline(
                     injectorDependencyAttributeTransformer.Transform(targetSymbol);
 
                 var injectorDependencyInterfaceType = targetSymbol.ToTypeModel();
-                var factoryMethods = ImmutableArray<SpecFactoryMethodMetadata>.Empty;
-                var factoryProperties = ImmutableArray<SpecFactoryPropertyMetadata>.Empty;
+                
+                var members = targetSymbol.GetMembers();
+                var methods = members.OfType<IMethodSymbol>().ToImmutableList();
+                var properties = members.OfType<IPropertySymbol>().ToImmutableList();
+                
+                var factoryMethods = methods
+                    .Where(specFactoryMethodTransformer.CanTransform)
+                    .Select(specFactoryMethodTransformer.Transform)
+                    .ToImmutableArray();
+                
+                var factoryProperties = properties
+                    .Where(specFactoryPropertyTransformer.CanTransform)
+                    .Select(specFactoryPropertyTransformer.Transform)
+                    .ToImmutableArray();
+                
                 return new InjectorDependencyInterfaceMetadata(
                     injectorDependencyInterfaceType,
                     factoryMethods,
