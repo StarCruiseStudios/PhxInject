@@ -6,6 +6,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
@@ -15,7 +16,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 
 internal class LinkAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
-) : IAttributeTransformer<LinkAttributeMetadata>, IAttributeChecker {
+) : IAttributeListTransformer<LinkAttributeMetadata>, IAttributeChecker {
     public static LinkAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance
     );
@@ -24,33 +25,32 @@ internal class LinkAttributeTransformer(
         return attributeMetadataTransformer.HasAttribute(targetSymbol, LinkAttributeMetadata.AttributeClassName);
     }
 
-    public LinkAttributeMetadata Transform(ISymbol targetSymbol) {
-        var (attributeData, attributeMetadata) = attributeMetadataTransformer.SingleAttributeOrNull(
+    public IReadOnlyList<LinkAttributeMetadata> Transform(ISymbol targetSymbol) {
+        return attributeMetadataTransformer.GetAttributes(
             targetSymbol,
             LinkAttributeMetadata.AttributeClassName
-        ) ?? throw new InvalidOperationException($"Expected single {LinkAttributeMetadata.AttributeClassName} attribute on {targetSymbol.Name}");
+        ).Select(metadata => {
+            var (attributeData, attributeMetadata) = metadata;
+            var constructorArgs = attributeData
+                .GetConstructorArguments<ITypeSymbol>(argument => argument.Kind != TypedConstantKind.Array)
+                .ToList();
+            var input = constructorArgs[0].ToTypeModel();
+            var output = constructorArgs[1].ToTypeModel();
 
-        var constructorArgs = attributeData
-            .GetConstructorArguments<ITypeSymbol>(argument => argument.Kind != TypedConstantKind.Array)
-            .ToList();
+            var inputLabel = attributeData.GetNamedArgument<string>(nameof(LinkAttribute.InputLabel));
+            var inputQualifier = attributeData.GetNamedArgument<ITypeSymbol>(nameof(LinkAttribute.InputQualifier))?.ToTypeModel();
+            var outputLabel = attributeData.GetNamedArgument<string>(nameof(LinkAttribute.OutputLabel));
+            var outputQualifier = attributeData.GetNamedArgument<ITypeSymbol>(nameof(LinkAttribute.OutputQualifier))?.ToTypeModel();
 
-        var input = constructorArgs[0].ToTypeModel();
-        var output = constructorArgs[1].ToTypeModel();
-
-        var inputLabel = attributeData.GetNamedArgument<string>(nameof(LinkAttribute.InputLabel));
-        var inputQualifier = attributeData.GetNamedArgument<ITypeSymbol>(nameof(LinkAttribute.InputQualifier))
-            ?.ToTypeModel();
-        var outputLabel = attributeData.GetNamedArgument<string>(nameof(LinkAttribute.OutputLabel));
-        var outputQualifier = attributeData.GetNamedArgument<ITypeSymbol>(nameof(LinkAttribute.OutputQualifier))
-            ?.ToTypeModel();
-
-        return new LinkAttributeMetadata(
-            input,
-            output,
-            inputLabel,
-            inputQualifier,
-            outputLabel,
-            outputQualifier,
-            attributeMetadata);
+            return new LinkAttributeMetadata(
+                input,
+                output,
+                inputLabel,
+                inputQualifier,
+                outputLabel,
+                outputQualifier,
+                attributeMetadata);
+        })
+        .ToImmutableList();
     }
 }

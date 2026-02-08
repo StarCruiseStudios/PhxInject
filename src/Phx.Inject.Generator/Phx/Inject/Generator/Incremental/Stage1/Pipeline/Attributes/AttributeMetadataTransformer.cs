@@ -27,7 +27,6 @@ internal interface IAttributeMetadataTransformer {
     bool HasAttribute(ISymbol targetSymbol, string attributeClassName);
     IReadOnlyList<AttributeMetadataPair> GetAttributes(
         ISymbol targetSymbol,
-        IEnumerable<AttributeData> attributes,
         string attributeClassName);
     AttributeMetadataPair? SingleAttributeOrNull(
         ISymbol targetSymbol,
@@ -43,10 +42,10 @@ internal class AttributeMetadataTransformer : IAttributeMetadataTransformer {
 
     public IReadOnlyList<AttributeMetadataPair> GetAttributes(
         ISymbol targetSymbol,
-        IEnumerable<AttributeData> attributes,
         string attributeClassName
     ) {
-        return attributes.Where(attributeData => attributeData.GetFullyQualifiedName() == attributeClassName)
+        return targetSymbol.GetAttributes()
+            .Where(attributeData => attributeData.GetFullyQualifiedName() == attributeClassName)
             .Select(attributeData => AttributeMetadataPair.From(targetSymbol, attributeData))
             .ToImmutableList();
     }

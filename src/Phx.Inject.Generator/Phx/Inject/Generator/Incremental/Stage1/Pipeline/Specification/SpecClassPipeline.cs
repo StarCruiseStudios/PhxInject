@@ -8,7 +8,6 @@
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Specification;
@@ -21,14 +20,26 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Specification;
 
 internal class SpecClassPipeline(
     ICodeElementValidator elementValidator,
-    IAttributeTransformer<SpecificationAttributeMetadata> specificationAttributeTransformer
+    IAttributeTransformer<SpecificationAttributeMetadata> specificationAttributeTransformer,
+    SpecFactoryMethodTransformer specFactoryMethodTransformer,
+    SpecFactoryPropertyTransformer specFactoryPropertyTransformer,
+    SpecFactoryReferenceTransformer specFactoryReferenceTransformer,
+    SpecBuilderMethodTransformer specBuilderMethodTransformer,
+    SpecBuilderReferenceTransformer specBuilderReferenceTransformer,
+    LinkAttributeTransformer linkAttributeTransformer
 ) : ISyntaxValuesPipeline<SpecClassMetadata> {
     public static readonly SpecClassPipeline Instance = new(
         new ClassElementValidator(
             CodeElementAccessibility.PublicOrInternal,
             isStatic: true
         ),
-        SpecificationAttributeTransformer.Instance);
+        SpecificationAttributeTransformer.Instance,
+        SpecFactoryMethodTransformer.Instance,
+        SpecFactoryPropertyTransformer.Instance,
+        SpecFactoryReferenceTransformer.Instance,
+        SpecBuilderMethodTransformer.Instance,
+        SpecBuilderReferenceTransformer.Instance,
+        LinkAttributeTransformer.Instance);
     
     public IncrementalValuesProvider<SpecClassMetadata> Select(SyntaxValueProvider syntaxProvider) {
         return syntaxProvider.ForAttributeWithMetadataName(
@@ -40,12 +51,47 @@ internal class SpecClassPipeline(
                     specificationAttributeTransformer.Transform(targetSymbol);
 
                 var specInterfaceType = targetSymbol.ToTypeModel();
-                var factoryMethods = ImmutableArray<SpecFactoryMethodMetadata>.Empty;
-                var factoryProperties = ImmutableArray<SpecFactoryPropertyMetadata>.Empty;
-                var factoryReferences = ImmutableArray<SpecFactoryReferenceMetadata>.Empty;
-                var builderMethods = ImmutableArray<SpecBuilderMethodMetadata>.Empty;
-                var builderReferences = ImmutableArray<SpecBuilderReferenceMetadata>.Empty;
-                var links = ImmutableArray<LinkAttributeMetadata>.Empty;
+                
+                var members = targetSymbol.GetMembers();
+                var methods = members.OfType<IMethodSymbol>().ToImmutableList();
+                var properties = members.OfType<IPropertySymbol>().ToImmutableList();
+                var fields = members.OfType<IFieldSymbol>().ToImmutableList();
+                
+                var factoryMethods = methods
+                    .Where(specFactoryMethodTransformer.CanTransform)
+                    .Select(specFactoryMethodTransformer.Transform)
+                    .ToImmutableArray();
+                
+                var factoryProperties = properties
+                    .Where(specFactoryPropertyTransformer.CanTransform)
+                    .Select(specFactoryPropertyTransformer.Transform)
+                    .ToImmutableArray();
+                
+                var factoryReferences = properties
+                    .Where(specFactoryReferenceTransformer.CanTransform)
+                    .Select(specFactoryReferenceTransformer.Transform)
+                    .Concat(fields
+                        .Where(specFactoryReferenceTransformer.CanTransform)
+                        .Select(specFactoryReferenceTransformer.Transform)
+                    )
+                    .ToImmutableArray();
+                
+                var builderMethods = methods
+                    .Where(specBuilderMethodTransformer.CanTransform)
+                    .Select(specBuilderMethodTransformer.Transform)
+                    .ToImmutableArray();
+                
+                var builderReferences = properties
+                    .Where(specBuilderReferenceTransformer.CanTransform)
+                    .Select(specBuilderReferenceTransformer.Transform)
+                    .Concat(fields
+                        .Where(specBuilderReferenceTransformer.CanTransform)
+                        .Select(specBuilderReferenceTransformer.Transform)
+                    )
+                    .ToImmutableArray();
+                
+                var links = linkAttributeTransformer.Transform(targetSymbol);
+                
                 return new SpecClassMetadata(
                     specInterfaceType,
                     factoryMethods,
