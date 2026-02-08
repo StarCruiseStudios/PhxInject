@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------------
-// <copyright file="ClassElementValidator.cs" company="Star Cruise Studios LLC">
+// <copyright file="InterfaceElementValidator.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2026 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
 //     See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -11,12 +11,10 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 
-namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Validators;
+namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Validators;
 
-internal class ClassElementValidator(
+internal class InterfaceElementValidator(
     CodeElementAccessibility requiredAccessibility = CodeElementAccessibility.Any,
-    bool? isStatic = null,
-    bool? isAbstract = null,
     IReadOnlyList<IAttributeChecker>? requiredAttributes = null
 ) : ICodeElementValidator {
     private readonly IReadOnlyList<IAttributeChecker> requiredAttributes = requiredAttributes ?? ImmutableList<IAttributeChecker>.Empty;
@@ -30,7 +28,7 @@ internal class ClassElementValidator(
             return false;
         }
 
-        if (typeSymbol.TypeKind != TypeKind.Class) {
+        if (typeSymbol.TypeKind != TypeKind.Interface) {
             return false;
         }
 
@@ -38,19 +36,11 @@ internal class ClassElementValidator(
             return false;
         }
 
-        if (isStatic != null && isStatic != typeSymbol.IsStatic) {
-            return false;
-        }
-
-        if (isAbstract != null && isAbstract != typeSymbol.IsAbstract) {
-            return false;
-        }
-
         return true;
     }
 
     public bool IsValidSyntax(SyntaxNode syntaxNode) {
-        if (syntaxNode is not ClassDeclarationSyntax classDeclaration) {
+        if (syntaxNode is not InterfaceDeclarationSyntax interfaceDeclaration) {
             return false;
         }
 
@@ -60,35 +50,16 @@ internal class ClassElementValidator(
         switch (requiredAccessibility) {
             case CodeElementAccessibility.PublicOrInternal:
                 // All modifiers must not be private or protected
-                if (!classDeclaration.Modifiers
+                return interfaceDeclaration.Modifiers
                     .All(modifier => modifier.ValueText switch {
                         "private" or "protected" => false,
                         "internal" or "public" => true,
                         _ => true
-                    })) {
-                    return false;
-                }
-                break;
+                    });
             case CodeElementAccessibility.Any:
-                break;
+                return true;
             default:
                 throw new InvalidOperationException($"Unknown accessibility value: {requiredAccessibility}.");
         }
-
-        if (isStatic != null) {
-            var hasStaticModifier = classDeclaration.Modifiers.Any(modifier => modifier.ValueText == "static");
-            if (isStatic != hasStaticModifier) {
-                return false;
-            }
-        }
-
-        if (isAbstract != null) {
-            var hasAbstractModifier = classDeclaration.Modifiers.Any(modifier => modifier.ValueText == "abstract");
-            if (isAbstract != hasAbstractModifier) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

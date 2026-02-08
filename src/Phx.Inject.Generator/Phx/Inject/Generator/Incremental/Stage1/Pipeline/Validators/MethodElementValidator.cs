@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
 
-namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Validators;
+namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Validators;
 
 internal class MethodElementValidator(
     CodeElementAccessibility requiredAccessibility = CodeElementAccessibility.Any,
@@ -20,12 +20,17 @@ internal class MethodElementValidator(
     int? maxParameterCount = null,
     bool? isStatic = null,
     bool? isAbstract = null,
-    IReadOnlyList<IAttributeChecker>? requiredAttributes = null
+    IReadOnlyList<IAttributeChecker>? requiredAttributes = null,
+    IReadOnlyList<IAttributeChecker>? prohibitedAttributes = null
 ) : ICodeElementValidator {
     private readonly IReadOnlyList<IAttributeChecker> requiredAttributes = requiredAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 
     public bool IsValidSymbol(ISymbol symbol) {
         if (requiredAttributes.Any(requiredAttribute => !requiredAttribute.HasAttribute(symbol))) {
+            return false;
+        }
+        
+        if (prohibitedAttributes.Any(prohibitedAttribute => prohibitedAttribute.HasAttribute(symbol))) {
             return false;
         }
 

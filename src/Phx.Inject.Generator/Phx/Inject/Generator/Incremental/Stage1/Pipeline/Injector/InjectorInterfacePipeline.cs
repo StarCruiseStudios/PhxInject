@@ -12,8 +12,8 @@ using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
-using Phx.Inject.Generator.Incremental.Stage1.Metadata.Validators;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
+using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Validators;
 using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Injector;
@@ -21,14 +21,16 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Injector;
 internal class InjectorInterfacePipeline(
     ICodeElementValidator elementValidator,
     IAttributeTransformer<InjectorAttributeMetadata> injectorAttributeTransformer,
-    InjectorProviderTransformer injectorProviderTransformer
+    InjectorProviderTransformer injectorProviderTransformer,
+    InjectorActivatorTransformer injectorActivatorTransformer
 ) : ISyntaxValuesPipeline<InjectorInterfaceMetadata> {
     public static readonly InjectorInterfacePipeline Instance = new(
         new InterfaceElementValidator(
             CodeElementAccessibility.PublicOrInternal
         ),
         InjectorAttributeTransformer.Instance,
-        InjectorProviderTransformer.Instance);
+        InjectorProviderTransformer.Instance,
+        InjectorActivatorTransformer.Instance);
     
     public IncrementalValuesProvider<InjectorInterfaceMetadata> Select(SyntaxValueProvider syntaxProvider) {
         return syntaxProvider.ForAttributeWithMetadataName(
@@ -45,7 +47,11 @@ internal class InjectorInterfacePipeline(
                     .Where(injectorProviderTransformer.CanTransform)
                     .Select(injectorProviderTransformer.Transform)
                     .ToImmutableList();
-                var activators = ImmutableArray<InjectorActivatorMetadata>.Empty;
+                var activators = targetSymbol.GetMembers()
+                    .OfType<IMethodSymbol>()
+                    .Where(injectorActivatorTransformer.CanTransform)
+                    .Select(injectorActivatorTransformer.Transform)
+                    .ToImmutableList();
                 var childFactories = ImmutableArray<InjectorChildProviderMetadata>.Empty;
                 DependencyAttributeMetadata? dependencyAttributeMetadata = null;
                 return new InjectorInterfaceMetadata(

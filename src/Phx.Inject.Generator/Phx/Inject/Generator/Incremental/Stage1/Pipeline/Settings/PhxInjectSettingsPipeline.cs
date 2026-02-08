@@ -9,8 +9,8 @@
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
-using Phx.Inject.Generator.Incremental.Stage1.Metadata.Validators;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
+using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Validators;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Settings;
 

@@ -8,7 +8,7 @@
 
 using Microsoft.CodeAnalysis;
 
-namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Validators;
+namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Validators;
 
 internal class AggregateElementValidator(
     IReadOnlyList<ICodeElementValidator> validators
