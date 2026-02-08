@@ -32,7 +32,7 @@ internal class InjectorInterfacePipeline(
     
     public IncrementalValuesProvider<InjectorInterfaceMetadata> Select(SyntaxValueProvider syntaxProvider) {
         return syntaxProvider.ForAttributeWithMetadataName(
-            PhxInjectAttributeMetadata.AttributeClassName,
+            InjectorAttributeMetadata.AttributeClassName,
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;

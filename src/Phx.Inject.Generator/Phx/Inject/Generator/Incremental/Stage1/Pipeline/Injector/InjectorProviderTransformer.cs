@@ -21,7 +21,7 @@ internal class InjectorProviderTransformer(ICodeElementValidator elementValidato
             CodeElementAccessibility.PublicOrInternal,
             isStatic: false,
             maxParameterCount:0,
-            returnsVoid: true
+            returnsVoid: false
         ));
 
     public bool CanTransform(IMethodSymbol methodSymbol) {

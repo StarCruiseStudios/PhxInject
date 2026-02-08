@@ -6,6 +6,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Auto;
@@ -62,8 +63,17 @@ internal class IncrementalSourceGenerator(
         var injectorInterfacePipelineSegment = injectorPipeline.Select(generatorInitializationContext.SyntaxProvider);
         generatorInitializationContext.RegisterSourceOutput(injectorInterfacePipelineSegment,
             (sourceProductionContext, injector) => {
+                var output = new StringBuilder();
+                output.AppendLine($"class Generated{injector.InjectorInterfaceType.BaseTypeName} {{");
+                foreach (var provider in injector.Providers) {
+                    output.AppendLine($"  public {provider.ProvidedType.TypeMetadata.NamespacedBaseTypeName}? {provider.ProviderMethodName}() {{ return null; }}");
+                }
+                
+                output.AppendLine("}");
+                
+                
                 sourceProductionContext.AddSource($"Generated{injector.InjectorInterfaceType.NamespacedBaseTypeName}.cs",
-                    $"class Generated{injector.InjectorInterfaceType.BaseTypeName} {{ }}");
+                    output.ToString());
             });
         
         var injectorDependencyPipelineSegment = injectorDependencyPipeline.Select(generatorInitializationContext.SyntaxProvider);

@@ -26,6 +26,8 @@
 
         <!-- Include the output assembly in the analyzers directory of the nuget package. -->
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <!-- Include Phx.Inject dependency in the nuget package. -->
+        <None Include="$(OutputPath)\Phx.Inject.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' == 'Debug'">
