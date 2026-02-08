@@ -10,7 +10,6 @@
     <Import Project="Cobalt.props" Condition="Exists('Cobalt.props')" />
     <ItemGroup>
         <ProjectReference Include="..\Phx.Inject.Generator\Phx.Inject.Generator.csproj" />
-        <ProjectReference Include="..\Phx.Inject\Phx.Inject.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -40,8 +40,7 @@ export default {
       }
     });
     cobalt.dependencies.add(
-      context.versions.microsoft.codeanalysis.csharp.csharp,
-      {artifact: 'Phx.Inject', versionRange: '0.10.0'}
+      context.versions.microsoft.codeanalysis.csharp.csharp
     );
   }
 }

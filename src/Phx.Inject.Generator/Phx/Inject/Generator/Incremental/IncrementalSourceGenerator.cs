@@ -130,7 +130,7 @@ internal class IncrementalSourceGenerator(
                     output.AppendLine(")");
                 }
                 foreach (var link in specClass.Links) {
-                    output.AppendLine($"  // Link: {link.Input} -> {link.Output}");
+                    output.AppendLine($"  // Link: [{link.InputLabel ?? link.InputQualifier?.ToString() ?? ""}]{link.Input} -> [{link.OutputLabel ?? link.OutputQualifier?.ToString() ?? ""}]{link.Output}");
                 }
                 output.AppendLine("}");
                 
@@ -167,7 +167,7 @@ internal class IncrementalSourceGenerator(
                     output.AppendLine(")");
                 }
                 foreach (var link in specInterface.Links) {
-                    output.AppendLine($"  // Link: {link.Input} -> {link.Output}");
+                    output.AppendLine($"  // Link: [{link.InputLabel ?? link.InputQualifier?.ToString() ?? ""}]{link.Input} -> [{link.OutputLabel ?? link.OutputQualifier?.ToString() ?? ""}]{link.Output}");
                 }
                 output.AppendLine("}");
                 
