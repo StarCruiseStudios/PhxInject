@@ -15,6 +15,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Validators;
 
 internal class MethodElementValidator(
     CodeElementAccessibility requiredAccessibility = CodeElementAccessibility.Any,
+    MethodKindFilter methodKind = MethodKindFilter.Any,
     bool? returnsVoid = null,
     int? minParameterCount = null,
     int? maxParameterCount = null,
@@ -40,6 +41,10 @@ internal class MethodElementValidator(
         }
 
         if (!requiredAccessibility.AccessibilityMatches(methodSymbol.DeclaredAccessibility)) {
+            return false;
+        }
+
+        if (!methodKind.MethodKindMatches(methodSymbol)) {
             return false;
         }
 

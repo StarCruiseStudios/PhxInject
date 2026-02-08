@@ -14,6 +14,7 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Auto;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
+using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Validators;
 using Phx.Inject.Generator.Incremental.Util;
 
@@ -21,14 +22,16 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Auto;
 
 internal class AutoBuilderPipeline(
     ICodeElementValidator elementValidator,
-    IAttributeTransformer<AutoBuilderAttributeMetadata> autoBuilderAttributeTransformer
+    IAttributeTransformer<AutoBuilderAttributeMetadata> autoBuilderAttributeTransformer,
+    QualifierTransformer qualifierTransformer
 ) : ISyntaxValuesPipeline<AutoBuilderMetadata> {
     public static readonly AutoBuilderPipeline Instance = new(
         new MethodElementValidator(
             CodeElementAccessibility.PublicOrInternal,
             isAbstract: false
         ),
-        AutoBuilderAttributeTransformer.Instance);
+        AutoBuilderAttributeTransformer.Instance,
+        QualifierTransformer.Instance);
     
     public IncrementalValuesProvider<AutoBuilderMetadata> Select(SyntaxValueProvider syntaxProvider) {
         return syntaxProvider.ForAttributeWithMetadataName(
@@ -39,11 +42,28 @@ internal class AutoBuilderPipeline(
                 var autoBuilderAttributeMetadata =
                     autoBuilderAttributeTransformer.Transform(targetSymbol);
 
-                var autoBuilderType = new QualifiedTypeMetadata(targetSymbol.ReturnType.ToTypeModel(), NoQualifierMetadata.Instance);
-                var parameters = ImmutableArray<QualifiedTypeMetadata>.Empty;
+                // The built type is the first parameter of the builder method
+                // Get qualifier from the method itself (for Label attribute)
+                var builtTypeQualifier = qualifierTransformer.Transform(targetSymbol);
+                var builtType = new QualifiedTypeMetadata(
+                    targetSymbol.Parameters[0].Type.ToTypeModel(),
+                    builtTypeQualifier
+                );
+                
+                // Remaining parameters (skip first parameter which is the built type)
+                var parameters = targetSymbol.Parameters.Skip(1)
+                    .Select(param => {
+                        var paramQualifier = qualifierTransformer.Transform(param);
+                        return new QualifiedTypeMetadata(
+                            param.Type.ToTypeModel(),
+                            paramQualifier
+                        );
+                    })
+                    .ToImmutableArray();
+
                 return new AutoBuilderMetadata(
                     targetSymbol.Name,
-                    autoBuilderType,
+                    builtType,
                     parameters,
                     autoBuilderAttributeMetadata,
                     targetSymbol.GetLocationOrDefault().GeneratorIgnored()

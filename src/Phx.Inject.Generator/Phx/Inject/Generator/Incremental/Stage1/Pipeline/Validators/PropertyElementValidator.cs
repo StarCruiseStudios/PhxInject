@@ -18,6 +18,7 @@ internal class PropertyElementValidator(
     bool? isStatic = null,
     bool? hasGetter = null,
     bool? hasSetter = null,
+    bool? isRequired = null,
     IReadOnlyList<IAttributeChecker>? requiredAttributes = null,
     IReadOnlyList<IAttributeChecker>? prohibitedAttributes = null
 ) : ICodeElementValidator {
@@ -50,6 +51,10 @@ internal class PropertyElementValidator(
         }
 
         if (hasSetter != null && hasSetter != (propertySymbol.SetMethod != null)) {
+            return false;
+        }
+
+        if (isRequired != null && isRequired != propertySymbol.IsRequired) {
             return false;
         }
 
