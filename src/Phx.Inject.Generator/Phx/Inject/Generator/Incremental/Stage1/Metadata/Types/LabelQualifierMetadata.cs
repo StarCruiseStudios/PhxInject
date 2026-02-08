@@ -16,4 +16,8 @@ internal record LabelQualifierMetadata(
     LabelAttributeMetadata LabelAttributeMetadata
 ) : IQualifierMetadata {
     public GeneratorIgnored<Location> Location { get; } = LabelAttributeMetadata.Location;
+    
+    public override string ToString() {
+        return $"[Label({LabelAttributeMetadata.Label})]";        
+    }
 }

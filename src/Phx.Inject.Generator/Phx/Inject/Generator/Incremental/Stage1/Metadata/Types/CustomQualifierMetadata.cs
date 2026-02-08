@@ -16,4 +16,8 @@ internal record CustomQualifierMetadata(
     QualifierAttributeMetadata QualifierAttributeMetadata
 ) : IQualifierMetadata {
     public GeneratorIgnored<Location> Location { get; } = QualifierAttributeMetadata.Location;
+    
+    public override string ToString() {
+        return $"[@{QualifierAttributeMetadata.QualifierType}]";        
+    }
 }

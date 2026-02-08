@@ -24,6 +24,7 @@ internal class MethodElementValidator(
     IReadOnlyList<IAttributeChecker>? prohibitedAttributes = null
 ) : ICodeElementValidator {
     private readonly IReadOnlyList<IAttributeChecker> requiredAttributes = requiredAttributes ?? ImmutableList<IAttributeChecker>.Empty;
+    private readonly IReadOnlyList<IAttributeChecker> prohibitedAttributes = prohibitedAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 
     public bool IsValidSymbol(ISymbol symbol) {
         if (requiredAttributes.Any(requiredAttribute => !requiredAttribute.HasAttribute(symbol))) {

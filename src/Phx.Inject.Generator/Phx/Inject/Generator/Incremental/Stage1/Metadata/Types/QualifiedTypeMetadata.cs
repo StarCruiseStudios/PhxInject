@@ -16,4 +16,10 @@ internal record QualifiedTypeMetadata(
     IQualifierMetadata QualifierMetadata
 ) : ISourceCodeElement {
     public GeneratorIgnored<Location> Location => TypeMetadata.Location;
+
+    public override string ToString() {
+        return (QualifierMetadata is not NoQualifierMetadata)
+            ? $"{QualifierMetadata} {TypeMetadata}"
+            : TypeMetadata.ToString();        
+    }
 }

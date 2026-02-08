@@ -66,11 +66,17 @@ internal class IncrementalSourceGenerator(
                 var output = new StringBuilder();
                 output.AppendLine($"class Generated{injector.InjectorInterfaceType.BaseTypeName} {{");
                 foreach (var provider in injector.Providers) {
-                    output.AppendLine($"  public {provider.ProvidedType.TypeMetadata.NamespacedBaseTypeName}? {provider.ProviderMethodName}() {{ return null; }}");
+                    output.AppendLine($"  // Provider: {provider.ProvidedType} {provider.ProviderMethodName}");
                 }
-                
+                foreach (var activator in injector.Activators) {
+                    output.AppendLine($"  // Activator: {activator.ActivatedType} {activator.ActivatorMethodName}");
+                }
+                foreach (var childProvider in injector.ChildProviders) {
+                    output.Append($"  // ChildProvider: {childProvider.ChildInjectorType} {childProvider.ChildProviderMethodName}(");
+                    output.Append(string.Join(", ", childProvider.Parameters));
+                    output.AppendLine(")");
+                }
                 output.AppendLine("}");
-                
                 
                 sourceProductionContext.AddSource($"Generated{injector.InjectorInterfaceType.NamespacedBaseTypeName}.cs",
                     output.ToString());

@@ -22,7 +22,8 @@ internal class InjectorInterfacePipeline(
     ICodeElementValidator elementValidator,
     IAttributeTransformer<InjectorAttributeMetadata> injectorAttributeTransformer,
     InjectorProviderTransformer injectorProviderTransformer,
-    InjectorActivatorTransformer injectorActivatorTransformer
+    InjectorActivatorTransformer injectorActivatorTransformer,
+    InjectorChildProviderTransformer injectorChildProviderTransformer
 ) : ISyntaxValuesPipeline<InjectorInterfaceMetadata> {
     public static readonly InjectorInterfacePipeline Instance = new(
         new InterfaceElementValidator(
@@ -30,7 +31,8 @@ internal class InjectorInterfacePipeline(
         ),
         InjectorAttributeTransformer.Instance,
         InjectorProviderTransformer.Instance,
-        InjectorActivatorTransformer.Instance);
+        InjectorActivatorTransformer.Instance,
+        InjectorChildProviderTransformer.Instance);
     
     public IncrementalValuesProvider<InjectorInterfaceMetadata> Select(SyntaxValueProvider syntaxProvider) {
         return syntaxProvider.ForAttributeWithMetadataName(
@@ -52,13 +54,17 @@ internal class InjectorInterfacePipeline(
                     .Where(injectorActivatorTransformer.CanTransform)
                     .Select(injectorActivatorTransformer.Transform)
                     .ToImmutableList();
-                var childFactories = ImmutableArray<InjectorChildProviderMetadata>.Empty;
+                var childProviders = targetSymbol.GetMembers()
+                    .OfType<IMethodSymbol>()
+                    .Where(injectorChildProviderTransformer.CanTransform)
+                    .Select(injectorChildProviderTransformer.Transform)
+                    .ToImmutableList();
                 DependencyAttributeMetadata? dependencyAttributeMetadata = null;
                 return new InjectorInterfaceMetadata(
                     injectorInterfaceType,
                     providers,
                     activators,
-                    childFactories,
+                    childProviders,
                     injectorAttributeMetadata,
                     dependencyAttributeMetadata,
                     targetSymbol.GetLocationOrDefault().GeneratorIgnored()

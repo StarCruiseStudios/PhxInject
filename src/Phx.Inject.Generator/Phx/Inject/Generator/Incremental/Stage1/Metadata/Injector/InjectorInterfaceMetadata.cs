@@ -17,7 +17,7 @@ internal record InjectorInterfaceMetadata(
     TypeMetadata InjectorInterfaceType,
     IEnumerable<InjectorProviderMetadata> Providers,
     IEnumerable<InjectorActivatorMetadata> Activators,
-    IEnumerable<InjectorChildProviderMetadata> ChildFactories,
+    IEnumerable<InjectorChildProviderMetadata> ChildProviders,
     InjectorAttributeMetadata InjectorAttributeMetadata,
     DependencyAttributeMetadata? DependencyAttributeMetadata,
     GeneratorIgnored<Location> Location

@@ -12,12 +12,16 @@ using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
+using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Validators;
 using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Injector;
 
-internal class InjectorProviderTransformer(ICodeElementValidator elementValidator) {
+internal class InjectorProviderTransformer(
+    ICodeElementValidator elementValidator,
+    QualifierTransformer qualifierTransformer
+) {
     public static readonly InjectorProviderTransformer Instance = new(
         new MethodElementValidator(
             CodeElementAccessibility.PublicOrInternal,
@@ -25,7 +29,9 @@ internal class InjectorProviderTransformer(ICodeElementValidator elementValidato
             maxParameterCount: 0,
             returnsVoid: false,
             prohibitedAttributes: ImmutableList.Create(ChildInjectorAttributeTransformer.Instance)
-        ));
+        ),
+        QualifierTransformer.Instance
+    );
 
     public bool CanTransform(IMethodSymbol methodSymbol) {
         return elementValidator.IsValidSymbol(methodSymbol);
@@ -34,9 +40,10 @@ internal class InjectorProviderTransformer(ICodeElementValidator elementValidato
     public InjectorProviderMetadata Transform(IMethodSymbol methodSymbol) {
         var name = methodSymbol.Name;
         var providedType = methodSymbol.ReturnType.ToTypeModel();
+        var qualifier = qualifierTransformer.Transform(methodSymbol);
         return new InjectorProviderMetadata(
             name,
-            new QualifiedTypeMetadata(providedType, NoQualifierMetadata.Instance),
+            new QualifiedTypeMetadata(providedType, qualifier),
             methodSymbol.GetLocationOrDefault().GeneratorIgnored());
     }
 }

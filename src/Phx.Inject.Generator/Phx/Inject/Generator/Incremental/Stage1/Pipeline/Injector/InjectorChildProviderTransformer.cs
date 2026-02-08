@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// <copyright file="InjectorActivatorTransformer.cs" company="Star Cruise Studios LLC">
+// <copyright file="InjectorChildProviderTransformer.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2026 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
 //     See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -12,39 +12,42 @@ using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Attributes;
-using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Validators;
 using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Pipeline.Injector;
 
-internal class InjectorActivatorTransformer(
+internal class InjectorChildProviderTransformer(
     ICodeElementValidator elementValidator,
-    QualifierTransformer qualifierTransformer
+    ChildInjectorAttributeTransformer childInjectorAttributeTransformer
 ) {
-    public static readonly InjectorActivatorTransformer Instance = new(
+    public static readonly InjectorChildProviderTransformer Instance = new(
         new MethodElementValidator(
             CodeElementAccessibility.PublicOrInternal,
             isStatic: false,
-            minParameterCount: 1,
-            maxParameterCount: 1,
-            returnsVoid: true,
-            requiredAttributes: ImmutableList.Create(ChildInjectorAttributeTransformer.Instance)
+            returnsVoid: false,
+            requiredAttributes: ImmutableList.Create<IAttributeChecker>(ChildInjectorAttributeTransformer.Instance)
         ),
-        QualifierTransformer.Instance
+        ChildInjectorAttributeTransformer.Instance
     );
 
     public bool CanTransform(IMethodSymbol methodSymbol) {
         return elementValidator.IsValidSymbol(methodSymbol);
     }
 
-    public InjectorActivatorMetadata Transform(IMethodSymbol methodSymbol) {
+    public InjectorChildProviderMetadata Transform(IMethodSymbol methodSymbol) {
         var name = methodSymbol.Name;
-        var activatedType = methodSymbol.Parameters[0].Type.ToTypeModel();
-        var qualifier = qualifierTransformer.Transform(methodSymbol);
-        return new InjectorActivatorMetadata(
+        var childInjectorAttribute = childInjectorAttributeTransformer.Transform(methodSymbol);
+        var childInjectorType = methodSymbol.ReturnType.ToTypeModel();
+        var parameters = methodSymbol.Parameters
+            .Select(p => p.Type.ToTypeModel())
+            .ToList();
+        
+        return new InjectorChildProviderMetadata(
             name,
-            new QualifiedTypeMetadata(activatedType, qualifier),
+            childInjectorType,
+            parameters,
+            childInjectorAttribute,
             methodSymbol.GetLocationOrDefault().GeneratorIgnored());
     }
 }
