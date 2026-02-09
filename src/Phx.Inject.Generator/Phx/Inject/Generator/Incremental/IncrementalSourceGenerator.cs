@@ -17,6 +17,7 @@ using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Auto;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Settings;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Specification;
+using Phx.Inject.Generator.Incremental.Stage2.Mappers;
 
 namespace Phx.Inject.Generator.Incremental;
 
@@ -63,146 +64,164 @@ internal class IncrementalSourceGenerator(
         var injectorInterfacePipelineSegment = injectorPipeline.Select(generatorInitializationContext.SyntaxProvider);
         generatorInitializationContext.RegisterSourceOutput(injectorInterfacePipelineSegment,
             (sourceProductionContext, injector) => {
+                // Stage 2: Transform metadata into domain model
+                var injectorModel = InjectorModelMapper.MapToModel(injector);
+                
                 var output = new StringBuilder();
-                output.AppendLine($"class Generated{injector.InjectorInterfaceType.BaseTypeName} {{");
-                foreach (var provider in injector.Providers) {
+                output.AppendLine($"class Generated{injectorModel.InjectorInterfaceType.BaseTypeName} {{");
+                foreach (var provider in injectorModel.Providers) {
                     output.AppendLine($"  // Provider: {provider.ProvidedType} {provider.ProviderMethodName}");
                 }
-                foreach (var activator in injector.Activators) {
+                foreach (var activator in injectorModel.Activators) {
                     output.AppendLine($"  // Activator: {activator.ActivatedType} {activator.ActivatorMethodName}");
                 }
-                foreach (var childProvider in injector.ChildProviders) {
+                foreach (var childProvider in injectorModel.ChildProviders) {
                     output.Append($"  // ChildProvider: {childProvider.ChildInjectorType} {childProvider.ChildProviderMethodName}(");
                     output.Append(string.Join(", ", childProvider.Parameters));
                     output.AppendLine(")");
                 }
                 output.AppendLine("}");
                 
-                sourceProductionContext.AddSource($"Generated{injector.InjectorInterfaceType.NamespacedBaseTypeName}.cs",
+                sourceProductionContext.AddSource($"Generated{injectorModel.InjectorInterfaceType.NamespacedBaseTypeName}.cs",
                     output.ToString());
             });
         
         var injectorDependencyPipelineSegment = injectorDependencyPipeline.Select(generatorInitializationContext.SyntaxProvider);
         generatorInitializationContext.RegisterSourceOutput(injectorDependencyPipelineSegment,
             (sourceProductionContext, injectorDependency) => {
+                // Stage 2: Transform metadata into domain model
+                var dependencyModel = DependencyModelMapper.MapToModel(injectorDependency);
+                
                 var output = new StringBuilder();
-                output.AppendLine($"class Generated{injectorDependency.InjectorDependencyInterfaceType.BaseTypeName} {{");
-                foreach (var factoryMethod in injectorDependency.FactoryMethods) {
+                output.AppendLine($"class Generated{dependencyModel.InjectorDependencyInterfaceType.BaseTypeName} {{");
+                foreach (var factoryMethod in dependencyModel.FactoryMethods) {
                     output.Append($"  // FactoryMethod: {factoryMethod.FactoryReturnType} {factoryMethod.FactoryMethodName}(");
                     output.Append(string.Join(", ", factoryMethod.Parameters));
                     output.AppendLine(")");
                 }
-                foreach (var factoryProperty in injectorDependency.FactoryProperties) {
+                foreach (var factoryProperty in dependencyModel.FactoryProperties) {
                     output.AppendLine($"  // FactoryProperty: {factoryProperty.FactoryReturnType} {factoryProperty.FactoryPropertyName}");
                 }
                 output.AppendLine("}");
                 
-                sourceProductionContext.AddSource($"Generated{injectorDependency.InjectorDependencyInterfaceType.NamespacedBaseTypeName}.cs",
+                sourceProductionContext.AddSource($"Generated{dependencyModel.InjectorDependencyInterfaceType.NamespacedBaseTypeName}.cs",
                     output.ToString());
             });
         
         var specClassPipelineSegment = specClassPipeline.Select(generatorInitializationContext.SyntaxProvider);
         generatorInitializationContext.RegisterSourceOutput(specClassPipelineSegment,
             (sourceProductionContext, specClass) => {
+                // Stage 2: Transform metadata into domain model
+                var specModel = SpecificationModelMapper.MapToModel(specClass);
+                
                 var output = new StringBuilder();
-                output.AppendLine($"class Generated{specClass.SpecType.BaseTypeName} {{");
-                foreach (var factoryMethod in specClass.FactoryMethods) {
+                output.AppendLine($"class Generated{specModel.SpecType.BaseTypeName} {{");
+                foreach (var factoryMethod in specModel.FactoryMethods) {
                     output.Append($"  // FactoryMethod: {factoryMethod.FactoryReturnType} {factoryMethod.FactoryMethodName}(");
                     output.Append(string.Join(", ", factoryMethod.Parameters));
                     output.AppendLine(")");
                 }
-                foreach (var factoryProperty in specClass.FactoryProperties) {
+                foreach (var factoryProperty in specModel.FactoryProperties) {
                     output.AppendLine($"  // FactoryProperty: {factoryProperty.FactoryReturnType} {factoryProperty.FactoryPropertyName}");
                 }
-                foreach (var factoryReference in specClass.FactoryReferences) {
+                foreach (var factoryReference in specModel.FactoryReferences) {
                     output.Append($"  // FactoryReference: {factoryReference.FactoryReturnType} {factoryReference.FactoryReferenceName}(");
                     output.Append(string.Join(", ", factoryReference.Parameters));
                     output.AppendLine(")");
                 }
-                foreach (var builderMethod in specClass.BuilderMethods) {
+                foreach (var builderMethod in specModel.BuilderMethods) {
                     output.Append($"  // BuilderMethod: {builderMethod.BuiltType} {builderMethod.BuilderMethodName}(");
                     output.Append(string.Join(", ", builderMethod.Parameters));
                     output.AppendLine(")");
                 }
-                foreach (var builderReference in specClass.BuilderReferences) {
+                foreach (var builderReference in specModel.BuilderReferences) {
                     output.Append($"  // BuilderReference: {builderReference.BuiltType} {builderReference.BuilderReferenceName}(");
                     output.Append(string.Join(", ", builderReference.Parameters));
                     output.AppendLine(")");
                 }
-                foreach (var link in specClass.Links) {
+                foreach (var link in specModel.Links) {
                     output.AppendLine($"  // Link: [{link.InputLabel ?? link.InputQualifier?.ToString() ?? ""}]{link.Input} -> [{link.OutputLabel ?? link.OutputQualifier?.ToString() ?? ""}]{link.Output}");
                 }
                 output.AppendLine("}");
                 
-                sourceProductionContext.AddSource($"Generated{specClass.SpecType.NamespacedBaseTypeName}.cs",
+                sourceProductionContext.AddSource($"Generated{specModel.SpecType.NamespacedBaseTypeName}.cs",
                     output.ToString());
             });
         
         var specInterfacePipelineSegment = specInterfacePipeline.Select(generatorInitializationContext.SyntaxProvider);
         generatorInitializationContext.RegisterSourceOutput(specInterfacePipelineSegment,
             (sourceProductionContext, specInterface) => {
+                // Stage 2: Transform metadata into domain model
+                var specModel = SpecificationModelMapper.MapToModel(specInterface);
+                
                 var output = new StringBuilder();
-                output.AppendLine($"class Generated{specInterface.SpecInterfaceType.BaseTypeName} {{");
-                foreach (var factoryMethod in specInterface.FactoryMethods) {
+                output.AppendLine($"class Generated{specModel.SpecType.BaseTypeName} {{");
+                foreach (var factoryMethod in specModel.FactoryMethods) {
                     output.Append($"  // FactoryMethod: {factoryMethod.FactoryReturnType} {factoryMethod.FactoryMethodName}(");
                     output.Append(string.Join(", ", factoryMethod.Parameters));
                     output.AppendLine(")");
                 }
-                foreach (var factoryProperty in specInterface.FactoryProperties) {
+                foreach (var factoryProperty in specModel.FactoryProperties) {
                     output.AppendLine($"  // FactoryProperty: {factoryProperty.FactoryReturnType} {factoryProperty.FactoryPropertyName}");
                 }
-                foreach (var factoryReference in specInterface.FactoryReferences) {
+                foreach (var factoryReference in specModel.FactoryReferences) {
                     output.Append($"  // FactoryReference: {factoryReference.FactoryReturnType} {factoryReference.FactoryReferenceName}(");
                     output.Append(string.Join(", ", factoryReference.Parameters));
                     output.AppendLine(")");
                 }
-                foreach (var builderMethod in specInterface.BuilderMethods) {
+                foreach (var builderMethod in specModel.BuilderMethods) {
                     output.Append($"  // BuilderMethod: {builderMethod.BuiltType} {builderMethod.BuilderMethodName}(");
                     output.Append(string.Join(", ", builderMethod.Parameters));
                     output.AppendLine(")");
                 }
-                foreach (var builderReference in specInterface.BuilderReferences) {
+                foreach (var builderReference in specModel.BuilderReferences) {
                     output.Append($"  // BuilderReference: {builderReference.BuiltType} {builderReference.BuilderReferenceName}(");
                     output.Append(string.Join(", ", builderReference.Parameters));
                     output.AppendLine(")");
                 }
-                foreach (var link in specInterface.Links) {
+                foreach (var link in specModel.Links) {
                     output.AppendLine($"  // Link: [{link.InputLabel ?? link.InputQualifier?.ToString() ?? ""}]{link.Input} -> [{link.OutputLabel ?? link.OutputQualifier?.ToString() ?? ""}]{link.Output}");
                 }
                 output.AppendLine("}");
                 
-                sourceProductionContext.AddSource($"Generated{specInterface.SpecInterfaceType.NamespacedBaseTypeName}.cs",
+                sourceProductionContext.AddSource($"Generated{specModel.SpecType.NamespacedBaseTypeName}.cs",
                     output.ToString());
             });
         
         var autoFactoryPipelineSegment = autoFactoryPipeline.Select(generatorInitializationContext.SyntaxProvider);
         generatorInitializationContext.RegisterSourceOutput(autoFactoryPipelineSegment,
             (sourceProductionContext, autoFactory) => {
+                // Stage 2: Transform metadata into domain model
+                var autoFactoryModel = AutoModelMapper.MapToModel(autoFactory);
+                
                 var output = new StringBuilder();
-                output.AppendLine($"class Generated{autoFactory.AutoFactoryType.TypeMetadata.BaseTypeName} {{");
+                output.AppendLine($"class Generated{autoFactoryModel.AutoFactoryType.TypeMetadata.BaseTypeName} {{");
                 output.Append("  // Constructor(");
-                output.Append(string.Join(", ", autoFactory.Parameters));
+                output.Append(string.Join(", ", autoFactoryModel.Parameters));
                 output.AppendLine(")");
-                foreach (var requiredProperty in autoFactory.RequiredProperties) {
+                foreach (var requiredProperty in autoFactoryModel.RequiredProperties) {
                     output.AppendLine($"  // RequiredProperty: {requiredProperty.RequiredPropertyType} {requiredProperty.RequiredPropertyName}");
                 }
                 output.AppendLine("}");
                 
-                sourceProductionContext.AddSource($"Generated{autoFactory.AutoFactoryType.TypeMetadata.NamespacedBaseTypeName}.cs",
+                sourceProductionContext.AddSource($"Generated{autoFactoryModel.AutoFactoryType.TypeMetadata.NamespacedBaseTypeName}.cs",
                     output.ToString());
             });
         
         var autoBuilderPipelineSegment = autoBuilderPipeline.Select(generatorInitializationContext.SyntaxProvider);
         generatorInitializationContext.RegisterSourceOutput(autoBuilderPipelineSegment,
             (sourceProductionContext, autoBuilder) => {
+                // Stage 2: Transform metadata into domain model
+                var autoBuilderModel = AutoModelMapper.MapToModel(autoBuilder);
+                
                 var output = new StringBuilder();
-                output.AppendLine($"class Generated{autoBuilder.BuiltType.TypeMetadata.BaseTypeName}{autoBuilder.AutoBuilderMethodName} {{");
-                output.Append($"  // BuilderMethod: {autoBuilder.BuiltType} {autoBuilder.AutoBuilderMethodName}(");
-                output.Append(string.Join(", ", autoBuilder.Parameters));
+                output.AppendLine($"class Generated{autoBuilderModel.BuiltType.TypeMetadata.BaseTypeName}{autoBuilderModel.AutoBuilderMethodName} {{");
+                output.Append($"  // BuilderMethod: {autoBuilderModel.BuiltType} {autoBuilderModel.AutoBuilderMethodName}(");
+                output.Append(string.Join(", ", autoBuilderModel.Parameters));
                 output.AppendLine(")");
                 output.AppendLine("}");
                 
-                sourceProductionContext.AddSource($"Generated{autoBuilder.BuiltType.TypeMetadata.NamespacedBaseTypeName}{autoBuilder.AutoBuilderMethodName}.cs",
+                sourceProductionContext.AddSource($"Generated{autoBuilderModel.BuiltType.TypeMetadata.NamespacedBaseTypeName}{autoBuilderModel.AutoBuilderMethodName}.cs",
                     output.ToString());
             });
 
