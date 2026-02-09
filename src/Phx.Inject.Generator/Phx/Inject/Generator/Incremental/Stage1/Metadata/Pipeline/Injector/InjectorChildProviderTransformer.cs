@@ -41,7 +41,7 @@ internal class InjectorChildProviderTransformer(
         var childInjectorType = methodSymbol.ReturnType.ToTypeModel();
         var parameters = methodSymbol.Parameters
             .Select(p => p.Type.ToTypeModel())
-            .ToList();
+            .ToEquatableList();
         
         return new InjectorChildProviderMetadata(
             name,

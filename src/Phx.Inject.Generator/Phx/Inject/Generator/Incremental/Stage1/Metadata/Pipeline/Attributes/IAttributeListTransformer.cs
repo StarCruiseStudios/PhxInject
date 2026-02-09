@@ -8,9 +8,10 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
+using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
-internal interface IAttributeListTransformer<out TAttributeMetadata> where TAttributeMetadata : IAttributeElement {
-    IReadOnlyList<TAttributeMetadata> Transform(ISymbol targetSymbol);
+internal interface IAttributeListTransformer<TAttributeMetadata> where TAttributeMetadata : IAttributeElement {
+    EquatableList<TAttributeMetadata> Transform(ISymbol targetSymbol);
 }

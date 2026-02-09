@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // <copyright file="PhxInjectAttributeTransformer.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2026 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
@@ -6,7 +6,6 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
@@ -37,7 +36,7 @@ internal class InjectorAttributeTransformer(
         var specifications = attributeData
             .GetConstructorArguments<ITypeSymbol>(argument => argument.Kind != TypedConstantKind.Array)
             .Select(it => it.ToTypeModel())
-            .ToImmutableList();
+            .ToEquatableList();
         
         return new InjectorAttributeMetadata(
             generatedClassName,

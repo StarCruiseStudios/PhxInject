@@ -25,7 +25,7 @@ internal class LinkAttributeTransformer(
         return attributeMetadataTransformer.HasAttribute(targetSymbol, LinkAttributeMetadata.AttributeClassName);
     }
 
-    public IReadOnlyList<LinkAttributeMetadata> Transform(ISymbol targetSymbol) {
+    public EquatableList<LinkAttributeMetadata> Transform(ISymbol targetSymbol) {
         return attributeMetadataTransformer.GetAttributes(
             targetSymbol,
             LinkAttributeMetadata.AttributeClassName
@@ -51,6 +51,6 @@ internal class LinkAttributeTransformer(
                 outputQualifier,
                 attributeMetadata);
         })
-        .ToImmutableList();
+        .ToEquatableList();
     }
 }

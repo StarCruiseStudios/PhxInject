@@ -25,7 +25,7 @@ internal record AttributeMetadataPair(
 
 internal interface IAttributeMetadataTransformer {
     bool HasAttribute(ISymbol targetSymbol, string attributeClassName);
-    IReadOnlyList<AttributeMetadataPair> GetAttributes(
+    EquatableList<AttributeMetadataPair> GetAttributes(
         ISymbol targetSymbol,
         string attributeClassName);
     AttributeMetadataPair? SingleAttributeOrNull(
@@ -40,14 +40,14 @@ internal class AttributeMetadataTransformer : IAttributeMetadataTransformer {
         return targetSymbol.GetAttributes().Any(a => a.GetFullyQualifiedName() == attributeClassName);
     }
 
-    public IReadOnlyList<AttributeMetadataPair> GetAttributes(
+    public EquatableList<AttributeMetadataPair> GetAttributes(
         ISymbol targetSymbol,
         string attributeClassName
     ) {
         return targetSymbol.GetAttributes()
             .Where(attributeData => attributeData.GetFullyQualifiedName() == attributeClassName)
             .Select(attributeData => AttributeMetadataPair.From(targetSymbol, attributeData))
-            .ToImmutableList();
+            .ToEquatableList();
     }
 
     public AttributeMetadataPair? SingleAttributeOrNull(

@@ -6,10 +6,10 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-using System.Collections.Immutable;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 using Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
+using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline.SpecContainer;
 
@@ -28,7 +28,7 @@ internal static class SpecContainerBuilderMapper {
 internal class SpecContainerBuilderMapperInstance {
     private static SpecContainerFactoryInvocationModel PlaceholderArgument(QualifiedTypeMetadata parameterType) {
         return new SpecContainerFactoryInvocationModel(
-            ImmutableList<SpecContainerFactorySingleInvocationModel>.Empty,
+            EquatableList<SpecContainerFactorySingleInvocationModel>.Empty,
             parameterType,
             null,
             parameterType.Location

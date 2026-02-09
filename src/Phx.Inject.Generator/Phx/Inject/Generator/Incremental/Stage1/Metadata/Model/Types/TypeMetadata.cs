@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // <copyright file="TypeMetadata.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2026 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
@@ -16,7 +16,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 internal record TypeMetadata(
     string NamespaceName,
     string BaseTypeName,
-    IReadOnlyList<TypeMetadata> TypeArguments,
+    EquatableList<TypeMetadata> TypeArguments,
     GeneratorIgnored<Location> Location
 ) : ISourceCodeElement {
 
@@ -78,11 +78,11 @@ internal static class TypeSymbolExtensions {
     public static TypeMetadata ToTypeModel(this ITypeSymbol typeSymbol) {
         var name = typeSymbol.Name;
 
-        IReadOnlyList<TypeMetadata> typeArguments = typeSymbol is INamedTypeSymbol namedTypeSymbol
+        EquatableList<TypeMetadata> typeArguments = typeSymbol is INamedTypeSymbol namedTypeSymbol
             ? namedTypeSymbol.TypeArguments
                 .Select(argumentType => argumentType.ToTypeModel())
-                .ToImmutableList()
-            : ImmutableList<TypeMetadata>.Empty;
+                .ToEquatableList()
+            : EquatableList<TypeMetadata>.Empty;
 
         if (typeSymbol.ContainingType != null) {
             var containingType = typeSymbol.ContainingType.ToTypeModel();

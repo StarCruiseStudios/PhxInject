@@ -17,7 +17,7 @@ internal static class ResultExtensions {
         return new Result<T>(value, diagnosticInfo.ToEquatableList());
     }
 
-    public static Result<T> Result<T>(this T value, IReadOnlyList<DiagnosticInfo> diagnosticInfo) where T : IEquatable<T>? {
+    public static Result<T> Result<T>(this T value, IEnumerable<DiagnosticInfo> diagnosticInfo) where T : IEquatable<T>? {
         return new Result<T>(value, diagnosticInfo.ToEquatableList());
     }
 }

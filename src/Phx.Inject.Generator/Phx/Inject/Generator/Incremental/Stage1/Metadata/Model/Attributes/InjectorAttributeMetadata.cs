@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // <copyright file="InjectorAttributeMetadata.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2026 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
@@ -14,7 +14,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
 internal record InjectorAttributeMetadata(
     string? GeneratedClassName,
-    IReadOnlyList<TypeMetadata> Specifications,
+    EquatableList<TypeMetadata> Specifications,
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
     public const string AttributeClassName =

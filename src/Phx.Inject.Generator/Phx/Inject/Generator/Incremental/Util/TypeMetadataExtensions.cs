@@ -27,7 +27,7 @@ internal static class TypeMetadataExtensions {
         return new TypeMetadata(
             injectorInterfaceType.NamespaceName,
             baseName,
-            ImmutableList<TypeMetadata>.Empty,
+            EquatableList<TypeMetadata>.Empty,
             injectorInterfaceType.Location
         );
     }
@@ -42,7 +42,7 @@ internal static class TypeMetadataExtensions {
         var combinedBaseName = $"{injectorType.BaseTypeName}_{specType.BaseTypeName}";
         return specType with {
             BaseTypeName = combinedBaseName,
-            TypeArguments = ImmutableList<TypeMetadata>.Empty
+            TypeArguments = EquatableList<TypeMetadata>.Empty
         };
     }
 }

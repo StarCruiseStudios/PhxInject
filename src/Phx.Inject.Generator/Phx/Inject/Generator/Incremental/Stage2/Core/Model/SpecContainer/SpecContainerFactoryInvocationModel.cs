@@ -13,7 +13,7 @@ using Phx.Inject.Generator.Incremental.Util;
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 
 internal record SpecContainerFactoryInvocationModel(
-    IReadOnlyList<SpecContainerFactorySingleInvocationModel> FactoryInvocationDefs,
+    EquatableList<SpecContainerFactorySingleInvocationModel> FactoryInvocationDefs,
     QualifiedTypeMetadata FactoryReturnType,
     TypeMetadata? RuntimeFactoryProvidedType,
     GeneratorIgnored<Location> Location
