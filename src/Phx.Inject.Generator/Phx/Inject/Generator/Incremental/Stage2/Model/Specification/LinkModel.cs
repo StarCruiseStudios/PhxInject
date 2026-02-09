@@ -11,10 +11,10 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
 namespace Phx.Inject.Generator.Incremental.Stage2.Model.Specification;
 
 internal record LinkModel(
-    QualifiedTypeMetadata Input,
-    QualifiedTypeMetadata Output,
+    TypeMetadata Input,
+    TypeMetadata Output,
     string? InputLabel,
     string? OutputLabel,
-    IQualifierMetadata? InputQualifier,
-    IQualifierMetadata? OutputQualifier
+    TypeMetadata? InputQualifier,
+    TypeMetadata? OutputQualifier
 );

@@ -13,5 +13,5 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Model.Injector;
 internal record ChildProviderModel(
     string ChildProviderMethodName,
     TypeMetadata ChildInjectorType,
-    IEnumerable<QualifiedTypeMetadata> Parameters
+    IEnumerable<TypeMetadata> Parameters
 );
