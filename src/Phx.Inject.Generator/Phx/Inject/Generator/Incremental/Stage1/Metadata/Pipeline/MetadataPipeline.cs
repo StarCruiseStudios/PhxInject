@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Auto;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Settings;
@@ -20,13 +21,13 @@ using static Phx.Inject.Common.Util.StringBuilderUtil;
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 
 internal record MetadataPipelineOutput(
-    IncrementalValueProvider<PhxInjectSettingsMetadata> PhxInjectSettingsPipelineSegment,
-    IncrementalValuesProvider<InjectorInterfaceMetadata> InjectorInterfacePipelineSegment,
-    IncrementalValuesProvider<InjectorDependencyInterfaceMetadata> InjectorDependencyPipelineSegment,
-    IncrementalValuesProvider<SpecClassMetadata> SpecClassPipelineSegment,
-    IncrementalValuesProvider<SpecInterfaceMetadata> SpecInterfacePipelineSegment,
-    IncrementalValuesProvider<AutoFactoryMetadata> AutoFactoryPipelineSegment,
-    IncrementalValuesProvider<AutoBuilderMetadata> AutoBuilderPipelineSegment
+    IncrementalValueProvider<Result<PhxInjectSettingsMetadata>> PhxInjectSettingsPipelineSegment,
+    IncrementalValuesProvider<Result<InjectorInterfaceMetadata>> InjectorInterfacePipelineSegment,
+    IncrementalValuesProvider<Result<InjectorDependencyInterfaceMetadata>> InjectorDependencyPipelineSegment,
+    IncrementalValuesProvider<Result<SpecClassMetadata>> SpecClassPipelineSegment,
+    IncrementalValuesProvider<Result<SpecInterfaceMetadata>> SpecInterfacePipelineSegment,
+    IncrementalValuesProvider<Result<AutoFactoryMetadata>> AutoFactoryPipelineSegment,
+    IncrementalValuesProvider<Result<AutoBuilderMetadata>> AutoBuilderPipelineSegment
 );
 
 internal class MetadataPipeline(
@@ -92,18 +93,18 @@ internal static class IncrementalGeneratorInitializationContextExtensions {
                 var source = BuildString(b => {
                     b.AppendLine($"namespace Phx.Inject.Generator.Incremental.Metadata;");
                     b.AppendLine();
-                    b.AppendLine($"class Generated{injector.InjectorInterfaceType.BaseTypeName} {{");
-                    foreach (var provider in injector.Providers) {
+                    b.AppendLine($"class Generated{injector.Value.InjectorInterfaceType.BaseTypeName} {{");
+                    foreach (var provider in injector.Value.Providers) {
                         b.AppendLine(
                             $"  // Provider: {provider.ProvidedType} {provider.ProviderMethodName}");
                     }
 
-                    foreach (var activator in injector.Activators) {
+                    foreach (var activator in injector.Value.Activators) {
                         b.AppendLine(
                             $"  // Activator: {activator.ActivatedType} {activator.ActivatorMethodName}");
                     }
 
-                    foreach (var childProvider in injector.ChildProviders) {
+                    foreach (var childProvider in injector.Value.ChildProviders) {
                         b.Append(
                             $"  // ChildProvider: {childProvider.ChildInjectorType} {childProvider.ChildProviderMethodName}(");
                         b.Append(string.Join(", ", childProvider.Parameters));
@@ -113,7 +114,7 @@ internal static class IncrementalGeneratorInitializationContextExtensions {
                     b.AppendLine("}");
                 });
                 sourceProductionContext.AddSource(
-                    $"Metadata\\Generated{injector.InjectorInterfaceType.NamespacedBaseTypeName}.cs",
+                    $"Metadata\\Generated{injector.Value.InjectorInterfaceType.NamespacedBaseTypeName}.cs",
                     source);
             });
         context.RegisterSourceOutput(output.InjectorDependencyPipelineSegment,
@@ -121,18 +122,18 @@ internal static class IncrementalGeneratorInitializationContextExtensions {
                 var source = BuildString(b => {
                     b.AppendLine($"namespace Phx.Inject.Generator.Incremental.Metadata;");
                     b.AppendLine();
-                    b.AppendLine($"class Generated{injectorDependency.InjectorDependencyInterfaceType.BaseTypeName} {{");
-                    foreach (var factoryMethod in injectorDependency.FactoryMethods) {
+                    b.AppendLine($"class Generated{injectorDependency.Value.InjectorDependencyInterfaceType.BaseTypeName} {{");
+                    foreach (var factoryMethod in injectorDependency.Value.FactoryMethods) {
                         b.Append($"  // FactoryMethod: {factoryMethod.FactoryReturnType} {factoryMethod.FactoryMethodName}(");
                         b.Append(string.Join(", ", factoryMethod.Parameters));
                         b.AppendLine(")");
                     }
-                    foreach (var factoryProperty in injectorDependency.FactoryProperties) {
+                    foreach (var factoryProperty in injectorDependency.Value.FactoryProperties) {
                         b.AppendLine($"  // FactoryProperty: {factoryProperty.FactoryReturnType} {factoryProperty.FactoryPropertyName}");
                     }
                     b.AppendLine("}");
                 });
-                sourceProductionContext.AddSource($"Metadata\\Generated{injectorDependency.InjectorDependencyInterfaceType.NamespacedBaseTypeName}.cs",
+                sourceProductionContext.AddSource($"Metadata\\Generated{injectorDependency.Value.InjectorDependencyInterfaceType.NamespacedBaseTypeName}.cs",
                     source);
             });
         context.RegisterSourceOutput(output.SpecClassPipelineSegment,
@@ -140,36 +141,36 @@ internal static class IncrementalGeneratorInitializationContextExtensions {
                 var source = BuildString(b => {
                     b.AppendLine($"namespace Phx.Inject.Generator.Incremental.Metadata;");
                     b.AppendLine();
-                    b.AppendLine($"class Generated{specClass.SpecType.BaseTypeName} {{");
-                    foreach (var factoryMethod in specClass.FactoryMethods) {
+                    b.AppendLine($"class Generated{specClass.Value.SpecType.BaseTypeName} {{");
+                    foreach (var factoryMethod in specClass.Value.FactoryMethods) {
                         b.Append($"  // FactoryMethod: {factoryMethod.FactoryReturnType} {factoryMethod.FactoryMethodName}(");
                         b.Append(string.Join(", ", factoryMethod.Parameters));
                         b.AppendLine(")");
                     }
-                    foreach (var factoryProperty in specClass.FactoryProperties) {
+                    foreach (var factoryProperty in specClass.Value.FactoryProperties) {
                         b.AppendLine($"  // FactoryProperty: {factoryProperty.FactoryReturnType} {factoryProperty.FactoryPropertyName}");
                     }
-                    foreach (var factoryReference in specClass.FactoryReferences) {
+                    foreach (var factoryReference in specClass.Value.FactoryReferences) {
                         b.Append($"  // FactoryReference: {factoryReference.FactoryReturnType} {factoryReference.FactoryReferenceName}(");
                         b.Append(string.Join(", ", factoryReference.Parameters));
                         b.AppendLine(")");
                     }
-                    foreach (var builderMethod in specClass.BuilderMethods) {
+                    foreach (var builderMethod in specClass.Value.BuilderMethods) {
                         b.Append($"  // BuilderMethod: {builderMethod.BuiltType} {builderMethod.BuilderMethodName}(");
                         b.Append(string.Join(", ", builderMethod.Parameters));
                         b.AppendLine(")");
                     }
-                    foreach (var builderReference in specClass.BuilderReferences) {
+                    foreach (var builderReference in specClass.Value.BuilderReferences) {
                         b.Append($"  // BuilderReference: {builderReference.BuiltType} {builderReference.BuilderReferenceName}(");
                         b.Append(string.Join(", ", builderReference.Parameters));
                         b.AppendLine(")");
                     }
-                    foreach (var link in specClass.Links) {
+                    foreach (var link in specClass.Value.Links) {
                         b.AppendLine($"  // Link: [{link.InputLabel ?? link.InputQualifier?.ToString() ?? ""}]{link.Input} -> [{link.OutputLabel ?? link.OutputQualifier?.ToString() ?? ""}]{link.Output}");
                     }
                     b.AppendLine("}");
                 });
-                sourceProductionContext.AddSource($"Metadata\\Generated{specClass.SpecType.NamespacedBaseTypeName}.cs",
+                sourceProductionContext.AddSource($"Metadata\\Generated{specClass.Value.SpecType.NamespacedBaseTypeName}.cs",
                     source);
             });
         context.RegisterSourceOutput(output.SpecInterfacePipelineSegment,
@@ -177,36 +178,36 @@ internal static class IncrementalGeneratorInitializationContextExtensions {
                 var source = BuildString(b => {
                     b.AppendLine($"namespace Phx.Inject.Generator.Incremental.Metadata;");
                     b.AppendLine();
-                    b.AppendLine($"class Generated{specInterface.SpecInterfaceType.BaseTypeName} {{");
-                    foreach (var factoryMethod in specInterface.FactoryMethods) {
+                    b.AppendLine($"class Generated{specInterface.Value.SpecInterfaceType.BaseTypeName} {{");
+                    foreach (var factoryMethod in specInterface.Value.FactoryMethods) {
                         b.Append($"  // FactoryMethod: {factoryMethod.FactoryReturnType} {factoryMethod.FactoryMethodName}(");
                         b.Append(string.Join(", ", factoryMethod.Parameters));
                         b.AppendLine(")");
                     }
-                    foreach (var factoryProperty in specInterface.FactoryProperties) {
+                    foreach (var factoryProperty in specInterface.Value.FactoryProperties) {
                         b.AppendLine($"  // FactoryProperty: {factoryProperty.FactoryReturnType} {factoryProperty.FactoryPropertyName}");
                     }
-                    foreach (var factoryReference in specInterface.FactoryReferences) {
+                    foreach (var factoryReference in specInterface.Value.FactoryReferences) {
                         b.Append($"  // FactoryReference: {factoryReference.FactoryReturnType} {factoryReference.FactoryReferenceName}(");
                         b.Append(string.Join(", ", factoryReference.Parameters));
                         b.AppendLine(")");
                     }
-                    foreach (var builderMethod in specInterface.BuilderMethods) {
+                    foreach (var builderMethod in specInterface.Value.BuilderMethods) {
                         b.Append($"  // BuilderMethod: {builderMethod.BuiltType} {builderMethod.BuilderMethodName}(");
                         b.Append(string.Join(", ", builderMethod.Parameters));
                         b.AppendLine(")");
                     }
-                    foreach (var builderReference in specInterface.BuilderReferences) {
+                    foreach (var builderReference in specInterface.Value.BuilderReferences) {
                         b.Append($"  // BuilderReference: {builderReference.BuiltType} {builderReference.BuilderReferenceName}(");
                         b.Append(string.Join(", ", builderReference.Parameters));
                         b.AppendLine(")");
                     }
-                    foreach (var link in specInterface.Links) {
+                    foreach (var link in specInterface.Value.Links) {
                         b.AppendLine($"  // Link: [{link.InputLabel ?? link.InputQualifier?.ToString() ?? ""}]{link.Input} -> [{link.OutputLabel ?? link.OutputQualifier?.ToString() ?? ""}]{link.Output}");
                     }
                     b.AppendLine("}");
                 });
-                sourceProductionContext.AddSource($"Metadata\\Generated{specInterface.SpecInterfaceType.NamespacedBaseTypeName}.cs",
+                sourceProductionContext.AddSource($"Metadata\\Generated{specInterface.Value.SpecInterfaceType.NamespacedBaseTypeName}.cs",
                     source);
             });
         context.RegisterSourceOutput(output.AutoFactoryPipelineSegment,
@@ -214,16 +215,16 @@ internal static class IncrementalGeneratorInitializationContextExtensions {
                 var source = BuildString(b => {
                     b.AppendLine($"namespace Phx.Inject.Generator.Incremental.Metadata;");
                     b.AppendLine();
-                    b.AppendLine($"class Generated{autoFactory.AutoFactoryType.TypeMetadata.BaseTypeName} {{");
+                    b.AppendLine($"class Generated{autoFactory.Value.AutoFactoryType.TypeMetadata.BaseTypeName} {{");
                     b.Append("  // Constructor(");
-                    b.Append(string.Join(", ", autoFactory.Parameters));
+                    b.Append(string.Join(", ", autoFactory.Value.Parameters));
                     b.AppendLine(")");
-                    foreach (var requiredProperty in autoFactory.RequiredProperties) {
+                    foreach (var requiredProperty in autoFactory.Value.RequiredProperties) {
                         b.AppendLine($"  // RequiredProperty: {requiredProperty.RequiredPropertyType} {requiredProperty.RequiredPropertyName}");
                     }
                     b.AppendLine("}");
                 });
-                sourceProductionContext.AddSource($"Metadata\\Generated{autoFactory.AutoFactoryType.TypeMetadata.NamespacedBaseTypeName}.cs",
+                sourceProductionContext.AddSource($"Metadata\\Generated{autoFactory.Value.AutoFactoryType.TypeMetadata.NamespacedBaseTypeName}.cs",
                     source);
             });
         context.RegisterSourceOutput(output.AutoBuilderPipelineSegment,
@@ -231,13 +232,13 @@ internal static class IncrementalGeneratorInitializationContextExtensions {
                 var source = BuildString(b => {
                     b.AppendLine($"namespace Phx.Inject.Generator.Incremental.Metadata;");
                     b.AppendLine();
-                    b.AppendLine($"class Generated{autoBuilder.BuiltType.TypeMetadata.BaseTypeName}{autoBuilder.AutoBuilderMethodName} {{");
-                    b.Append($"  // BuilderMethod: {autoBuilder.BuiltType} {autoBuilder.AutoBuilderMethodName}(");
-                    b.Append(string.Join(", ", autoBuilder.Parameters));
+                    b.AppendLine($"class Generated{autoBuilder.Value.BuiltType.TypeMetadata.BaseTypeName}{autoBuilder.Value.AutoBuilderMethodName} {{");
+                    b.Append($"  // BuilderMethod: {autoBuilder.Value.BuiltType} {autoBuilder.Value.AutoBuilderMethodName}(");
+                    b.Append(string.Join(", ", autoBuilder.Value.Parameters));
                     b.AppendLine(")");
                     b.AppendLine("}");
                 });
-                sourceProductionContext.AddSource($"Metadata\\Generated{autoBuilder.BuiltType.TypeMetadata.NamespacedBaseTypeName}{autoBuilder.AutoBuilderMethodName}.cs",
+                sourceProductionContext.AddSource($"Metadata\\Generated{autoBuilder.Value.BuiltType.TypeMetadata.NamespacedBaseTypeName}{autoBuilder.Value.AutoBuilderMethodName}.cs",
                     source);
             });
 

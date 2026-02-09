@@ -9,6 +9,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
@@ -36,7 +37,7 @@ internal class InjectorInterfacePipeline(
         InjectorChildProviderTransformer.Instance,
         DependencyAttributeTransformer.Instance);
     
-    public IncrementalValuesProvider<InjectorInterfaceMetadata> Select(SyntaxValueProvider syntaxProvider) {
+    public IncrementalValuesProvider<Result<InjectorInterfaceMetadata>> Select(SyntaxValueProvider syntaxProvider) {
         return syntaxProvider.ForAttributeWithMetadataName(
             InjectorAttributeMetadata.AttributeClassName,
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
@@ -73,7 +74,7 @@ internal class InjectorInterfacePipeline(
                     injectorAttributeMetadata,
                     dependencyAttributeMetadata,
                     targetSymbol.GetLocationOrDefault().GeneratorIgnored()
-                );
+                ).Result();
             });
     }
 }

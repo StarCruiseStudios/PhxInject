@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Settings;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
@@ -22,17 +23,17 @@ internal class PhxInjectSettingsPipeline(
         NoopCodeElementValidator.Instance,
         PhxInjectAttributeTransformer.Instance);
 
-    public IncrementalValueProvider<PhxInjectSettingsMetadata> Select(SyntaxValueProvider syntaxProvider) {
+    public IncrementalValueProvider<Result<PhxInjectSettingsMetadata>> Select(SyntaxValueProvider syntaxProvider) {
         return syntaxProvider.ForAttributeWithMetadataName<PhxInjectAttributeMetadata>(
             PhxInjectAttributeMetadata.AttributeClassName,
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => phxInjectAttributeTransformer.Transform(context.TargetSymbol))
             .Select((attributeMetadata, _) => new PhxInjectSettingsMetadata(attributeMetadata))
             .Collect()
-            .Select((settings, cancellationToken) => settings.Length switch {
+            .Select((settings, _) => (settings.Length switch {
                 0 => new PhxInjectSettingsMetadata(null),
                 1 => settings[0],
                 _ => throw new InvalidOperationException("Only one PhxInject attribute is allowed per assembly.")
-            });
+            }).Result());
     }
 }

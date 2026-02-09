@@ -9,6 +9,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Auto;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
@@ -32,7 +33,7 @@ internal class AutoBuilderPipeline(
         AutoBuilderAttributeTransformer.Instance,
         QualifierTransformer.Instance);
     
-    public IncrementalValuesProvider<AutoBuilderMetadata> Select(SyntaxValueProvider syntaxProvider) {
+    public IncrementalValuesProvider<Result<AutoBuilderMetadata>> Select(SyntaxValueProvider syntaxProvider) {
         return syntaxProvider.ForAttributeWithMetadataName(
             AutoBuilderAttributeMetadata.AttributeClassName,
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
@@ -66,7 +67,7 @@ internal class AutoBuilderPipeline(
                     parameters,
                     autoBuilderAttributeMetadata,
                     targetSymbol.GetLocationOrDefault().GeneratorIgnored()
-                );
+                ).Result();
             });
     }
 }

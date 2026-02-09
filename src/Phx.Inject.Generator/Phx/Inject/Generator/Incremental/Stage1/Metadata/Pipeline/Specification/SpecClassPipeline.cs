@@ -9,6 +9,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
@@ -41,7 +42,7 @@ internal class SpecClassPipeline(
         SpecBuilderReferenceTransformer.Instance,
         LinkAttributeTransformer.Instance);
     
-    public IncrementalValuesProvider<SpecClassMetadata> Select(SyntaxValueProvider syntaxProvider) {
+    public IncrementalValuesProvider<Result<SpecClassMetadata>> Select(SyntaxValueProvider syntaxProvider) {
         return syntaxProvider.ForAttributeWithMetadataName(
             SpecificationAttributeMetadata.AttributeClassName,
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
@@ -102,7 +103,7 @@ internal class SpecClassPipeline(
                     links,
                     specificationAttributeMetadata,
                     targetSymbol.GetLocationOrDefault().GeneratorIgnored()
-                );
+                ).Result();
             });
     }
 }
