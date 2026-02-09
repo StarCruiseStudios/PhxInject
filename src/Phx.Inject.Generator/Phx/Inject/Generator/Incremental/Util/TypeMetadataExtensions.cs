@@ -7,7 +7,7 @@
 // -----------------------------------------------------------------------------
 
 using System.Collections.Immutable;
-using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 
 namespace Phx.Inject.Generator.Incremental.Util;
 
