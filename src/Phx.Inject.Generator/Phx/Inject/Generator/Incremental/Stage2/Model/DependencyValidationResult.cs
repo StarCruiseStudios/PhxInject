@@ -22,6 +22,9 @@ internal record DependencyValidationResult(
     }
     
     public static DependencyValidationResult Invalid(IReadOnlyList<MissingDependency> missingDependencies) {
+        if (missingDependencies == null || missingDependencies.Count == 0) {
+            throw new ArgumentException("Invalid result must have at least one missing dependency", nameof(missingDependencies));
+        }
         return new DependencyValidationResult(false, missingDependencies);
     }
 }
@@ -31,5 +34,19 @@ internal record DependencyValidationResult(
 /// </summary>
 internal record MissingDependency(
     QualifiedTypeMetadata RequiredType,
-    IProvider RequiredBy
-);
+    IProvider? RequiredBy
+) {
+    /// <summary>
+    /// Creates a MissingDependency for a type required by a specific provider.
+    /// </summary>
+    public static MissingDependency FromProvider(QualifiedTypeMetadata requiredType, IProvider requiredBy) {
+        return new MissingDependency(requiredType, requiredBy);
+    }
+    
+    /// <summary>
+    /// Creates a MissingDependency for a type that is directly required (not by a specific provider).
+    /// </summary>
+    public static MissingDependency FromRequirement(QualifiedTypeMetadata requiredType) {
+        return new MissingDependency(requiredType, null);
+    }
+}

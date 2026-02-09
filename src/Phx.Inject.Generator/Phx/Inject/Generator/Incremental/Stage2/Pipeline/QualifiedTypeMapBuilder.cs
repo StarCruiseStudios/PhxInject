@@ -23,74 +23,70 @@ internal static class QualifiedTypeMapBuilder {
     /// Builds a provider map from specification class metadata.
     /// </summary>
     public static QualifiedTypeProviderMap BuildFromSpecification(SpecClassMetadata specMetadata) {
-        var map = new QualifiedTypeProviderMap();
-        
-        // Add factory methods
-        foreach (var factoryMethod in specMetadata.FactoryMethods) {
-            map.AddProvider(new SpecFactoryMethodProvider(factoryMethod));
-        }
-        
-        // Add factory properties
-        foreach (var factoryProperty in specMetadata.FactoryProperties) {
-            map.AddProvider(new SpecFactoryPropertyProvider(factoryProperty));
-        }
-        
-        // Add factory references
-        foreach (var factoryReference in specMetadata.FactoryReferences) {
-            map.AddProvider(new SpecFactoryReferenceProvider(factoryReference));
-        }
-        
-        // Add builder methods
-        foreach (var builderMethod in specMetadata.BuilderMethods) {
-            map.AddProvider(new SpecBuilderMethodProvider(builderMethod));
-        }
-        
-        // Add builder references
-        foreach (var builderReference in specMetadata.BuilderReferences) {
-            map.AddProvider(new SpecBuilderReferenceProvider(builderReference));
-        }
-        
-        // Add links
-        foreach (var link in specMetadata.Links) {
-            AddLink(map, link);
-        }
-        
-        return map;
+        return BuildFromSpecificationCommon(
+            specMetadata.FactoryMethods,
+            specMetadata.FactoryProperties,
+            specMetadata.FactoryReferences,
+            specMetadata.BuilderMethods,
+            specMetadata.BuilderReferences,
+            specMetadata.Links
+        );
     }
     
     /// <summary>
     /// Builds a provider map from specification interface metadata.
     /// </summary>
     public static QualifiedTypeProviderMap BuildFromSpecification(SpecInterfaceMetadata specMetadata) {
+        return BuildFromSpecificationCommon(
+            specMetadata.FactoryMethods,
+            specMetadata.FactoryProperties,
+            specMetadata.FactoryReferences,
+            specMetadata.BuilderMethods,
+            specMetadata.BuilderReferences,
+            specMetadata.Links
+        );
+    }
+    
+    /// <summary>
+    /// Common logic for building provider maps from specification metadata.
+    /// </summary>
+    private static QualifiedTypeProviderMap BuildFromSpecificationCommon(
+        IEnumerable<SpecFactoryMethodMetadata> factoryMethods,
+        IEnumerable<SpecFactoryPropertyMetadata> factoryProperties,
+        IEnumerable<SpecFactoryReferenceMetadata> factoryReferences,
+        IEnumerable<SpecBuilderMethodMetadata> builderMethods,
+        IEnumerable<SpecBuilderReferenceMetadata> builderReferences,
+        IEnumerable<LinkAttributeMetadata> links) {
+        
         var map = new QualifiedTypeProviderMap();
         
         // Add factory methods
-        foreach (var factoryMethod in specMetadata.FactoryMethods) {
+        foreach (var factoryMethod in factoryMethods) {
             map.AddProvider(new SpecFactoryMethodProvider(factoryMethod));
         }
         
         // Add factory properties
-        foreach (var factoryProperty in specMetadata.FactoryProperties) {
+        foreach (var factoryProperty in factoryProperties) {
             map.AddProvider(new SpecFactoryPropertyProvider(factoryProperty));
         }
         
         // Add factory references
-        foreach (var factoryReference in specMetadata.FactoryReferences) {
+        foreach (var factoryReference in factoryReferences) {
             map.AddProvider(new SpecFactoryReferenceProvider(factoryReference));
         }
         
         // Add builder methods
-        foreach (var builderMethod in specMetadata.BuilderMethods) {
+        foreach (var builderMethod in builderMethods) {
             map.AddProvider(new SpecBuilderMethodProvider(builderMethod));
         }
         
         // Add builder references
-        foreach (var builderReference in specMetadata.BuilderReferences) {
+        foreach (var builderReference in builderReferences) {
             map.AddProvider(new SpecBuilderReferenceProvider(builderReference));
         }
         
         // Add links
-        foreach (var link in specMetadata.Links) {
+        foreach (var link in links) {
             AddLink(map, link);
         }
         

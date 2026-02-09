@@ -25,7 +25,7 @@ internal static class DependencyGraphValidator {
         foreach (var provider in providerMap.GetAllProviders()) {
             foreach (var dependency in provider.Dependencies) {
                 if (!providerMap.HasProvider(dependency)) {
-                    missingDependencies.Add(new MissingDependency(dependency, provider));
+                    missingDependencies.Add(MissingDependency.FromProvider(dependency, provider));
                 }
             }
         }
@@ -48,8 +48,7 @@ internal static class DependencyGraphValidator {
         
         foreach (var requiredType in requiredTypes) {
             if (!providerMap.HasProvider(requiredType)) {
-                // Create a synthetic provider to represent the requirement
-                missingDependencies.Add(new MissingDependency(requiredType, null!));
+                missingDependencies.Add(MissingDependency.FromRequirement(requiredType));
             }
         }
         
