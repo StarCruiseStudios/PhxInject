@@ -26,11 +26,12 @@ internal static class Stage2ModelTransformer {
         InjectorInterfaceMetadata injectorMetadata,
         IEnumerable<SpecClassMetadata> specClasses,
         IEnumerable<SpecInterfaceMetadata> specInterfaces,
+        IEnumerable<InjectorDependencyInterfaceMetadata> injectorDependencies,
         IEnumerable<AutoFactoryMetadata> autoFactories,
         IEnumerable<AutoBuilderMetadata> autoBuilders) {
         
         // Build the provider map from all sources
-        var providerMap = BuildProviderMap(specClasses, specInterfaces, autoFactories, autoBuilders);
+        var providerMap = BuildProviderMap(specClasses, specInterfaces, injectorDependencies, autoFactories, autoBuilders);
         
         // Extract required types from the injector
         var requiredTypes = ExtractRequiredTypes(injectorMetadata);
@@ -49,6 +50,7 @@ internal static class Stage2ModelTransformer {
     private static QualifiedTypeProviderMap BuildProviderMap(
         IEnumerable<SpecClassMetadata> specClasses,
         IEnumerable<SpecInterfaceMetadata> specInterfaces,
+        IEnumerable<InjectorDependencyInterfaceMetadata> injectorDependencies,
         IEnumerable<AutoFactoryMetadata> autoFactories,
         IEnumerable<AutoBuilderMetadata> autoBuilders) {
         
@@ -64,6 +66,12 @@ internal static class Stage2ModelTransformer {
         foreach (var specInterface in specInterfaces) {
             var specMap = QualifiedTypeMapBuilder.BuildFromSpecification(specInterface);
             map = QualifiedTypeMapBuilder.Merge(map, specMap);
+        }
+        
+        // Add all providers from injector dependency interfaces
+        foreach (var injectorDependency in injectorDependencies) {
+            var depMap = QualifiedTypeMapBuilder.BuildFromInjectorDependency(injectorDependency);
+            map = QualifiedTypeMapBuilder.Merge(map, depMap);
         }
         
         // Add auto factories

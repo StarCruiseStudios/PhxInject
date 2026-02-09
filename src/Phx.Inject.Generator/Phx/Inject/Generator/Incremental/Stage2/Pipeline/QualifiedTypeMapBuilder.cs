@@ -6,8 +6,10 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Auto;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Specification;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
 using Phx.Inject.Generator.Incremental.Stage2.Model;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Pipeline;
@@ -48,6 +50,11 @@ internal static class QualifiedTypeMapBuilder {
             map.AddProvider(new SpecBuilderReferenceProvider(builderReference));
         }
         
+        // Add links
+        foreach (var link in specMetadata.Links) {
+            AddLink(map, link);
+        }
+        
         return map;
     }
     
@@ -82,7 +89,58 @@ internal static class QualifiedTypeMapBuilder {
             map.AddProvider(new SpecBuilderReferenceProvider(builderReference));
         }
         
+        // Add links
+        foreach (var link in specMetadata.Links) {
+            AddLink(map, link);
+        }
+        
         return map;
+    }
+    
+    /// <summary>
+    /// Builds a provider map from injector dependency interface metadata.
+    /// </summary>
+    public static QualifiedTypeProviderMap BuildFromInjectorDependency(InjectorDependencyInterfaceMetadata injectorDependency) {
+        var map = new QualifiedTypeProviderMap();
+        
+        // Add factory methods
+        foreach (var factoryMethod in injectorDependency.FactoryMethods) {
+            map.AddProvider(new SpecFactoryMethodProvider(factoryMethod));
+        }
+        
+        // Add factory properties
+        foreach (var factoryProperty in injectorDependency.FactoryProperties) {
+            map.AddProvider(new SpecFactoryPropertyProvider(factoryProperty));
+        }
+        
+        return map;
+    }
+    
+    /// <summary>
+    /// Adds a link to the provider map.
+    /// </summary>
+    public static void AddLink(QualifiedTypeProviderMap map, LinkAttributeMetadata link) {
+        // Create qualified types for input and output based on the link metadata
+        var inputQualifier = link.InputQualifier != null
+            ? (IQualifierMetadata)new CustomQualifierMetadata(
+                new QualifierAttributeMetadata(link.InputQualifier, link.AttributeMetadata))
+            : link.InputLabel != null
+                ? new LabelQualifierMetadata(
+                    new LabelAttributeMetadata(link.InputLabel, link.AttributeMetadata))
+                : NoQualifierMetadata.Instance;
+        
+        var outputQualifier = link.OutputQualifier != null
+            ? (IQualifierMetadata)new CustomQualifierMetadata(
+                new QualifierAttributeMetadata(link.OutputQualifier, link.AttributeMetadata))
+            : link.OutputLabel != null
+                ? new LabelQualifierMetadata(
+                    new LabelAttributeMetadata(link.OutputLabel, link.AttributeMetadata))
+                : NoQualifierMetadata.Instance;
+        
+        var inputType = new QualifiedTypeMetadata(link.Input, inputQualifier);
+        var outputType = new QualifiedTypeMetadata(link.Output, outputQualifier);
+        
+        map.AddProvider(new LinkProvider(link, inputType, outputType));
     }
     
     /// <summary>
