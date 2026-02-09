@@ -8,11 +8,19 @@
 
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Types;
 
-namespace Phx.Inject.Generator.Incremental.Stage2.Model.Injector;
+namespace Phx.Inject.Generator.Incremental.Stage2.Model;
 
+/// <summary>
+/// Domain model representing an injector.
+/// Combines data from InjectorInterface, InjectorAttribute, DependencyAttribute, and related specifications.
+/// </summary>
 internal record InjectorModel(
     TypeMetadata InjectorInterfaceType,
+    TypeMetadata InjectorImplementationType,
+    IEnumerable<TypeMetadata> SpecificationTypes,
+    IEnumerable<TypeMetadata> ConstructedSpecificationTypes,
+    TypeMetadata? DependencyInterfaceType,
     IEnumerable<ProviderModel> Providers,
     IEnumerable<ActivatorModel> Activators,
-    IEnumerable<ChildProviderModel> ChildProviders
+    IEnumerable<ChildInjectorModel> ChildInjectors
 );
