@@ -17,6 +17,8 @@ using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Auto;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Settings;
 using Phx.Inject.Generator.Incremental.Stage1.Pipeline.Specification;
+using Phx.Inject.Generator.Incremental.Stage2.Model;
+using Phx.Inject.Generator.Incremental.Stage2.Pipeline;
 
 namespace Phx.Inject.Generator.Incremental;
 
@@ -106,6 +108,25 @@ internal class IncrementalSourceGenerator(
             (sourceProductionContext, specClass) => {
                 var output = new StringBuilder();
                 output.AppendLine($"class Generated{specClass.SpecType.BaseTypeName} {{");
+                
+                // Build Stage 2 provider map for this specification
+                var providerMap = QualifiedTypeMapBuilder.BuildFromSpecification(specClass);
+                
+                // Output Stage 2 information
+                output.AppendLine("  // === Stage 2: Provider Map ===");
+                foreach (var providedType in providerMap.GetProvidedTypes()) {
+                    var providers = providerMap.GetProviders(providedType);
+                    output.AppendLine($"  // ProvidedType: {providedType}");
+                    foreach (var provider in providers) {
+                        output.AppendLine($"  //   Provider: {provider.GetType().Name}");
+                        foreach (var dep in provider.Dependencies) {
+                            output.AppendLine($"  //     Requires: {dep}");
+                        }
+                    }
+                }
+                
+                output.AppendLine();
+                output.AppendLine("  // === Stage 1: Raw Metadata ===");
                 foreach (var factoryMethod in specClass.FactoryMethods) {
                     output.Append($"  // FactoryMethod: {factoryMethod.FactoryReturnType} {factoryMethod.FactoryMethodName}(");
                     output.Append(string.Join(", ", factoryMethod.Parameters));
