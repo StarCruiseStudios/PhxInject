@@ -13,18 +13,9 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline.Injector;
 
-internal static class InjectorMapper {
-    public static readonly InjectorMapperInstance Instance = new();
+internal class InjectorMapper {
+    public static readonly InjectorMapper Instance = new();
 
-    public static InjectorModel Map(
-        InjectorInterfaceMetadata metadata,
-        IEnumerable<TypeMetadata>? constructedSpecifications = null
-    ) {
-        return Instance.Map(metadata, constructedSpecifications ?? []);
-    }
-}
-
-internal class InjectorMapperInstance {
     public InjectorModel Map(
         InjectorInterfaceMetadata metadata,
         IEnumerable<TypeMetadata> constructedSpecifications

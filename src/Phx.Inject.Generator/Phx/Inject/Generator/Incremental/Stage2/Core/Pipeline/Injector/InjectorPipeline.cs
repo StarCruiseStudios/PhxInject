@@ -19,6 +19,6 @@ internal class InjectorPipeline {
         IncrementalValuesProvider<InjectorInterfaceMetadata> metadataProvider
     ) {
         return metadataProvider.Select((metadata, _) =>
-            InjectorMapper.Map(metadata, constructedSpecifications: []));
+            InjectorMapper.Instance.Map(metadata, constructedSpecifications: []));
     }
 }

@@ -59,7 +59,7 @@ internal class InjectionContextPipeline {
                     }
                 }
 
-                var injectorModel = InjectorMapper.Map(injectorMetadata, constructedSpecTypes);
+                var injectorModel = InjectorMapper.Instance.Map(injectorMetadata, constructedSpecTypes);
 
                 return new InjectionContextModel(
                     injectorModel,
