@@ -33,11 +33,13 @@ internal class AutoBuilderPipeline(
         AutoBuilderAttributeTransformer.Instance,
         QualifierTransformer.Instance);
     
-    public IncrementalValuesProvider<Result<AutoBuilderMetadata>> Select(SyntaxValueProvider syntaxProvider) {
+    public IncrementalValuesProvider<Result<AutoBuilderMetadata>> Select(
+        SyntaxValueProvider syntaxProvider
+    ) {
         return syntaxProvider.ForAttributeWithMetadataName(
             AutoBuilderAttributeMetadata.AttributeClassName,
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
-            (context, _) => {
+            (context, _) => DiagnosticsRecorder.Capture(diagnostics => {
                 var targetSymbol = (IMethodSymbol)context.TargetSymbol;
                 var autoBuilderAttributeMetadata =
                     autoBuilderAttributeTransformer.Transform(targetSymbol);
@@ -67,7 +69,7 @@ internal class AutoBuilderPipeline(
                     parameters,
                     autoBuilderAttributeMetadata,
                     targetSymbol.GetLocationOrDefault().GeneratorIgnored()
-                ).Result();
-            });
+                );
+            }));
     }
 }

@@ -6,12 +6,29 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Diagnostics;
 
 internal record DiagnosticInfo(
-    Incremental.Diagnostics.Diagnostics Diagnostics,
+    DiagnosticType Type,
     string Message,
     LocationInfo? Location
-);
+) {
+    public void Report(SourceProductionContext context) {
+        context.ReportDiagnostic(
+            Diagnostic.Create(
+                new DiagnosticDescriptor(
+                    Type.Id,
+                    Type.Title,
+                    Message,
+                    Type.Category,
+                    Type.Severity,
+                    Type.IsEnabledByDefault
+                ),
+                Location?.ToLocation()
+            )
+        );
+    }
+}

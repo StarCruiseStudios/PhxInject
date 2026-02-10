@@ -36,12 +36,14 @@ internal class InjectorInterfacePipeline(
         InjectorActivatorTransformer.Instance,
         InjectorChildProviderTransformer.Instance,
         DependencyAttributeTransformer.Instance);
-    
-    public IncrementalValuesProvider<Result<InjectorInterfaceMetadata>> Select(SyntaxValueProvider syntaxProvider) {
+
+    public IncrementalValuesProvider<Result<InjectorInterfaceMetadata>> Select(
+        SyntaxValueProvider syntaxProvider
+    ) {
         return syntaxProvider.ForAttributeWithMetadataName(
             InjectorAttributeMetadata.AttributeClassName,
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
-            (context, _) => {
+            (context, _) => DiagnosticsRecorder.Capture(diagnostics => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
                 var injectorAttributeMetadata =
                     injectorAttributeTransformer.Transform(targetSymbol);
@@ -74,7 +76,7 @@ internal class InjectorInterfacePipeline(
                     injectorAttributeMetadata,
                     dependencyAttributeMetadata,
                     targetSymbol.GetLocationOrDefault().GeneratorIgnored()
-                ).Result();
-            });
+                );
+            }));
     }
 }

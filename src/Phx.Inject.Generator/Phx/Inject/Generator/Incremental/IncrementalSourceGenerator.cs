@@ -36,7 +36,12 @@ internal class IncrementalSourceGenerator(
             .Process(metadataPipeline)
             .Print(generatorInitializationContext)
             .Process(corePipeline);
-        
+        generatorInitializationContext.RegisterSourceOutput(output.MetadataPipelineOutput.DiagnosticsPipelineSegment,
+            (context, diagnostics) => {
+                foreach (var diagnosticInfo in diagnostics) {
+                    diagnosticInfo.Report(context);
+                }
+            });
         // generatorInitializationContext.RegisterSourceOutput(injectorPipeline.Combine(phxInjectSettingsPipeline),
         //     (sourceProductionContext, pair) => {
         //         var injector = pair.Left;

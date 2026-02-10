@@ -8,6 +8,7 @@
 
 using System.Collections;
 using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 
 namespace Phx.Inject.Generator.Incremental.Util;
 
@@ -15,6 +16,12 @@ internal sealed class EquatableList<T>(IEnumerable<T> items) : IEquatable<Equata
     public static readonly EquatableList<T> Empty = new(ImmutableList<T>.Empty);
     public static EquatableList<T> Create(IEnumerable<T> items) => new(items);
     public static EquatableList<T> Create(params T[] items) => new(items);
+    public static IncrementalValueProvider<EquatableList<T>> Merge(
+        IncrementalValueProvider<EquatableList<T>> left,
+        IncrementalValueProvider<EquatableList<T>> right
+    ) {
+        return left.Combine(right).Select((pair, _) => pair.Left.Concat(pair.Right).ToEquatableList());
+    }
     
     private readonly ImmutableList<T> items = items.ToImmutableList();
     public int Count => items.Count;

@@ -16,7 +16,9 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Auto;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Settings;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specification;
+using Phx.Inject.Generator.Incremental.Util;
 using static Phx.Inject.Common.Util.StringBuilderUtil;
+using static Phx.Inject.Generator.Incremental.Util.EquatableList<Phx.Inject.Generator.Incremental.Diagnostics.DiagnosticInfo>;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 
@@ -27,7 +29,8 @@ internal record MetadataPipelineOutput(
     IncrementalValuesProvider<Result<SpecClassMetadata>> SpecClassPipelineSegment,
     IncrementalValuesProvider<Result<SpecInterfaceMetadata>> SpecInterfacePipelineSegment,
     IncrementalValuesProvider<Result<AutoFactoryMetadata>> AutoFactoryPipelineSegment,
-    IncrementalValuesProvider<Result<AutoBuilderMetadata>> AutoBuilderPipelineSegment
+    IncrementalValuesProvider<Result<AutoBuilderMetadata>> AutoBuilderPipelineSegment,
+    IncrementalValueProvider<EquatableList<DiagnosticInfo>> DiagnosticsPipelineSegment
 );
 
 internal class MetadataPipeline(
@@ -50,14 +53,41 @@ internal class MetadataPipeline(
     );
     
     public MetadataPipelineOutput Process(IncrementalGeneratorInitializationContext generatorInitializationContext) {
-        var phxInjectSettingsPipelineSegment = phxInjectSettingsPipeline.Select(generatorInitializationContext.SyntaxProvider);
-        var injectorInterfacePipelineSegment = injectorPipeline.Select(generatorInitializationContext.SyntaxProvider);
-        var injectorDependencyPipelineSegment = injectorDependencyPipeline.Select(generatorInitializationContext.SyntaxProvider);
+        var phxInjectSettingsPipelineSegment =
+            phxInjectSettingsPipeline.Select(generatorInitializationContext.SyntaxProvider);
+        var injectorInterfacePipelineSegment =
+            injectorPipeline.Select(generatorInitializationContext.SyntaxProvider);
+        var injectorDependencyPipelineSegment =
+            injectorDependencyPipeline.Select(generatorInitializationContext.SyntaxProvider);
         var specClassPipelineSegment = specClassPipeline.Select(generatorInitializationContext.SyntaxProvider);
-        var specInterfacePipelineSegment = specInterfacePipeline.Select(generatorInitializationContext.SyntaxProvider);
-        var autoFactoryPipelineSegment = autoFactoryPipeline.Select(generatorInitializationContext.SyntaxProvider);
-        var autoBuilderPipelineSegment = autoBuilderPipeline.Select(generatorInitializationContext.SyntaxProvider);
-        
+        var specInterfacePipelineSegment =
+            specInterfacePipeline.Select(generatorInitializationContext.SyntaxProvider);
+        var autoFactoryPipelineSegment =
+            autoFactoryPipeline.Select(generatorInitializationContext.SyntaxProvider);
+        var autoBuilderPipelineSegment =
+            autoBuilderPipeline.Select(generatorInitializationContext.SyntaxProvider);
+
+        var diagnosticPipelineSegment =
+            Merge(
+                Merge(
+                    Merge(
+                        phxInjectSettingsPipelineSegment.SelectDiagnostics(),
+                        injectorInterfacePipelineSegment.SelectDiagnostics()
+                    ),
+                    Merge(
+                        injectorDependencyPipelineSegment.SelectDiagnostics(),
+                        specClassPipelineSegment.SelectDiagnostics()
+                    )
+                ),
+                Merge(
+                    Merge(
+                        specInterfacePipelineSegment.SelectDiagnostics(),
+                        autoFactoryPipelineSegment.SelectDiagnostics()
+                    ),
+                    autoBuilderPipelineSegment.SelectDiagnostics()
+                )
+            );
+
         return new MetadataPipelineOutput(
             phxInjectSettingsPipelineSegment,
             injectorInterfacePipelineSegment,
@@ -65,7 +95,8 @@ internal class MetadataPipeline(
             specClassPipelineSegment,
             specInterfacePipelineSegment,
             autoFactoryPipelineSegment,
-            autoBuilderPipelineSegment
+            autoBuilderPipelineSegment,
+            diagnosticPipelineSegment
         );
     }
 }

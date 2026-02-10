@@ -6,6 +6,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Diagnostics;
@@ -16,8 +17,18 @@ internal static class ResultExtensions {
     public static Result<T> Result<T>(this T value, params DiagnosticInfo[] diagnosticInfo) where T : IEquatable<T>? {
         return new Result<T>(value, diagnosticInfo.ToEquatableList());
     }
-
-    public static Result<T> Result<T>(this T value, IEnumerable<DiagnosticInfo> diagnosticInfo) where T : IEquatable<T>? {
-        return new Result<T>(value, diagnosticInfo.ToEquatableList());
+    public static IncrementalValueProvider<EquatableList<DiagnosticInfo>> SelectDiagnostics<T>(
+        this IncrementalValueProvider<Result<T>> provider
+    ) where T : IEquatable<T>? {
+        return provider.Select((result, _) => result.DiagnosticInfo);
+    }
+    
+    public static IncrementalValueProvider<EquatableList<DiagnosticInfo>> SelectDiagnostics<T>(
+        this IncrementalValuesProvider<Result<T>> provider
+    ) where T : IEquatable<T>? {
+        return provider
+            .SelectMany((result, _) => result.DiagnosticInfo)
+            .Collect()
+            .Select((diagnostics, _) => diagnostics.ToEquatableList());
     }
 }

@@ -10,22 +10,22 @@ using Microsoft.CodeAnalysis;
 
 namespace Phx.Inject.Generator.Incremental.Diagnostics;
 
-internal class Diagnostics {
+internal class DiagnosticType {
     private const string InjectionCategory = "Injection";
     private const string PhxInjectIdPrefix = "PHXINJECT";
-    public static readonly Diagnostics DebugMessage = new(
+    public static readonly DiagnosticType DebugMessage = new(
         PhxInjectIdPrefix + "9000",
         "Debug",
         InjectionCategory,
         DiagnosticSeverity.Info);
     
-    public static readonly Diagnostics UnexpectedError = new(
+    public static readonly DiagnosticType UnexpectedError = new(
         PhxInjectIdPrefix + "0001",
         "An unexpected error occurred.",
         InjectionCategory,
         DiagnosticSeverity.Error);
 
-    public static readonly Diagnostics InternalError = new(
+    public static readonly DiagnosticType InternalError = new(
         PhxInjectIdPrefix + "0002",
         "An internal error occurred while generating injection.",
         InjectionCategory,
@@ -37,7 +37,7 @@ internal class Diagnostics {
     public DiagnosticSeverity Severity { get; }
     public bool IsEnabledByDefault { get; }
 
-    private Diagnostics(
+    private DiagnosticType(
         string id,
         string title,
         string category,
@@ -51,7 +51,7 @@ internal class Diagnostics {
         IsEnabledByDefault = isEnabledByDefault;
     }
         
-    public virtual bool Equals(Diagnostics? other) {
+    public virtual bool Equals(DiagnosticType? other) {
         return other is not null && Id == other.Id;
     }
 

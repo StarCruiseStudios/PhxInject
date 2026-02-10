@@ -41,11 +41,13 @@ internal class AutoFactoryPipeline(
         QualifierTransformer.Instance,
         AutoFactoryRequiredPropertyTransformer.Instance);
     
-    public IncrementalValuesProvider<Result<AutoFactoryMetadata>> Select(SyntaxValueProvider syntaxProvider) {
+    public IncrementalValuesProvider<Result<AutoFactoryMetadata>> Select(
+        SyntaxValueProvider syntaxProvider
+    ) {
         return syntaxProvider.ForAttributeWithMetadataName(
             AutoFactoryAttributeMetadata.AttributeClassName,
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
-            (context, _) => {
+            (context, _) => DiagnosticsRecorder.Capture(diagnostics => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
                 var autoFactoryAttributeMetadata =
                     autoFactoryAttributeTransformer.Transform(targetSymbol);
@@ -85,7 +87,7 @@ internal class AutoFactoryPipeline(
                     requiredProperties,
                     autoFactoryAttributeMetadata,
                     targetSymbol.GetLocationOrDefault().GeneratorIgnored()
-                ).Result();
-            });
+                );
+            }));
     }
 }

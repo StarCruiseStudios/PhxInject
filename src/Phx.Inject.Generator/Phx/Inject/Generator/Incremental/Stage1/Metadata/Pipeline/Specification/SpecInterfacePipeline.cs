@@ -41,11 +41,13 @@ internal class SpecInterfacePipeline(
         SpecBuilderReferenceTransformer.Instance,
         LinkAttributeTransformer.Instance);
     
-    public IncrementalValuesProvider<Result<SpecInterfaceMetadata>> Select(SyntaxValueProvider syntaxProvider) {
+    public IncrementalValuesProvider<Result<SpecInterfaceMetadata>> Select(
+        SyntaxValueProvider syntaxProvider
+    ) {
         return syntaxProvider.ForAttributeWithMetadataName(
             SpecificationAttributeMetadata.AttributeClassName,
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
-            (context, _) => {
+            (context, _) => DiagnosticsRecorder.Capture(diagnostics => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
                 var specificationAttributeMetadata =
                     specificationAttributeTransformer.Transform(targetSymbol);
@@ -102,7 +104,7 @@ internal class SpecInterfacePipeline(
                     links,
                     specificationAttributeMetadata,
                     targetSymbol.GetLocationOrDefault().GeneratorIgnored()
-                ).Result();
-            });
+                );
+            }));
     }
 }
