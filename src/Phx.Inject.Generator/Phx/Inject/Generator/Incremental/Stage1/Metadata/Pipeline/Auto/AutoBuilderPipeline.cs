@@ -34,7 +34,7 @@ internal class AutoBuilderPipeline(
         AutoBuilderAttributeTransformer.Instance,
         QualifierTransformer.Instance);
     
-    public IncrementalValuesProvider<Result<AutoBuilderMetadata>> Select(
+    public IncrementalValuesProvider<IResult<AutoBuilderMetadata>> Select(
         SyntaxValueProvider syntaxProvider
     ) {
         return syntaxProvider.ForAttributeWithMetadataName(
@@ -46,18 +46,11 @@ internal class AutoBuilderPipeline(
                 try {
                     autoBuilderAttributeMetadata = autoBuilderAttributeTransformer.Transform(targetSymbol);
                 } catch (Exception ex) {
-                    diagnostics.Add(new DiagnosticInfo(
+                    throw new GeneratorException(new DiagnosticInfo(
                         Diagnostics.DiagnosticType.UnexpectedError,
                         $"Error transforming AutoBuilder attribute: {ex.Message}",
                         LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
                     ));
-                    var fallbackAttributeMetadata = new AttributeMetadata(
-                        AutoBuilderAttributeMetadata.AttributeClassName,
-                        targetSymbol.ToString(),
-                        targetSymbol.GetLocationOrDefault().GeneratorIgnored(),
-                        targetSymbol.GetLocationOrDefault().GeneratorIgnored()
-                    );
-                    autoBuilderAttributeMetadata = new AutoBuilderAttributeMetadata(fallbackAttributeMetadata);
                 }
 
                 // The built type is the first parameter of the builder method

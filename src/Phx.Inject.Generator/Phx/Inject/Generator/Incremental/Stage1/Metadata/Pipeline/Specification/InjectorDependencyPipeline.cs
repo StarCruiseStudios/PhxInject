@@ -34,7 +34,7 @@ internal class InjectorDependencyPipeline(
         SpecFactoryMethodTransformer.Instance,
         SpecFactoryPropertyTransformer.Instance);
     
-    public IncrementalValuesProvider<Result<InjectorDependencyInterfaceMetadata>> Select(
+    public IncrementalValuesProvider<IResult<InjectorDependencyInterfaceMetadata>> Select(
         SyntaxValueProvider syntaxProvider
     ) {
         return syntaxProvider.ForAttributeWithMetadataName(
@@ -46,18 +46,11 @@ internal class InjectorDependencyPipeline(
                 try {
                     injectorDependencyAttributeMetadata = injectorDependencyAttributeTransformer.Transform(targetSymbol);
                 } catch (Exception ex) {
-                    diagnostics.Add(new DiagnosticInfo(
+                    throw new GeneratorException(new DiagnosticInfo(
                         Diagnostics.DiagnosticType.UnexpectedError,
                         $"Error transforming InjectorDependency attribute: {ex.Message}",
                         LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
                     ));
-                    var fallbackAttributeMetadata = new AttributeMetadata(
-                        InjectorDependencyAttributeMetadata.AttributeClassName,
-                        targetSymbol.ToString(),
-                        targetSymbol.GetLocationOrDefault().GeneratorIgnored(),
-                        targetSymbol.GetLocationOrDefault().GeneratorIgnored()
-                    );
-                    injectorDependencyAttributeMetadata = new InjectorDependencyAttributeMetadata(fallbackAttributeMetadata);
                 }
 
                 var injectorDependencyInterfaceType = targetSymbol.ToTypeModel();

@@ -13,5 +13,5 @@ using Phx.Inject.Generator.Incremental.Util;
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 
 internal interface ISyntaxValuesPipeline<T> where T : ISourceCodeElement, IEquatable<T> {
-    IncrementalValuesProvider<Result<T>> Select(SyntaxValueProvider syntaxProvider);
+    IncrementalValuesProvider<IResult<T>> Select(SyntaxValueProvider syntaxProvider);
 }

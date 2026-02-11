@@ -42,7 +42,7 @@ internal class AutoFactoryPipeline(
         QualifierTransformer.Instance,
         AutoFactoryRequiredPropertyTransformer.Instance);
     
-    public IncrementalValuesProvider<Result<AutoFactoryMetadata>> Select(
+    public IncrementalValuesProvider<IResult<AutoFactoryMetadata>> Select(
         SyntaxValueProvider syntaxProvider
     ) {
         return syntaxProvider.ForAttributeWithMetadataName(
@@ -54,19 +54,11 @@ internal class AutoFactoryPipeline(
                 try {
                     autoFactoryAttributeMetadata = autoFactoryAttributeTransformer.Transform(targetSymbol);
                 } catch (Exception ex) {
-                    diagnostics.Add(new DiagnosticInfo(
+                    throw new GeneratorException(new DiagnosticInfo(
                         Diagnostics.DiagnosticType.UnexpectedError,
                         $"Error transforming AutoFactory attribute: {ex.Message}",
                         LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
                     ));
-                    // Return a minimal AutoFactoryMetadata with default values
-                    var fallbackAttributeMetadata = new AttributeMetadata(
-                        AutoFactoryAttributeMetadata.AttributeClassName,
-                        targetSymbol.ToString(),
-                        targetSymbol.GetLocationOrDefault().GeneratorIgnored(),
-                        targetSymbol.GetLocationOrDefault().GeneratorIgnored()
-                    );
-                    autoFactoryAttributeMetadata = new AutoFactoryAttributeMetadata(FabricationMode.Recurrent, fallbackAttributeMetadata);
                 }
 
                 var autoFactoryType = new QualifiedTypeMetadata(targetSymbol.ToTypeModel(), NoQualifierMetadata.Instance);

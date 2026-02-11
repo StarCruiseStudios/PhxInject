@@ -42,7 +42,7 @@ internal class SpecInterfacePipeline(
         SpecBuilderReferenceTransformer.Instance,
         LinkAttributeTransformer.Instance);
     
-    public IncrementalValuesProvider<Result<SpecInterfaceMetadata>> Select(
+    public IncrementalValuesProvider<IResult<SpecInterfaceMetadata>> Select(
         SyntaxValueProvider syntaxProvider
     ) {
         return syntaxProvider.ForAttributeWithMetadataName(
@@ -54,18 +54,11 @@ internal class SpecInterfacePipeline(
                 try {
                     specificationAttributeMetadata = specificationAttributeTransformer.Transform(targetSymbol);
                 } catch (Exception ex) {
-                    diagnostics.Add(new DiagnosticInfo(
+                    throw new GeneratorException(new DiagnosticInfo(
                         Diagnostics.DiagnosticType.UnexpectedError,
                         $"Error transforming Specification attribute: {ex.Message}",
                         LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
                     ));
-                    var fallbackAttributeMetadata = new AttributeMetadata(
-                        SpecificationAttributeMetadata.AttributeClassName,
-                        targetSymbol.ToString(),
-                        targetSymbol.GetLocationOrDefault().GeneratorIgnored(),
-                        targetSymbol.GetLocationOrDefault().GeneratorIgnored()
-                    );
-                    specificationAttributeMetadata = new SpecificationAttributeMetadata(fallbackAttributeMetadata);
                 }
 
                 var specInterfaceType = targetSymbol.ToTypeModel();
@@ -91,12 +84,11 @@ internal class SpecInterfacePipeline(
                         try {
                             return specFactoryReferenceTransformer.Transform(s);
                         } catch (Exception ex) {
-                            diagnostics.Add(new DiagnosticInfo(
+                            throw new GeneratorException(new DiagnosticInfo(
                                 Diagnostics.DiagnosticType.UnexpectedError,
                                 $"Error transforming factory reference: {ex.Message}",
                                 LocationInfo.CreateFrom(s.GetLocationOrDefault())
                             ));
-                            return null;
                         }
                     })
                     .Concat(fields
@@ -105,17 +97,14 @@ internal class SpecInterfacePipeline(
                             try {
                                 return specFactoryReferenceTransformer.Transform(s);
                             } catch (Exception ex) {
-                                diagnostics.Add(new DiagnosticInfo(
+                                throw new GeneratorException(new DiagnosticInfo(
                                     Diagnostics.DiagnosticType.UnexpectedError,
                                     $"Error transforming factory reference: {ex.Message}",
                                     LocationInfo.CreateFrom(s.GetLocationOrDefault())
                                 ));
-                                return null;
                             }
                         })
                     )
-                    .Where(r => r != null)
-                    .Select(r => r!)
                     .ToImmutableArray();
                 
                 var builderMethods = methods
@@ -129,12 +118,11 @@ internal class SpecInterfacePipeline(
                         try {
                             return specBuilderReferenceTransformer.Transform(s);
                         } catch (Exception ex) {
-                            diagnostics.Add(new DiagnosticInfo(
+                            throw new GeneratorException(new DiagnosticInfo(
                                 Diagnostics.DiagnosticType.UnexpectedError,
                                 $"Error transforming builder reference: {ex.Message}",
                                 LocationInfo.CreateFrom(s.GetLocationOrDefault())
                             ));
-                            return null;
                         }
                     })
                     .Concat(fields
@@ -143,17 +131,14 @@ internal class SpecInterfacePipeline(
                             try {
                                 return specBuilderReferenceTransformer.Transform(s);
                             } catch (Exception ex) {
-                                diagnostics.Add(new DiagnosticInfo(
+                                throw new GeneratorException(new DiagnosticInfo(
                                     Diagnostics.DiagnosticType.UnexpectedError,
                                     $"Error transforming builder reference: {ex.Message}",
                                     LocationInfo.CreateFrom(s.GetLocationOrDefault())
                                 ));
-                                return null;
                             }
                         })
                     )
-                    .Where(r => r != null)
-                    .Select(r => r!)
                     .ToImmutableArray();
                 
                 var links = linkAttributeTransformer.Transform(targetSymbol);
