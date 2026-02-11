@@ -97,7 +97,8 @@ internal class MethodElementValidator(
             case CodeElementAccessibility.Any:
                 break;
             default:
-                throw new InvalidOperationException($"Unknown accessibility value: {requiredAccessibility}.");
+                // Unknown accessibility, treat as invalid
+                return false;
         }
 
         if (returnsVoid != null) {

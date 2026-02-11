@@ -20,7 +20,7 @@ internal static class CodeElementAccessibilityExtensions {
         return accessibility switch {
             CodeElementAccessibility.PublicOrInternal => other is Accessibility.Public or Accessibility.Internal,
             CodeElementAccessibility.Any => true,
-            _ => throw new InvalidOperationException($"Unknown accessibility value: {accessibility}.")
+            _ => false // Unknown accessibility, treat as no match
         };
     }
 }

@@ -6,6 +6,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
@@ -49,8 +50,18 @@ internal class AutoFactoryPipeline(
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => DiagnosticsRecorder.Capture(diagnostics => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
-                var autoFactoryAttributeMetadata =
-                    autoFactoryAttributeTransformer.Transform(targetSymbol);
+                AutoFactoryAttributeMetadata? autoFactoryAttributeMetadata = null;
+                try {
+                    autoFactoryAttributeMetadata = autoFactoryAttributeTransformer.Transform(targetSymbol);
+                } catch (Exception ex) {
+                    diagnostics.Add(new DiagnosticInfo(
+                        Diagnostics.DiagnosticType.UnexpectedError,
+                        $"Error transforming AutoFactory attribute: {ex.Message}",
+                        LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
+                    ));
+                    // Return a minimal AutoFactoryMetadata to continue processing
+                    autoFactoryAttributeMetadata = new AutoFactoryAttributeMetadata(new AttributeMetadata(targetSymbol.GetLocationOrDefault()));
+                }
 
                 var autoFactoryType = new QualifiedTypeMetadata(targetSymbol.ToTypeModel(), NoQualifierMetadata.Instance);
                 

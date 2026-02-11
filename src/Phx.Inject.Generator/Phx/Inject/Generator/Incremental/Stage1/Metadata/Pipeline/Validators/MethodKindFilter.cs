@@ -26,7 +26,7 @@ internal static class MethodKindFilterExtensions {
             MethodKindFilter.Getter => methodSymbol.MethodKind == MethodKind.PropertyGet,
             MethodKindFilter.Setter => methodSymbol.MethodKind == MethodKind.PropertySet,
             MethodKindFilter.Any => true,
-            _ => throw new InvalidOperationException($"Unknown method kind filter value: {filter}.")
+            _ => false // Unknown method kind filter, treat as no match
         };
     }
 }
