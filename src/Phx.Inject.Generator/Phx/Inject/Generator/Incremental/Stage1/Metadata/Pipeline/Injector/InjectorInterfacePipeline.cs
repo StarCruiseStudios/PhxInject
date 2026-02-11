@@ -55,7 +55,17 @@ internal class InjectorInterfacePipeline(
                         $"Error transforming Injector attribute: {ex.Message}",
                         LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
                     ));
-                    injectorAttributeMetadata = new InjectorAttributeMetadata(new AttributeMetadata(targetSymbol.GetLocationOrDefault()));
+                    var fallbackAttributeMetadata = new AttributeMetadata(
+                        InjectorAttributeMetadata.AttributeClassName,
+                        targetSymbol.ToString(),
+                        targetSymbol.GetLocationOrDefault().GeneratorIgnored(),
+                        targetSymbol.GetLocationOrDefault().GeneratorIgnored()
+                    );
+                    injectorAttributeMetadata = new InjectorAttributeMetadata(
+                        null,
+                        new EquatableList<TypeMetadata>(ImmutableList<TypeMetadata>.Empty),
+                        fallbackAttributeMetadata
+                    );
                 }
 
                 var injectorInterfaceType = targetSymbol.ToTypeModel();

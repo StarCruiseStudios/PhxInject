@@ -60,7 +60,13 @@ internal class SpecClassPipeline(
                         $"Error transforming Specification attribute: {ex.Message}",
                         LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
                     ));
-                    specificationAttributeMetadata = new SpecificationAttributeMetadata(new AttributeMetadata(targetSymbol.GetLocationOrDefault()));
+                    var fallbackAttributeMetadata = new AttributeMetadata(
+                        SpecificationAttributeMetadata.AttributeClassName,
+                        targetSymbol.ToString(),
+                        targetSymbol.GetLocationOrDefault().GeneratorIgnored(),
+                        targetSymbol.GetLocationOrDefault().GeneratorIgnored()
+                    );
+                    specificationAttributeMetadata = new SpecificationAttributeMetadata(fallbackAttributeMetadata);
                 }
 
                 var specInterfaceType = targetSymbol.ToTypeModel();

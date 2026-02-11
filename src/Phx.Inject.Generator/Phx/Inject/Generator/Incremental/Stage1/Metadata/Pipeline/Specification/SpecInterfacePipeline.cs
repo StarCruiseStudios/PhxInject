@@ -6,6 +6,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
@@ -49,8 +50,23 @@ internal class SpecInterfacePipeline(
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => DiagnosticsRecorder.Capture(diagnostics => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
-                var specificationAttributeMetadata =
-                    specificationAttributeTransformer.Transform(targetSymbol);
+                SpecificationAttributeMetadata? specificationAttributeMetadata = null;
+                try {
+                    specificationAttributeMetadata = specificationAttributeTransformer.Transform(targetSymbol);
+                } catch (Exception ex) {
+                    diagnostics.Add(new DiagnosticInfo(
+                        Diagnostics.DiagnosticType.UnexpectedError,
+                        $"Error transforming Specification attribute: {ex.Message}",
+                        LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
+                    ));
+                    var fallbackAttributeMetadata = new AttributeMetadata(
+                        SpecificationAttributeMetadata.AttributeClassName,
+                        targetSymbol.ToString(),
+                        targetSymbol.GetLocationOrDefault().GeneratorIgnored(),
+                        targetSymbol.GetLocationOrDefault().GeneratorIgnored()
+                    );
+                    specificationAttributeMetadata = new SpecificationAttributeMetadata(fallbackAttributeMetadata);
+                }
 
                 var specInterfaceType = targetSymbol.ToTypeModel();
                 
@@ -71,11 +87,35 @@ internal class SpecInterfacePipeline(
                 
                 var factoryReferences = properties
                     .Where(specFactoryReferenceTransformer.CanTransform)
-                    .Select(specFactoryReferenceTransformer.Transform)
+                    .Select(s => {
+                        try {
+                            return specFactoryReferenceTransformer.Transform(s);
+                        } catch (Exception ex) {
+                            diagnostics.Add(new DiagnosticInfo(
+                                Diagnostics.DiagnosticType.UnexpectedError,
+                                $"Error transforming factory reference: {ex.Message}",
+                                LocationInfo.CreateFrom(s.GetLocationOrDefault())
+                            ));
+                            return null;
+                        }
+                    })
                     .Concat(fields
                         .Where(specFactoryReferenceTransformer.CanTransform)
-                        .Select(specFactoryReferenceTransformer.Transform)
+                        .Select(s => {
+                            try {
+                                return specFactoryReferenceTransformer.Transform(s);
+                            } catch (Exception ex) {
+                                diagnostics.Add(new DiagnosticInfo(
+                                    Diagnostics.DiagnosticType.UnexpectedError,
+                                    $"Error transforming factory reference: {ex.Message}",
+                                    LocationInfo.CreateFrom(s.GetLocationOrDefault())
+                                ));
+                                return null;
+                            }
+                        })
                     )
+                    .Where(r => r != null)
+                    .Select(r => r!)
                     .ToImmutableArray();
                 
                 var builderMethods = methods
@@ -85,11 +125,35 @@ internal class SpecInterfacePipeline(
                 
                 var builderReferences = properties
                     .Where(specBuilderReferenceTransformer.CanTransform)
-                    .Select(specBuilderReferenceTransformer.Transform)
+                    .Select(s => {
+                        try {
+                            return specBuilderReferenceTransformer.Transform(s);
+                        } catch (Exception ex) {
+                            diagnostics.Add(new DiagnosticInfo(
+                                Diagnostics.DiagnosticType.UnexpectedError,
+                                $"Error transforming builder reference: {ex.Message}",
+                                LocationInfo.CreateFrom(s.GetLocationOrDefault())
+                            ));
+                            return null;
+                        }
+                    })
                     .Concat(fields
                         .Where(specBuilderReferenceTransformer.CanTransform)
-                        .Select(specBuilderReferenceTransformer.Transform)
+                        .Select(s => {
+                            try {
+                                return specBuilderReferenceTransformer.Transform(s);
+                            } catch (Exception ex) {
+                                diagnostics.Add(new DiagnosticInfo(
+                                    Diagnostics.DiagnosticType.UnexpectedError,
+                                    $"Error transforming builder reference: {ex.Message}",
+                                    LocationInfo.CreateFrom(s.GetLocationOrDefault())
+                                ));
+                                return null;
+                            }
+                        })
                     )
+                    .Where(r => r != null)
+                    .Select(r => r!)
                     .ToImmutableArray();
                 
                 var links = linkAttributeTransformer.Transform(targetSymbol);

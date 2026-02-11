@@ -59,8 +59,14 @@ internal class AutoFactoryPipeline(
                         $"Error transforming AutoFactory attribute: {ex.Message}",
                         LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
                     ));
-                    // Return a minimal AutoFactoryMetadata to continue processing
-                    autoFactoryAttributeMetadata = new AutoFactoryAttributeMetadata(new AttributeMetadata(targetSymbol.GetLocationOrDefault()));
+                    // Return a minimal AutoFactoryMetadata with default values
+                    var fallbackAttributeMetadata = new AttributeMetadata(
+                        AutoFactoryAttributeMetadata.AttributeClassName,
+                        targetSymbol.ToString(),
+                        targetSymbol.GetLocationOrDefault().GeneratorIgnored(),
+                        targetSymbol.GetLocationOrDefault().GeneratorIgnored()
+                    );
+                    autoFactoryAttributeMetadata = new AutoFactoryAttributeMetadata(FabricationMode.Recurrent, fallbackAttributeMetadata);
                 }
 
                 var autoFactoryType = new QualifiedTypeMetadata(targetSymbol.ToTypeModel(), NoQualifierMetadata.Instance);

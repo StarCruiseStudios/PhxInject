@@ -51,7 +51,13 @@ internal class AutoBuilderPipeline(
                         $"Error transforming AutoBuilder attribute: {ex.Message}",
                         LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
                     ));
-                    autoBuilderAttributeMetadata = new AutoBuilderAttributeMetadata(new AttributeMetadata(targetSymbol.GetLocationOrDefault()));
+                    var fallbackAttributeMetadata = new AttributeMetadata(
+                        AutoBuilderAttributeMetadata.AttributeClassName,
+                        targetSymbol.ToString(),
+                        targetSymbol.GetLocationOrDefault().GeneratorIgnored(),
+                        targetSymbol.GetLocationOrDefault().GeneratorIgnored()
+                    );
+                    autoBuilderAttributeMetadata = new AutoBuilderAttributeMetadata(fallbackAttributeMetadata);
                 }
 
                 // The built type is the first parameter of the builder method
