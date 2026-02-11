@@ -20,7 +20,7 @@ internal record SpecContainerFactoryModel(
     FabricationMode FabricationMode,
     IEnumerable<SpecContainerFactoryInvocationModel> Arguments,
     IEnumerable<SpecContainerFactoryRequiredPropertyModel> RequiredProperties,
-    GeneratorIgnored<Location> Location
+    GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement;
 
 internal enum SpecFactoryMemberType {

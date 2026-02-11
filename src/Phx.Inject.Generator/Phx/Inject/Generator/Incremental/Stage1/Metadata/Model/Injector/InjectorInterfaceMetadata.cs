@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // <copyright file="InjectorInterfaceMetadata.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2026 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
@@ -20,5 +20,5 @@ internal record InjectorInterfaceMetadata(
     IEnumerable<InjectorChildProviderMetadata> ChildProviders,
     InjectorAttributeMetadata InjectorAttributeMetadata,
     DependencyAttributeMetadata? DependencyAttributeMetadata,
-    GeneratorIgnored<Location> Location
+    GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement { }

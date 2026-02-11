@@ -21,5 +21,5 @@ internal record InjectorModel(
     IEnumerable<InjectorProviderModel> Providers,
     IEnumerable<InjectorBuilderModel> Builders,
     IEnumerable<InjectorChildFactoryModel> ChildFactories,
-    GeneratorIgnored<Location> Location
+    GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement;

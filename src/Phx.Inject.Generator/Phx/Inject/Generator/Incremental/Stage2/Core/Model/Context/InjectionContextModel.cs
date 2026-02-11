@@ -16,5 +16,5 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Context;
 internal record InjectionContextModel(
     InjectorModel Injector,
     IEnumerable<SpecContainerModel> SpecContainers,
-    GeneratorIgnored<Location> Location
+    GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement;

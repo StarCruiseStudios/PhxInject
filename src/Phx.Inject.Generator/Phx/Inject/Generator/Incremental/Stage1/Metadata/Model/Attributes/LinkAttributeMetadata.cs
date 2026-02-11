@@ -23,5 +23,5 @@ internal record LinkAttributeMetadata(
 ) : IAttributeElement {
     public const string AttributeClassName = $"{PhxInject.NamespaceName}.{nameof(LinkAttribute)}";
     
-    public GeneratorIgnored<Location> Location { get; } = AttributeMetadata.Location;
+    public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

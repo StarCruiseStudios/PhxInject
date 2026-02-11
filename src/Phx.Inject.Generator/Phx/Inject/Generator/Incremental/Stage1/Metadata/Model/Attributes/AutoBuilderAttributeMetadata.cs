@@ -17,5 +17,5 @@ internal record AutoBuilderAttributeMetadata(
 ) : IAttributeElement {
     public const string AttributeClassName = $"{NamespaceName}.{nameof(AutoBuilderAttribute)}";
     
-    public GeneratorIgnored<Location> Location { get; } = AttributeMetadata.Location;
+    public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

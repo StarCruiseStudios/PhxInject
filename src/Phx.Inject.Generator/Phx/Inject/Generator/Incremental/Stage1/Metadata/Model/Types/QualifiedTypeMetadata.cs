@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // <copyright file="QualifiedTypeMetadata.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2026 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
@@ -15,7 +15,7 @@ internal record QualifiedTypeMetadata(
     TypeMetadata TypeMetadata,
     IQualifierMetadata QualifierMetadata
 ) : ISourceCodeElement {
-    public GeneratorIgnored<Location> Location => TypeMetadata.Location;
+    public GeneratorIgnored<LocationInfo?> Location => TypeMetadata.Location;
 
     public override string ToString() {
         return (QualifierMetadata is not NoQualifierMetadata)

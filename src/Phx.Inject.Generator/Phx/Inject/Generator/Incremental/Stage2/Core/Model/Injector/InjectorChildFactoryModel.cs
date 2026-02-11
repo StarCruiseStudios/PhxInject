@@ -16,5 +16,5 @@ internal record InjectorChildFactoryModel(
     TypeMetadata ChildInjectorType,
     string ChildFactoryMethodName,
     IEnumerable<TypeMetadata> Parameters,
-    GeneratorIgnored<Location> Location
+    GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement;

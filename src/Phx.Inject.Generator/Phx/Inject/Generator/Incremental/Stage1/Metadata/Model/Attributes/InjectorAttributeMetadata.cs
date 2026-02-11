@@ -20,5 +20,5 @@ internal record InjectorAttributeMetadata(
     public const string AttributeClassName =
         $"{PhxInject.NamespaceName}.{nameof(InjectorAttribute)}";
     
-    public GeneratorIgnored<Location> Location { get; } = AttributeMetadata.Location;
+    public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

@@ -17,7 +17,7 @@ internal record TypeMetadata(
     string NamespaceName,
     string BaseTypeName,
     EquatableList<TypeMetadata> TypeArguments,
-    GeneratorIgnored<Location> Location
+    GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement {
 
     public string TypeName {
@@ -93,6 +93,6 @@ internal static class TypeSymbolExtensions {
             typeSymbol.ContainingNamespace.ToString(),
             name,
             typeArguments,
-            typeSymbol.Locations.FirstOrDefault().OrNone().GeneratorIgnored());
+            typeSymbol.Locations.FirstOrDefault().GeneratorIgnored());
     }
 }

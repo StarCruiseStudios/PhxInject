@@ -15,5 +15,5 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 internal record SpecContainerBuilderInvocationModel(
     TypeMetadata SpecContainerType,
     string BuilderMethodName,
-    GeneratorIgnored<Location> Location
+    GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement;

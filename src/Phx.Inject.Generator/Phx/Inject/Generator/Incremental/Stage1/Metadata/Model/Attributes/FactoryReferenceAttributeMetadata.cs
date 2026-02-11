@@ -17,5 +17,5 @@ internal record FactoryReferenceAttributeMetadata(
 ) : IAttributeElement {
     public const string AttributeClassName = $"{PhxInject.NamespaceName}.{nameof(FactoryReferenceAttribute)}";
     
-    public GeneratorIgnored<Location> Location { get; } = AttributeMetadata.Location;
+    public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

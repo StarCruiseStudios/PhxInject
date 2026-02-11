@@ -16,5 +16,5 @@ internal record SpecContainerFactoryInvocationModel(
     EquatableList<SpecContainerFactorySingleInvocationModel> FactoryInvocationDefs,
     QualifiedTypeMetadata FactoryReturnType,
     TypeMetadata? RuntimeFactoryProvidedType,
-    GeneratorIgnored<Location> Location
+    GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement;

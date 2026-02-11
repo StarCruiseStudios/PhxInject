@@ -18,7 +18,7 @@ internal record SpecContainerModel(
     SpecInstantiationMode SpecInstantiationMode,
     IEnumerable<SpecContainerFactoryModel> FactoryMethodDefs,
     IEnumerable<SpecContainerBuilderModel> BuilderMethodDefs,
-    GeneratorIgnored<Location> Location
+    GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement;
 
 internal enum SpecInstantiationMode {

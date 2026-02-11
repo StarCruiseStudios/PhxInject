@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // <copyright file="LabelQualifierMetadata.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2026 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
@@ -15,7 +15,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 internal record LabelQualifierMetadata(
     LabelAttributeMetadata LabelAttributeMetadata
 ) : IQualifierMetadata {
-    public GeneratorIgnored<Location> Location { get; } = LabelAttributeMetadata.Location;
+    public GeneratorIgnored<LocationInfo?> Location { get; } = LabelAttributeMetadata.Location;
     
     public override string ToString() {
         return $"[Label({LabelAttributeMetadata.Label})]";        

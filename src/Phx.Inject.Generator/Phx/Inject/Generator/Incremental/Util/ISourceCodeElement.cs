@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // <copyright file="ISourceCodeElement.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2026 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
@@ -6,11 +6,9 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 namespace Phx.Inject.Generator.Incremental.Util;
 
 internal interface ISourceCodeElement {
     /// <summary> Gets the source location of the element. </summary>
-    GeneratorIgnored<Location> Location { get; }
+    GeneratorIgnored<LocationInfo?> Location { get; }
 }

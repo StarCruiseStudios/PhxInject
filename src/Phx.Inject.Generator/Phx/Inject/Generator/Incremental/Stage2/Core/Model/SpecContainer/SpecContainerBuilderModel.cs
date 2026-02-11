@@ -18,7 +18,7 @@ internal record SpecContainerBuilderModel(
     string SpecBuilderMemberName,
     SpecBuilderMemberType SpecBuilderMemberType,
     IEnumerable<SpecContainerFactoryInvocationModel> Arguments,
-    GeneratorIgnored<Location> Location
+    GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement;
 
 internal enum SpecBuilderMemberType {

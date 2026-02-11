@@ -16,5 +16,5 @@ internal record BuilderAttributeMetadata(
 ) : IAttributeElement {
     public const string AttributeClassName = $"{PhxInject.NamespaceName}.{nameof(BuilderAttribute)}";
     
-    public GeneratorIgnored<Location> Location { get; } = AttributeMetadata.Location;
+    public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

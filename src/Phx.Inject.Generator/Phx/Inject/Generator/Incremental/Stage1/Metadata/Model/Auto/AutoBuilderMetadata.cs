@@ -18,5 +18,5 @@ internal record AutoBuilderMetadata(
     QualifiedTypeMetadata BuiltType,
     IEnumerable<QualifiedTypeMetadata> Parameters,
     AutoBuilderAttributeMetadata AutoBuilderAttributeMetadata,
-    GeneratorIgnored<Location> Location
+    GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement { }

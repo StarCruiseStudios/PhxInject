@@ -15,5 +15,5 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 internal record InjectorBuilderModel(
     QualifiedTypeMetadata BuiltType,
     string BuilderMethodName,
-    GeneratorIgnored<Location> Location
+    GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement;

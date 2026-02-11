@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // <copyright file="AttributeMetadata.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2026 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
@@ -15,14 +15,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 sealed internal record AttributeMetadata(
     string AttributeClassName,
     string TargetName,
-    GeneratorIgnored<Location> TargetLocation,
-    GeneratorIgnored<Location> Location
+    GeneratorIgnored<LocationInfo?> TargetLocation,
+    GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement {
     public static AttributeMetadata Create(ISymbol targetSymbol, AttributeData attributeData) {
         return new AttributeMetadata(
             attributeData.GetNamedTypeSymbol().GetFullyQualifiedBaseName(),
             targetSymbol.ToString(),
-            targetSymbol.Locations.FirstOrDefault().OrNone().GeneratorIgnored(),
-            attributeData.GetAttributeLocation(targetSymbol).OrNone().GeneratorIgnored());
+            targetSymbol.Locations.FirstOrDefault().GeneratorIgnored(),
+            attributeData.GetAttributeLocation(targetSymbol).GeneratorIgnored());
     }
 }

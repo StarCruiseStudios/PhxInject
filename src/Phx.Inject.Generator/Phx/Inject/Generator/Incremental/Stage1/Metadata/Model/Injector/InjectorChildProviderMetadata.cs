@@ -18,5 +18,5 @@ internal record InjectorChildProviderMetadata(
     TypeMetadata ChildInjectorType,
     EquatableList<TypeMetadata> Parameters,
     ChildInjectorAttributeMetadata ChildInjectorAttribute,
-    GeneratorIgnored<Location> Location
+    GeneratorIgnored<LocationInfo?> Location
 ): ISourceCodeElement { }

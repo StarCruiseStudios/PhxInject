@@ -18,5 +18,5 @@ internal record AutoFactoryMetadata(
     IEnumerable<QualifiedTypeMetadata> Parameters,
     IEnumerable<AutoFactoryRequiredPropertyMetadata> RequiredProperties,
     AutoFactoryAttributeMetadata AutoFactoryAttributeMetadata,
-    GeneratorIgnored<Location> Location
+    GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement { }

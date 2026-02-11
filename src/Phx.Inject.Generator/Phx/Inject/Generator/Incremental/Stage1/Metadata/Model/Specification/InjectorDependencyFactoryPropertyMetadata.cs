@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // <copyright file="InjectorDependencyFactoryPropertyMetadata.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2026 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
@@ -17,5 +17,5 @@ internal record InjectorDependencyFactoryPropertyMetadata(
     string FactoryPropertyName,
     QualifiedTypeMetadata FactoryReturnType,
     FactoryAttributeMetadata FactoryAttributeMetadata,
-    GeneratorIgnored<Location> Location
+    GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement { }

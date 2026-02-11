@@ -17,5 +17,5 @@ internal record InjectorDependencyAttributeMetadata(
 ) : IAttributeElement {
     public const string AttributeClassName = $"{NamespaceName}.{nameof(InjectorDependencyAttribute)}";
     
-    public GeneratorIgnored<Location> Location { get; } = AttributeMetadata.Location;
+    public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

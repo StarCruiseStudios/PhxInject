@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // <copyright file="PhxInjectAttributeSyntaxValuesProvider.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2026 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
@@ -42,7 +42,7 @@ internal class PhxInjectSettingsPipeline(
                     diagnostics.Add(s.Select(setting => new DiagnosticInfo(
                         Diagnostics.DiagnosticType.UnexpectedError,
                         "Only one PhxInject settings attribute can be defined per assembly.",
-                        LocationInfo.CreateFrom(setting.Location.Value))
+                        setting.Location.Value)
                     ));
                 })[0]
         })));

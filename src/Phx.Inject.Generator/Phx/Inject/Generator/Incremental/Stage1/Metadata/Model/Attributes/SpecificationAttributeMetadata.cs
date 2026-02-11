@@ -17,5 +17,5 @@ internal record SpecificationAttributeMetadata(
 ) : IAttributeElement {
     public const string AttributeClassName = $"{NamespaceName}.{nameof(SpecificationAttribute)}";
     
-    public GeneratorIgnored<Location> Location { get; } = AttributeMetadata.Location;
+    public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

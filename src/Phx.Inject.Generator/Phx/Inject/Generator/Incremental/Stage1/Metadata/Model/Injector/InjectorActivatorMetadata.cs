@@ -15,5 +15,5 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 internal record InjectorActivatorMetadata(
     string ActivatorMethodName,
     QualifiedTypeMetadata ActivatedType,
-    GeneratorIgnored<Location> Location
+    GeneratorIgnored<LocationInfo?> Location
 ): ISourceCodeElement { }

@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // <copyright file="NoQualifierMetadata.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2026 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
@@ -6,13 +6,12 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 
 internal record NoQualifierMetadata : IQualifierMetadata {
     public static NoQualifierMetadata Instance { get; } = new();
-    public GeneratorIgnored<Location> Location { get; } = Microsoft.CodeAnalysis.Location.None.GeneratorIgnored();
+    public GeneratorIgnored<LocationInfo?> Location { get; } = new GeneratorIgnored<LocationInfo?>(null);
     private NoQualifierMetadata() { }
 }
