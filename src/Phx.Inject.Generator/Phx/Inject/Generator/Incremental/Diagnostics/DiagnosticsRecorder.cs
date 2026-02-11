@@ -21,8 +21,16 @@ internal class DiagnosticsRecorder : IDiagnosticsRecorder {
         diagnostics.AddRange(diagnosticInfos);
     }
     
-    public static Result<T> Capture<T>(Func<IDiagnosticsRecorder, T> func) where T : IEquatable<T> {
+    public static IResult<T> Capture<T>(Func<IDiagnosticsRecorder, T> func) where T : IEquatable<T> {
         var recorder = new DiagnosticsRecorder();
-        return new Result<T>(func(recorder), recorder.diagnostics.ToEquatableList());
+        try {
+            var result = func(recorder);
+            return result.ToOkResult(recorder.diagnostics.ToEquatableList());
+        } catch (GeneratorException ex) {
+            recorder.Add(ex.DiagnosticInfos);
+            return Result.Error<T>(recorder.diagnostics.ToEquatableList());
+        } catch {
+            return Result.Error<T>(recorder.diagnostics.ToEquatableList());
+        }
     }
 }

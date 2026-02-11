@@ -22,18 +22,16 @@ internal class QualifierTransformer(
         QualifierAttributeTransformer.Instance
     );
     
-    private IAttributeChecker labelChecker = labelAttributeTransformer as IAttributeChecker
-                                             ?? throw new ArgumentException("Label attribute transformer must implement IAttributeChecker.");
-    private IAttributeChecker qualifierChecker = qualifierAttributeTransformer as IAttributeChecker
-                                                 ?? throw new ArgumentException("Qualifier attribute transformer must implement IAttributeChecker.");
+    private IAttributeChecker? labelChecker = labelAttributeTransformer as IAttributeChecker;
+    private IAttributeChecker? qualifierChecker = qualifierAttributeTransformer as IAttributeChecker;
     
     public IQualifierMetadata Transform(ISymbol targetSymbol) {
-        if (labelChecker.HasAttribute(targetSymbol)) {
+        if (labelChecker?.HasAttribute(targetSymbol) == true) {
             var labelAttributeMetadata = labelAttributeTransformer.Transform(targetSymbol);
             return new LabelQualifierMetadata(labelAttributeMetadata);
         }
 
-        if (qualifierChecker.HasAttribute(targetSymbol)) {
+        if (qualifierChecker?.HasAttribute(targetSymbol) == true) {
             var qualifierAttributeMetadata = qualifierAttributeTransformer.Transform(targetSymbol);
             return new CustomQualifierMetadata(qualifierAttributeMetadata);
         }

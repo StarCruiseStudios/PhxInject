@@ -59,7 +59,8 @@ internal class InterfaceElementValidator(
             case CodeElementAccessibility.Any:
                 return true;
             default:
-                throw new InvalidOperationException($"Unknown accessibility value: {requiredAccessibility}.");
+                // Unknown accessibility, treat as invalid
+                return false;
         }
     }
 }

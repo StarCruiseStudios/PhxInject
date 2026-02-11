@@ -6,6 +6,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
@@ -33,7 +34,7 @@ internal class AutoBuilderPipeline(
         AutoBuilderAttributeTransformer.Instance,
         QualifierTransformer.Instance);
     
-    public IncrementalValuesProvider<Result<AutoBuilderMetadata>> Select(
+    public IncrementalValuesProvider<IResult<AutoBuilderMetadata>> Select(
         SyntaxValueProvider syntaxProvider
     ) {
         return syntaxProvider.ForAttributeWithMetadataName(
@@ -41,8 +42,16 @@ internal class AutoBuilderPipeline(
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => DiagnosticsRecorder.Capture(diagnostics => {
                 var targetSymbol = (IMethodSymbol)context.TargetSymbol;
-                var autoBuilderAttributeMetadata =
-                    autoBuilderAttributeTransformer.Transform(targetSymbol);
+                AutoBuilderAttributeMetadata? autoBuilderAttributeMetadata = null;
+                try {
+                    autoBuilderAttributeMetadata = autoBuilderAttributeTransformer.Transform(targetSymbol);
+                } catch (Exception ex) {
+                    throw new GeneratorException(new DiagnosticInfo(
+                        Diagnostics.DiagnosticType.UnexpectedError,
+                        $"Error transforming AutoBuilder attribute: {ex.Message}",
+                        LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
+                    ));
+                }
 
                 // The built type is the first parameter of the builder method
                 // Get qualifier from the method itself (for Label attribute)

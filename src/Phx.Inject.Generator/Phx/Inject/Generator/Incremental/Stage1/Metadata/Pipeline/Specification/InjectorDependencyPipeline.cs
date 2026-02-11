@@ -6,6 +6,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
@@ -33,7 +34,7 @@ internal class InjectorDependencyPipeline(
         SpecFactoryMethodTransformer.Instance,
         SpecFactoryPropertyTransformer.Instance);
     
-    public IncrementalValuesProvider<Result<InjectorDependencyInterfaceMetadata>> Select(
+    public IncrementalValuesProvider<IResult<InjectorDependencyInterfaceMetadata>> Select(
         SyntaxValueProvider syntaxProvider
     ) {
         return syntaxProvider.ForAttributeWithMetadataName(
@@ -41,8 +42,16 @@ internal class InjectorDependencyPipeline(
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => DiagnosticsRecorder.Capture(diagnostics => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
-                var injectorDependencyAttributeMetadata =
-                    injectorDependencyAttributeTransformer.Transform(targetSymbol);
+                InjectorDependencyAttributeMetadata? injectorDependencyAttributeMetadata = null;
+                try {
+                    injectorDependencyAttributeMetadata = injectorDependencyAttributeTransformer.Transform(targetSymbol);
+                } catch (Exception ex) {
+                    throw new GeneratorException(new DiagnosticInfo(
+                        Diagnostics.DiagnosticType.UnexpectedError,
+                        $"Error transforming InjectorDependency attribute: {ex.Message}",
+                        LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
+                    ));
+                }
 
                 var injectorDependencyInterfaceType = targetSymbol.ToTypeModel();
                 

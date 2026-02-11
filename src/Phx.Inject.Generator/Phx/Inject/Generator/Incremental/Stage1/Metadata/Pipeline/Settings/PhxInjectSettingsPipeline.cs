@@ -26,7 +26,7 @@ internal class PhxInjectSettingsPipeline(
         NoopCodeElementValidator.Instance,
         PhxInjectAttributeTransformer.Instance);
 
-    public IncrementalValueProvider<Result<PhxInjectSettingsMetadata>> Select(
+    public IncrementalValueProvider<IResult<PhxInjectSettingsMetadata>> Select(
         SyntaxValueProvider syntaxProvider
     ) {
         return syntaxProvider.ForAttributeWithMetadataName<PhxInjectAttributeMetadata>(
