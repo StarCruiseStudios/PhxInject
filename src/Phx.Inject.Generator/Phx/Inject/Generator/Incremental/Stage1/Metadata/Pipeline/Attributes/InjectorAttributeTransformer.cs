@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// <copyright file="PhxInjectAttributeTransformer.cs" company="Star Cruise Studios LLC">
+// <copyright file="InjectorAttributeTransformer.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2026 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
 //     See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
@@ -7,6 +7,8 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 using Phx.Inject.Generator.Incremental.Util;
@@ -24,11 +26,11 @@ internal class InjectorAttributeTransformer(
         return attributeMetadataTransformer.HasAttribute(targetSymbol, InjectorAttributeMetadata.AttributeClassName);
     }
 
-    public InjectorAttributeMetadata Transform(ISymbol targetSymbol) {
-        var (attributeData, attributeMetadata) = attributeMetadataTransformer.SingleAttributeOrNull(
+    public IResult<InjectorAttributeMetadata> Transform(ISymbol targetSymbol) {
+        var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,
             InjectorAttributeMetadata.AttributeClassName
-        ) ?? throw new InvalidOperationException($"Expected single {InjectorAttributeMetadata.AttributeClassName} attribute on {targetSymbol.Name}");
+        );
         
         var generatedClassName = attributeData.GetNamedArgument<string>(nameof(InjectorAttribute.GeneratedClassName))
                                  ?? attributeData.GetConstructorArgument<string>(argument => argument.Kind != TypedConstantKind.Array);
@@ -41,6 +43,6 @@ internal class InjectorAttributeTransformer(
         return new InjectorAttributeMetadata(
             generatedClassName,
             specifications,
-            attributeMetadata);
+            attributeMetadata).ToOkResult();
     }
 }

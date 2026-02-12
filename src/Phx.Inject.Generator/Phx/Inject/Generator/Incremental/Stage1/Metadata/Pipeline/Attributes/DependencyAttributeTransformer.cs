@@ -7,33 +7,47 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
 internal class DependencyAttributeTransformer(
-    IAttributeMetadataTransformer attributeMetadataTransformer
+    IAttributeMetadataTransformer attributeMetadataTransformer,
+    ICodeElementValidator dependencyTypeValidator
 ) : IAttributeTransformer<DependencyAttributeMetadata>, IAttributeChecker {
     public static DependencyAttributeTransformer Instance { get; } = new(
-        AttributeMetadataTransformer.Instance
+        AttributeMetadataTransformer.Instance,
+        new InterfaceElementValidator(
+            requiredAccessibility: CodeElementAccessibility.PublicOrInternal
+        )
     );
 
     public bool HasAttribute(ISymbol targetSymbol) {
         return attributeMetadataTransformer.HasAttribute(targetSymbol, DependencyAttributeMetadata.AttributeClassName);
     }
 
-    public DependencyAttributeMetadata Transform(ISymbol targetSymbol) {
-        var (attributeData, attributeMetadata) = attributeMetadataTransformer.SingleAttributeOrNull(
-            targetSymbol,
-            DependencyAttributeMetadata.AttributeClassName
-        ) ?? throw new InvalidOperationException($"Expected single {DependencyAttributeMetadata.AttributeClassName} attribute on {targetSymbol.Name}");
+    public IResult<DependencyAttributeMetadata> Transform(ISymbol targetSymbol) {
+            var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
+                targetSymbol,
+                DependencyAttributeMetadata.AttributeClassName
+            );
 
-        var dependencyType = attributeData.GetConstructorArgument<ITypeSymbol>(
-            argument => argument.Kind != TypedConstantKind.Array
-        )!.ToTypeModel();
+            var dependencyTypeSymbol = attributeData
+                .GetConstructorArgument<ITypeSymbol>(argument => argument.Kind != TypedConstantKind.Array);
 
-        return new DependencyAttributeMetadata(dependencyType, attributeMetadata);
+            if (!dependencyTypeValidator.IsValidSymbol(dependencyTypeSymbol)) {
+                return Result.Error<DependencyAttributeMetadata>(new DiagnosticInfo(
+                    DiagnosticType.UnexpectedError,
+                    "The specified dependency type is invalid.",
+                    LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
+                ));
+            }
+            
+            return new DependencyAttributeMetadata(dependencyTypeSymbol.ToTypeModel(), attributeMetadata).ToOkResult();
     }
 }

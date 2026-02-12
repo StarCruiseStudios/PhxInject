@@ -8,6 +8,7 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Util;
 using static Phx.Inject.Generator.Incremental.PhxInject;
@@ -27,11 +28,11 @@ internal class FactoryAttributeTransformer(
         return attributeMetadataTransformer.HasAttribute(targetSymbol, FactoryAttributeMetadata.AttributeClassName);
     }
 
-    public FactoryAttributeMetadata Transform(ISymbol targetSymbol) {
-        var (attributeData, attributeMetadata) = attributeMetadataTransformer.SingleAttributeOrNull(
+    public IResult<FactoryAttributeMetadata> Transform(ISymbol targetSymbol) {
+        var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,
             FactoryAttributeMetadata.AttributeClassName
-        ) ?? throw new InvalidOperationException($"Expected single {FactoryAttributeMetadata.AttributeClassName} attribute on {targetSymbol.Name}");
+        );
 
         var fabricationMode =
             attributeData.GetNamedArgument<FabricationMode?>(nameof(FactoryAttribute.FabricationMode))
@@ -39,6 +40,6 @@ internal class FactoryAttributeTransformer(
                 argument.Type!.GetFullyQualifiedName() == FabricationModeClassName,
                 default);
 
-        return new FactoryAttributeMetadata(fabricationMode, attributeMetadata);
+        return new FactoryAttributeMetadata(fabricationMode, attributeMetadata).ToOkResult();
     }
 }

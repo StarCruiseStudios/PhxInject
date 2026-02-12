@@ -7,6 +7,8 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Util;
 
@@ -23,16 +25,16 @@ internal class PhxInjectAttributeTransformer(
         return attributeMetadataTransformer.HasAttribute(targetSymbol, PhxInjectAttributeMetadata.AttributeClassName);
     }
 
-    public PhxInjectAttributeMetadata Transform(ISymbol targetSymbol) {
-        var (attributeData, attributeMetadata) = attributeMetadataTransformer.SingleAttributeOrNull(
+    public IResult<PhxInjectAttributeMetadata> Transform(ISymbol targetSymbol) {
+        var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,
             PhxInjectAttributeMetadata.AttributeClassName
-        ) ?? throw new InvalidOperationException($"Expected single {PhxInjectAttributeMetadata.AttributeClassName} attribute on {targetSymbol.Name}");
+        );
         
         return new PhxInjectAttributeMetadata(
             attributeData.GetNamedIntArgument(nameof(PhxInjectAttribute.TabSize)),
             attributeData.GetNamedArgument<string>(nameof(PhxInjectAttribute.GeneratedFileExtension)),
             attributeData.GetNamedBoolArgument(nameof(PhxInjectAttribute.NullableEnabled)),
-            attributeMetadata);
+            attributeMetadata).ToOkResult();
     }
 }

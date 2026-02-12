@@ -7,6 +7,8 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Util;
 
@@ -23,16 +25,16 @@ internal class LabelAttributeTransformer(
         return attributeMetadataTransformer.HasAttribute(targetSymbol, LabelAttributeMetadata.AttributeClassName);
     }
 
-    public LabelAttributeMetadata Transform(ISymbol targetSymbol) {
-        var (attributeData, attributeMetadata) = attributeMetadataTransformer.SingleAttributeOrNull(
+    public IResult<LabelAttributeMetadata> Transform(ISymbol targetSymbol) {
+        var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,
             LabelAttributeMetadata.AttributeClassName
-        ) ?? throw new InvalidOperationException($"Expected single {LabelAttributeMetadata.AttributeClassName} attribute on {targetSymbol.Name}");
+        );
 
         var label = attributeData.GetConstructorArgument<string>(
             argument => argument.Kind != TypedConstantKind.Array
         )!;
 
-        return new LabelAttributeMetadata(label, attributeMetadata);
+        return new LabelAttributeMetadata(label, attributeMetadata).ToOkResult();
     }
 }

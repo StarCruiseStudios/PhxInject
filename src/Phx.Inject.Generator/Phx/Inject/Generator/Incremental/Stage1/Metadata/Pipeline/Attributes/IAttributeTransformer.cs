@@ -7,10 +7,11 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
-internal interface IAttributeTransformer<out TAttributeMetadata> where TAttributeMetadata : IAttributeElement {
-    TAttributeMetadata Transform(ISymbol targetSymbol);
+internal interface IAttributeTransformer<out TAttributeMetadata> where TAttributeMetadata : IAttributeElement, IEquatable<TAttributeMetadata> {
+    IResult<TAttributeMetadata> Transform(ISymbol targetSymbol);
 }

@@ -7,6 +7,8 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 using Phx.Inject.Generator.Incremental.Util;
@@ -24,16 +26,16 @@ internal class QualifierAttributeTransformer(
         return attributeMetadataTransformer.HasAttribute(targetSymbol, QualifierAttributeMetadata.AttributeClassName);
     }
 
-    public QualifierAttributeMetadata Transform(ISymbol targetSymbol) {
-        var (attributeData, attributeMetadata) = attributeMetadataTransformer.SingleAttributeOrNull(
+    public IResult<QualifierAttributeMetadata> Transform(ISymbol targetSymbol) {
+        var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,
             QualifierAttributeMetadata.AttributeClassName
-        ) ?? throw new InvalidOperationException($"Expected single {QualifierAttributeMetadata.AttributeClassName} attribute on {targetSymbol.Name}");
+        );
 
         var qualifierType = attributeData.GetConstructorArgument<ITypeSymbol>(
             argument => argument.Kind != TypedConstantKind.Array
         )!.ToTypeModel();
 
-        return new QualifierAttributeMetadata(qualifierType, attributeMetadata);
+        return new QualifierAttributeMetadata(qualifierType, attributeMetadata).ToOkResult();
     }
 }

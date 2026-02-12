@@ -7,6 +7,8 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
@@ -22,12 +24,12 @@ internal class PartialAttributeTransformer(
         return attributeMetadataTransformer.HasAttribute(targetSymbol, PartialAttributeMetadata.AttributeClassName);
     }
 
-    public PartialAttributeMetadata Transform(ISymbol targetSymbol) {
-        var (attributeData, attributeMetadata) = attributeMetadataTransformer.SingleAttributeOrNull(
+    public IResult<PartialAttributeMetadata> Transform(ISymbol targetSymbol) {
+        var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,
             PartialAttributeMetadata.AttributeClassName
-        ) ?? throw new InvalidOperationException($"Expected single {PartialAttributeMetadata.AttributeClassName} attribute on {targetSymbol.Name}");
+        );
         
-        return new PartialAttributeMetadata(attributeMetadata);
+        return new PartialAttributeMetadata(attributeMetadata).ToOkResult();
     }
 }

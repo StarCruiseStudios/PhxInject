@@ -6,6 +6,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
@@ -13,8 +14,8 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 internal class AggregateElementValidator(
     IReadOnlyList<ICodeElementValidator> validators
 ) : ICodeElementValidator {
-    public bool IsValidSymbol(ISymbol symbol) {
-        return validators.Any(validator => validator.IsValidSymbol(symbol));
+    public bool IsValidSymbol([NotNullWhen(true)] ISymbol? symbol) {
+        return validators.All(validator => validator.IsValidSymbol(symbol));
     }
 
     public bool IsValidSyntax(SyntaxNode syntaxNode) {

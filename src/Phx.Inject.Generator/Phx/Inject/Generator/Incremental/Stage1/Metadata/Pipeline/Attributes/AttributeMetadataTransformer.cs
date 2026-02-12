@@ -31,6 +31,9 @@ internal interface IAttributeMetadataTransformer {
     AttributeMetadataPair? SingleAttributeOrNull(
         ISymbol targetSymbol,
         string attributeClassName);
+    AttributeMetadataPair ExpectSingleAttribute(
+        ISymbol targetSymbol,
+        string attributeClassName);
 }
 
 internal class AttributeMetadataTransformer : IAttributeMetadataTransformer {
@@ -58,4 +61,20 @@ internal class AttributeMetadataTransformer : IAttributeMetadataTransformer {
             .SingleOrDefault(attributeData => attributeData.GetNamedTypeSymbol().GetFullyQualifiedBaseName() == attributeClassName);
         return attributeData != null ? AttributeMetadataPair.From(targetSymbol, attributeData) : null;
     }
+    
+    public AttributeMetadataPair ExpectSingleAttribute(
+        ISymbol targetSymbol,
+        string attributeClassName
+    ) {
+        var attributeData = targetSymbol.GetAttributes()
+            .SingleOrDefault(attributeData => attributeData.GetNamedTypeSymbol().GetFullyQualifiedBaseName() == attributeClassName);
+        return attributeData != null 
+            ? AttributeMetadataPair.From(targetSymbol, attributeData) 
+            : throw new InvalidOperationException(
+                $"Expected single {attributeClassName} attribute on {targetSymbol.Name}. " +
+                $"Found {targetSymbol.GetAttributes().Count(d => d.GetNamedTypeSymbol().GetFullyQualifiedBaseName() == attributeClassName)}");
+    }
+    
+    
+
 }

@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
@@ -19,12 +20,12 @@ internal class InterfaceElementValidator(
 ) : ICodeElementValidator {
     private readonly IReadOnlyList<IAttributeChecker> requiredAttributes = requiredAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 
-    public bool IsValidSymbol(ISymbol symbol) {
-        if (requiredAttributes.Any(requiredAttribute => !requiredAttribute.HasAttribute(symbol))) {
+    public bool IsValidSymbol([NotNullWhen(true)] ISymbol? symbol) {
+        if (symbol is not ITypeSymbol typeSymbol) {
             return false;
         }
-
-        if (symbol is not ITypeSymbol typeSymbol) {
+        
+        if (requiredAttributes.Any(requiredAttribute => !requiredAttribute.HasAttribute(symbol))) {
             return false;
         }
 

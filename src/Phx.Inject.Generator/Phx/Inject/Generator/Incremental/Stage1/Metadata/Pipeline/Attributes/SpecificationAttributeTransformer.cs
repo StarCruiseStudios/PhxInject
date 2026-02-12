@@ -7,6 +7,8 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
@@ -22,12 +24,12 @@ internal class SpecificationAttributeTransformer(
         return attributeMetadataTransformer.HasAttribute(targetSymbol, SpecificationAttributeMetadata.AttributeClassName);
     }
 
-    public SpecificationAttributeMetadata Transform(ISymbol targetSymbol) {
-        var (attributeData, attributeMetadata) = attributeMetadataTransformer.SingleAttributeOrNull(
+    public IResult<SpecificationAttributeMetadata> Transform(ISymbol targetSymbol) {
+        var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,
             SpecificationAttributeMetadata.AttributeClassName
-        ) ?? throw new InvalidOperationException($"Expected single {SpecificationAttributeMetadata.AttributeClassName} attribute on {targetSymbol.Name}");
+        );
         
-        return new SpecificationAttributeMetadata(attributeMetadata);
+        return new SpecificationAttributeMetadata(attributeMetadata).ToOkResult();
     }
 }

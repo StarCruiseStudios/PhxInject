@@ -6,6 +6,7 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
@@ -13,7 +14,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 internal class NoopCodeElementValidator : ICodeElementValidator {
     public static readonly NoopCodeElementValidator Instance = new();
     
-    public bool IsValidSymbol(ISymbol symbol) => true;
+    public bool IsValidSymbol([NotNullWhen(true)] ISymbol? symbol) => true;
     public bool IsValidSyntax(SyntaxNode syntaxNode) => true;
     
     private NoopCodeElementValidator() { }
