@@ -15,6 +15,7 @@ namespace Phx.Inject.Generator.Incremental.Util;
 /// </summary>
 /// <param name="value"> The value referenced. </param>
 public class GeneratorIgnored<T>(T value) {
+    /// <summary> The wrapped value. </summary>
     public T Value { get; } = value;
     
     /// <inheritdoc cref="IEquatable{T}.Equals(T)"/>
@@ -33,7 +34,16 @@ public class GeneratorIgnored<T>(T value) {
     }
 }
 
+/// <summary>
+///     Extension methods for creating <see cref="GeneratorIgnored{T}"/> instances.
+/// </summary>
 public static class GeneratorIgnoredExtensions {
+    /// <summary>
+    ///     Wraps a value in a <see cref="GeneratorIgnored{T}"/> wrapper.
+    /// </summary>
+    /// <typeparam name="T"> The type of the value. </typeparam>
+    /// <param name="value"> The value to wrap. </param>
+    /// <returns> A wrapped value that ignores equality comparisons. </returns>
     public static GeneratorIgnored<T> GeneratorIgnored<T>(this T value) {
         return new GeneratorIgnored<T>(value);
     }
