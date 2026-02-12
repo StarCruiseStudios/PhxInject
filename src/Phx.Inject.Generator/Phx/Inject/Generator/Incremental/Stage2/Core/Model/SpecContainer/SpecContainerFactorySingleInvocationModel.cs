@@ -18,6 +18,29 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 /// <summary>
 ///     Model representing a single factory method invocation in a specification container.
 /// </summary>
+/// <remarks>
+///     <para><b>Atomic Factory Call:</b></para>
+///     <para>
+///     Represents one step in a factory invocation chain. Each single invocation specifies exactly
+///     which container and which method to call. Multiple SingleInvocationModels compose into a
+///     SpecContainerFactoryInvocationModel to handle cross-container dependency resolution.
+///     </para>
+///     
+///     <para><b>Parameter Passing Pattern:</b></para>
+///     <para>
+///     The generated code calls the FactoryMethodName on the SpecContainerType, passing no
+///     explicit arguments (all dependency resolution happens recursively within that factory).
+///     This simplifies code generation and enables clean separation between containers.
+///     </para>
+///     
+///     <para><b>Generated Code Example:</b></para>
+///     <code>
+///     // SpecContainerType = "MySpec_Container"
+///     // FactoryMethodName = "CreateLogger"
+///     // Generates:
+///     mySpecContainer.CreateLogger()
+///     </code>
+/// </remarks>
 /// <param name="SpecContainerType"> The specification container type. </param>
 /// <param name="FactoryMethodName"> The name of the factory method to invoke. </param>
 /// <param name="Location"> The source location where this invocation is defined. </param>
