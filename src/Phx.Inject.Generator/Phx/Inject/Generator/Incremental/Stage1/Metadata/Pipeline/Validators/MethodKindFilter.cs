@@ -14,11 +14,29 @@ using Microsoft.CodeAnalysis;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 
+/// <summary>
+///     Specifies method kind filters for validation.
+/// </summary>
 internal enum MethodKindFilter {
+    /// <summary>
+    ///     Matches ordinary methods.
+    /// </summary>
     Method,
+    /// <summary>
+    ///     Matches constructor methods.
+    /// </summary>
     Constructor,
+    /// <summary>
+    ///     Matches property getter methods.
+    /// </summary>
     Getter,
+    /// <summary>
+    ///     Matches property setter methods.
+    /// </summary>
     Setter,
+    /// <summary>
+    ///     Matches any method kind.
+    /// </summary>
     Any
 }
 

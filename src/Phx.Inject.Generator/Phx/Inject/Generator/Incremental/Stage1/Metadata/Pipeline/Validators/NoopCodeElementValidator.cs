@@ -15,10 +15,15 @@ using Microsoft.CodeAnalysis;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 
+/// <summary>
+///     A no-operation validator that always returns true.
+/// </summary>
 internal class NoopCodeElementValidator : ICodeElementValidator {
     public static readonly NoopCodeElementValidator Instance = new();
     
+    /// <inheritdoc />
     public bool IsValidSymbol([NotNullWhen(true)] ISymbol? symbol) => true;
+    /// <inheritdoc />
     public bool IsValidSyntax(SyntaxNode syntaxNode) => true;
     
     private NoopCodeElementValidator() { }

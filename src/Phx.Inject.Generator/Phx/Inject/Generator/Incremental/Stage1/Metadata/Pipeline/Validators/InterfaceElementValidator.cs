@@ -18,12 +18,16 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 
+/// <summary>
+///     Validates that an interface meets specified requirements.
+/// </summary>
 internal class InterfaceElementValidator(
     CodeElementAccessibility requiredAccessibility = CodeElementAccessibility.Any,
     IReadOnlyList<IAttributeChecker>? requiredAttributes = null
 ) : ICodeElementValidator {
     private readonly IReadOnlyList<IAttributeChecker> requiredAttributes = requiredAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 
+    /// <inheritdoc />
     public bool IsValidSymbol([NotNullWhen(true)] ISymbol? symbol) {
         if (symbol is not ITypeSymbol typeSymbol) {
             return false;
@@ -44,6 +48,7 @@ internal class InterfaceElementValidator(
         return true;
     }
 
+    /// <inheritdoc />
     public bool IsValidSyntax(SyntaxNode syntaxNode) {
         if (syntaxNode is not InterfaceDeclarationSyntax interfaceDeclaration) {
             return false;

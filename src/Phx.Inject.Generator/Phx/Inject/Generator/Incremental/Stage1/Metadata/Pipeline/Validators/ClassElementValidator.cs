@@ -18,6 +18,9 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 
+/// <summary>
+///     Validates that a class meets specified requirements.
+/// </summary>
 internal class ClassElementValidator(
     CodeElementAccessibility requiredAccessibility = CodeElementAccessibility.Any,
     bool? isStatic = null,
@@ -26,6 +29,7 @@ internal class ClassElementValidator(
 ) : ICodeElementValidator {
     private readonly IReadOnlyList<IAttributeChecker> requiredAttributes = requiredAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 
+    /// <inheritdoc />
     public bool IsValidSymbol([NotNullWhen(true)] ISymbol? symbol) {
         if (symbol is not ITypeSymbol typeSymbol) {
             return false;
@@ -54,6 +58,7 @@ internal class ClassElementValidator(
         return true;
     }
 
+    /// <inheritdoc />
     public bool IsValidSyntax(SyntaxNode syntaxNode) {
         if (syntaxNode is not ClassDeclarationSyntax classDeclaration) {
             return false;

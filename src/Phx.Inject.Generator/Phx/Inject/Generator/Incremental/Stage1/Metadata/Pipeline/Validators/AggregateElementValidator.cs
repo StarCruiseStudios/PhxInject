@@ -15,13 +15,18 @@ using Microsoft.CodeAnalysis;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 
+/// <summary>
+///     Validates code elements using multiple validators.
+/// </summary>
 internal class AggregateElementValidator(
     IReadOnlyList<ICodeElementValidator> validators
 ) : ICodeElementValidator {
+    /// <inheritdoc />
     public bool IsValidSymbol([NotNullWhen(true)] ISymbol? symbol) {
         return validators.All(validator => validator.IsValidSymbol(symbol));
     }
 
+    /// <inheritdoc />
     public bool IsValidSyntax(SyntaxNode syntaxNode) {
         return validators.Any(validator => validator.IsValidSyntax(syntaxNode));
     }

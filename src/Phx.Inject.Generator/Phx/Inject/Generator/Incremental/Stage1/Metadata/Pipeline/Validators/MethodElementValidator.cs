@@ -18,6 +18,9 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 
+/// <summary>
+///     Validates that a method meets specified requirements.
+/// </summary>
 internal class MethodElementValidator(
     CodeElementAccessibility requiredAccessibility = CodeElementAccessibility.Any,
     MethodKindFilter methodKind = MethodKindFilter.Any,
@@ -32,6 +35,7 @@ internal class MethodElementValidator(
     private readonly IReadOnlyList<IAttributeChecker> requiredAttributes = requiredAttributes ?? ImmutableList<IAttributeChecker>.Empty;
     private readonly IReadOnlyList<IAttributeChecker> prohibitedAttributes = prohibitedAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 
+    /// <inheritdoc />
     public bool IsValidSymbol([NotNullWhen(true)] ISymbol? symbol) {
         if (symbol is not IMethodSymbol methodSymbol) {
             return false;
@@ -79,6 +83,7 @@ internal class MethodElementValidator(
         return true;
     }
 
+    /// <inheritdoc />
     public bool IsValidSyntax(SyntaxNode syntaxNode) {
         if (syntaxNode is not MethodDeclarationSyntax methodDeclaration) {
             return false;

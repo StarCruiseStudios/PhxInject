@@ -18,6 +18,9 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 
+/// <summary>
+///     Validates that a property meets specified requirements.
+/// </summary>
 internal class PropertyElementValidator(
     CodeElementAccessibility requiredAccessibility = CodeElementAccessibility.Any,
     bool? isStatic = null,
@@ -30,6 +33,7 @@ internal class PropertyElementValidator(
     private readonly IReadOnlyList<IAttributeChecker> requiredAttributes = requiredAttributes ?? ImmutableList<IAttributeChecker>.Empty;
     private readonly IReadOnlyList<IAttributeChecker> prohibitedAttributes = prohibitedAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 
+    /// <inheritdoc />
     public bool IsValidSymbol([NotNullWhen(true)] ISymbol? symbol) {
         if (symbol is not IPropertySymbol propertySymbol) {
             return false;
@@ -66,6 +70,7 @@ internal class PropertyElementValidator(
         return true;
     }
 
+    /// <inheritdoc />
     public bool IsValidSyntax(SyntaxNode syntaxNode) {
         if (syntaxNode is not PropertyDeclarationSyntax) {
             return false;

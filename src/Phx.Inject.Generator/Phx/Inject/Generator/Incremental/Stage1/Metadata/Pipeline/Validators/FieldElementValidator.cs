@@ -18,6 +18,9 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 
+/// <summary>
+///     Validates that a field meets specified requirements.
+/// </summary>
 internal class FieldElementValidator(
     CodeElementAccessibility requiredAccessibility = CodeElementAccessibility.Any,
     bool? isStatic = null,
@@ -28,6 +31,7 @@ internal class FieldElementValidator(
     private readonly IReadOnlyList<IAttributeChecker> requiredAttributes = requiredAttributes ?? ImmutableList<IAttributeChecker>.Empty;
     private readonly IReadOnlyList<IAttributeChecker> prohibitedAttributes = prohibitedAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 
+    /// <inheritdoc />
     public bool IsValidSymbol([NotNullWhen(true)] ISymbol? symbol) {
         if (symbol is not IFieldSymbol fieldSymbol) {
             return false;
@@ -56,6 +60,7 @@ internal class FieldElementValidator(
         return true;
     }
 
+    /// <inheritdoc />
     public bool IsValidSyntax(SyntaxNode syntaxNode) {
         if (syntaxNode is not FieldDeclarationSyntax) {
             return false;

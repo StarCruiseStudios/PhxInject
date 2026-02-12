@@ -14,8 +14,17 @@ using Microsoft.CodeAnalysis;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 
+/// <summary>
+///     Specifies accessibility requirements for code elements.
+/// </summary>
 internal enum CodeElementAccessibility {
+    /// <summary>
+    ///     Requires the code element to be public or internal.
+    /// </summary>
     PublicOrInternal,
+    /// <summary>
+    ///     Allows the code element to have any accessibility.
+    /// </summary>
     Any
 }
 
