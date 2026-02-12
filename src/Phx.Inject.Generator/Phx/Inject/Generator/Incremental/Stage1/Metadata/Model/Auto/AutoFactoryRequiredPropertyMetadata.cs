@@ -15,6 +15,12 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Auto;
 
+/// <summary>
+///     Metadata representing a required property for an auto-generated factory.
+/// </summary>
+/// <param name="RequiredPropertyName"> The name of the required property. </param>
+/// <param name="RequiredPropertyType"> The qualified type of the required property. </param>
+/// <param name="Location"> The source location of the property definition. </param>
 internal record AutoFactoryRequiredPropertyMetadata(
     string RequiredPropertyName,
     QualifiedTypeMetadata RequiredPropertyType,

@@ -16,6 +16,18 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 
+/// <summary>
+///     Metadata representing an analyzed specification interface.
+/// </summary>
+/// <param name="SpecInterfaceType"> The type metadata of the specification interface. </param>
+/// <param name="FactoryMethods"> The list of factory methods in the interface. </param>
+/// <param name="FactoryProperties"> The list of factory properties in the interface. </param>
+/// <param name="FactoryReferences"> The list of factory references in the interface. </param>
+/// <param name="BuilderMethods"> The list of builder methods in the interface. </param>
+/// <param name="BuilderReferences"> The list of builder references in the interface. </param>
+/// <param name="Links"> The list of link attributes in the interface. </param>
+/// <param name="SpecAttributeMetadata"> The [Specification] attribute metadata. </param>
+/// <param name="Location"> The source location of the interface definition. </param>
 internal record SpecInterfaceMetadata(
     TypeMetadata SpecInterfaceType,
     EquatableList<SpecFactoryMethodMetadata> FactoryMethods,

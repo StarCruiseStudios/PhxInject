@@ -15,10 +15,16 @@ using static Phx.Inject.Generator.Incremental.PhxInject;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
+/// <summary>
+///     Metadata representing an analyzed [InjectorDependency] attribute.
+/// </summary>
+/// <param name="AttributeMetadata"> The underlying attribute metadata. </param>
 internal record InjectorDependencyAttributeMetadata(
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
+    /// <summary> The fully-qualified name of the InjectorDependency attribute class. </summary>
     public const string AttributeClassName = $"{NamespaceName}.{nameof(InjectorDependencyAttribute)}";
     
+    /// <summary> Gets the source location of the attribute. </summary>
     public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

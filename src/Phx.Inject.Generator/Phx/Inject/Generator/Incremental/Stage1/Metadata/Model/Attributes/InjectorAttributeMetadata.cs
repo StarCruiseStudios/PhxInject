@@ -15,13 +15,21 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
+/// <summary>
+///     Metadata representing an analyzed [Injector] attribute.
+/// </summary>
+/// <param name="GeneratedClassName"> The optional name for the generated injector class. </param>
+/// <param name="Specifications"> The list of specification types for the injector. </param>
+/// <param name="AttributeMetadata"> The underlying attribute metadata. </param>
 internal record InjectorAttributeMetadata(
     string? GeneratedClassName,
     EquatableList<TypeMetadata> Specifications,
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
+    /// <summary> The fully-qualified name of the Injector attribute class. </summary>
     public const string AttributeClassName =
         $"{PhxInject.NamespaceName}.{nameof(InjectorAttribute)}";
     
+    /// <summary> Gets the source location of the attribute. </summary>
     public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

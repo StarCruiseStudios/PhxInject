@@ -16,6 +16,14 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 
+/// <summary>
+///     Metadata representing an analyzed child injector provider method.
+/// </summary>
+/// <param name="ChildProviderMethodName"> The name of the child provider method. </param>
+/// <param name="ChildInjectorType"> The type metadata of the child injector. </param>
+/// <param name="Parameters"> The list of parameters required to create the child injector. </param>
+/// <param name="ChildInjectorAttribute"> The [ChildInjector] attribute metadata. </param>
+/// <param name="Location"> The source location of the provider definition. </param>
 internal record InjectorChildProviderMetadata(
     string ChildProviderMethodName,
     TypeMetadata ChildInjectorType,

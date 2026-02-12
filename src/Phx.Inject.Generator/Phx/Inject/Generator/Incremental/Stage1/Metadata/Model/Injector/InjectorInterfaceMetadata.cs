@@ -16,6 +16,16 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 
+/// <summary>
+///     Metadata representing an analyzed injector interface.
+/// </summary>
+/// <param name="InjectorInterfaceType"> The type metadata of the injector interface. </param>
+/// <param name="Providers"> The list of provider methods in the injector. </param>
+/// <param name="Activators"> The list of activator methods in the injector. </param>
+/// <param name="ChildProviders"> The list of child provider methods in the injector. </param>
+/// <param name="InjectorAttributeMetadata"> The [Injector] attribute metadata. </param>
+/// <param name="DependencyAttributeMetadata"> The optional [Dependency] attribute metadata. </param>
+/// <param name="Location"> The source location of the interface definition. </param>
 internal record InjectorInterfaceMetadata(
     TypeMetadata InjectorInterfaceType,
     EquatableList<InjectorProviderMetadata> Providers,

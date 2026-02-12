@@ -16,6 +16,15 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 
+/// <summary>
+///     Metadata representing an analyzed specification factory reference.
+/// </summary>
+/// <param name="FactoryReferenceName"> The name of the factory reference. </param>
+/// <param name="FactoryReturnType"> The qualified type returned by the factory. </param>
+/// <param name="Parameters"> The list of parameters required by the factory. </param>
+/// <param name="FactoryReferenceAttributeMetadata"> The [FactoryReference] attribute metadata. </param>
+/// <param name="PartialFactoryAttributeMetadata"> The optional [Partial] attribute metadata. </param>
+/// <param name="Location"> The source location of the reference definition. </param>
 internal record SpecFactoryReferenceMetadata(
     string FactoryReferenceName,
     QualifiedTypeMetadata FactoryReturnType,

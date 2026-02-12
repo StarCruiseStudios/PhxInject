@@ -15,6 +15,12 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 
+/// <summary>
+///     Metadata representing an analyzed injector activator method.
+/// </summary>
+/// <param name="ActivatorMethodName"> The name of the activator method. </param>
+/// <param name="ActivatedType"> The qualified type that is activated. </param>
+/// <param name="Location"> The source location of the activator definition. </param>
 internal record InjectorActivatorMetadata(
     string ActivatorMethodName,
     QualifiedTypeMetadata ActivatedType,

@@ -14,4 +14,7 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 
+/// <summary>
+///     Interface for metadata representing type qualifiers.
+/// </summary>
 internal interface IQualifierMetadata : ISourceCodeElement, IEquatable<IQualifierMetadata> { }

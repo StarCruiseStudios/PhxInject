@@ -14,11 +14,18 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
+/// <summary>
+///     Metadata representing an analyzed [FactoryReference] attribute.
+/// </summary>
+/// <param name="FabricationMode"> The fabrication mode for the factory reference. </param>
+/// <param name="AttributeMetadata"> The underlying attribute metadata. </param>
 internal record FactoryReferenceAttributeMetadata(
     FabricationMode FabricationMode,
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
+    /// <summary> The fully-qualified name of the FactoryReference attribute class. </summary>
     public const string AttributeClassName = $"{PhxInject.NamespaceName}.{nameof(FactoryReferenceAttribute)}";
     
+    /// <summary> Gets the source location of the attribute. </summary>
     public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

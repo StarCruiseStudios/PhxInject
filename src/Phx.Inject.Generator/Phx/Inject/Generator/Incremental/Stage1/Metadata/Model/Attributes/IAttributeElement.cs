@@ -14,6 +14,9 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
+/// <summary>
+///     Interface for metadata elements that represent analyzed attributes.
+/// </summary>
 internal interface IAttributeElement : ISourceCodeElement {
     /// <summary> Gets the generic Attribute Metadata of the element. </summary>
     AttributeMetadata AttributeMetadata { get; }

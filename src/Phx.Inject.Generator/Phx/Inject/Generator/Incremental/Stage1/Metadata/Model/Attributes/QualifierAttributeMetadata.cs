@@ -15,11 +15,18 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
+/// <summary>
+///     Metadata representing an analyzed [Qualifier] attribute.
+/// </summary>
+/// <param name="QualifierType"> The type metadata of the qualifier. </param>
+/// <param name="AttributeMetadata"> The underlying attribute metadata. </param>
 internal record QualifierAttributeMetadata(
     TypeMetadata QualifierType,
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
+    /// <summary> The fully-qualified name of the Qualifier attribute class. </summary>
     public const string AttributeClassName = $"{PhxInject.NamespaceName}.{nameof(QualifierAttribute)}";
     
+    /// <summary> Gets the source location of the attribute. </summary>
     public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

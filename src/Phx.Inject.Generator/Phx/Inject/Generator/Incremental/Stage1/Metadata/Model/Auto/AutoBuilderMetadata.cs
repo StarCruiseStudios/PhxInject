@@ -16,6 +16,14 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Auto;
 
+/// <summary>
+///     Metadata representing an analyzed auto-generated builder method.
+/// </summary>
+/// <param name="AutoBuilderMethodName"> The name of the auto-generated builder method. </param>
+/// <param name="BuiltType"> The qualified type that is built by the builder. </param>
+/// <param name="Parameters"> The list of parameters required for building. </param>
+/// <param name="AutoBuilderAttributeMetadata"> The [AutoBuilder] attribute metadata. </param>
+/// <param name="Location"> The source location of the builder definition. </param>
 internal record AutoBuilderMetadata(
     string AutoBuilderMethodName,
     QualifiedTypeMetadata BuiltType,

@@ -16,6 +16,14 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 
+/// <summary>
+///     Metadata representing an analyzed specification builder method.
+/// </summary>
+/// <param name="BuilderMethodName"> The name of the builder method. </param>
+/// <param name="BuiltType"> The qualified type that is built. </param>
+/// <param name="Parameters"> The list of parameters required for building. </param>
+/// <param name="BuilderAttributeMetadata"> The [Builder] attribute metadata. </param>
+/// <param name="Location"> The source location of the method definition. </param>
 internal record SpecBuilderMethodMetadata(
     string BuilderMethodName,
     QualifiedTypeMetadata BuiltType,

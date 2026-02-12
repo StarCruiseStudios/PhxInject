@@ -14,11 +14,21 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 
+/// <summary>
+///     Metadata representing the absence of a qualifier annotation.
+/// </summary>
 internal record NoQualifierMetadata : IQualifierMetadata {
+    /// <summary> Gets the singleton instance of NoQualifierMetadata. </summary>
     public static NoQualifierMetadata Instance { get; } = new();
+    
+    /// <summary> Gets the source location (always null for no qualifier). </summary>
     public GeneratorIgnored<LocationInfo?> Location { get; } = new(null);
+    
     private NoQualifierMetadata() { }
 
+    /// <summary> Compares this no-qualifier with another for equality. </summary>
+    /// <param name="other"> The other qualifier to compare with. </param>
+    /// <returns> True if the other is also a NoQualifierMetadata, false otherwise. </returns>
     public virtual bool Equals(IQualifierMetadata? other) {
         return other is NoQualifierMetadata;
     }

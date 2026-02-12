@@ -16,6 +16,13 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 
+/// <summary>
+///     Metadata representing an analyzed injector dependency factory property.
+/// </summary>
+/// <param name="FactoryPropertyName"> The name of the factory property. </param>
+/// <param name="FactoryReturnType"> The qualified type returned by the factory. </param>
+/// <param name="FactoryAttributeMetadata"> The [Factory] attribute metadata. </param>
+/// <param name="Location"> The source location of the property definition. </param>
 internal record InjectorDependencyFactoryPropertyMetadata(
     string FactoryPropertyName,
     QualifiedTypeMetadata FactoryReturnType,
