@@ -8,7 +8,19 @@
 
 namespace Phx.Inject.Generator.Incremental.Diagnostics;
 
+/// <summary>
+///     Interface for recording diagnostic information during code generation.
+/// </summary>
 internal interface IDiagnosticsRecorder {
+    /// <summary>
+    ///     Adds a single diagnostic.
+    /// </summary>
+    /// <param name="diagnosticInfo"> The diagnostic to add. </param>
     void Add(DiagnosticInfo diagnosticInfo);
+    
+    /// <summary>
+    ///     Adds multiple diagnostics.
+    /// </summary>
+    /// <param name="diagnosticInfos"> The diagnostics to add. </param>
     void Add(IEnumerable<DiagnosticInfo> diagnosticInfos);
 }

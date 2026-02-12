@@ -14,17 +14,29 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Diagnostics;
 
+/// <summary>
+///     Records diagnostic information during code generation for later reporting.
+/// </summary>
 internal class DiagnosticsRecorder : IDiagnosticsRecorder {
+    /// <summary> The list of recorded diagnostics. </summary>
     private readonly List<DiagnosticInfo> diagnostics = new();
     
+    /// <inheritdoc />
     public void Add(DiagnosticInfo diagnosticInfo) {
         diagnostics.Add(diagnosticInfo);
     }
 
+    /// <inheritdoc />
     public void Add(IEnumerable<DiagnosticInfo> diagnosticInfos) {
         diagnostics.AddRange(diagnosticInfos);
     }
     
+    /// <summary>
+    ///     Executes a function while capturing any diagnostics it produces.
+    /// </summary>
+    /// <typeparam name="T"> The type of result value. </typeparam>
+    /// <param name="func"> The function to execute. </param>
+    /// <returns> A result containing the value and any captured diagnostics, or an error result if an exception occurred. </returns>
     public static IResult<T> Capture<T>(Func<IDiagnosticsRecorder, T> func) where T : IEquatable<T> {
         var recorder = new DiagnosticsRecorder();
         try {

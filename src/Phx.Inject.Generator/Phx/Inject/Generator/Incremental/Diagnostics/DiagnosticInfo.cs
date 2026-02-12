@@ -15,11 +15,21 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Diagnostics;
 
+/// <summary>
+///     Represents a diagnostic message to be reported during code generation.
+/// </summary>
+/// <param name="Type"> The type of diagnostic. </param>
+/// <param name="Message"> The diagnostic message. </param>
+/// <param name="Location"> The source code location where the diagnostic occurred. </param>
 internal record DiagnosticInfo(
     DiagnosticType Type,
     string Message,
     LocationInfo? Location
 ) {
+    /// <summary>
+    ///     Reports this diagnostic to the Roslyn source production context.
+    /// </summary>
+    /// <param name="context"> The source production context. </param>
     public void Report(SourceProductionContext context) {
         context.ReportDiagnostic(
             Diagnostic.Create(
