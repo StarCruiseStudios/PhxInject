@@ -18,14 +18,23 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 
 /// <summary>
 ///     Metadata representing an analyzed specification interface.
+///     <para>
+///         <strong>Specification Pattern:</strong> Interface specifications define abstract construction
+///         contracts, enabling polymorphic injection strategies where multiple implementations can provide
+///         the same dependency construction logic.
+///     </para>
+///     <para>
+///         Unlike classes, interface specifications are pure contracts and must be implemented by concrete
+///         specification classes to provide actual factory/builder logic.
+///     </para>
 /// </summary>
 /// <param name="SpecInterfaceType"> The type metadata of the specification interface. </param>
-/// <param name="FactoryMethods"> The list of factory methods in the interface. </param>
-/// <param name="FactoryProperties"> The list of factory properties in the interface. </param>
-/// <param name="FactoryReferences"> The list of factory references in the interface. </param>
-/// <param name="BuilderMethods"> The list of builder methods in the interface. </param>
-/// <param name="BuilderReferences"> The list of builder references in the interface. </param>
-/// <param name="Links"> The list of link attributes in the interface. </param>
+/// <param name="FactoryMethods"> Factory method contracts that create and return new instances. </param>
+/// <param name="FactoryProperties"> Factory property contracts that expose instance creation. </param>
+/// <param name="FactoryReferences"> Factory reference contracts wrapped as Func delegates. </param>
+/// <param name="BuilderMethods"> Builder method contracts that configure existing instances. </param>
+/// <param name="BuilderReferences"> Builder reference contracts wrapped as Action delegates. </param>
+/// <param name="Links"> Link attributes connecting this specification to injectors. </param>
 /// <param name="SpecAttributeMetadata"> The [Specification] attribute metadata. </param>
 /// <param name="Location"> The source location of the interface definition. </param>
 internal record SpecInterfaceMetadata(

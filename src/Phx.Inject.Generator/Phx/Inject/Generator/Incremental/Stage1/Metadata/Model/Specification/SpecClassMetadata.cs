@@ -18,14 +18,27 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 
 /// <summary>
 ///     Metadata representing an analyzed specification class.
+///     <para>
+///         <strong>Specification Pattern:</strong> Defines HOW dependencies are constructed, separate from
+///         the injector which defines WHAT is exposed. This separation enables reusability, composability,
+///         and clear separation of concerns between construction logic and API surface.
+///     </para>
+///     <para>
+///         <strong>Factory vs Builder:</strong>
+///         <list type="bullet">
+///             <item>Factories create new instances and return non-void types</item>
+///             <item>Builders configure existing instances and return void</item>
+///             <item>References wrap existing methods as delegates for reuse</item>
+///         </list>
+///     </para>
 /// </summary>
 /// <param name="SpecType"> The type metadata of the specification class. </param>
-/// <param name="FactoryMethods"> The list of factory methods in the specification. </param>
-/// <param name="FactoryProperties"> The list of factory properties in the specification. </param>
-/// <param name="FactoryReferences"> The list of factory references in the specification. </param>
-/// <param name="BuilderMethods"> The list of builder methods in the specification. </param>
-/// <param name="BuilderReferences"> The list of builder references in the specification. </param>
-/// <param name="Links"> The list of link attributes in the specification. </param>
+/// <param name="FactoryMethods"> Factory methods that create and return new instances. </param>
+/// <param name="FactoryProperties"> Factory properties that expose instance creation via getters. </param>
+/// <param name="FactoryReferences"> Wrapped factory methods exposed as Func delegates. </param>
+/// <param name="BuilderMethods"> Builder methods that configure existing instances (void return). </param>
+/// <param name="BuilderReferences"> Wrapped builder methods exposed as Action delegates. </param>
+/// <param name="Links"> Link attributes that connect this specification to injectors. </param>
 /// <param name="SpecAttributeMetadata"> The [Specification] attribute metadata. </param>
 /// <param name="Location"> The source location of the class definition. </param>
 internal record SpecClassMetadata(

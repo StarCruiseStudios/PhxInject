@@ -18,12 +18,27 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Auto;
 
 /// <summary>
 ///     Metadata representing an analyzed auto-generated factory.
+///     <para>
+///         <strong>Auto-Generation Convention:</strong> Classes meeting specific criteria are automatically
+///         treated as factories without explicit [Factory] attributes. Criteria include: public/internal
+///         accessibility, non-abstract, single public constructor, and all constructor dependencies
+///         satisfiable by the injection graph.
+///     </para>
+///     <para>
+///         <strong>Required Properties:</strong> Properties marked with 'required' keyword that must be
+///         initialized during object construction. The generator ensures these are satisfied either through
+///         constructor parameters or post-construction initialization.
+///     </para>
+///     <para>
+///         <strong>Scoping:</strong> Apply [Factory(FabricationMode.Scoped)] to the class to control
+///         instance lifetime (transient vs scoped).
+///     </para>
 /// </summary>
-/// <param name="AutoFactoryType"> The qualified type of the auto-generated factory. </param>
-/// <param name="Parameters"> The list of parameters required by the factory. </param>
-/// <param name="RequiredProperties"> The list of required properties for the factory. </param>
-/// <param name="AutoFactoryAttributeMetadata"> The [AutoFactory] attribute metadata. </param>
-/// <param name="Location"> The source location of the factory definition. </param>
+/// <param name="AutoFactoryType"> The type being auto-generated as a factory. </param>
+/// <param name="Parameters"> Constructor parameters that must be resolved from the dependency graph. </param>
+/// <param name="RequiredProperties"> C# 'required' properties that must be initialized post-construction. </param>
+/// <param name="AutoFactoryAttributeMetadata"> The [AutoFactory] attribute metadata controlling generation. </param>
+/// <param name="Location"> The source location of the class definition. </param>
 internal record AutoFactoryMetadata( 
     QualifiedTypeMetadata AutoFactoryType,
     EquatableList<QualifiedTypeMetadata> Parameters,

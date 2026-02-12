@@ -18,12 +18,21 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 
 /// <summary>
 ///     Metadata representing an analyzed specification factory reference.
+///     <para>
+///         <strong>Factory References:</strong> Wrap existing factory methods (e.g., static constructors,
+///         external factory functions) as Func delegates, enabling reuse of construction logic defined
+///         outside the specification.
+///     </para>
+///     <para>
+///         <strong>Key Distinction:</strong> References delegate to existing methods rather than defining
+///         new construction logic. Example: <c>[FactoryReference] Func&lt;int, MyClass&gt; Factory = MyClass.Create;</c>
+///     </para>
 /// </summary>
-/// <param name="FactoryReferenceName"> The name of the factory reference. </param>
-/// <param name="FactoryReturnType"> The qualified type returned by the factory. </param>
-/// <param name="Parameters"> The list of parameters required by the factory. </param>
+/// <param name="FactoryReferenceName"> The name of the factory reference property. </param>
+/// <param name="FactoryReturnType"> The qualified type returned by the referenced factory. </param>
+/// <param name="Parameters"> Runtime parameters required by the referenced factory. </param>
 /// <param name="FactoryReferenceAttributeMetadata"> The [FactoryReference] attribute metadata. </param>
-/// <param name="PartialFactoryAttributeMetadata"> The optional [Partial] attribute metadata. </param>
+/// <param name="PartialFactoryAttributeMetadata"> Optional [Partial] attribute for partial dependency satisfaction. </param>
 /// <param name="Location"> The source location of the reference definition. </param>
 internal record SpecFactoryReferenceMetadata(
     string FactoryReferenceName,
