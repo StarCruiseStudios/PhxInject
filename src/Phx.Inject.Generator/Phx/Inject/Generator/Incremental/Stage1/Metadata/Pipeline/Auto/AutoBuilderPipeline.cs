@@ -57,7 +57,7 @@ internal class AutoBuilderPipeline(
                         var paramQualifier = qualifierTransformer.Transform(param).OrThrow(diagnostics);
                         return param.Type.ToQualifiedTypeModel(paramQualifier);
                     })
-                    .ToImmutableArray();
+                    .ToEquatableList();
 
                 return new AutoBuilderMetadata(
                     targetSymbol.Name,

@@ -62,7 +62,7 @@ internal class AutoFactoryPipeline(
                     .Where(constructorValidator.IsValidSymbol)
                     .ToList();
 
-                var parameters = ImmutableArray<QualifiedTypeMetadata>.Empty;
+                var parameters = EquatableList<QualifiedTypeMetadata>.Empty;
                 if (constructors.Count == 1) {
                     var constructor = constructors[0];
                     parameters = constructor.Parameters
@@ -70,7 +70,7 @@ internal class AutoFactoryPipeline(
                             var paramQualifier = qualifierTransformer.Transform(param).OrThrow(diagnostics);
                             return param.Type.ToQualifiedTypeModel(paramQualifier);
                         })
-                        .ToImmutableArray();
+                        .ToEquatableList();
                 }
                 
                 // Extract required properties
@@ -79,7 +79,7 @@ internal class AutoFactoryPipeline(
                     .Where(autoFactoryRequiredPropertyTransformer.CanTransform)
                     .Select(autoFactoryRequiredPropertyTransformer.Transform)
                     .SelectOrThrow(diagnostics)
-                    .ToImmutableArray();
+                    .ToEquatableList();
 
                 return new AutoFactoryMetadata(
                     autoFactoryType,

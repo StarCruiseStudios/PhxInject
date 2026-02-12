@@ -52,7 +52,7 @@ internal class SpecFactoryMethodTransformer(
                     var paramQualifier = qualifierTransformer.Transform(param).OrThrow(diagnostics);
                     return param.Type.ToQualifiedTypeModel(paramQualifier);
                 })
-                .ToImmutableList();
+                .ToEquatableList();
 
             var factoryAttribute = factoryAttributeTransformer.Transform(methodSymbol).OrThrow(diagnostics);
             var partialAttribute = partialAttributeTransformer

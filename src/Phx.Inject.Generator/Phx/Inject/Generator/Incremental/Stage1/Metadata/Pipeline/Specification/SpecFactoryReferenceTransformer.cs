@@ -85,7 +85,7 @@ internal class SpecFactoryReferenceTransformer(
                     var paramQualifier = qualifierTransformer.Transform(paramType).OrThrow(diagnostics);
                     return paramType.ToQualifiedTypeModel(paramQualifier);
                 })
-                .ToImmutableList();
+                .ToEquatableList();
 
             var factoryReferenceAttribute =
                 factoryReferenceAttributeTransformer.Transform(symbol).OrThrow(diagnostics);

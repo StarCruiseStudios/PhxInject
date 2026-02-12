@@ -56,19 +56,19 @@ internal class InjectorInterfacePipeline(
                     .Where(injectorProviderTransformer.CanTransform)
                     .Select(injectorProviderTransformer.Transform)
                     .SelectOrThrow(diagnostics)
-                    .ToImmutableList();
+                    .ToEquatableList();
                 var activators = targetSymbol.GetMembers()
                     .OfType<IMethodSymbol>()
                     .Where(injectorActivatorTransformer.CanTransform)
                     .Select(injectorActivatorTransformer.Transform)
                     .SelectOrThrow(diagnostics)
-                    .ToImmutableList();
+                    .ToEquatableList();
                 var childProviders = targetSymbol.GetMembers()
                     .OfType<IMethodSymbol>()
                     .Where(injectorChildProviderTransformer.CanTransform)
                     .Select(injectorChildProviderTransformer.Transform)
                     .SelectOrThrow(diagnostics)
-                    .ToImmutableList();
+                    .ToEquatableList();
                 var dependencyAttributeMetadata = dependencyAttributeTransformer
                     .TransformOrNull(targetSymbol)?
                     .OrThrow(diagnostics);

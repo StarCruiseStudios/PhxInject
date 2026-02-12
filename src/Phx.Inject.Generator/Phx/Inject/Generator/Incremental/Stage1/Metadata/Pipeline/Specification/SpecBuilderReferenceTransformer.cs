@@ -84,7 +84,7 @@ internal class SpecBuilderReferenceTransformer(
                     var paramQualifier = qualifierTransformer.Transform(paramType).OrThrow(diagnostics);
                     return paramType.ToQualifiedTypeModel(paramQualifier);
                 })
-                .ToImmutableList();
+                .ToEquatableList();
 
             var builderReferenceAttribute =
                 builderReferenceAttributeTransformer.Transform(symbol).OrThrow(diagnostics);

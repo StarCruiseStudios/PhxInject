@@ -56,13 +56,13 @@ internal class InjectorDependencyPipeline(
                     .Where(specFactoryMethodTransformer.CanTransform)
                     .Select(specFactoryMethodTransformer.Transform)
                     .SelectOrThrow(diagnostics)
-                    .ToImmutableArray();
+                    .ToEquatableList();
                 
                 var factoryProperties = properties
                     .Where(specFactoryPropertyTransformer.CanTransform)
                     .Select(specFactoryPropertyTransformer.Transform)
                     .SelectOrThrow(diagnostics)
-                    .ToImmutableArray();
+                    .ToEquatableList();
                 
                 return new InjectorDependencyInterfaceMetadata(
                     injectorDependencyInterfaceType,

@@ -15,12 +15,12 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 
 internal record SpecClassMetadata(
     TypeMetadata SpecType,
-    IEnumerable<SpecFactoryMethodMetadata> FactoryMethods,
-    IEnumerable<SpecFactoryPropertyMetadata> FactoryProperties,
-    IEnumerable<SpecFactoryReferenceMetadata> FactoryReferences,
-    IEnumerable<SpecBuilderMethodMetadata> BuilderMethods,
-    IEnumerable<SpecBuilderReferenceMetadata> BuilderReferences,
-    IEnumerable<LinkAttributeMetadata> Links,
+    EquatableList<SpecFactoryMethodMetadata> FactoryMethods,
+    EquatableList<SpecFactoryPropertyMetadata> FactoryProperties,
+    EquatableList<SpecFactoryReferenceMetadata> FactoryReferences,
+    EquatableList<SpecBuilderMethodMetadata> BuilderMethods,
+    EquatableList<SpecBuilderReferenceMetadata> BuilderReferences,
+    EquatableList<LinkAttributeMetadata> Links,
     SpecificationAttributeMetadata SpecAttributeMetadata,
     GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement { }

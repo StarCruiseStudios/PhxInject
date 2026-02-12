@@ -16,7 +16,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 internal record SpecFactoryMethodMetadata(
     string FactoryMethodName,
     QualifiedTypeMetadata FactoryReturnType,
-    IEnumerable<QualifiedTypeMetadata> Parameters,
+    EquatableList<QualifiedTypeMetadata> Parameters,
     FactoryAttributeMetadata FactoryAttributeMetadata,
     PartialAttributeMetadata? PartialFactoryAttributeMetadata,
     GeneratorIgnored<LocationInfo?> Location

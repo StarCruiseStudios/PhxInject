@@ -15,9 +15,9 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 
 internal record InjectorInterfaceMetadata(
     TypeMetadata InjectorInterfaceType,
-    IEnumerable<InjectorProviderMetadata> Providers,
-    IEnumerable<InjectorActivatorMetadata> Activators,
-    IEnumerable<InjectorChildProviderMetadata> ChildProviders,
+    EquatableList<InjectorProviderMetadata> Providers,
+    EquatableList<InjectorActivatorMetadata> Activators,
+    EquatableList<InjectorChildProviderMetadata> ChildProviders,
     InjectorAttributeMetadata InjectorAttributeMetadata,
     DependencyAttributeMetadata? DependencyAttributeMetadata,
     GeneratorIgnored<LocationInfo?> Location

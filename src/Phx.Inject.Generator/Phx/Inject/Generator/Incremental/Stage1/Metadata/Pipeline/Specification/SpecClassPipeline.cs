@@ -66,13 +66,13 @@ internal class SpecClassPipeline(
                     .Where(specFactoryMethodTransformer.CanTransform)
                     .Select(specFactoryMethodTransformer.Transform)
                     .SelectOrThrow(diagnostics)
-                    .ToImmutableArray();
+                    .ToEquatableList();
                 
                 var factoryProperties = properties
                     .Where(specFactoryPropertyTransformer.CanTransform)
                     .Select(specFactoryPropertyTransformer.Transform)
                     .SelectOrThrow(diagnostics)
-                    .ToImmutableArray();
+                    .ToEquatableList();
                 
                 var factoryReferences = properties
                     .Where(specFactoryReferenceTransformer.CanTransform)
@@ -82,13 +82,13 @@ internal class SpecClassPipeline(
                         .Where(specFactoryReferenceTransformer.CanTransform)
                         .Select(specFactoryReferenceTransformer.Transform)
                         .SelectOrThrow(diagnostics))
-                    .ToImmutableArray();
+                    .ToEquatableList();
                 
                 var builderMethods = methods
                     .Where(specBuilderMethodTransformer.CanTransform)
                     .Select(specBuilderMethodTransformer.Transform)
                     .SelectOrThrow(diagnostics)
-                    .ToImmutableArray();
+                    .ToEquatableList();
                 
                 var builderReferences = properties
                     .Where(specBuilderReferenceTransformer.CanTransform)
@@ -99,7 +99,7 @@ internal class SpecClassPipeline(
                         .Select(specBuilderReferenceTransformer.Transform)
                         .SelectOrThrow(diagnostics)
                     )
-                    .ToImmutableArray();
+                    .ToEquatableList();
                 
                 var links = linkAttributeTransformer.Transform(targetSymbol);
                 

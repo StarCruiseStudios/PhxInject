@@ -16,7 +16,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Auto;
 internal record AutoBuilderMetadata(
     string AutoBuilderMethodName,
     QualifiedTypeMetadata BuiltType,
-    IEnumerable<QualifiedTypeMetadata> Parameters,
+    EquatableList<QualifiedTypeMetadata> Parameters,
     AutoBuilderAttributeMetadata AutoBuilderAttributeMetadata,
     GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement { }

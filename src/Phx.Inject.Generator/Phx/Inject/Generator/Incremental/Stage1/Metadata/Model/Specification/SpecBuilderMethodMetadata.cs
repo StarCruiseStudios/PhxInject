@@ -16,7 +16,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 internal record SpecBuilderMethodMetadata(
     string BuilderMethodName,
     QualifiedTypeMetadata BuiltType,
-    IEnumerable<QualifiedTypeMetadata> Parameters,
+    EquatableList<QualifiedTypeMetadata> Parameters,
     BuilderAttributeMetadata BuilderAttributeMetadata,
     GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement { }

@@ -15,8 +15,8 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 
 internal record InjectorDependencyInterfaceMetadata(
     TypeMetadata InjectorDependencyInterfaceType,
-    IEnumerable<SpecFactoryMethodMetadata> FactoryMethods,
-    IEnumerable<SpecFactoryPropertyMetadata> FactoryProperties,
+    EquatableList<SpecFactoryMethodMetadata> FactoryMethods,
+    EquatableList<SpecFactoryPropertyMetadata> FactoryProperties,
     InjectorDependencyAttributeMetadata InjectorDependencyAttributeMetadata,
     GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement { }

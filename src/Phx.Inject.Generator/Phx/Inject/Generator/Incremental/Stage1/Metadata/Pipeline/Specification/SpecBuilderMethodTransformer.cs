@@ -52,7 +52,7 @@ internal class SpecBuilderMethodTransformer(
                     var paramQualifier = qualifierTransformer.Transform(param).OrThrow(diagnostics);
                     return param.Type.ToQualifiedTypeModel(paramQualifier);
                 })
-                .ToImmutableList();
+                .ToEquatableList();
 
             var builderAttribute = builderAttributeTransformer.Transform(methodSymbol).OrThrow(diagnostics);
 
