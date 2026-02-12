@@ -21,6 +21,124 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 /// <summary>
 ///     Transforms Injector attribute data into metadata.
 /// </summary>
+/// <remarks>
+///     <para><b>Purpose - Root Injector Configuration:</b></para>
+///     <para>
+///     [Injector] marks interfaces or classes that should have generated dependency injector
+///     implementations. This is the entry point attribute that triggers the entire code generation
+///     pipeline. The transformer extracts configuration controlling how the injector is generated.
+///     </para>
+///     
+///     <para><b>Attribute Arguments - What We Extract and WHY:</b></para>
+///     <list type="number">
+///         <item>
+///             <term>GeneratedClassName (string, optional):</term>
+///             <description>
+///             The name for the generated implementation class. Extracted from either named argument
+///             or first non-array constructor argument. Users specify this to avoid name collisions
+///             or follow naming conventions (e.g., "ProdAppInjector" vs "TestAppInjector").
+///             If null, generator falls back to convention-based naming (interface name + "Impl").
+///             </description>
+///         </item>
+///         <item>
+///             <term>Specifications (ITypeSymbol[], optional):</term>
+///             <description>
+///             Additional specification interfaces this injector should implement. Extracted by
+///             filtering constructor arguments for non-array TypedConstant entries (distinguishes
+///             from other type arguments). Specifications define contracts for provided dependencies
+///             without requiring the interface to explicitly declare all provider methods.
+///             WHY: Allows injector to satisfy multiple interface contracts, enabling composition
+///             patterns where different components expect different subsets of dependencies.
+///             </description>
+///         </item>
+///     </list>
+///     
+///     <para><b>Argument Extraction Strategy - Named vs Positional:</b></para>
+///     <para>
+///     Checks named arguments first (GetNamedArgument), falls back to constructor arguments
+///     (GetConstructorArgument). This dual-check pattern handles both attribute invocation styles:
+///     </para>
+///     <code>
+///     [Injector(GeneratedClassName = "MyInjector")]  // Named argument
+///     [Injector("MyInjector")]                        // Positional argument
+///     </code>
+///     <para>
+///     Named arguments are preferred (checked first) as they're more explicit and version-resilient.
+///     Constructor argument extraction requires predicates since parameter names are unavailable -
+///     we use `argument.Kind != TypedConstantKind.Array` to filter for the string argument vs
+///     the Type[] specification array.
+///     </para>
+///     
+///     <para><b>Type Argument Handling - ITypeSymbol to TypeModel:</b></para>
+///     <para>
+///     Specification types are extracted as ITypeSymbol from Roslyn, then converted to TypeModel
+///     via ToTypeModel(). This conversion is crucial:
+///     </para>
+///     <list type="bullet">
+///         <item>
+///             <description>
+///             ITypeSymbol is Roslyn's semantic representation, tied to Compilation lifetime
+///             </description>
+///         </item>
+///         <item>
+///             <description>
+///             TypeModel is our domain representation with structural equality for incremental caching
+///             </description>
+///         </item>
+///         <item>
+///             <description>
+///             TypeModel captures fully qualified names and generic arity without holding Compilation references
+///             </description>
+///         </item>
+///     </list>
+///     
+///     <para><b>Error Handling - Why No Validation Here:</b></para>
+///     <para>
+///     This transformer performs no semantic validation (e.g., checking if GeneratedClassName is
+///     a valid identifier, or if specifications are actually interfaces). Returns ToOkResult()
+///     unconditionally. WHY:
+///     </para>
+///     <list type="bullet">
+///         <item>
+///             <description>
+///             Attribute extraction phase should be pure data transformation
+///             </description>
+///         </item>
+///         <item>
+///             <description>
+///             Validation happens in dedicated validator pipeline after all attributes are extracted
+///             </description>
+///         </item>
+///         <item>
+///             <description>
+///             Allows validators to see complete attribute context before reporting errors
+///             </description>
+///         </item>
+///     </list>
+///     <para>
+///     If attribute arguments are fundamentally malformed (e.g., wrong types), Roslyn's
+///     GetConstructorArgument extensions return null/default, which later validators can detect.
+///     </para>
+///     
+///     <para><b>Performance Considerations:</b></para>
+///     <list type="bullet">
+///         <item>
+///             <description>
+///             Only called when HasAttribute confirmed [Injector] presence (avoid redundant GetAttributes)
+///             </description>
+///         </item>
+///         <item>
+///             <description>
+///             ExpectSingleAttribute uses SingleOrDefault, catching attribute duplication early
+///             </description>
+///         </item>
+///         <item>
+///             <description>
+///             ToTypeModel() allocates TypeModel but is unavoidable for incremental caching contract
+///             </description>
+///         </item>
+///     </list>
+/// </remarks>
 internal class InjectorAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
 ) : IAttributeTransformer<InjectorAttributeMetadata> {
