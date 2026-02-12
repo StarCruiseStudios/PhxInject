@@ -24,12 +24,18 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specification;
 
+/// <summary>
+/// Transforms specification factory properties into metadata.
+/// </summary>
 internal class SpecFactoryPropertyTransformer(
     ICodeElementValidator elementValidator,
     ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer,
     IAttributeTransformer<FactoryAttributeMetadata> factoryAttributeTransformer,
     IAttributeTransformer<PartialAttributeMetadata> partialAttributeTransformer
 ) : ITransformer<IPropertySymbol, SpecFactoryPropertyMetadata> {
+    /// <summary>
+    /// Gets the singleton instance.
+    /// </summary>
     public static readonly SpecFactoryPropertyTransformer Instance = new(
         new PropertyElementValidator(
             CodeElementAccessibility.PublicOrInternal,
@@ -47,10 +53,12 @@ internal class SpecFactoryPropertyTransformer(
         PartialAttributeTransformer.Instance
     );
 
+    /// <inheritdoc />
     public bool CanTransform(IPropertySymbol propertySymbol) {
         return elementValidator.IsValidSymbol(propertySymbol);
     }
 
+    /// <inheritdoc />
     public IResult<SpecFactoryPropertyMetadata> Transform(IPropertySymbol propertySymbol) {
         return DiagnosticsRecorder.Capture(diagnostics => {
             var factoryPropertyName = propertySymbol.Name;

@@ -23,6 +23,9 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specification;
 
+/// <summary>
+/// Pipeline for processing Specification class declarations into metadata.
+/// </summary>
 internal class SpecClassPipeline(
     ICodeElementValidator elementValidator,
     IAttributeTransformer<SpecificationAttributeMetadata> specificationAttributeTransformer,
@@ -33,6 +36,9 @@ internal class SpecClassPipeline(
     ITransformer<ISymbol, SpecBuilderReferenceMetadata> specBuilderReferenceTransformer,
     IAttributeListTransformer<LinkAttributeMetadata> linkAttributeTransformer
 ) : ISyntaxValuesPipeline<SpecClassMetadata> {
+    /// <summary>
+    /// Gets the singleton instance.
+    /// </summary>
     public static readonly SpecClassPipeline Instance = new(
         new ClassElementValidator(
             CodeElementAccessibility.PublicOrInternal,
@@ -46,6 +52,7 @@ internal class SpecClassPipeline(
         SpecBuilderReferenceTransformer.Instance,
         LinkAttributeTransformer.Instance);
     
+    /// <inheritdoc />
     public IncrementalValuesProvider<IResult<SpecClassMetadata>> Select(
         SyntaxValueProvider syntaxProvider
     ) {

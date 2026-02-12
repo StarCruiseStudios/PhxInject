@@ -24,12 +24,18 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specification;
 
+/// <summary>
+/// Transforms specification factory references into metadata.
+/// </summary>
 internal class SpecFactoryReferenceTransformer(
     ICodeElementValidator elementValidator,
     ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer,
     IAttributeTransformer<FactoryReferenceAttributeMetadata> factoryReferenceAttributeTransformer,
     IAttributeTransformer<PartialAttributeMetadata> partialAttributeTransformer
 ) : ITransformer<ISymbol, SpecFactoryReferenceMetadata> {
+    /// <summary>
+    /// Gets the singleton instance.
+    /// </summary>
     public static readonly SpecFactoryReferenceTransformer Instance = new(
             CodeElementValidator.Of(
             new FieldElementValidator(
@@ -56,10 +62,12 @@ internal class SpecFactoryReferenceTransformer(
         PartialAttributeTransformer.Instance
     );
 
+    /// <inheritdoc />
     public bool CanTransform(ISymbol symbol) {
         return elementValidator.IsValidSymbol(symbol);
     }
 
+    /// <inheritdoc />
     public IResult<SpecFactoryReferenceMetadata> Transform(ISymbol symbol) {
         return DiagnosticsRecorder.Capture(diagnostics => {
             var (name, type) = symbol switch {
