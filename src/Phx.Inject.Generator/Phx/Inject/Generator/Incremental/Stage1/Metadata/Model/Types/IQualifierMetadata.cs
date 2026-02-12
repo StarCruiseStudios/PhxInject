@@ -10,6 +10,4 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 
-internal interface IQualifierMetadata : ISourceCodeElement {
-    
-}
+internal interface IQualifierMetadata : ISourceCodeElement, IEquatable<IQualifierMetadata> { }

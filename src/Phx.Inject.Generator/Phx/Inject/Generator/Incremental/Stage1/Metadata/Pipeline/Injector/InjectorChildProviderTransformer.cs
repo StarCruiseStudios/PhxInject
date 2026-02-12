@@ -9,6 +9,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
@@ -35,19 +36,22 @@ internal class InjectorChildProviderTransformer(
         return elementValidator.IsValidSymbol(methodSymbol);
     }
 
-    public InjectorChildProviderMetadata Transform(IMethodSymbol methodSymbol) {
-        var name = methodSymbol.Name;
-        var childInjectorAttribute = childInjectorAttributeTransformer.Transform(methodSymbol);
-        var childInjectorType = methodSymbol.ReturnType.ToTypeModel();
-        var parameters = methodSymbol.Parameters
-            .Select(p => p.Type.ToTypeModel())
-            .ToEquatableList();
-        
-        return new InjectorChildProviderMetadata(
-            name,
-            childInjectorType,
-            parameters,
-            childInjectorAttribute,
-            methodSymbol.GetLocationOrDefault().GeneratorIgnored());
+    public IResult<InjectorChildProviderMetadata> Transform(IMethodSymbol methodSymbol) {
+        return DiagnosticsRecorder.Capture(diagnostics => {
+            var name = methodSymbol.Name;
+            var childInjectorAttribute =
+                childInjectorAttributeTransformer.Transform(methodSymbol).GetOrThrow(diagnostics);
+            var childInjectorType = methodSymbol.ReturnType.ToTypeModel();
+            var parameters = methodSymbol.Parameters
+                .Select(p => p.Type.ToTypeModel())
+                .ToEquatableList();
+
+            return new InjectorChildProviderMetadata(
+                name,
+                childInjectorType,
+                parameters,
+                childInjectorAttribute,
+                methodSymbol.GetLocationOrDefault().GeneratorIgnored());
+        });
     }
 }

@@ -42,20 +42,13 @@ internal class AutoBuilderPipeline(
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => DiagnosticsRecorder.Capture(diagnostics => {
                 var targetSymbol = (IMethodSymbol)context.TargetSymbol;
-                AutoBuilderAttributeMetadata? autoBuilderAttributeMetadata = null;
-                try {
-                    autoBuilderAttributeMetadata = autoBuilderAttributeTransformer.Transform(targetSymbol);
-                } catch (Exception ex) {
-                    throw new GeneratorException(new DiagnosticInfo(
-                        Diagnostics.DiagnosticType.UnexpectedError,
-                        $"Error transforming AutoBuilder attribute: {ex.Message}",
-                        LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
-                    ));
-                }
-
+                var autoBuilderAttributeMetadata = autoBuilderAttributeTransformer
+                    .Transform(targetSymbol)
+                    .GetOrThrow(diagnostics);
+                
                 // The built type is the first parameter of the builder method
                 // Get qualifier from the method itself (for Label attribute)
-                var builtTypeQualifier = qualifierTransformer.Transform(targetSymbol);
+                var builtTypeQualifier = qualifierTransformer.Transform(targetSymbol).GetOrThrow(diagnostics);
                 var builtType = new QualifiedTypeMetadata(
                     targetSymbol.Parameters[0].Type.ToTypeModel(),
                     builtTypeQualifier
@@ -64,7 +57,7 @@ internal class AutoBuilderPipeline(
                 // Remaining parameters (skip first parameter which is the built type)
                 var parameters = targetSymbol.Parameters.Skip(1)
                     .Select(param => {
-                        var paramQualifier = qualifierTransformer.Transform(param);
+                        var paramQualifier = qualifierTransformer.Transform(param).GetOrThrow(diagnostics);
                         return new QualifiedTypeMetadata(
                             param.Type.ToTypeModel(),
                             paramQualifier

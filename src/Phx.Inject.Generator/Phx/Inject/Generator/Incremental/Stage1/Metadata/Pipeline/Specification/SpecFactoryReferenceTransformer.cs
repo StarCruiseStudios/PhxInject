@@ -9,6 +9,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
@@ -54,54 +55,57 @@ internal class SpecFactoryReferenceTransformer(
         return elementValidator.IsValidSymbol(symbol);
     }
 
-    public SpecFactoryReferenceMetadata Transform(ISymbol symbol) {
-        var (name, type) = symbol switch {
-            IFieldSymbol field => (field.Name, field.Type),
-            IPropertySymbol property => (property.Name, property.Type),
-            _ => throw new InvalidOperationException($"Expected field or property symbol, got {symbol.GetType()}")
-        };
+    public IResult<SpecFactoryReferenceMetadata> Transform(ISymbol symbol) {
+        return DiagnosticsRecorder.Capture(diagnostics => {
+            var (name, type) = symbol switch {
+                IFieldSymbol field => (field.Name, field.Type),
+                IPropertySymbol property => (property.Name, property.Type),
+                _ => throw new InvalidOperationException($"Expected field or property symbol, got {symbol.GetType()}")
+            };
 
-        // Factory reference type is IFactory<TParam1, ..., TReturn>
-        // Extract type arguments to get parameters and return type
-        var typeArguments = type is INamedTypeSymbol namedType 
-            ? namedType.TypeArguments 
-            : ImmutableArray<ITypeSymbol>.Empty;
-        
-        if (typeArguments.Length == 0) {
-            throw new InvalidOperationException($"Factory reference {name} must have type arguments");
-        }
+            // Factory reference type is IFactory<TParam1, ..., TReturn>
+            // Extract type arguments to get parameters and return type
+            var typeArguments = type is INamedTypeSymbol namedType
+                ? namedType.TypeArguments
+                : ImmutableArray<ITypeSymbol>.Empty;
 
-        // Last type argument is return type, others are parameters
-        var returnTypeSymbol = typeArguments[typeArguments.Length - 1];
-        var returnTypeQualifier = qualifierTransformer.Transform(symbol);
-        var factoryReturnType = new QualifiedTypeMetadata(
-            returnTypeSymbol.ToTypeModel(),
-            returnTypeQualifier
-        );
-        
-        var parameters = typeArguments
-            .Take(typeArguments.Length - 1)
-            .Select(paramType => {
-                var paramQualifier = qualifierTransformer.Transform(paramType);
-                return new QualifiedTypeMetadata(
-                    paramType.ToTypeModel(),
-                    paramQualifier
-                );
-            })
-            .ToImmutableList();
+            if (typeArguments.Length == 0) {
+                throw new InvalidOperationException($"Factory reference {name} must have type arguments");
+            }
 
-        var factoryReferenceAttribute = factoryReferenceAttributeTransformer.Transform(symbol);
-        var partialAttribute = partialAttributeTransformer.HasAttribute(symbol)
-            ? partialAttributeTransformer.Transform(symbol)
-            : null;
+            // Last type argument is return type, others are parameters
+            var returnTypeSymbol = typeArguments[typeArguments.Length - 1];
+            var returnTypeQualifier = qualifierTransformer.Transform(symbol).GetOrThrow(diagnostics);
+            var factoryReturnType = new QualifiedTypeMetadata(
+                returnTypeSymbol.ToTypeModel(),
+                returnTypeQualifier
+            );
 
-        return new SpecFactoryReferenceMetadata(
-            name,
-            factoryReturnType,
-            parameters,
-            factoryReferenceAttribute,
-            partialAttribute,
-            symbol.GetLocationOrDefault().GeneratorIgnored()
-        );
+            var parameters = typeArguments
+                .Take(typeArguments.Length - 1)
+                .Select(paramType => {
+                    var paramQualifier = qualifierTransformer.Transform(paramType).GetOrThrow(diagnostics);
+                    return new QualifiedTypeMetadata(
+                        paramType.ToTypeModel(),
+                        paramQualifier
+                    );
+                })
+                .ToImmutableList();
+
+            var factoryReferenceAttribute =
+                factoryReferenceAttributeTransformer.Transform(symbol).GetOrThrow(diagnostics);
+            var partialAttribute = partialAttributeTransformer.HasAttribute(symbol)
+                ? partialAttributeTransformer.Transform(symbol).GetOrThrow(diagnostics)
+                : null;
+
+            return new SpecFactoryReferenceMetadata(
+                name,
+                factoryReturnType,
+                parameters,
+                factoryReferenceAttribute,
+                partialAttribute,
+                symbol.GetLocationOrDefault().GeneratorIgnored()
+            );
+        });
     }
 }

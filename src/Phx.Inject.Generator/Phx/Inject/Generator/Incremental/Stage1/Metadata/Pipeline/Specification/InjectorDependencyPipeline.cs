@@ -42,16 +42,9 @@ internal class InjectorDependencyPipeline(
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => DiagnosticsRecorder.Capture(diagnostics => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
-                InjectorDependencyAttributeMetadata? injectorDependencyAttributeMetadata = null;
-                try {
-                    injectorDependencyAttributeMetadata = injectorDependencyAttributeTransformer.Transform(targetSymbol);
-                } catch (Exception ex) {
-                    throw new GeneratorException(new DiagnosticInfo(
-                        Diagnostics.DiagnosticType.UnexpectedError,
-                        $"Error transforming InjectorDependency attribute: {ex.Message}",
-                        LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
-                    ));
-                }
+                var injectorDependencyAttributeMetadata = injectorDependencyAttributeTransformer
+                    .Transform(targetSymbol)
+                    .GetOrThrow(diagnostics);
 
                 var injectorDependencyInterfaceType = targetSymbol.ToTypeModel();
                 
@@ -62,11 +55,13 @@ internal class InjectorDependencyPipeline(
                 var factoryMethods = methods
                     .Where(specFactoryMethodTransformer.CanTransform)
                     .Select(specFactoryMethodTransformer.Transform)
+                    .SelectOrThrow(diagnostics)
                     .ToImmutableArray();
                 
                 var factoryProperties = properties
                     .Where(specFactoryPropertyTransformer.CanTransform)
                     .Select(specFactoryPropertyTransformer.Transform)
+                    .SelectOrThrow(diagnostics)
                     .ToImmutableArray();
                 
                 return new InjectorDependencyInterfaceMetadata(

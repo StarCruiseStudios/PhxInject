@@ -46,45 +46,34 @@ internal class InjectorInterfacePipeline(
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => DiagnosticsRecorder.Capture(diagnostics => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
-                InjectorAttributeMetadata? injectorAttributeMetadata = null;
-                try {
-                    injectorAttributeMetadata = injectorAttributeTransformer.Transform(targetSymbol);
-                } catch (Exception ex) {
-                    throw new GeneratorException(new DiagnosticInfo(
-                        Diagnostics.DiagnosticType.UnexpectedError,
-                        $"Error transforming Injector attribute: {ex.Message}",
-                        LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
-                    ));
-                }
+                var injectorAttributeMetadata = injectorAttributeTransformer
+                    .Transform(targetSymbol)
+                    .GetOrThrow(diagnostics);
 
                 var injectorInterfaceType = targetSymbol.ToTypeModel();
                 var providers = targetSymbol.GetMembers()
                     .OfType<IMethodSymbol>()
                     .Where(injectorProviderTransformer.CanTransform)
                     .Select(injectorProviderTransformer.Transform)
+                    .SelectOrThrow(diagnostics)
                     .ToImmutableList();
                 var activators = targetSymbol.GetMembers()
                     .OfType<IMethodSymbol>()
                     .Where(injectorActivatorTransformer.CanTransform)
                     .Select(injectorActivatorTransformer.Transform)
+                    .SelectOrThrow(diagnostics)
                     .ToImmutableList();
                 var childProviders = targetSymbol.GetMembers()
                     .OfType<IMethodSymbol>()
                     .Where(injectorChildProviderTransformer.CanTransform)
                     .Select(injectorChildProviderTransformer.Transform)
+                    .SelectOrThrow(diagnostics)
                     .ToImmutableList();
                 DependencyAttributeMetadata? dependencyAttributeMetadata = null;
                 if (dependencyAttributeTransformer.HasAttribute(targetSymbol)) {
-                    try {
-                        dependencyAttributeMetadata = dependencyAttributeTransformer.Transform(targetSymbol);
-                    } catch (Exception ex) {
-                        diagnostics.Add(new DiagnosticInfo(
-                            Diagnostics.DiagnosticType.UnexpectedError,
-                            $"Error transforming Dependency attribute: {ex.Message}",
-                            LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
-                        ));
-                    }
+                    dependencyAttributeMetadata = dependencyAttributeTransformer.Transform(targetSymbol).GetOrThrow(diagnostics);
                 }
+                
                 return new InjectorInterfaceMetadata(
                     injectorInterfaceType,
                     providers,

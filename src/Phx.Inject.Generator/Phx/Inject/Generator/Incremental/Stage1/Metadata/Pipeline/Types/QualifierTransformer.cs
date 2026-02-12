@@ -7,6 +7,7 @@
 // -----------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
@@ -25,18 +26,20 @@ internal class QualifierTransformer(
     private IAttributeChecker? labelChecker = labelAttributeTransformer as IAttributeChecker;
     private IAttributeChecker? qualifierChecker = qualifierAttributeTransformer as IAttributeChecker;
     
-    public IQualifierMetadata Transform(ISymbol targetSymbol) {
-        if (labelChecker?.HasAttribute(targetSymbol) == true) {
-            var labelAttributeMetadata = labelAttributeTransformer.Transform(targetSymbol);
-            return new LabelQualifierMetadata(labelAttributeMetadata);
-        }
+    public IResult<IQualifierMetadata> Transform(ISymbol targetSymbol) {
+        return DiagnosticsRecorder.Capture<IQualifierMetadata>(diagnostics => {
+            if (labelChecker?.HasAttribute(targetSymbol) == true) {
+                var labelAttributeMetadata = labelAttributeTransformer.Transform(targetSymbol).GetOrThrow(diagnostics);
+                return new LabelQualifierMetadata(labelAttributeMetadata);
+            }
 
-        if (qualifierChecker?.HasAttribute(targetSymbol) == true) {
-            var qualifierAttributeMetadata = qualifierAttributeTransformer.Transform(targetSymbol);
-            return new CustomQualifierMetadata(qualifierAttributeMetadata);
-        }
+            if (qualifierChecker?.HasAttribute(targetSymbol) == true) {
+                var qualifierAttributeMetadata = qualifierAttributeTransformer.Transform(targetSymbol).GetOrThrow(diagnostics);
+                return new CustomQualifierMetadata(qualifierAttributeMetadata);
+            }
 
-        return NoQualifierMetadata.Instance;
+            return NoQualifierMetadata.Instance;
+        });
     }
 }
 

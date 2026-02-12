@@ -8,6 +8,7 @@
 
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Auto;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Types;
@@ -43,15 +44,17 @@ internal class AutoFactoryRequiredPropertyTransformer(
         return setMethod != null && setterElementValidator.IsValidSymbol(setMethod);
     }
 
-    public AutoFactoryRequiredPropertyMetadata Transform(IPropertySymbol propertySymbol) {
-        var propertyQualifier = qualifierTransformer.Transform(propertySymbol);
-        return new AutoFactoryRequiredPropertyMetadata(
-            propertySymbol.Name,
-            new QualifiedTypeMetadata(
-                propertySymbol.Type.ToTypeModel(),
-                propertyQualifier
-            ),
-            propertySymbol.GetLocationOrDefault().GeneratorIgnored()
-        );
+    public IResult<AutoFactoryRequiredPropertyMetadata> Transform(IPropertySymbol propertySymbol) {
+        return DiagnosticsRecorder.Capture(diagnostics => {
+            var propertyQualifier = qualifierTransformer.Transform(propertySymbol).GetOrThrow(diagnostics);
+            return new AutoFactoryRequiredPropertyMetadata(
+                propertySymbol.Name,
+                new QualifiedTypeMetadata(
+                    propertySymbol.Type.ToTypeModel(),
+                    propertyQualifier
+                ),
+                propertySymbol.GetLocationOrDefault().GeneratorIgnored()
+            );
+        });
     }
 }

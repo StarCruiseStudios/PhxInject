@@ -20,4 +20,16 @@ internal record LabelQualifierMetadata(
     public override string ToString() {
         return $"[Label({LabelAttributeMetadata.Label})]";        
     }
+
+    public virtual bool Equals(IQualifierMetadata? other) {
+        if (other is not LabelQualifierMetadata l) return false;
+        if (ReferenceEquals(this, l)) return true;
+        return Location.Equals(l.Location) && LabelAttributeMetadata.Equals(l.LabelAttributeMetadata);
+    }
+
+    public override int GetHashCode() {
+        unchecked {
+            return (Location.GetHashCode() * 397) ^ LabelAttributeMetadata.GetHashCode();
+        }
+    }
 }

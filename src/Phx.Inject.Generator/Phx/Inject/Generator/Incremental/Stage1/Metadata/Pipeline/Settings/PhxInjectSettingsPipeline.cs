@@ -29,22 +29,30 @@ internal class PhxInjectSettingsPipeline(
     public IncrementalValueProvider<IResult<PhxInjectSettingsMetadata>> Select(
         SyntaxValueProvider syntaxProvider
     ) {
-        return syntaxProvider.ForAttributeWithMetadataName<PhxInjectAttributeMetadata>(
+        return syntaxProvider.ForAttributeWithMetadataName(
             PhxInjectAttributeMetadata.AttributeClassName,
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => phxInjectAttributeTransformer.Transform(context.TargetSymbol))
-            .Select((attributeMetadata, _) => new PhxInjectSettingsMetadata(attributeMetadata))
+            .Select((attributeMetadata, _) => DiagnosticsRecorder.Capture(diagnostics => {
+                    return new PhxInjectSettingsMetadata(attributeMetadata.GetOrThrow(diagnostics));
+            }))
             .Collect()
-            .Select((settings, _) => DiagnosticsRecorder.Capture(diagnostics => (settings.Length switch {
-                0 => new PhxInjectSettingsMetadata(null),
-                1 => settings[0],
-                _ => settings.Also(s => {
-                    diagnostics.Add(s.Select(setting => new DiagnosticInfo(
-                        Diagnostics.DiagnosticType.UnexpectedError,
-                        "Only one PhxInject settings attribute can be defined per assembly.",
-                        setting.Location.Value)
-                    ));
-                })[0]
-        })));
+            .Select((settings, _) => DiagnosticsRecorder.Capture<PhxInjectSettingsMetadata>(diagnostics => {
+                return settings.Length switch {
+                    0 => new PhxInjectSettingsMetadata(null),
+                    1 => settings[0].GetOrThrow(diagnostics),
+                    _ => settings.Also(s => {
+                        foreach (var result in s) {
+                            if (result.TryGetValue(diagnostics, out var setting)) {
+                                diagnostics.Add(new DiagnosticInfo(
+                                    Diagnostics.DiagnosticType.UnexpectedError,
+                                    "Only one PhxInject settings attribute can be defined per assembly.",
+                                    setting.Location.Value)
+                                );
+                            }
+                        }
+                    })[0].GetValue(diagnostics)
+                };
+            }));
     }
 }

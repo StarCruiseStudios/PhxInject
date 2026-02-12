@@ -50,16 +50,9 @@ internal class AutoFactoryPipeline(
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => DiagnosticsRecorder.Capture(diagnostics => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
-                AutoFactoryAttributeMetadata? autoFactoryAttributeMetadata = null;
-                try {
-                    autoFactoryAttributeMetadata = autoFactoryAttributeTransformer.Transform(targetSymbol);
-                } catch (Exception ex) {
-                    throw new GeneratorException(new DiagnosticInfo(
-                        Diagnostics.DiagnosticType.UnexpectedError,
-                        $"Error transforming AutoFactory attribute: {ex.Message}",
-                        LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
-                    ));
-                }
+                var autoFactoryAttributeMetadata = autoFactoryAttributeTransformer
+                    .Transform(targetSymbol)
+                    .GetOrThrow(diagnostics);
 
                 var autoFactoryType = new QualifiedTypeMetadata(targetSymbol.ToTypeModel(), NoQualifierMetadata.Instance);
                 
@@ -74,7 +67,7 @@ internal class AutoFactoryPipeline(
                     var constructor = constructors[0];
                     parameters = constructor.Parameters
                         .Select(param => {
-                            var paramQualifier = qualifierTransformer.Transform(param);
+                            var paramQualifier = qualifierTransformer.Transform(param).GetOrThrow(diagnostics);
                             return new QualifiedTypeMetadata(
                                 param.Type.ToTypeModel(),
                                 paramQualifier
@@ -88,6 +81,7 @@ internal class AutoFactoryPipeline(
                     .OfType<IPropertySymbol>()
                     .Where(autoFactoryRequiredPropertyTransformer.CanTransform)
                     .Select(autoFactoryRequiredPropertyTransformer.Transform)
+                    .SelectOrThrow(diagnostics)
                     .ToImmutableArray();
 
                 return new AutoFactoryMetadata(

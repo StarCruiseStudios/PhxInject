@@ -9,6 +9,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
@@ -40,36 +41,38 @@ internal class SpecFactoryMethodTransformer(
         return elementValidator.IsValidSymbol(methodSymbol);
     }
 
-    public SpecFactoryMethodMetadata Transform(IMethodSymbol methodSymbol) {
-        var factoryMethodName = methodSymbol.Name;
-        var returnTypeQualifier = qualifierTransformer.Transform(methodSymbol);
-        var factoryReturnType = new QualifiedTypeMetadata(
-            methodSymbol.ReturnType.ToTypeModel(),
-            returnTypeQualifier
-        );
-        
-        var parameters = methodSymbol.Parameters
-            .Select(param => {
-                var paramQualifier = qualifierTransformer.Transform(param);
-                return new QualifiedTypeMetadata(
-                    param.Type.ToTypeModel(),
-                    paramQualifier
-                );
-            })
-            .ToImmutableList();
+    public IResult<SpecFactoryMethodMetadata> Transform(IMethodSymbol methodSymbol) {
+        return DiagnosticsRecorder.Capture(diagnostics => {
+            var factoryMethodName = methodSymbol.Name;
+            var returnTypeQualifier = qualifierTransformer.Transform(methodSymbol).GetOrThrow(diagnostics);
+            var factoryReturnType = new QualifiedTypeMetadata(
+                methodSymbol.ReturnType.ToTypeModel(),
+                returnTypeQualifier
+            );
 
-        var factoryAttribute = factoryAttributeTransformer.Transform(methodSymbol);
-        var partialAttribute = partialAttributeTransformer.HasAttribute(methodSymbol)
-            ? partialAttributeTransformer.Transform(methodSymbol)
-            : null;
+            var parameters = methodSymbol.Parameters
+                .Select(param => {
+                    var paramQualifier = qualifierTransformer.Transform(param).GetOrThrow(diagnostics);
+                    return new QualifiedTypeMetadata(
+                        param.Type.ToTypeModel(),
+                        paramQualifier
+                    );
+                })
+                .ToImmutableList();
 
-        return new SpecFactoryMethodMetadata(
-            factoryMethodName,
-            factoryReturnType,
-            parameters,
-            factoryAttribute,
-            partialAttribute,
-            methodSymbol.GetLocationOrDefault().GeneratorIgnored()
-        );
+            var factoryAttribute = factoryAttributeTransformer.Transform(methodSymbol).GetOrThrow(diagnostics);
+            var partialAttribute = partialAttributeTransformer.HasAttribute(methodSymbol)
+                ? partialAttributeTransformer.Transform(methodSymbol).GetOrThrow(diagnostics)
+                : null;
+
+            return new SpecFactoryMethodMetadata(
+                factoryMethodName,
+                factoryReturnType,
+                parameters,
+                factoryAttribute,
+                partialAttribute,
+                methodSymbol.GetLocationOrDefault().GeneratorIgnored()
+            );
+        });
     }
 }

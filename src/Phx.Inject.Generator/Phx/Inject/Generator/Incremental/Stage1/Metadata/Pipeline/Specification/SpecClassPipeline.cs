@@ -51,16 +51,9 @@ internal class SpecClassPipeline(
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => DiagnosticsRecorder.Capture(diagnostics => {
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
-                SpecificationAttributeMetadata? specificationAttributeMetadata = null;
-                try {
-                    specificationAttributeMetadata = specificationAttributeTransformer.Transform(targetSymbol);
-                } catch (Exception ex) {
-                    throw new GeneratorException(new DiagnosticInfo(
-                        Diagnostics.DiagnosticType.UnexpectedError,
-                        $"Error transforming Specification attribute: {ex.Message}",
-                        LocationInfo.CreateFrom(targetSymbol.GetLocationOrDefault())
-                    ));
-                }
+                var specificationAttributeMetadata = specificationAttributeTransformer
+                    .Transform(targetSymbol)
+                    .GetOrThrow(diagnostics);
 
                 var specInterfaceType = targetSymbol.ToTypeModel();
                 
@@ -72,73 +65,39 @@ internal class SpecClassPipeline(
                 var factoryMethods = methods
                     .Where(specFactoryMethodTransformer.CanTransform)
                     .Select(specFactoryMethodTransformer.Transform)
+                    .SelectOrThrow(diagnostics)
                     .ToImmutableArray();
                 
                 var factoryProperties = properties
                     .Where(specFactoryPropertyTransformer.CanTransform)
                     .Select(specFactoryPropertyTransformer.Transform)
+                    .SelectOrThrow(diagnostics)
                     .ToImmutableArray();
                 
                 var factoryReferences = properties
                     .Where(specFactoryReferenceTransformer.CanTransform)
-                    .Select(s => {
-                        try {
-                            return specFactoryReferenceTransformer.Transform(s);
-                        } catch (Exception ex) {
-                            throw new GeneratorException(new DiagnosticInfo(
-                                Diagnostics.DiagnosticType.UnexpectedError,
-                                $"Error transforming factory reference: {ex.Message}",
-                                LocationInfo.CreateFrom(s.GetLocationOrDefault())
-                            ));
-                        }
-                    })
+                    .Select(specFactoryReferenceTransformer.Transform)
+                    .SelectOrThrow(diagnostics)
                     .Concat(fields
                         .Where(specFactoryReferenceTransformer.CanTransform)
-                        .Select(s => {
-                            try {
-                                return specFactoryReferenceTransformer.Transform(s);
-                            } catch (Exception ex) {
-                                throw new GeneratorException(new DiagnosticInfo(
-                                    Diagnostics.DiagnosticType.UnexpectedError,
-                                    $"Error transforming factory reference: {ex.Message}",
-                                    LocationInfo.CreateFrom(s.GetLocationOrDefault())
-                                ));
-                            }
-                        })
-                    )
+                        .Select(specFactoryReferenceTransformer.Transform)
+                        .SelectOrThrow(diagnostics))
                     .ToImmutableArray();
                 
                 var builderMethods = methods
                     .Where(specBuilderMethodTransformer.CanTransform)
                     .Select(specBuilderMethodTransformer.Transform)
+                    .SelectOrThrow(diagnostics)
                     .ToImmutableArray();
                 
                 var builderReferences = properties
                     .Where(specBuilderReferenceTransformer.CanTransform)
-                    .Select(s => {
-                        try {
-                            return specBuilderReferenceTransformer.Transform(s);
-                        } catch (Exception ex) {
-                            throw new GeneratorException(new DiagnosticInfo(
-                                Diagnostics.DiagnosticType.UnexpectedError,
-                                $"Error transforming builder reference: {ex.Message}",
-                                LocationInfo.CreateFrom(s.GetLocationOrDefault())
-                            ));
-                        }
-                    })
+                    .Select(specBuilderReferenceTransformer.Transform)
+                    .SelectOrThrow(diagnostics)
                     .Concat(fields
                         .Where(specBuilderReferenceTransformer.CanTransform)
-                        .Select(s => {
-                            try {
-                                return specBuilderReferenceTransformer.Transform(s);
-                            } catch (Exception ex) {
-                                throw new GeneratorException(new DiagnosticInfo(
-                                    Diagnostics.DiagnosticType.UnexpectedError,
-                                    $"Error transforming builder reference: {ex.Message}",
-                                    LocationInfo.CreateFrom(s.GetLocationOrDefault())
-                                ));
-                            }
-                        })
+                        .Select(specBuilderReferenceTransformer.Transform)
+                        .SelectOrThrow(diagnostics)
                     )
                     .ToImmutableArray();
                 

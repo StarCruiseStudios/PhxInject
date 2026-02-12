@@ -9,6 +9,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
@@ -37,13 +38,15 @@ internal class InjectorProviderTransformer(
         return elementValidator.IsValidSymbol(methodSymbol);
     }
 
-    public InjectorProviderMetadata Transform(IMethodSymbol methodSymbol) {
-        var name = methodSymbol.Name;
-        var providedType = methodSymbol.ReturnType.ToTypeModel();
-        var qualifier = qualifierTransformer.Transform(methodSymbol);
-        return new InjectorProviderMetadata(
-            name,
-            new QualifiedTypeMetadata(providedType, qualifier),
-            methodSymbol.GetLocationOrDefault().GeneratorIgnored());
+    public IResult<InjectorProviderMetadata> Transform(IMethodSymbol methodSymbol) {
+        return DiagnosticsRecorder.Capture(diagnostics => {
+            var name = methodSymbol.Name;
+            var providedType = methodSymbol.ReturnType.ToTypeModel();
+            var qualifier = qualifierTransformer.Transform(methodSymbol).GetOrThrow(diagnostics);
+            return new InjectorProviderMetadata(
+                name,
+                new QualifiedTypeMetadata(providedType, qualifier),
+                methodSymbol.GetLocationOrDefault().GeneratorIgnored());
+        });
     }
 }

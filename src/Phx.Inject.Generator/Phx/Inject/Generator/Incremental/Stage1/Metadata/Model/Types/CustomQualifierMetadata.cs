@@ -20,4 +20,16 @@ internal record CustomQualifierMetadata(
     public override string ToString() {
         return $"[@{QualifierAttributeMetadata.QualifierType}]";        
     }
+
+    public virtual bool Equals(IQualifierMetadata? other) {
+        if (other is not CustomQualifierMetadata o) return false;
+        if (ReferenceEquals(this, o)) return true;
+        return Location.Equals(o.Location) && QualifierAttributeMetadata.Equals(o.QualifierAttributeMetadata);
+    }
+
+    public override int GetHashCode() {
+        unchecked {
+            return (Location.GetHashCode() * 397) ^ QualifierAttributeMetadata.GetHashCode();
+        }
+    }
 }

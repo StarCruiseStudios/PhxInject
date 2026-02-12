@@ -15,7 +15,7 @@ internal interface IResult<out T> where T : IEquatable<T>? {
     bool IsOk { get; }
     EquatableList<DiagnosticInfo> DiagnosticInfo { get; }
 
-    T GetValue();
+    T GetValue(IDiagnosticsRecorder diagnostics);
     IResult<R> Map<R>(Func<T, IResult<R>> mapFunc) where R : IEquatable<R>?;
     IResult<R> MapError<R>() where R : IEquatable<R>?;
 }
@@ -33,7 +33,8 @@ internal sealed class OkResult<T> : IResult<T> where T : IEquatable<T>? {
 
     public bool IsOk => true;
 
-    public T GetValue() {
+    public T GetValue(IDiagnosticsRecorder diagnostics) {
+        diagnostics.Add(diagnosticInfo);
         return value;
     }
 
@@ -57,7 +58,7 @@ internal sealed class ErrorResult<T> : IResult<T> where T : IEquatable<T>? {
 
     public bool IsOk => false;
 
-    public T GetValue() {
+    public T GetValue(IDiagnosticsRecorder diagnostics) {
         throw new InvalidOperationException("Cannot get value from an Error result.");
     }
 
@@ -101,6 +102,36 @@ internal static class Result {
 
     public static IResult<T> ToErrorResult<T>(this DiagnosticInfo diagnosticInfo) where T : IEquatable<T>? {
         return Result.Error<T>(EquatableList<DiagnosticInfo>.Create(diagnosticInfo));
+    }
+    
+    public static bool TryGetValue<T>(this IResult<T> result, IDiagnosticsRecorder diagnostics, out T value) where T : IEquatable<T>? {
+        if (result.IsOk) {
+            value = result.GetValue(diagnostics);
+            return true;
+        }
+
+        value = default!;
+        return false;
+    }
+    
+    public static T? GetOrNull<T>(this IResult<T> result, IDiagnosticsRecorder diagnostics) where T : class, IEquatable<T>? {
+        return result.IsOk ? result.GetValue(diagnostics) : null;
+    }
+    
+    public static T GetOrElse<T>(this IResult<T> result, IDiagnosticsRecorder diagnostics, Func<T> defaultValue) where T : IEquatable<T> {
+        return result.IsOk ? result.GetValue(diagnostics) : defaultValue();
+    }
+    
+    public static T GetOrThrow<T>(this IResult<T> result, IDiagnosticsRecorder diagnostics) where T : IEquatable<T>? {
+        return result.IsOk 
+            ? result.GetValue(diagnostics)
+            : throw new GeneratorException(result.DiagnosticInfo);
+    }
+    
+    public static IEnumerable<T> SelectOrThrow<T>(this IEnumerable<IResult<T>> results, IDiagnosticsRecorder diagnostics) where T : IEquatable<T>? {
+        foreach (var result in results) {
+            yield return result.GetOrThrow(diagnostics);
+        }
     }
 
     public static IncrementalValueProvider<EquatableList<DiagnosticInfo>> SelectDiagnostics<T>(

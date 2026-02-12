@@ -9,6 +9,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
@@ -45,25 +46,27 @@ internal class SpecFactoryPropertyTransformer(
         return elementValidator.IsValidSymbol(propertySymbol);
     }
 
-    public SpecFactoryPropertyMetadata Transform(IPropertySymbol propertySymbol) {
-        var factoryPropertyName = propertySymbol.Name;
-        var returnTypeQualifier = qualifierTransformer.Transform(propertySymbol);
-        var factoryReturnType = new QualifiedTypeMetadata(
-            propertySymbol.Type.ToTypeModel(),
-            returnTypeQualifier
-        );
+    public IResult<SpecFactoryPropertyMetadata> Transform(IPropertySymbol propertySymbol) {
+        return DiagnosticsRecorder.Capture(diagnostics => {
+            var factoryPropertyName = propertySymbol.Name;
+            var returnTypeQualifier = qualifierTransformer.Transform(propertySymbol).GetOrThrow(diagnostics);
+            var factoryReturnType = new QualifiedTypeMetadata(
+                propertySymbol.Type.ToTypeModel(),
+                returnTypeQualifier
+            );
 
-        var factoryAttribute = factoryAttributeTransformer.Transform(propertySymbol);
-        var partialAttribute = partialAttributeTransformer.HasAttribute(propertySymbol)
-            ? partialAttributeTransformer.Transform(propertySymbol)
-            : null;
+            var factoryAttribute = factoryAttributeTransformer.Transform(propertySymbol).GetOrThrow(diagnostics);
+            var partialAttribute = partialAttributeTransformer.HasAttribute(propertySymbol)
+                ? partialAttributeTransformer.Transform(propertySymbol).GetOrThrow(diagnostics)
+                : null;
 
-        return new SpecFactoryPropertyMetadata(
-            factoryPropertyName,
-            factoryReturnType,
-            factoryAttribute,
-            partialAttribute,
-            propertySymbol.GetLocationOrDefault().GeneratorIgnored()
-        );
+            return new SpecFactoryPropertyMetadata(
+                factoryPropertyName,
+                factoryReturnType,
+                factoryAttribute,
+                partialAttribute,
+                propertySymbol.GetLocationOrDefault().GeneratorIgnored()
+            );
+        });
     }
 }

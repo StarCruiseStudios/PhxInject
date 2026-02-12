@@ -12,6 +12,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 
 internal record NoQualifierMetadata : IQualifierMetadata {
     public static NoQualifierMetadata Instance { get; } = new();
-    public GeneratorIgnored<LocationInfo?> Location { get; } = new GeneratorIgnored<LocationInfo?>(null);
+    public GeneratorIgnored<LocationInfo?> Location { get; } = new(null);
     private NoQualifierMetadata() { }
+
+    public virtual bool Equals(IQualifierMetadata? other) {
+        return other is NoQualifierMetadata;
+    }
+
+    public override int GetHashCode() {
+        return Location.GetHashCode();
+    }
 }
