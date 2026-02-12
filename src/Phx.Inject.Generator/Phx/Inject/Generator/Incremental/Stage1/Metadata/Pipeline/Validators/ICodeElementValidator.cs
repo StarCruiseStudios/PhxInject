@@ -1,4 +1,4 @@
-﻿﻿// -----------------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------------
 // <copyright file="ICodeElementValidator.cs" company="Star Cruise Studios LLC">
 //     Copyright (c) 2026 Star Cruise Studios LLC. All rights reserved.
 //     Licensed under the Apache License, Version 2.0.
@@ -6,10 +6,14 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.CodeAnalysis;
+#region
 
-namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
+using System.Diagnostics.CodeAnalysis;
+ using Microsoft.CodeAnalysis;
+
+ #endregion
+
+ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 
 internal interface ICodeElementValidator {
     bool IsValidSymbol([NotNullWhen(true)] ISymbol? symbol);

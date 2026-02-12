@@ -6,9 +6,12 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
+#region
+
 using Phx.Inject.Generator.Incremental.Util;
 using static Phx.Inject.Generator.Incremental.PhxInject;
+
+#endregion
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 

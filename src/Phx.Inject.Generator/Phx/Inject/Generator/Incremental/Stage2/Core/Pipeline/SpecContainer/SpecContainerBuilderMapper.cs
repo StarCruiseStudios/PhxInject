@@ -6,10 +6,14 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+#region
+
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 using Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 using Phx.Inject.Generator.Incremental.Util;
+
+#endregion
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline.SpecContainer;
 

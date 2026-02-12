@@ -6,8 +6,12 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+#region
+
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+
+#endregion
 
 namespace System.Runtime.CompilerServices;
 

@@ -6,7 +6,11 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+#region
+
 using Phx.Inject.Generator.Incremental.Util;
+
+#endregion
 
 namespace Phx.Inject.Generator.Incremental.Diagnostics;
 

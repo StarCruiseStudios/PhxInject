@@ -6,7 +6,11 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+#region
+
 using System.Collections.Immutable;
+
+#endregion
 
 namespace Phx.Inject.Common.Util;
 

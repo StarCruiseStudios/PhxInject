@@ -1,8 +1,14 @@
-﻿// Auto-generated local attribute stubs to avoid needing a NuGet backport package
+﻿// -----------------------------------------------------------------------------
+// <copyright file="SystemDiagnosticsCodeAnalysisAttributes.cs" company="Star Cruise Studios LLC">
+//     Copyright (c) 2026 Star Cruise Studios LLC. All rights reserved.
+//     Licensed under the Apache License, Version 2.0.
+//     See http://www.apache.org/licenses/LICENSE-2.0 for full license information.
+// </copyright>
+// -----------------------------------------------------------------------------
+
+// Auto-generated local attribute stubs to avoid needing a NuGet backport package
 // Provides minimal attributes in the System.Diagnostics.CodeAnalysis namespace
 // so Roslyn's nullable analysis recognizes them during compilation for older target frameworks.
-
-using System;
 
 namespace System.Diagnostics.CodeAnalysis
 {

@@ -6,10 +6,13 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-using System.Text;
+#region
+
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 using Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline;
+
+#endregion
 
 namespace Phx.Inject.Generator.Incremental;
 

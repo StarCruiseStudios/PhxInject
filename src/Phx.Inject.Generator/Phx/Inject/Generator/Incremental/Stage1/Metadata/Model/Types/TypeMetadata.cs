@@ -6,10 +6,13 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-using System.Collections.Immutable;
+#region
+
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Util;
+
+#endregion
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 

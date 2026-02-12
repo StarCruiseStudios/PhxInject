@@ -6,8 +6,12 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+#region
+
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
+
+#endregion
 
 namespace Phx.Inject.Generator.Incremental.Util;
 

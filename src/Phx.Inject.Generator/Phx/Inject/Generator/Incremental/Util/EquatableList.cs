@@ -6,9 +6,13 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+#region
+
 using System.Collections;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+
+#endregion
 
 namespace Phx.Inject.Generator.Incremental.Util;
 

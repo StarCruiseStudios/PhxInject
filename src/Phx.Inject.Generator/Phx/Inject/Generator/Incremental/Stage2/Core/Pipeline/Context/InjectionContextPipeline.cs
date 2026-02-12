@@ -6,6 +6,8 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+#region
+
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
@@ -15,6 +17,8 @@ using Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 using Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline.Injector;
 using Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline.SpecContainer;
 using Phx.Inject.Generator.Incremental.Util;
+
+#endregion
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline.Context;
 

@@ -6,8 +6,12 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+#region
+
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
+
+#endregion
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 

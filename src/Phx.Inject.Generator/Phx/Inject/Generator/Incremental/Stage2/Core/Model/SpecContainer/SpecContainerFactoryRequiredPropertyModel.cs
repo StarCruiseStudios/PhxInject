@@ -6,8 +6,11 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
+#region
+
 using Phx.Inject.Generator.Incremental.Util;
+
+#endregion
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 

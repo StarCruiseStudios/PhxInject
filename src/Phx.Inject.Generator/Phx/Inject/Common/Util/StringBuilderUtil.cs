@@ -6,7 +6,11 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+#region
+
 using System.Text;
+
+#endregion
 
 namespace Phx.Inject.Common.Util;
 

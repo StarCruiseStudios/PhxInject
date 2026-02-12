@@ -6,8 +6,12 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+#region
+
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Util;
+
+#endregion
 
 namespace Phx.Inject.Generator.Incremental.Diagnostics;
 
@@ -89,15 +93,15 @@ internal static class Result {
     }
     
     public static IResult<T> ToOkResult<T>(this T value, params DiagnosticInfo[] diagnosticInfo) where T : IEquatable<T>? {
-        return Result.Ok(value, diagnosticInfo);
+        return Ok(value, diagnosticInfo);
     }
 
     public static IResult<T> ToOkResult<T>(this T value, EquatableList<DiagnosticInfo> diagnosticInfo) where T : IEquatable<T>? {
-        return Result.Ok(value, diagnosticInfo);
+        return Ok(value, diagnosticInfo);
     }
 
     public static IResult<T> ToErrorResult<T>(this EquatableList<DiagnosticInfo> diagnosticInfo) where T : IEquatable<T>? {
-        return Result.Error<T>(diagnosticInfo);
+        return Error<T>(diagnosticInfo);
     }
 
     public static IResult<T> ToErrorResult<T>(this DiagnosticInfo diagnosticInfo) where T : IEquatable<T>? {

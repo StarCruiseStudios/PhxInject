@@ -6,7 +6,11 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+#region
+
 using Phx.Inject.Generator.Incremental;
+
+#endregion
 
 namespace Phx.Inject.Common;
 

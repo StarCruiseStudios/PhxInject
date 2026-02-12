@@ -6,11 +6,15 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+#region
+
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
+
+#endregion
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 

@@ -6,6 +6,8 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+#region
+
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Auto;
@@ -19,6 +21,8 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specification;
 using Phx.Inject.Generator.Incremental.Util;
 using static Phx.Inject.Common.Util.StringBuilderUtil;
 using static Phx.Inject.Generator.Incremental.Util.EquatableList<Phx.Inject.Generator.Incremental.Diagnostics.DiagnosticInfo>;
+
+#endregion
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 

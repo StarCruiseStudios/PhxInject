@@ -6,9 +6,13 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+#region
+
 using Phx.Inject.Generator.Incremental.Diagnostics;
 
-namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
+#endregion
+
+namespace Phx.Inject.Generator.Incremental.Util;
 
 internal interface ITransformer<TIn, TOut> where TOut : IEquatable<TOut>? {
     bool CanTransform(TIn input);

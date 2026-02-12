@@ -6,7 +6,11 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
+#region
+
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
+
+#endregion
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline;
 

@@ -6,8 +6,11 @@
 // </copyright>
 // -----------------------------------------------------------------------------
 
-using System.Collections.Immutable;
+#region
+
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
+
+#endregion
 
 namespace Phx.Inject.Generator.Incremental.Util;
 
