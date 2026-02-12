@@ -17,15 +17,98 @@ using Phx.Inject.Generator.Incremental.Util;
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 
 /// <summary>
-///     Metadata representing an analyzed injector interface.
+///     Stage 1 metadata representing a user-defined injector interface contract.
 /// </summary>
-/// <param name="InjectorInterfaceType"> The type metadata of the injector interface. </param>
-/// <param name="Providers"> The list of provider methods in the injector. </param>
-/// <param name="Activators"> The list of activator methods in the injector. </param>
-/// <param name="ChildProviders"> The list of child provider methods in the injector. </param>
-/// <param name="InjectorAttributeMetadata"> The [Injector] attribute metadata. </param>
-/// <param name="DependencyAttributeMetadata"> The optional [Dependency] attribute metadata. </param>
-/// <param name="Location"> The source location of the interface definition. </param>
+/// <remarks>
+///     <para><strong>Domain Model:</strong></para>
+///     <para>
+///         An injector interface is the user-facing API for a dependency injection container. Users write
+///         interfaces decorated with [Injector] that declare what objects they want to retrieve from the
+///         container. This metadata captures the analyzed contract before transformation to implementation.
+///     </para>
+///     
+///     <para><strong>Design Rationale:</strong></para>
+///     <list type="bullet">
+///         <item>
+///             <term>Interface-First Design:</term>
+///             <description>
+///                 Users define contracts, not implementations. The generator creates concrete classes
+///                 that implement these interfaces, ensuring compile-time safety and testability.
+///             </description>
+///         </item>
+///         <item>
+///             <term>Method Classification:</term>
+///             <description>
+///                 Three distinct method types serve different lifecycle patterns:
+///                 - Providers: Return constructed instances (factory pattern)
+///                 - Activators: Initialize existing objects (builder pattern)
+///                 - ChildProviders: Create scoped sub-containers (hierarchy pattern)
+///             </description>
+///         </item>
+///         <item>
+///             <term>Specification Binding:</term>
+///             <description>
+///                 The [Injector] attribute references specification types that define the dependency
+///                 graph. This separates "what to inject" (specification) from "how to access" (injector).
+///             </description>
+///         </item>
+///     </list>
+///     
+///     <para><strong>Example User Code:</strong></para>
+///     <code>
+///         [Injector(typeof(AppSpecification))]
+///         public interface IApplicationInjector {
+///             // Provider: Returns a constructed database instance
+///             IDatabase GetDatabase();
+///             
+///             // Activator: Initializes an existing service
+///             void InitializeService(MyService service);
+///             
+///             // ChildProvider: Creates a scoped request-level container
+///             [ChildInjector]
+///             IRequestInjector CreateRequestScope(RequestContext context);
+///         }
+///     </code>
+///     
+///     <para><strong>Stage 1 → Stage 2 Transformation:</strong></para>
+///     <para>
+///         InjectorMapper transforms this metadata into <see cref="Stage2.Core.Model.Injector.InjectorModel"/>,
+///         which drives code generation of the implementation class (e.g., ApplicationInjector_AppSpecification).
+///     </para>
+///     
+///     <para><strong>Generated Implementation Structure:</strong></para>
+///     <list type="bullet">
+///         <item>Constructor: Accepts parent injector (if [Dependency] present) + specifications</item>
+///         <item>Fields: One per constructed specification, initialized in constructor</item>
+///         <item>Provider Methods: Delegate to specification factories, with caching for singletons</item>
+///         <item>Activator Methods: Call specification builders with dependency resolution</item>
+///         <item>ChildProvider Methods: Instantiate child injector, passing parent as dependency</item>
+///     </list>
+///     
+///     <para><strong>Scope and Lifetime:</strong></para>
+///     <para>
+///         Injectors themselves are stateful containers. If [Dependency] is present, this is a child
+///         injector that receives its parent as a constructor parameter, enabling hierarchical scopes
+///         (e.g., Application → Request → Operation). The parent-child relationship allows:
+///     </para>
+///     <list type="bullet">
+///         <item>Scope isolation: Child cannot access parent's transient state</item>
+///         <item>Dependency delegation: Child requests parent-provided types via dependency interface</item>
+///         <item>Lifetime control: Parent outlives children, child disposal doesn't affect parent</item>
+///     </list>
+/// </remarks>
+/// <param name="InjectorInterfaceType"> The type metadata of the injector interface (e.g., IApplicationInjector). </param>
+/// <param name="Providers"> Provider methods that return constructed objects (factory pattern). </param>
+/// <param name="Activators"> Activator methods that initialize existing objects (builder pattern). </param>
+/// <param name="ChildProviders"> Child provider methods that create scoped sub-containers (hierarchy pattern). </param>
+/// <param name="InjectorAttributeMetadata"> 
+///     The [Injector] attribute metadata, containing specification types that define the dependency graph. 
+/// </param>
+/// <param name="DependencyAttributeMetadata"> 
+///     Optional [Dependency] attribute metadata. If present, this is a child injector that receives
+///     a parent injector reference. The dependency type exposes parent-provided factories.
+/// </param>
+/// <param name="Location"> The source location of the interface definition for diagnostics. </param>
 internal record InjectorInterfaceMetadata(
     TypeMetadata InjectorInterfaceType,
     EquatableList<InjectorProviderMetadata> Providers,
