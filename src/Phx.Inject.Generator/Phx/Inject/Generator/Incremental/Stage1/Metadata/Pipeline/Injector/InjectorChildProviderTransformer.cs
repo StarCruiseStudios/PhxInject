@@ -22,10 +22,16 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Injector;
 
+/// <summary>
+///     Transforms child injector provider methods into metadata.
+/// </summary>
 internal class InjectorChildProviderTransformer(
     ICodeElementValidator elementValidator,
     ChildInjectorAttributeTransformer childInjectorAttributeTransformer
 ) : ITransformer<IMethodSymbol, InjectorChildProviderMetadata> {
+    /// <summary>
+    ///     Gets the singleton instance.
+    /// </summary>
     public static readonly InjectorChildProviderTransformer Instance = new(
         new MethodElementValidator(
             CodeElementAccessibility.PublicOrInternal,
@@ -36,10 +42,12 @@ internal class InjectorChildProviderTransformer(
         ChildInjectorAttributeTransformer.Instance
     );
 
+    /// <inheritdoc />
     public bool CanTransform(IMethodSymbol methodSymbol) {
         return elementValidator.IsValidSymbol(methodSymbol);
     }
 
+    /// <inheritdoc />
     public IResult<InjectorChildProviderMetadata> Transform(IMethodSymbol methodSymbol) {
         return DiagnosticsRecorder.Capture(diagnostics => {
             var name = methodSymbol.Name;
