@@ -8,6 +8,9 @@
 
 namespace Phx.Inject.Generator.Incremental.Util;
 
+/// <summary>
+///     Represents a source code element that has an associated location.
+/// </summary>
 internal interface ISourceCodeElement {
     /// <summary> Gets the source location of the element. </summary>
     GeneratorIgnored<LocationInfo?> Location { get; }

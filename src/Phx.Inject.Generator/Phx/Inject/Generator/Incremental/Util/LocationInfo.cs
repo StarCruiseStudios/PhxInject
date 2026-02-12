@@ -15,12 +15,32 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Phx.Inject.Generator.Incremental.Util;
 
+/// <summary>
+///     Represents source code location information that can be used in incremental generators.
+/// </summary>
+/// <param name="FilePath"> The path to the source file. </param>
+/// <param name="TextSpan"> The span of text in the file. </param>
+/// <param name="LineSpan"> The line position span. </param>
 internal record LocationInfo(string FilePath, TextSpan TextSpan, LinePositionSpan LineSpan) {
+    /// <summary>
+    ///     Converts this location info back to a Roslyn <see cref="Location"/>.
+    /// </summary>
+    /// <returns> A Roslyn location. </returns>
     public Location ToLocation()
         => Location.Create(FilePath, TextSpan, LineSpan);
 
+    /// <summary>
+    ///     Creates location info from a syntax node.
+    /// </summary>
+    /// <param name="node"> The syntax node. </param>
+    /// <returns> Location info, or null if the node has no location. </returns>
     public static LocationInfo? CreateFrom(SyntaxNode node) => CreateFrom(node.GetLocation());
 
+    /// <summary>
+    ///     Creates location info from a Roslyn location.
+    /// </summary>
+    /// <param name="location"> The Roslyn location. </param>
+    /// <returns> Location info, or null if the location has no source tree. </returns>
     public static LocationInfo? CreateFrom(Location location) {
         if (location.SourceTree is null) {
             return null;

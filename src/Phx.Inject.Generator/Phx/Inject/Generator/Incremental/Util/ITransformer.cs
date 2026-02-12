@@ -14,7 +14,23 @@ using Phx.Inject.Generator.Incremental.Diagnostics;
 
 namespace Phx.Inject.Generator.Incremental.Util;
 
+/// <summary>
+///     Defines a transformer that converts from one type to another, producing a result.
+/// </summary>
+/// <typeparam name="TIn"> The input type. </typeparam>
+/// <typeparam name="TOut"> The output type. </typeparam>
 internal interface ITransformer<TIn, TOut> where TOut : IEquatable<TOut>? {
+    /// <summary>
+    ///     Determines whether this transformer can transform the given input.
+    /// </summary>
+    /// <param name="input"> The input to check. </param>
+    /// <returns> True if this transformer can handle the input. </returns>
     bool CanTransform(TIn input);
+    
+    /// <summary>
+    ///     Transforms the input to an output result.
+    /// </summary>
+    /// <param name="input"> The input to transform. </param>
+    /// <returns> A result containing the transformed output or diagnostics. </returns>
     IResult<TOut> Transform(TIn input);
 }
