@@ -92,21 +92,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 internal record BuilderAttributeMetadata(
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
-    /// <summary>
-    ///     The fully-qualified name of the Builder attribute class for pattern matching.
-    /// </summary>
-    /// <remarks>
-    ///     Used during Stage 1 filtering to identify which methods should be processed
-    ///     as builder declarations. Constant to enable compile-time optimizations.
-    /// </remarks>
     public const string AttributeClassName = $"{PhxInject.NamespaceName}.{nameof(BuilderAttribute)}";
     
-    /// <summary>
-    ///     Gets the source location of the attribute for diagnostic reporting.
-    /// </summary>
-    /// <remarks>
-    ///     Delegates to the underlying AttributeMetadata. Wrapped in GeneratorIgnored
-    ///     to exclude from equality comparisons, maintaining cache stability.
-    /// </remarks>
     public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

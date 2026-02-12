@@ -76,10 +76,7 @@ internal record SpecContainerModel(
 ///     </para>
 /// </remarks>
 internal enum SpecInstantiationMode {
-    /// <summary> The specification is static. </summary>
     Static = 0,
-    /// <summary> The specification is instantiated by the injector. </summary>
     Instantiated = 1,
-    /// <summary> The specification is provided by a dependency injector. </summary>
     Dependency = 2
 }

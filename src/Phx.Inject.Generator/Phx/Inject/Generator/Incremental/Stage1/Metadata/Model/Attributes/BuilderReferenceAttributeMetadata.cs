@@ -21,9 +21,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 internal record BuilderReferenceAttributeMetadata(
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
-    /// <summary> The fully-qualified name of the BuilderReference attribute class. </summary>
     public const string AttributeClassName = $"{PhxInject.NamespaceName}.{nameof(BuilderReferenceAttribute)}";
     
-    /// <summary> Gets the source location of the attribute. </summary>
     public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

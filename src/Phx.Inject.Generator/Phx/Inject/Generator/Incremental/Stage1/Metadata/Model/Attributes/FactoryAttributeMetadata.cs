@@ -98,21 +98,7 @@ internal record FactoryAttributeMetadata(
     FabricationMode FabricationMode,
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
-    /// <summary>
-    ///     The fully-qualified name of the Factory attribute class for pattern matching.
-    /// </summary>
-    /// <remarks>
-    ///     Used during Stage 1 filtering to identify which methods/properties should be
-    ///     processed as factory declarations. Constant to enable compile-time optimizations.
-    /// </remarks>
     public const string AttributeClassName = $"{PhxInject.NamespaceName}.{nameof(FactoryAttribute)}";
     
-    /// <summary>
-    ///     Gets the source location of the attribute for diagnostic reporting.
-    /// </summary>
-    /// <remarks>
-    ///     Delegates to the underlying AttributeMetadata. Wrapped in GeneratorIgnored
-    ///     to exclude from equality comparisons, maintaining cache stability.
-    /// </remarks>
     public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

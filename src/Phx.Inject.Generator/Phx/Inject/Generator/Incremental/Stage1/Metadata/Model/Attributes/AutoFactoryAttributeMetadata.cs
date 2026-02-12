@@ -24,9 +24,7 @@ internal record AutoFactoryAttributeMetadata(
     FabricationMode FabricationMode,
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
-    /// <summary> The fully-qualified name of the AutoFactory attribute class. </summary>
     public const string AttributeClassName = $"{NamespaceName}.{nameof(AutoFactoryAttribute)}";
     
-    /// <summary> Gets the source location of the attribute. </summary>
     public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

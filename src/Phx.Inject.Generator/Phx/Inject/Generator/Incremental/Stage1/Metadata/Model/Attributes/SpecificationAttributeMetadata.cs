@@ -96,21 +96,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 internal record SpecificationAttributeMetadata(
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
-    /// <summary>
-    ///     The fully-qualified name of the Specification attribute class for pattern matching.
-    /// </summary>
-    /// <remarks>
-    ///     Used during Stage 1 filtering to identify which classes/interfaces should be
-    ///     processed as specification declarations. Constant to enable compile-time optimizations.
-    /// </remarks>
     public const string AttributeClassName = $"{NamespaceName}.{nameof(SpecificationAttribute)}";
     
-    /// <summary>
-    ///     Gets the source location of the attribute for diagnostic reporting.
-    /// </summary>
-    /// <remarks>
-    ///     Delegates to the underlying AttributeMetadata. Wrapped in GeneratorIgnored
-    ///     to exclude from equality comparisons, maintaining cache stability.
-    /// </remarks>
     public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

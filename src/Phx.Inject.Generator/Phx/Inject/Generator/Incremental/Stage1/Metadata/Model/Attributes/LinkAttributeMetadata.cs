@@ -34,9 +34,7 @@ internal record LinkAttributeMetadata(
     TypeMetadata? OutputQualifier,
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
-    /// <summary> The fully-qualified name of the Link attribute class. </summary>
     public const string AttributeClassName = $"{PhxInject.NamespaceName}.{nameof(LinkAttribute)}";
     
-    /// <summary> Gets the source location of the attribute. </summary>
     public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

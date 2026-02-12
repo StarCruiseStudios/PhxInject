@@ -88,10 +88,7 @@ internal record SpecContainerBuilderModel(
 ///     </para>
 /// </remarks>
 internal enum SpecBuilderMemberType {
-    /// <summary> The builder is a method. </summary>
     Method,
-    /// <summary> The builder is a reference. </summary>
     Reference,
-    /// <summary> The builder is a direct invocation. </summary>
     Direct
 }

@@ -87,12 +87,8 @@ internal record SpecContainerFactoryModel(
 ///     </para>
 /// </remarks>
 internal enum SpecFactoryMemberType {
-    /// <summary> The factory is a method. </summary>
     Method,
-    /// <summary> The factory is a property. </summary>
     Property,
-    /// <summary> The factory is a reference. </summary>
     Reference,
-    /// <summary> The factory is a constructor. </summary>
     Constructor
 }

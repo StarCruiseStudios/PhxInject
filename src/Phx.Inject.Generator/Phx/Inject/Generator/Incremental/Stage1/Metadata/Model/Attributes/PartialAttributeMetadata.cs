@@ -21,9 +21,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 internal record PartialAttributeMetadata(
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
-    /// <summary> The fully-qualified name of the Partial attribute class. </summary>
     public const string AttributeClassName = $"{PhxInject.NamespaceName}.{nameof(PartialAttribute)}";
     
-    /// <summary> Gets the source location of the attribute. </summary>
     public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

@@ -100,21 +100,7 @@ internal record DependencyAttributeMetadata(
     TypeMetadata DependencyType,
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
-    /// <summary>
-    ///     The fully-qualified name of the Dependency attribute class for pattern matching.
-    /// </summary>
-    /// <remarks>
-    ///     Used during Stage 1 filtering to identify which symbols should be processed
-    ///     as explicit dependency declarations. Constant to enable compile-time optimizations.
-    /// </remarks>
     public const string AttributeClassName = $"{PhxInject.NamespaceName}.{nameof(DependencyAttribute)}";
     
-    /// <summary>
-    ///     Gets the source location of the attribute for diagnostic reporting.
-    /// </summary>
-    /// <remarks>
-    ///     Delegates to the underlying AttributeMetadata. Wrapped in GeneratorIgnored
-    ///     to exclude from equality comparisons, maintaining cache stability.
-    /// </remarks>
     public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }
