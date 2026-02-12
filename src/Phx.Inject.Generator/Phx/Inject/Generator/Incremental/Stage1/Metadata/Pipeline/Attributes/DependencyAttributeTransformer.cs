@@ -20,10 +20,16 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
+/// <summary>
+///     Transforms Dependency attribute data into metadata.
+/// </summary>
 internal class DependencyAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer,
     ICodeElementValidator dependencyTypeValidator
 ) : IAttributeTransformer<DependencyAttributeMetadata> {
+    /// <summary>
+    ///     Gets the singleton instance.
+    /// </summary>
     public static DependencyAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance,
         new InterfaceElementValidator(
@@ -31,10 +37,12 @@ internal class DependencyAttributeTransformer(
         )
     );
 
+    /// <inheritdoc />
     public bool HasAttribute(ISymbol targetSymbol) {
         return attributeMetadataTransformer.HasAttribute(targetSymbol, DependencyAttributeMetadata.AttributeClassName);
     }
 
+    /// <inheritdoc />
     public IResult<DependencyAttributeMetadata> Transform(ISymbol targetSymbol) {
             var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
                 targetSymbol,

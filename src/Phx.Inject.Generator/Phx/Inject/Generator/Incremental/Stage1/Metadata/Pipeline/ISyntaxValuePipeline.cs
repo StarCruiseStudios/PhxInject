@@ -16,6 +16,15 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 
+/// <summary>
+///     Defines a pipeline that selects a single syntax value from source code.
+/// </summary>
+/// <typeparam name="T">The type of source code element to select.</typeparam>
 internal interface ISyntaxValuePipeline<T> where T : ISourceCodeElement, IEquatable<T> {
+    /// <summary>
+    ///     Selects a single incremental value from the syntax provider.
+    /// </summary>
+    /// <param name="syntaxProvider">The syntax value provider to select from.</param>
+    /// <returns>An incremental value provider containing the result.</returns>
     IncrementalValueProvider<IResult<T>> Select(SyntaxValueProvider syntaxProvider);
 }

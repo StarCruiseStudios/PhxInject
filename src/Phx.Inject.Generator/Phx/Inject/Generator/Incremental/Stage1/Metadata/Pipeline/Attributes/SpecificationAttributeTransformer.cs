@@ -16,17 +16,25 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
+/// <summary>
+///     Transforms Specification attribute data into metadata.
+/// </summary>
 internal class SpecificationAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
 ) : IAttributeTransformer<SpecificationAttributeMetadata> {
+    /// <summary>
+    ///     Gets the singleton instance.
+    /// </summary>
     public static SpecificationAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance
     );
 
+    /// <inheritdoc />
     public bool HasAttribute(ISymbol targetSymbol) {
         return attributeMetadataTransformer.HasAttribute(targetSymbol, SpecificationAttributeMetadata.AttributeClassName);
     }
 
+    /// <inheritdoc />
     public IResult<SpecificationAttributeMetadata> Transform(ISymbol targetSymbol) {
         var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,

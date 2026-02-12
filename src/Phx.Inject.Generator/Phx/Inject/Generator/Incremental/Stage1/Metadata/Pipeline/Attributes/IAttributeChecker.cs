@@ -14,6 +14,14 @@ using Microsoft.CodeAnalysis;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
+/// <summary>
+///     Checks if a symbol has a specific attribute.
+/// </summary>
 internal interface IAttributeChecker {
+    /// <summary>
+    ///     Determines if the target symbol has the attribute.
+    /// </summary>
+    /// <param name="targetSymbol">The symbol to check.</param>
+    /// <returns>True if the attribute is present; otherwise, false.</returns>
     bool HasAttribute(ISymbol targetSymbol);
 }

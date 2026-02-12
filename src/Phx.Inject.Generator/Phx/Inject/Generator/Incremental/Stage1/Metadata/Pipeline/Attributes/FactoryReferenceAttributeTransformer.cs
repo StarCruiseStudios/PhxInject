@@ -19,19 +19,27 @@ using static Phx.Inject.Generator.Incremental.PhxInject;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
+/// <summary>
+///     Transforms FactoryReference attribute data into metadata.
+/// </summary>
 internal class FactoryReferenceAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
 ) : IAttributeTransformer<FactoryReferenceAttributeMetadata> {
+    /// <summary>
+    ///     Gets the singleton instance.
+    /// </summary>
     public static FactoryReferenceAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance
     );
 
     private const string FabricationModeClassName = $"{NamespaceName}.{nameof(FabricationMode)}";
 
+    /// <inheritdoc />
     public bool HasAttribute(ISymbol targetSymbol) {
         return attributeMetadataTransformer.HasAttribute(targetSymbol, FactoryReferenceAttributeMetadata.AttributeClassName);
     }
 
+    /// <inheritdoc />
     public IResult<FactoryReferenceAttributeMetadata> Transform(ISymbol targetSymbol) {
         var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,

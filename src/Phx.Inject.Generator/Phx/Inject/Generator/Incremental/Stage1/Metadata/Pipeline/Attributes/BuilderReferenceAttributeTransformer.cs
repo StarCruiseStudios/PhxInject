@@ -16,17 +16,25 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
+/// <summary>
+///     Transforms BuilderReference attribute data into metadata.
+/// </summary>
 internal class BuilderReferenceAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
 ) : IAttributeTransformer<BuilderReferenceAttributeMetadata> {
+    /// <summary>
+    ///     Gets the singleton instance.
+    /// </summary>
     public static BuilderReferenceAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance
     );
 
+    /// <inheritdoc />
     public bool HasAttribute(ISymbol targetSymbol) {
         return attributeMetadataTransformer.HasAttribute(targetSymbol, BuilderReferenceAttributeMetadata.AttributeClassName);
     }
 
+    /// <inheritdoc />
     public IResult<BuilderReferenceAttributeMetadata> Transform(ISymbol targetSymbol) {
         var (attributeData, attributeMetadata) = attributeMetadataTransformer.ExpectSingleAttribute(
             targetSymbol,

@@ -26,6 +26,9 @@ using static Phx.Inject.Generator.Incremental.Util.EquatableList<Phx.Inject.Gene
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 
+/// <summary>
+///     Contains the output from all metadata pipeline segments.
+/// </summary>
 internal record MetadataPipelineOutput(
     IncrementalValueProvider<IResult<PhxInjectSettingsMetadata>> PhxInjectSettingsPipelineSegment,
     IncrementalValuesProvider<IResult<InjectorInterfaceMetadata>> InjectorInterfacePipelineSegment,
@@ -37,6 +40,9 @@ internal record MetadataPipelineOutput(
     IncrementalValueProvider<EquatableList<DiagnosticInfo>> DiagnosticsPipelineSegment
 );
 
+/// <summary>
+///     Orchestrates Stage 1 metadata pipelines for code generation.
+/// </summary>
 internal class MetadataPipeline(
     ISyntaxValuePipeline<PhxInjectSettingsMetadata> phxInjectSettingsPipeline,
     ISyntaxValuesPipeline<InjectorInterfaceMetadata> injectorPipeline,
@@ -46,6 +52,9 @@ internal class MetadataPipeline(
     ISyntaxValuesPipeline<AutoFactoryMetadata> autoFactoryPipeline,
     ISyntaxValuesPipeline<AutoBuilderMetadata> autoBuilderPipeline
 ) {
+    /// <summary>
+    ///     Gets the singleton instance of the metadata pipeline.
+    /// </summary>
     public static readonly MetadataPipeline Instance = new(
         PhxInjectSettingsPipeline.Instance,
         InjectorInterfacePipeline.Instance,
@@ -56,6 +65,11 @@ internal class MetadataPipeline(
         AutoBuilderPipeline.Instance
     );
     
+    /// <summary>
+    ///     Processes all pipeline segments and returns the collected output.
+    /// </summary>
+    /// <param name="generatorInitializationContext">The generator initialization context.</param>
+    /// <returns>The metadata pipeline output containing all processed segments.</returns>
     public MetadataPipelineOutput Process(IncrementalGeneratorInitializationContext generatorInitializationContext) {
         var phxInjectSettingsPipelineSegment =
             phxInjectSettingsPipeline.Select(generatorInitializationContext.SyntaxProvider);
@@ -105,11 +119,26 @@ internal class MetadataPipeline(
     }
 }
 
+/// <summary>
+///     Extension methods for incremental generator initialization context.
+/// </summary>
 internal static class IncrementalGeneratorInitializationContextExtensions {
+    /// <summary>
+    ///     Processes the metadata pipeline using the given context.
+    /// </summary>
+    /// <param name="context">The generator initialization context.</param>
+    /// <param name="pipeline">The metadata pipeline to process.</param>
+    /// <returns>The metadata pipeline output.</returns>
     public static MetadataPipelineOutput Process(this IncrementalGeneratorInitializationContext context, MetadataPipeline pipeline) {
         return pipeline.Process(context);
     }
     
+    /// <summary>
+    ///     Registers source outputs for printing metadata pipeline results.
+    /// </summary>
+    /// <param name="output">The metadata pipeline output to print.</param>
+    /// <param name="context">The generator initialization context.</param>
+    /// <returns>The original metadata pipeline output.</returns>
     public static MetadataPipelineOutput Print(this MetadataPipelineOutput output, IncrementalGeneratorInitializationContext context) {
         var diagnostics = new DiagnosticsRecorder();
         context.RegisterSourceOutput(output.PhxInjectSettingsPipelineSegment,

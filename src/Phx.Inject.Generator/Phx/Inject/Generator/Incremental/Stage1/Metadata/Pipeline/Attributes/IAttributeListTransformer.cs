@@ -16,6 +16,15 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
+/// <summary>
+///     Transforms multiple attributes from a symbol into a list of attribute metadata.
+/// </summary>
+/// <typeparam name="TAttributeMetadata">The type of attribute metadata to produce.</typeparam>
 internal interface IAttributeListTransformer<TAttributeMetadata> : IAttributeChecker where TAttributeMetadata : IAttributeElement {
+    /// <summary>
+    ///     Transforms all matching attributes on the target symbol into a list.
+    /// </summary>
+    /// <param name="targetSymbol">The symbol with the attributes.</param>
+    /// <returns>An equatable list of attribute metadata.</returns>
     EquatableList<TAttributeMetadata> Transform(ISymbol targetSymbol);
 }

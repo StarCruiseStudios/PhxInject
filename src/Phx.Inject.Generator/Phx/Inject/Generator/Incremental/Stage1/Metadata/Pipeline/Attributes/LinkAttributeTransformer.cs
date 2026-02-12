@@ -17,17 +17,25 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
+/// <summary>
+///     Transforms Link attribute data into metadata.
+/// </summary>
 internal class LinkAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
 ) : IAttributeListTransformer<LinkAttributeMetadata> {
+    /// <summary>
+    ///     Gets the singleton instance.
+    /// </summary>
     public static LinkAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance
     );
 
+    /// <inheritdoc />
     public bool HasAttribute(ISymbol targetSymbol) {
         return attributeMetadataTransformer.HasAttribute(targetSymbol, LinkAttributeMetadata.AttributeClassName);
     }
 
+    /// <inheritdoc />
     public EquatableList<LinkAttributeMetadata> Transform(ISymbol targetSymbol) {
         return attributeMetadataTransformer.GetAttributes(
             targetSymbol,
