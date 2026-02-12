@@ -15,6 +15,15 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 
+/// <summary>
+///     Model representing a specification container for code generation.
+/// </summary>
+/// <param name="SpecContainerType"> The specification container implementation type. </param>
+/// <param name="SpecificationType"> The specification type contained. </param>
+/// <param name="SpecInstantiationMode"> The instantiation mode for the specification. </param>
+/// <param name="FactoryMethodDefs"> The factory method definitions in this container. </param>
+/// <param name="BuilderMethodDefs"> The builder method definitions in this container. </param>
+/// <param name="Location"> The source location where this container is defined. </param>
 internal record SpecContainerModel(
     TypeMetadata SpecContainerType,
     TypeMetadata SpecificationType,
@@ -24,8 +33,14 @@ internal record SpecContainerModel(
     GeneratorIgnored<LocationInfo?> Location
 ) : ISourceCodeElement;
 
+/// <summary>
+///     Specifies how a specification is instantiated.
+/// </summary>
 internal enum SpecInstantiationMode {
+    /// <summary> The specification is static. </summary>
     Static = 0,
+    /// <summary> The specification is instantiated by the injector. </summary>
     Instantiated = 1,
+    /// <summary> The specification is provided by a dependency injector. </summary>
     Dependency = 2
 }

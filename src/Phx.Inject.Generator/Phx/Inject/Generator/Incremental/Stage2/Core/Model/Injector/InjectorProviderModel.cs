@@ -15,6 +15,12 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 
+/// <summary>
+///     Model representing a provider method in an injector.
+/// </summary>
+/// <param name="ProvidedType"> The type provided by the method. </param>
+/// <param name="ProviderMethodName"> The name of the provider method. </param>
+/// <param name="Location"> The source location where this provider is defined. </param>
 internal record InjectorProviderModel(
     QualifiedTypeMetadata ProvidedType,
     string ProviderMethodName,

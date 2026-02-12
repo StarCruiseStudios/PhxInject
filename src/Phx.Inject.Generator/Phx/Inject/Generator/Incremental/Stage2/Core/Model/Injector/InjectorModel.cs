@@ -15,6 +15,18 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 
+/// <summary>
+///     Model representing a generated injector implementation.
+/// </summary>
+/// <param name="InjectorType"> The generated injector implementation type. </param>
+/// <param name="InjectorInterfaceType"> The injector interface type. </param>
+/// <param name="Specifications"> All specification types used by this injector. </param>
+/// <param name="ConstructedSpecifications"> Specifications that are instantiated by the injector. </param>
+/// <param name="Dependency"> The optional dependency injector type. </param>
+/// <param name="Providers"> The provider methods to include in this injector. </param>
+/// <param name="Builders"> The builder methods to include in this injector. </param>
+/// <param name="ChildFactories"> The child injector factory methods. </param>
+/// <param name="Location"> The source location where this injector is defined. </param>
 internal record InjectorModel(
     TypeMetadata InjectorType,
     TypeMetadata InjectorInterfaceType,

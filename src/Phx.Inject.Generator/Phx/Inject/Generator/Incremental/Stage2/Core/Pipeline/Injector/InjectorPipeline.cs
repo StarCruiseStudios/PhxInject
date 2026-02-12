@@ -16,9 +16,18 @@ using Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline.Injector;
 
+/// <summary>
+///     Pipeline for transforming injector interface metadata into injector models.
+/// </summary>
 internal class InjectorPipeline {
+    /// <summary> Gets the singleton instance of the injector pipeline. </summary>
     public static readonly InjectorPipeline Instance = new();
 
+    /// <summary>
+    ///     Transforms injector interface metadata into injector models.
+    /// </summary>
+    /// <param name="metadataProvider"> Provider for injector interface metadata. </param>
+    /// <returns> Provider of injector models. </returns>
     public IncrementalValuesProvider<InjectorModel> Select(
         IncrementalValuesProvider<InjectorInterfaceMetadata> metadataProvider
     ) {

@@ -15,6 +15,13 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 
+/// <summary>
+///     Model representing a child injector factory method.
+/// </summary>
+/// <param name="ChildInjectorType"> The type of child injector created by the factory. </param>
+/// <param name="ChildFactoryMethodName"> The name of the factory method. </param>
+/// <param name="Parameters"> The parameters required by the factory method. </param>
+/// <param name="Location"> The source location where this factory is defined. </param>
 internal record InjectorChildFactoryModel(
     TypeMetadata ChildInjectorType,
     string ChildFactoryMethodName,

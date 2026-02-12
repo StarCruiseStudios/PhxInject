@@ -15,15 +15,32 @@ using Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline.Injector;
 
+/// <summary>
+///     Mapper for transforming injector provider metadata into provider models.
+/// </summary>
 internal static class InjectorProviderMapper {
+    /// <summary> Gets the singleton mapper instance. </summary>
     public static readonly InjectorProviderMapperInstance Instance = new();
 
+    /// <summary>
+    ///     Maps injector provider metadata to a provider model.
+    /// </summary>
+    /// <param name="metadata"> The provider metadata to map. </param>
+    /// <returns> The mapped provider model. </returns>
     public static InjectorProviderModel Map(InjectorProviderMetadata metadata) {
         return Instance.Map(metadata);
     }
 }
 
+/// <summary>
+///     Instance mapper for transforming injector provider metadata into provider models.
+/// </summary>
 internal class InjectorProviderMapperInstance {
+    /// <summary>
+    ///     Maps injector provider metadata to a provider model.
+    /// </summary>
+    /// <param name="metadata"> The provider metadata to map. </param>
+    /// <returns> The mapped provider model. </returns>
     public InjectorProviderModel Map(InjectorProviderMetadata metadata) {
         return new InjectorProviderModel(
             metadata.ProvidedType,

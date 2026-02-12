@@ -15,6 +15,13 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 
+/// <summary>
+///     Model representing an invocation of a specification container factory method.
+/// </summary>
+/// <param name="FactoryInvocationDefs"> The factory invocations to chain together. </param>
+/// <param name="FactoryReturnType"> The return type of the factory invocation. </param>
+/// <param name="RuntimeFactoryProvidedType"> The optional runtime-provided type for the factory. </param>
+/// <param name="Location"> The source location where this invocation is defined. </param>
 internal record SpecContainerFactoryInvocationModel(
     EquatableList<SpecContainerFactorySingleInvocationModel> FactoryInvocationDefs,
     QualifiedTypeMetadata FactoryReturnType,

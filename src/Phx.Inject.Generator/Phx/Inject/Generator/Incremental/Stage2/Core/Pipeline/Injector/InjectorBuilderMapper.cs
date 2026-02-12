@@ -15,15 +15,32 @@ using Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline.Injector;
 
+/// <summary>
+///     Mapper for transforming injector activator metadata into builder models.
+/// </summary>
 internal static class InjectorBuilderMapper {
+    /// <summary> Gets the singleton mapper instance. </summary>
     public static readonly InjectorBuilderMapperInstance Instance = new();
 
+    /// <summary>
+    ///     Maps injector activator metadata to an injector builder model.
+    /// </summary>
+    /// <param name="metadata"> The activator metadata to map. </param>
+    /// <returns> The mapped injector builder model. </returns>
     public static InjectorBuilderModel Map(InjectorActivatorMetadata metadata) {
         return Instance.Map(metadata);
     }
 }
 
+/// <summary>
+///     Instance mapper for transforming injector activator metadata into builder models.
+/// </summary>
 internal class InjectorBuilderMapperInstance {
+    /// <summary>
+    ///     Maps injector activator metadata to an injector builder model.
+    /// </summary>
+    /// <param name="metadata"> The activator metadata to map. </param>
+    /// <returns> The mapped injector builder model. </returns>
     public InjectorBuilderModel Map(InjectorActivatorMetadata metadata) {
         return new InjectorBuilderModel(
             metadata.ActivatedType,

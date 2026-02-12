@@ -14,6 +14,12 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 
+/// <summary>
+///     Model representing a required property for a factory method.
+/// </summary>
+/// <param name="PropertyName"> The name of the property to set. </param>
+/// <param name="Value"> The factory invocation that provides the property value. </param>
+/// <param name="Location"> The source location where this property is defined. </param>
 internal record SpecContainerFactoryRequiredPropertyModel(
     string PropertyName,
     SpecContainerFactoryInvocationModel Value,

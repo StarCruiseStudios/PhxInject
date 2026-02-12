@@ -15,6 +15,12 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 
+/// <summary>
+///     Model representing an invocation of a specification container builder method.
+/// </summary>
+/// <param name="SpecContainerType"> The specification container type. </param>
+/// <param name="BuilderMethodName"> The name of the builder method to invoke. </param>
+/// <param name="Location"> The source location where this invocation is defined. </param>
 internal record SpecContainerBuilderInvocationModel(
     TypeMetadata SpecContainerType,
     string BuilderMethodName,

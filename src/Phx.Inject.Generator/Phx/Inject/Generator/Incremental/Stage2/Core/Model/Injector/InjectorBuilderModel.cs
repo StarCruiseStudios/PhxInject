@@ -15,6 +15,12 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 
+/// <summary>
+///     Model representing a builder method in an injector.
+/// </summary>
+/// <param name="BuiltType"> The type constructed by the builder. </param>
+/// <param name="BuilderMethodName"> The name of the builder method. </param>
+/// <param name="Location"> The source location where this builder is defined. </param>
 internal record InjectorBuilderModel(
     QualifiedTypeMetadata BuiltType,
     string BuilderMethodName,
