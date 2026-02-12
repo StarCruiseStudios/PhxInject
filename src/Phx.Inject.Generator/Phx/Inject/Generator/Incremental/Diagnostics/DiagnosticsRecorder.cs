@@ -15,10 +15,29 @@ using Phx.Inject.Generator.Incremental.Util;
 namespace Phx.Inject.Generator.Incremental.Diagnostics;
 
 /// <summary>
-///     Records diagnostic information during code generation for later reporting.
+///     Concrete implementation of <see cref="IDiagnosticsRecorder"/> that accumulates diagnostics
+///     in an in-memory list for batch processing.
 /// </summary>
+/// <remarks>
+///     <para><b>Design Decision:</b></para>
+///     <para>
+///     Uses a simple <c>List&lt;DiagnosticInfo&gt;</c> rather than a concurrent collection
+///     because each recorder is thread-local. Allocations are minimal since diagnostics are
+///     typically infrequent (clean code produces few errors).
+///     </para>
+///     
+///     <para><b>Exception Handling Strategy:</b></para>
+///     <para>
+///     The <c>Capture</c> method wraps user code and converts exceptions into Error results.
+///     This ensures that even when transformers throw (which they shouldn't, but might due to
+///     bugs), the error is captured as a diagnostic rather than crashing the entire compilation.
+///     This provides graceful degradation - other files still compile even if one has issues.
+///     </para>
+/// </remarks>
 internal class DiagnosticsRecorder : IDiagnosticsRecorder {
-    /// <summary> The list of recorded diagnostics. </summary>
+    /// <summary>
+    ///     Internal collection of accumulated diagnostics. Growable to handle any number of errors.
+    /// </summary>
     private readonly List<DiagnosticInfo> diagnostics = new();
     
     /// <inheritdoc />
@@ -32,11 +51,57 @@ internal class DiagnosticsRecorder : IDiagnosticsRecorder {
     }
     
     /// <summary>
-    ///     Executes a function while capturing any diagnostics it produces.
+    ///     Executes a function within an exception-safe diagnostic capture context.
     /// </summary>
-    /// <typeparam name="T"> The type of result value. </typeparam>
-    /// <param name="func"> The function to execute. </param>
-    /// <returns> A result containing the value and any captured diagnostics, or an error result if an exception occurred. </returns>
+    /// <typeparam name="T">
+    ///     The success result type. Must be equatable for incremental caching.
+    /// </typeparam>
+    /// <param name="func">
+    ///     The function to execute. Receives a thread-local recorder to accumulate diagnostics.
+    /// </param>
+    /// <returns>
+    ///     <list type="bullet">
+    ///         <item>Ok result: Function completed successfully, may include warnings</item>
+    ///         <item>Error result: Function threw <c>GeneratorException</c> or returned error diagnostics</item>
+    ///     </list>
+    /// </returns>
+    /// <remarks>
+    ///     <para><b>Exception Handling:</b></para>
+    ///     <list type="bullet">
+    ///         <item>
+    ///             <b>GeneratorException:</b> Expected exception carrying diagnostics.
+    ///             Captured and returned as Error result with those diagnostics.
+    ///         </item>
+    ///         <item>
+    ///             <b>Other exceptions:</b> Unexpected (generator bugs). Caught and returned
+    ///             as Error result, preventing compilation crash. However, this indicates
+    ///             a generator implementation error that should be fixed.
+    ///         </item>
+    ///     </list>
+    ///     
+    ///     <para><b>Usage Pattern:</b></para>
+    ///     <para>
+    ///     Wrap complex transformation logic in <c>Capture</c> to ensure exceptions don't
+    ///     escape and crash the compiler. The recorder is local to this execution and
+    ///     automatically aggregates all diagnostics before returning.
+    ///     </para>
+    ///     
+    ///     <example>
+    ///     <code>
+    ///     var result = DiagnosticsRecorder.Capture(diagnostics => {
+    ///         var metadata = ParseSyntax(node);
+    ///         var validated = ValidateMetadata(metadata, diagnostics);
+    ///         return validated;
+    ///     });
+    ///     </code>
+    ///     </example>
+    ///     
+    ///     <para><b>Thread Safety:</b></para>
+    ///     <para>
+    ///     Creates a new recorder per invocation, so multiple threads can safely call
+    ///     <c>Capture</c> concurrently. Each gets its own isolated diagnostic collection.
+    ///     </para>
+    /// </remarks>
     public static IResult<T> Capture<T>(Func<IDiagnosticsRecorder, T> func) where T : IEquatable<T> {
         var recorder = new DiagnosticsRecorder();
         try {

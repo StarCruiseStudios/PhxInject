@@ -16,36 +16,133 @@ using Phx.Inject.Generator.Incremental.Util;
 namespace Phx.Inject.Generator.Incremental.Diagnostics;
 
 /// <summary>
-///     Represents the result of an operation that may succeed with a value or fail with diagnostics.
+///     Result type that encapsulates either a success value or validation failures,
+///     enabling Railway-Oriented Programming for error handling in the generator pipeline.
 /// </summary>
-/// <typeparam name="T"> The type of the result value. </typeparam>
+/// <typeparam name="T">
+///     The success value type. Must be equatable for incremental generator caching.
+/// </typeparam>
+/// <remarks>
+///     <para><b>Design Philosophy:</b></para>
+///     <para>
+///     Replaces exception-based error handling with explicit result types. This ensures
+///     ALL validation errors in a file are collected and reported, not just the first one.
+///     Users get comprehensive error feedback in a single compilation pass.
+///     </para>
+///     
+///     <para><b>Railway-Oriented Programming:</b></para>
+///     <para>
+///     Results flow through transformer pipelines on either a "success track" (carrying values)
+///     or an "error track" (carrying diagnostics). The <c>Map</c> operation short-circuits
+///     error results, automatically propagating errors without explicit null checks everywhere.
+///     </para>
+///     
+///     <para><b>Incremental Caching:</b></para>
+///     <para>
+///     Results are cached by Roslyn's incremental system. Diagnostics are included in equality
+///     comparisons, so changing an error message triggers recompilation. This is intentional -
+///     users should see updated error messages even if the underlying issue hasn't changed.
+///     </para>
+///     
+///     <para><b>Thread Safety:</b></para>
+///     <para>
+///     Result instances are immutable and thread-safe. Multiple threads can read the same
+///     result concurrently. However, the <c>GetValue</c> operation mutates the provided
+///     <c>IDiagnosticsRecorder</c>, so that recorder must be thread-local.
+///     </para>
+///     
+///     <para><b>When to use Ok vs Error:</b></para>
+///     <list type="bullet">
+///         <item><b>Ok:</b> Transformation succeeded, value is valid (may include warnings)</item>
+///         <item><b>Error:</b> Transformation failed, no valid value exists (always has errors)</item>
+///     </list>
+///     
+///     <para><b>DO NOT use for:</b></para>
+///     <para>
+///     Internal generator bugs or infrastructure failures. Those should throw exceptions.
+///     Results are ONLY for user code validation errors that should be presented to developers.
+///     </para>
+/// </remarks>
 internal interface IResult<out T> where T : IEquatable<T>? {
-    /// <summary> Indicates whether the operation succeeded. </summary>
+    /// <summary>
+    ///     Indicates whether this result represents a successful transformation.
+    /// </summary>
+    /// <remarks>
+    ///     <c>true</c> means <c>GetValue</c> will return a valid value.
+    ///     <c>false</c> means <c>GetValue</c> will throw and only diagnostics are available.
+    ///     Always check this before calling <c>GetValue</c> unless you're using helper methods
+    ///     like <c>OrNull</c> or <c>OrElse</c> that handle both cases.
+    /// </remarks>
     bool IsOk { get; }
     
-    /// <summary> The diagnostics associated with this result. </summary>
+    /// <summary>
+    ///     Gets all diagnostic messages (errors, warnings, info) associated with this result.
+    /// </summary>
+    /// <remarks>
+    ///     Present in both Ok and Error results. Ok results may include warnings.
+    ///     Error results always have at least one error-level diagnostic.
+    ///     This collection participates in equality comparison for incremental caching.
+    /// </remarks>
     EquatableList<DiagnosticInfo> DiagnosticInfo { get; }
 
     /// <summary>
-    ///     Gets the result value and records diagnostics.
+    ///     Extracts the success value and records all diagnostics to the provided recorder.
     /// </summary>
-    /// <param name="diagnostics"> The diagnostics recorder. </param>
-    /// <returns> The result value. </returns>
+    /// <param name="diagnostics">
+    ///     Thread-local recorder to accumulate diagnostics. Must not be shared across threads.
+    /// </param>
+    /// <returns>The success value if <c>IsOk</c> is true.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown if called on an Error result. Check <c>IsOk</c> first or use safe helpers.
+    /// </exception>
+    /// <remarks>
+    ///     <b>Side effect:</b> Adds this result's diagnostics to the recorder. This is the
+    ///     primary mechanism for collecting all errors from a pipeline execution.
+    /// </remarks>
     T GetValue(IDiagnosticsRecorder diagnostics);
     
     /// <summary>
-    ///     Maps the result value to a new result using a transformation function.
+    ///     Monadic bind operation for chaining transformations on success values.
     /// </summary>
-    /// <typeparam name="R"> The type of the new result value. </typeparam>
-    /// <param name="mapFunc"> The transformation function. </param>
-    /// <returns> The new result. </returns>
+    /// <typeparam name="R">The type of the transformed result value.</typeparam>
+    /// <param name="mapFunc">
+    ///     Transformation to apply if this is an Ok result. Not invoked on Error results.
+    /// </param>
+    /// <returns>
+    ///     If this is Ok: applies <paramref name="mapFunc"/> to the value, returns its result.
+    ///     If this is Error: returns a new Error result with the same diagnostics.
+    /// </returns>
+    /// <remarks>
+    ///     <para>
+    ///     This enables Railway-Oriented Programming where errors automatically short-circuit
+    ///     through a chain of transformations. You can chain multiple <c>Map</c> calls without
+    ///     checking for errors at each step - errors propagate automatically.
+    ///     </para>
+    ///     
+    ///     <example>
+    ///     <code>
+    ///     result
+    ///         .Map(ParseAttributes)
+    ///         .Map(ValidateTypes)
+    ///         .Map(GenerateCode)
+    ///     // If any step fails, subsequent steps are skipped
+    ///     </code>
+    ///     </example>
+    /// </remarks>
     IResult<R> Map<R>(Func<T, IResult<R>> mapFunc) where R : IEquatable<R>?;
     
     /// <summary>
-    ///     Maps an error result to a new error result with a different type.
+    ///     Converts an Error result to a different result type, preserving the diagnostics.
     /// </summary>
-    /// <typeparam name="R"> The type of the new result value. </typeparam>
-    /// <returns> The new error result. </returns>
+    /// <typeparam name="R">The new result value type.</typeparam>
+    /// <returns>An Error result with type R containing the same diagnostics.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown if called on an Ok result. This operation is only valid for Error results.
+    /// </exception>
+    /// <remarks>
+    ///     Used when an error needs to propagate up through differently-typed pipeline stages.
+    ///     Allows error information to flow through the type system without loss.
+    /// </remarks>
     IResult<R> MapError<R>() where R : IEquatable<R>?;
 }
 
