@@ -19,19 +19,27 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Types;
 
+/// <summary>
+///     Transforms symbol qualifier attributes into qualifier metadata.
+/// </summary>
 internal class QualifierTransformer(
     IAttributeTransformer<LabelAttributeMetadata> labelAttributeTransformer,
     IAttributeTransformer<QualifierAttributeMetadata> qualifierAttributeTransformer
 ) : ITransformer<ISymbol, IQualifierMetadata> {
+    /// <summary>
+    ///     Gets the singleton instance.
+    /// </summary>
     public static QualifierTransformer Instance { get; } = new(
         LabelAttributeTransformer.Instance,
         QualifierAttributeTransformer.Instance
     );
     
+    /// <inheritdoc />
     public bool CanTransform(ISymbol input) {
         return true;
     }
     
+    /// <inheritdoc />
     public IResult<IQualifierMetadata> Transform(ISymbol targetSymbol) {
         return DiagnosticsRecorder.Capture<IQualifierMetadata>(diagnostics => {
             if (labelAttributeTransformer.HasAttribute(targetSymbol)) {
