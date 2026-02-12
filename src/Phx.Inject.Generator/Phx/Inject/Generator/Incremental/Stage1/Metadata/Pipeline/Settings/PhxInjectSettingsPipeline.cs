@@ -20,14 +20,21 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Settings;
 
+/// <summary>
+/// Pipeline for processing PhxInject settings from assembly attributes.
+/// </summary>
 internal class PhxInjectSettingsPipeline(
     ICodeElementValidator elementValidator,
     IAttributeTransformer<PhxInjectAttributeMetadata> phxInjectAttributeTransformer
 ) : ISyntaxValuePipeline<PhxInjectSettingsMetadata> {
+    /// <summary>
+    /// Gets the singleton instance.
+    /// </summary>
     public static readonly PhxInjectSettingsPipeline Instance = new(
         NoopCodeElementValidator.Instance,
         PhxInjectAttributeTransformer.Instance);
 
+    /// <inheritdoc />
     public IncrementalValueProvider<IResult<PhxInjectSettingsMetadata>> Select(
         SyntaxValueProvider syntaxProvider
     ) {
