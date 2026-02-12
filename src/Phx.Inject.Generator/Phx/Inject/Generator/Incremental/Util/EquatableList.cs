@@ -17,11 +17,61 @@ using Microsoft.CodeAnalysis;
 namespace Phx.Inject.Generator.Incremental.Util;
 
 /// <summary>
-///     An immutable list that implements value-based equality for use in incremental generators.
+///     Immutable list with structural equality semantics, optimized for Roslyn incremental generators.
 /// </summary>
-/// <typeparam name="T"> The type of elements in the list. </typeparam>
+/// <typeparam name="T">The type of elements. Must implement value equality correctly.</typeparam>
+/// <param name="items">Source sequence to populate the list. Copied immediately to ensure immutability.</param>
+/// <remarks>
+///     <para><b>Design Rationale:</b></para>
+///     <para>
+///     Roslyn's incremental generators rely on value equality to cache pipeline results. Standard
+///     .NET collections use reference equality, causing unnecessary recompilation when logically
+///     identical lists are reconstructed. This type provides structural equality while maintaining
+///     immutability guarantees required by incremental generators.
+///     </para>
+///     
+///     <para><b>Performance Characteristics:</b></para>
+///     <list type="bullet">
+///         <item><b>Construction:</b> O(n) - copies all elements into an <see cref="ImmutableList{T}"/></item>
+///         <item><b>Equality:</b> O(n) worst case - short-circuits on count mismatch or first difference</item>
+///         <item><b>GetHashCode:</b> O(n) - computed once and cached by value types/records</item>
+///         <item><b>Indexing:</b> O(log n) - uses ImmutableList's tree structure</item>
+///     </list>
+///     
+///     <para><b>Immutability Contract:</b></para>
+///     <para>
+///     Once constructed, the list contents never change. This is essential for incremental generators
+///     where cached results must remain stable. Modifications require creating a new instance.
+///     </para>
+///     
+///     <para><b>Equality Semantics:</b></para>
+///     <para>
+///     Two lists are equal if they contain the same elements in the same order, using
+///     <see cref="EqualityComparer{T}.Default"/> for element comparison. Type <c>T</c> must implement
+///     proper value equality or the incremental cache will behave incorrectly.
+///     </para>
+///     
+///     <para><b>Thread Safety:</b></para>
+///     <para>
+///     Immutable and thread-safe for reads. Multiple threads can safely enumerate or index
+///     the same instance concurrently.
+///     </para>
+///     
+///     <para><b>Usage Pattern:</b></para>
+///     <para>
+///     Used extensively in metadata records to represent collections of types, parameters,
+///     attributes, etc. The value-equality enables Roslyn to recognize when a collection hasn't
+///     changed semantically, avoiding unnecessary downstream pipeline re-execution.
+///     </para>
+/// </remarks>
 internal sealed class EquatableList<T>(IEnumerable<T> items) : IEquatable<EquatableList<T>>, IReadOnlyList<T> {
-    /// <summary> An empty equatable list. </summary>
+    /// <summary>
+    ///     Singleton empty list instance to avoid allocations for common empty case.
+    /// </summary>
+    /// <remarks>
+    ///     Prefer using this constant over constructing new empty instances.
+    ///     Reduces memory pressure and improves equality comparison performance.
+    /// </remarks>
     public static readonly EquatableList<T> Empty = new(ImmutableList<T>.Empty);
     
     /// <summary>
@@ -39,11 +89,19 @@ internal sealed class EquatableList<T>(IEnumerable<T> items) : IEquatable<Equata
     public static EquatableList<T> Create(params T[] items) => new(items);
     
     /// <summary>
-    ///     Merges two incremental value providers of equatable lists into one.
+    ///     Merges two incremental value providers of lists into a single combined list.
     /// </summary>
-    /// <param name="left"> The left provider. </param>
-    /// <param name="right"> The right provider. </param>
-    /// <returns> A merged incremental value provider. </returns>
+    /// <param name="left">First source of list values.</param>
+    /// <param name="right">Second source of list values.</param>
+    /// <returns>
+    ///     An incremental provider that concatenates items from both sources.
+    ///     Re-executes only when either input changes.
+    /// </returns>
+    /// <remarks>
+    ///     Used in pipeline orchestration to aggregate results from parallel pipeline branches.
+    ///     Roslyn's incremental compiler will cache this merge operation, only recomputing
+    ///     when one of the source lists changes.
+    /// </remarks>
     public static IncrementalValueProvider<EquatableList<T>> Merge(
         IncrementalValueProvider<EquatableList<T>> left,
         IncrementalValueProvider<EquatableList<T>> right

@@ -19,30 +19,73 @@ namespace Phx.Inject.Generator.Incremental;
 /// <summary>
 ///     Constants for the Phx.Inject namespace and framework.
 /// </summary>
+/// <remarks>
+///     Centralizes framework namespace constants to ensure consistency across generated code
+///     and avoid magic strings scattered throughout the generator codebase.
+/// </remarks>
 internal static class PhxInject {
-    /// <summary> The root namespace for all Phx.Inject types. </summary>
+    /// <summary>
+    ///     The root namespace for all Phx.Inject types.
+    /// </summary>
+    /// <remarks>
+    ///     Used by transformers and code generators to construct fully-qualified type names
+    ///     when referencing framework types in generated code.
+    /// </remarks>
     public const string NamespaceName = "Phx.Inject";
 }
 
 /// <summary>
-///     Roslyn incremental source generator for compile-time dependency injection.
+///     Roslyn incremental source generator that performs compile-time dependency injection
+///     by analyzing DI specifications and generating zero-overhead injection code.
 /// </summary>
-/// <param name="metadataPipeline"> The Stage 1 metadata pipeline. </param>
-/// <param name="corePipeline"> The Stage 2 core pipeline. </param>
+/// <param name="metadataPipeline">
+///     Stage 1 pipeline that extracts and validates DI metadata from user code.
+/// </param>
+/// <param name="corePipeline">
+///     Stage 2 pipeline that transforms metadata into executable injection implementations.
+/// </param>
 /// <remarks>
-///     This generator operates in two stages:
+///     <para><b>Design Philosophy:</b></para>
+///     <para>
+///     This generator moves dependency resolution from runtime to compile-time, eliminating
+///     reflection overhead and detecting configuration errors during build. Unlike traditional
+///     DI containers, this approach produces AOT-friendly, debuggable code with zero runtime cost.
+///     </para>
+///     
+///     <para><b>Two-Stage Architecture:</b></para>
 ///     <list type="number">
 ///         <item>
 ///             <term>Stage 1 (Metadata):</term>
-///             <description>Collects and analyzes syntax from source code, producing immutable metadata records.</description>
+///             <description>
+///             Parses source code to extract DI specifications (factories, builders, injectors).
+///             Produces immutable metadata records that leverage Roslyn's incremental compilation
+///             model to minimize recomputation when unrelated code changes.
+///             </description>
 ///         </item>
 ///         <item>
 ///             <term>Stage 2 (Core):</term>
-///             <description>Transforms metadata into code generation models and produces source code.</description>
+///             <description>
+///             Transforms validated metadata into concrete C# code that implements the dependency
+///             graph. Generated code is statically typed, fully inlinable, and produces no
+///             allocations beyond the injected objects themselves.
+///             </description>
 ///         </item>
 ///     </list>
-///     <seealso
-///         href="https://github.com/dotnet/roslyn/blob/main/docs/features/incremental-generators.md"/>
+///     
+///     <para><b>Incremental Generation:</b></para>
+///     <para>
+///     Designed to work efficiently with Roslyn's incremental generator model. Each pipeline
+///     stage produces cacheable, value-comparable results. When a file changes, only affected
+///     pipelines re-execute, dramatically improving IDE responsiveness in large solutions.
+///     </para>
+///     
+///     <para><b>Thread Safety:</b></para>
+///     <para>
+///     Generator instances may be shared across builds. All state is immutable or thread-local.
+///     Pipelines are singleton instances that can safely process multiple syntax trees concurrently.
+///     </para>
+///     
+///     <seealso href="https://github.com/dotnet/roslyn/blob/main/docs/features/incremental-generators.md"/>
 /// </remarks>
 [Generator(LanguageNames.CSharp)]
 internal class IncrementalSourceGenerator(
@@ -50,17 +93,44 @@ internal class IncrementalSourceGenerator(
     CorePipeline corePipeline
 ) : IIncrementalGenerator {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="IncrementalSourceGenerator"/> class with default pipelines.
+    ///     Initializes a new instance with default singleton pipelines for production use.
     /// </summary>
+    /// <remarks>
+    ///     This is the constructor invoked by Roslyn when instantiating the generator.
+    ///     Uses singleton pipeline instances to ensure consistent behavior and avoid
+    ///     redundant allocations across multiple generator invocations.
+    /// </remarks>
     public IncrementalSourceGenerator() : this(
         MetadataPipeline.Instance,
         CorePipeline.Instance
     ) { }
 
     /// <summary>
-    ///     Initializes the incremental generator and registers source output callbacks.
+    ///     Registers incremental transformation pipelines and source output callbacks with Roslyn.
     /// </summary>
-    /// <param name="generatorInitializationContext"> The generator initialization context. </param>
+    /// <param name="generatorInitializationContext">
+    ///     The Roslyn context providing access to syntax providers and output registration.
+    /// </param>
+    /// <remarks>
+    ///     <para>
+    ///     This method defines the entire incremental pipeline graph. Roslyn caches intermediate
+    ///     results between builds, only re-executing nodes when their inputs change. This is
+    ///     critical for maintaining fast incremental compilation in large projects.
+    ///     </para>
+    ///     
+    ///     <para><b>Pipeline Flow:</b></para>
+    ///     <list type="number">
+    ///         <item>Process metadata from syntax trees (Stage 1)</item>
+    ///         <item>Emit debug representations of parsed metadata (if enabled)</item>
+    ///         <item>Transform metadata into code generation models (Stage 2)</item>
+    ///         <item>Register diagnostic output to surface errors to the IDE/compiler</item>
+    ///     </list>
+    ///     
+    ///     <para>
+    ///     Diagnostics are emitted as a separate output stream to ensure errors appear
+    ///     even if code generation fails partway through.
+    ///     </para>
+    /// </remarks>
     public void Initialize(IncrementalGeneratorInitializationContext generatorInitializationContext) {
         var output = generatorInitializationContext
             .Process(metadataPipeline)
