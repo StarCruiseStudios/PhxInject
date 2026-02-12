@@ -21,11 +21,17 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Auto;
 
+/// <summary>
+/// Transforms required properties for auto factories into metadata.
+/// </summary>
 internal class AutoFactoryRequiredPropertyTransformer(
     ICodeElementValidator elementValidator,
     ICodeElementValidator setterElementValidator,
     ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer
 ) : ITransformer<IPropertySymbol, AutoFactoryRequiredPropertyMetadata> {
+    /// <summary>
+    /// Gets the singleton instance.
+    /// </summary>
     public static readonly AutoFactoryRequiredPropertyTransformer Instance = new(
         new PropertyElementValidator(
             CodeElementAccessibility.PublicOrInternal,
@@ -39,6 +45,7 @@ internal class AutoFactoryRequiredPropertyTransformer(
         QualifierTransformer.Instance
     );
 
+    /// <inheritdoc />
     public bool CanTransform(IPropertySymbol propertySymbol) {
         if (!elementValidator.IsValidSymbol(propertySymbol)) {
             return false;
@@ -48,6 +55,7 @@ internal class AutoFactoryRequiredPropertyTransformer(
         return setMethod != null && setterElementValidator.IsValidSymbol(setMethod);
     }
 
+    /// <inheritdoc />
     public IResult<AutoFactoryRequiredPropertyMetadata> Transform(IPropertySymbol propertySymbol) {
         return DiagnosticsRecorder.Capture(diagnostics => {
             var propertyQualifier = qualifierTransformer.Transform(propertySymbol).OrThrow(diagnostics);
