@@ -20,7 +20,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms AutoBuilder attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     <para><b>Purpose - Auto-Generated Builder Injection:</b></para>
+///     <para>Purpose - Auto-Generated Builder Injection:</para>
 ///     <para>
 ///     [AutoBuilder] marks parameters that should receive an automatically-created builder instance
 ///     for constructing the specified type. Instead of requiring explicit builder method declaration,
@@ -28,7 +28,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     builder definition boilerplate.
 ///     </para>
 ///     
-///     <para><b>User Code Pattern - Implicit Builder Generation:</b></para>
+///     <para>User Code Pattern - Implicit Builder Generation:</para>
 ///     <code>
 ///     [Specification]
 ///     public interface IServices {
@@ -50,7 +50,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     and provides it to factory. User doesn't write explicit builder specification method.
 ///     </para>
 ///     
-///     <para><b>Why AutoBuilder Has No Arguments - Pure Auto-Generation:</b></para>
+///     <para>Why AutoBuilder Has No Arguments - Pure Auto-Generation:</para>
 ///     <para>
 ///     Unlike AutoFactory (which has FabricationMode), AutoBuilder has no configuration because:
 ///     </para>
@@ -78,7 +78,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Why AutoBuilder Needs Special Handling - Builder Interface Analysis:</b></para>
+///     <para>Why AutoBuilder Needs Special Handling - Builder Interface Analysis:</para>
 ///     <para>
 ///     AutoBuilder requires special generation because:
 ///     </para>
@@ -110,7 +110,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>AutoBuilder vs BuilderReference - When To Use Each:</b></para>
+///     <para>AutoBuilder vs BuilderReference - When To Use Each:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>BuilderReference:</term>
@@ -131,7 +131,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>No Configuration Arguments - Simplicity by Design:</b></para>
+///     <para>No Configuration Arguments - Simplicity by Design:</para>
 ///     <para>
 ///     [AutoBuilder] is a marker attribute with no arguments because:
 ///     </para>
@@ -153,7 +153,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Builder Generation Logic - Interface Method Analysis:</b></para>
+///     <para>Builder Generation Logic - Interface Method Analysis:</para>
 ///     <para>
 ///     Generator analyzes builder interface to create implementation:
 ///     </para>
@@ -180,7 +180,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Validation Constraints - Enforced by Later Stages:</b></para>
+///     <para>Validation Constraints - Enforced by Later Stages:</para>
 ///     <para>
 ///     Transformer doesn't validate builder generation feasibility. Later validation ensures:
 ///     </para>
@@ -217,7 +217,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Common Errors Prevented:</b></para>
+///     <para>Common Errors Prevented:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Builder interface has no Build method:</term>

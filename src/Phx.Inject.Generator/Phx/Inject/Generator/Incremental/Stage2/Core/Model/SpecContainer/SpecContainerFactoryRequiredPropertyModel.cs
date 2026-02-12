@@ -18,7 +18,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     Model representing a required property for a factory method.
 /// </summary>
 /// <remarks>
-///     <para><b>AutoFactory Required Properties Pattern:</b></para>
+///     <para>AutoFactory Required Properties Pattern:</para>
 ///     <para>
 ///     Enables C# object initializer syntax for types with `required` properties or init-only
 ///     properties. When [AutoFactory] analyzes a target type, it identifies properties that must
@@ -26,7 +26,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     set them during object creation.
 ///     </para>
 ///     
-///     <para><b>Dependency Resolution for Properties:</b></para>
+///     <para>Dependency Resolution for Properties:</para>
 ///     <para>
 ///     The Value field contains a SpecContainerFactoryInvocationModel that resolves the property's
 ///     dependency the same way constructor parameters are resolved - by recursively invoking
@@ -34,7 +34,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     and property injection patterns.
 ///     </para>
 ///     
-///     <para><b>Generated Code Example:</b></para>
+///     <para>Generated Code Example:</para>
 ///     <code>
 ///     // For: required ILogger Logger { get; init; }
 ///     // Generates in factory:
@@ -44,7 +44,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     };
 ///     </code>
 ///     
-///     <para><b>WHY Separate from Arguments:</b></para>
+///     <para>WHY Separate from Arguments:</para>
 ///     <para>
 ///     Properties are initialized after constructor execution, which matters for types with
 ///     initialization order dependencies or validation logic in property setters. Separating

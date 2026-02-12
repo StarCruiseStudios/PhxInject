@@ -27,7 +27,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     The common attribute metadata (class name, target, locations) shared by all attributes.
 /// </param>
 /// <remarks>
-///     <para><b>Role in DI Framework:</b></para>
+///     <para>Role in DI Framework:</para>
 ///     <para>
 ///     Represents an explicit dependency declaration where the user manually specifies that
 ///     a type depends on another type. This attribute overrides or supplements automatic
@@ -36,7 +36,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     dependencies, or dependencies with complex resolution logic).
 ///     </para>
 ///     
-///     <para><b>What User Declarations Represent:</b></para>
+///     <para>What User Declarations Represent:</para>
 ///     <para>
 ///     When users write "[Dependency(typeof(ILogger))] class MyClass", this metadata captures
 ///     that MyClass explicitly requires ILogger, even if that dependency isn't visible in
@@ -44,7 +44,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     or when dependencies are satisfied through non-constructor means.
 ///     </para>
 ///     
-///     <para><b>Why These Properties Were Chosen:</b></para>
+///     <para>Why These Properties Were Chosen:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -64,7 +64,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Immutability Requirements:</b></para>
+///     <para>Immutability Requirements:</para>
 ///     <para>
 ///     DependencyType is an immutable TypeMetadata record, and AttributeMetadata is immutable.
 ///     This makes DependencyAttributeMetadata a stable cache key. Changes to the dependency
@@ -72,7 +72,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     affecting which factories/builders can be used and what resolution order is required.
 ///     </para>
 ///     
-///     <para><b>Relationship to Other Models:</b></para>
+///     <para>Relationship to Other Models:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>

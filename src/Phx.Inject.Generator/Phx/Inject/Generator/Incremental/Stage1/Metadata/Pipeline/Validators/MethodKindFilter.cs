@@ -18,14 +18,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     Specifies method kind filters for validation in dependency injection contexts.
 /// </summary>
 /// <remarks>
-///     <para><b>Design Purpose - Distinguishing Method Varieties:</b></para>
+///     <para>Design Purpose - Distinguishing Method Varieties:</para>
 ///     <para>
 ///     Roslyn's IMethodSymbol represents many constructs beyond ordinary methods: property getters/setters,
 ///     event add/remove handlers, operator overloads, constructors, finalizers, etc. In DI contexts,
 ///     most patterns want only ordinary methods. This enum provides precise filtering.
 ///     </para>
 ///     
-///     <para><b>WHY This Filter Exists:</b></para>
+///     <para>WHY This Filter Exists:</para>
 ///     <para>
 ///     Consider a user writing a specification class with factory methods. They mark methods with
 ///     @Factory attributes. If validation accepts all IMethodSymbol instances, we'd incorrectly
@@ -33,7 +33,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     code. Method kind filtering prevents this category error.
 ///     </para>
 ///     
-///     <para><b>DI Patterns by Method Kind:</b></para>
+///     <para>DI Patterns by Method Kind:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Ordinary Methods (MethodKind.Ordinary):</term>
@@ -65,7 +65,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>What Malformed Code Gets Caught:</b></para>
+///     <para>What Malformed Code Gets Caught:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -84,7 +84,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Why Not Just Check MethodKind.Ordinary Everywhere:</b></para>
+///     <para>Why Not Just Check MethodKind.Ordinary Everywhere:</para>
 ///     <para>
 ///     Different DI patterns have different method kind requirements. Constructor injection specifically
 ///     needs constructors. Some advanced patterns might want to intercept property access via getters.
@@ -92,7 +92,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     to explicitly opt out of filtering when appropriate.
 ///     </para>
 ///     
-///     <para><b>Syntax vs Symbol Distinction:</b></para>
+///     <para>Syntax vs Symbol Distinction:</para>
 ///     <para>
 ///     MethodKind is semantic information unavailable at syntax level. Syntax cannot distinguish
 ///     a MethodDeclarationSyntax from a property getter's method body. This is why method kind
@@ -157,14 +157,14 @@ internal static class MethodKindFilterExtensions {
     ///     True if the method's kind matches the filter, false otherwise.
     /// </returns>
     /// <remarks>
-    ///     <para><b>Exact Matching Only:</b></para>
+    ///     <para>Exact Matching Only:</para>
     ///     <para>
     ///     Each filter value matches exactly one MethodKind, except 'Any' which matches all.
     ///     We don't group related kinds (e.g., treating constructors and static constructors
     ///     as equivalent) because DI patterns typically care about the distinction.
     ///     </para>
     ///     
-    ///     <para><b>Unhandled Method Kinds:</b></para>
+    ///     <para>Unhandled Method Kinds:</para>
     ///     <para>
     ///     Roslyn defines many MethodKind values not represented in this filter: Destructor,
     ///     EventAdd, EventRemove, UserDefinedOperator, Conversion, etc. These are intentionally

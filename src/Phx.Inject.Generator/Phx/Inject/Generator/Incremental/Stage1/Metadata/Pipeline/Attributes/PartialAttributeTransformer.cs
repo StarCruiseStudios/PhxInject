@@ -20,7 +20,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms Partial attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     <para><b>Purpose - Partial Specification Composition:</b></para>
+///     <para>Purpose - Partial Specification Composition:</para>
 ///     <para>
 ///     [Partial] marks specifications that should be composed together into a single generated implementation.
 ///     Multiple partial specifications can declare different factory methods, and the generator merges them
@@ -28,7 +28,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     or organizing specifications by concern.
 ///     </para>
 ///     
-///     <para><b>User Code Pattern - Split Specifications:</b></para>
+///     <para>User Code Pattern - Split Specifications:</para>
 ///     <code>
 ///     // File: IUserServices.Factories.cs
 ///     [Specification, Partial]
@@ -48,7 +48,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     declarations. Without [Partial], multiple [Specification] on same type would error.
 ///     </para>
 ///     
-///     <para><b>Why Partial Needs Special Handling - Type Symbol Merging:</b></para>
+///     <para>Why Partial Needs Special Handling - Type Symbol Merging:</para>
 ///     <para>
 ///     Partial specifications require special handling because:
 ///     </para>
@@ -75,7 +75,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>No Arguments - Marker Attribute Pattern:</b></para>
+///     <para>No Arguments - Marker Attribute Pattern:</para>
 ///     <para>
 ///     Like SpecificationAttribute, PartialAttribute has no arguments because:
 ///     </para>
@@ -97,7 +97,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>ExpectSingleAttribute Per Declaration - Not Per Type:</b></para>
+///     <para>ExpectSingleAttribute Per Declaration - Not Per Type:</para>
 ///     <para>
 ///     ExpectSingleAttribute validates each partial declaration has at most one [Partial] attribute:
 ///     </para>
@@ -119,7 +119,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Validation Constraints - Enforced by Later Stages:</b></para>
+///     <para>Validation Constraints - Enforced by Later Stages:</para>
 ///     <para>
 ///     Transformer doesn't validate partial semantics. Later validation ensures:
 ///     </para>
@@ -141,7 +141,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Common Errors Prevented:</b></para>
+///     <para>Common Errors Prevented:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Mixing partial and non-partial:</term>

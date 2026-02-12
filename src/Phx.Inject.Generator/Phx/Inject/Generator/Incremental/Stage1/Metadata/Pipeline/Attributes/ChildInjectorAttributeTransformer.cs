@@ -20,7 +20,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms ChildInjector attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     <para><b>Purpose - Scoped Container Hierarchy:</b></para>
+///     <para>Purpose - Scoped Container Hierarchy:</para>
 ///     <para>
 ///     [ChildInjector] marks specifications that create child scopes within a parent injector hierarchy.
 ///     Child injectors inherit parent dependencies but can override them with scoped instances.
@@ -28,7 +28,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     singleton dependencies.
 ///     </para>
 ///     
-///     <para><b>User Code Pattern - Parent and Child Injectors:</b></para>
+///     <para>User Code Pattern - Parent and Child Injectors:</para>
 ///     <code>
 ///     [Specification, Injector]
 ///     public interface IApplicationScope {
@@ -50,7 +50,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     that has access to parent's IDatabase but manages its own IRequestContext lifecycle.
 ///     </para>
 ///     
-///     <para><b>Why ChildInjector Needs Special Handling - Parent Context Propagation:</b></para>
+///     <para>Why ChildInjector Needs Special Handling - Parent Context Propagation:</para>
 ///     <para>
 ///     ChildInjector specifications require special handling because:
 ///     </para>
@@ -77,7 +77,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>No Arguments - Hierarchical Structure Implied:</b></para>
+///     <para>No Arguments - Hierarchical Structure Implied:</para>
 ///     <para>
 ///     ChildInjector attribute has no configuration arguments because:
 ///     </para>
@@ -99,7 +99,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>ChildInjector vs Injector - Different Generated Patterns:</b></para>
+///     <para>ChildInjector vs Injector - Different Generated Patterns:</para>
 ///     <para>
 ///     The presence of [ChildInjector] vs [Injector] changes code generation:
 ///     </para>
@@ -120,7 +120,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Validation Constraints - Enforced by Later Stages:</b></para>
+///     <para>Validation Constraints - Enforced by Later Stages:</para>
 ///     <para>
 ///     Transformer doesn't validate hierarchy correctness. Later validation ensures:
 ///     </para>
@@ -147,7 +147,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Common Errors Prevented:</b></para>
+///     <para>Common Errors Prevented:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Missing parent factory:</term>

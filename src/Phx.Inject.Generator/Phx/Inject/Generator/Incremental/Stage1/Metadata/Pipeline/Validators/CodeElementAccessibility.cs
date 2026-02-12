@@ -18,14 +18,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     Specifies accessibility requirements for code elements in dependency injection contexts.
 /// </summary>
 /// <remarks>
-///     <para><b>Design Purpose - Generated Code Access Control:</b></para>
+///     <para>Design Purpose - Generated Code Access Control:</para>
 ///     <para>
 ///     This enum encodes accessibility constraints that generated code must satisfy. Unlike Roslyn's
 ///     Accessibility enum (which describes actual accessibility), this enum describes required
 ///     accessibility for code generation to succeed.
 ///     </para>
 ///     
-///     <para><b>WHY Limited Accessibility Options:</b></para>
+///     <para>WHY Limited Accessibility Options:</para>
 ///     <para>
 ///     The enum intentionally provides only two options rather than matching all of Roslyn's
 ///     Accessibility values (Public, Internal, ProtectedInternal, Protected, ProtectedAndInternal, Private).
@@ -51,7 +51,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>What Malformed Code Gets Caught:</b></para>
+///     <para>What Malformed Code Gets Caught:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -70,7 +70,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Why Not Match Roslyn Exactly:</b></para>
+///     <para>Why Not Match Roslyn Exactly:</para>
 ///     <para>
 ///     Roslyn's Accessibility enum includes nuanced options (ProtectedAndInternal, ProtectedOrInternal)
 ///     that rarely apply to DI scenarios. This simplified enum keeps validation logic focused on actual
@@ -118,7 +118,7 @@ internal static class CodeElementAccessibilityExtensions {
     ///     True if the actual accessibility satisfies the requirement, false otherwise.
     /// </returns>
     /// <remarks>
-    ///     <para><b>Protected Accessibility Rejection:</b></para>
+    ///     <para>Protected Accessibility Rejection:</para>
     ///     <para>
     ///     Protected and ProtectedAndInternal are explicitly rejected for PublicOrInternal requirement.
     ///     Generated code doesn't inherit from user classes, so protected members are inaccessible
@@ -126,7 +126,7 @@ internal static class CodeElementAccessibilityExtensions {
     ///     protected factory methods compile but cannot be called by generated injectors.
     ///     </para>
     ///     
-    ///     <para><b>ProtectedOrInternal Acceptance:</b></para>
+    ///     <para>ProtectedOrInternal Acceptance:</para>
     ///     <para>
     ///     ProtectedOrInternal (aka 'protected internal') allows access from same assembly, which
     ///     satisfies our PublicOrInternal requirement. The 'protected' part is irrelevant since

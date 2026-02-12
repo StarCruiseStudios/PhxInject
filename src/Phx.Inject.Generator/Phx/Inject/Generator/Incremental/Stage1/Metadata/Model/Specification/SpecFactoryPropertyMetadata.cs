@@ -19,11 +19,11 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 /// <summary>
 ///     Metadata representing an analyzed specification factory property.
 ///     <para>
-///         <strong>Factory Properties:</strong> Expose instance creation through property getters rather
+///         Factory Properties: Expose instance creation through property getters rather
 ///         than methods. Useful for parameterless factories or when exposing creation logic as a field.
 ///     </para>
 ///     <para>
-///         <strong>Use Case:</strong> Simpler syntax for dependencies with no runtime parameters,
+///         Use Case: Simpler syntax for dependencies with no runtime parameters,
 ///         or when a factory needs to be exposed as a first-class member rather than a method.
 ///     </para>
 /// </summary>

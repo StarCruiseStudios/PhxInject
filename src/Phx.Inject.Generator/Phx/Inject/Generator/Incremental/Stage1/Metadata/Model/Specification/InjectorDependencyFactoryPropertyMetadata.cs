@@ -19,12 +19,12 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 /// <summary>
 ///     Metadata representing an analyzed injector dependency factory property.
 ///     <para>
-///         <strong>Dependency Factory Property:</strong> Defines a parameterless factory property in an
+///         Dependency Factory Property: Defines a parameterless factory property in an
 ///         InjectorDependency interface, representing a dependency exposed by the parent injector through
 ///         a property getter rather than a method.
 ///     </para>
 ///     <para>
-///         <strong>Composition Contract:</strong> The parent must implement this property getter to provide
+///         Composition Contract: The parent must implement this property getter to provide
 ///         the dependency on-demand. Properties offer cleaner syntax for frequently-accessed dependencies.
 ///     </para>
 /// </summary>

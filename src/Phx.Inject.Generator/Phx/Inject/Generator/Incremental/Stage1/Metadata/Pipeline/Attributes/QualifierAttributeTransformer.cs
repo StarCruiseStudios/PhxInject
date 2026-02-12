@@ -22,7 +22,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms Qualifier attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     <para><b>Purpose - Type-Based Dependency Discrimination:</b></para>
+///     <para>Purpose - Type-Based Dependency Discrimination:</para>
 ///     <para>
 ///     [Qualifier(typeof(TMarker))] provides type-based discrimination for dependencies of the same type.
 ///     Unlike LabelAttribute which uses strings, QualifierAttribute uses marker types to distinguish
@@ -30,7 +30,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     and converts it to a TypeModel for later comparison.
 ///     </para>
 ///     
-///     <para><b>User Code Pattern - Type-Qualified Dependencies:</b></para>
+///     <para>User Code Pattern - Type-Qualified Dependencies:</para>
 ///     <code>
 ///     public interface IApplicationMarker { }
 ///     public interface IPerformanceMarker { }
@@ -53,7 +53,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Type-based discrimination is compile-time safe (refactoring support, no typos) compared to strings.
 ///     </para>
 ///     
-///     <para><b>Type Extraction - ITypeSymbol to TypeModel Conversion:</b></para>
+///     <para>Type Extraction - ITypeSymbol to TypeModel Conversion:</para>
 ///     <para>
 ///     Qualifier type extraction follows a two-step process:
 ///     </para>
@@ -76,7 +76,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     non-null Type parameter.
 ///     </para>
 ///     
-///     <para><b>Why Qualifiers Need Special Handling - Type Comparison Complexity:</b></para>
+///     <para>Why Qualifiers Need Special Handling - Type Comparison Complexity:</para>
 ///     <para>
 ///     Qualifier types require TypeModel conversion instead of using ITypeSymbol directly because:
 ///     </para>
@@ -103,7 +103,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Qualifiers vs Labels - When To Use Each:</b></para>
+///     <para>Qualifiers vs Labels - When To Use Each:</para>
 ///     <para>
 ///     Prefer Qualifiers when:
 ///     </para>
@@ -128,7 +128,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Prefer Labels when discrimination is ad-hoc or conceptual rather than architectural.
 ///     </para>
 ///     
-///     <para><b>Validation Constraints - Enforced by Later Stages:</b></para>
+///     <para>Validation Constraints - Enforced by Later Stages:</para>
 ///     <para>
 ///     Transformer doesn't validate qualifier usage. Later validation ensures:
 ///     </para>
@@ -155,7 +155,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Common Errors Prevented:</b></para>
+///     <para>Common Errors Prevented:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Wrong qualifier type:</term>

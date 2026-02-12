@@ -26,7 +26,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     The common attribute metadata (class name, target, locations) shared by all attributes.
 /// </param>
 /// <remarks>
-///     <para><b>Role in DI Framework:</b></para>
+///     <para>Role in DI Framework:</para>
 ///     <para>
 ///     Provides a built-in string-based qualification mechanism for disambiguating multiple
 ///     bindings of the same type. Labels are the most common form of qualifier, offering a
@@ -35,7 +35,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     it specifies which labeled binding to inject.
 ///     </para>
 ///     
-///     <para><b>What User Declarations Represent:</b></para>
+///     <para>What User Declarations Represent:</para>
 ///     <para>
 ///     When users write "[Factory] [Label("primary")] int GetPrimaryPort() => 8080" and
 ///     "[Factory] IService Create([Label("primary")] int port)", the label creates a qualified
@@ -44,7 +44,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     to coexist without ambiguity.
 ///     </para>
 ///     
-///     <para><b>Why These Properties Were Chosen:</b></para>
+///     <para>Why These Properties Were Chosen:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -64,7 +64,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Immutability Requirements:</b></para>
+///     <para>Immutability Requirements:</para>
 ///     <para>
 ///     String is immutable, and AttributeMetadata is immutable, making this a stable cache key.
 ///     Changes to the label string correctly invalidate the cache since they alter the binding
@@ -72,7 +72,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     which injection sites, fundamentally changing the resolution logic.
 ///     </para>
 ///     
-///     <para><b>Relationship to Other Models:</b></para>
+///     <para>Relationship to Other Models:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>

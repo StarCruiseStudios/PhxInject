@@ -43,7 +43,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     Attributes that must not be present. Null/empty means no prohibited attributes.
 /// </param>
 /// <remarks>
-///     <para><b>Design Purpose - Property Injection Patterns:</b></para>
+///     <para>Design Purpose - Property Injection Patterns:</para>
 ///     <para>
 ///     Property validators enable validation of setter injection and property-based configuration patterns.
 ///     Key DI patterns supported:
@@ -78,7 +78,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>WHY These Constraints Exist:</b></para>
+///     <para>WHY These Constraints Exist:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Setter requirement:</term>
@@ -121,7 +121,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>What Malformed Code Gets Caught:</b></para>
+///     <para>What Malformed Code Gets Caught:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -145,7 +145,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Syntax vs Symbol Validation Gap:</b></para>
+///     <para>Syntax vs Symbol Validation Gap:</para>
 ///     <para>
 ///     Syntax validation cannot determine getter/setter presence or accessibility from PropertyDeclarationSyntax
 ///     without analyzing the accessor list in detail. Rather than duplicate complex parsing logic, we defer
@@ -153,7 +153,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     declaration. This trades some syntax-level filtering for simpler, more maintainable code.
 ///     </para>
 ///     
-///     <para><b>Design Tradeoff - Minimal Syntax Filtering:</b></para>
+///     <para>Design Tradeoff - Minimal Syntax Filtering:</para>
 ///     <para>
 ///     Unlike class or method validators, this validator performs minimal syntax filtering (only type check).
 ///     This is intentional: property syntax is complex (auto-properties, expression-bodied, init-only setters)
@@ -216,13 +216,13 @@ internal class PropertyElementValidator(
 
     /// <inheritdoc />
     /// <remarks>
-    ///     <para><b>Intentionally Minimal Syntax Validation:</b></para>
+    ///     <para>Intentionally Minimal Syntax Validation:</para>
     ///     <para>
     ///     This validator only checks that the node is a PropertyDeclarationSyntax, performing no
     ///     modifier or accessor validation at syntax level. This is a deliberate design choice.
     ///     </para>
     ///     
-    ///     <para><b>WHY Defer Everything to Symbol Phase:</b></para>
+    ///     <para>WHY Defer Everything to Symbol Phase:</para>
     ///     <list type="bullet">
     ///         <item>
     ///             <description>
@@ -245,7 +245,7 @@ internal class PropertyElementValidator(
     ///         </item>
     ///     </list>
     ///     
-    ///     <para><b>Performance Tradeoff:</b></para>
+    ///     <para>Performance Tradeoff:</para>
     ///     <para>
     ///     This means every PropertyDeclarationSyntax proceeds to symbol validation, even if it will
     ///     ultimately fail. In practice, this is acceptable because: (1) properties are uncommon in

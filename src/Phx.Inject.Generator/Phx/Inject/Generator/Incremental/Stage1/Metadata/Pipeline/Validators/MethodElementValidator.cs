@@ -50,7 +50,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     Attributes that must not be present. Null/empty means no prohibited attributes.
 /// </param>
 /// <remarks>
-///     <para><b>Design Purpose - Factory and Provider Validation:</b></para>
+///     <para>Design Purpose - Factory and Provider Validation:</para>
 ///     <para>
 ///     Method validators enforce DI framework semantics on user-defined factory methods.
 ///     Key patterns:
@@ -76,7 +76,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>WHY These Constraints Exist:</b></para>
+///     <para>WHY These Constraints Exist:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Static requirement for factories:</term>
@@ -114,7 +114,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Interface Method Special Case:</b></para>
+///     <para>Interface Method Special Case:</para>
 ///     <para>
 ///     Interface methods are implicitly abstract even without the 'abstract' keyword. Symbol validation
 ///     handles this by checking both methodSymbol.IsAbstract and ContainingType.TypeKind == Interface.
@@ -122,7 +122,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     since symbol validation is authoritative).
 ///     </para>
 ///     
-///     <para><b>Method Kind Filtering:</b></para>
+///     <para>Method Kind Filtering:</para>
 ///     <para>
 ///     Roslyn's IMethodSymbol represents not just ordinary methods, but also property accessors,
 ///     event handlers, operators, constructors, etc. MethodKindFilter allows selecting which
@@ -198,7 +198,7 @@ internal class MethodElementValidator(
 
     /// <inheritdoc />
     /// <remarks>
-    ///     <para><b>Syntax Validation Limitations:</b></para>
+    ///     <para>Syntax Validation Limitations:</para>
     ///     <list type="bullet">
     ///         <item>
     ///             <description>
@@ -222,7 +222,7 @@ internal class MethodElementValidator(
     ///         </item>
     ///     </list>
     ///     
-    ///     <para><b>Conservative Approach:</b></para>
+    ///     <para>Conservative Approach:</para>
     ///     <para>
     ///     When we can't definitively check a constraint in syntax (like abstract-via-interface),
     ///     we err on the side of allowing through to symbol validation rather than false-rejecting.

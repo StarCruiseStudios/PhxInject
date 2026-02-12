@@ -19,18 +19,18 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Auto;
 /// <summary>
 ///     Metadata representing an analyzed auto-generated factory.
 ///     <para>
-///         <strong>Auto-Generation Convention:</strong> Classes meeting specific criteria are automatically
+///         Auto-Generation Convention: Classes meeting specific criteria are automatically
 ///         treated as factories without explicit [Factory] attributes. Criteria include: public/internal
 ///         accessibility, non-abstract, single public constructor, and all constructor dependencies
 ///         satisfiable by the injection graph.
 ///     </para>
 ///     <para>
-///         <strong>Required Properties:</strong> Properties marked with 'required' keyword that must be
+///         Required Properties: Properties marked with 'required' keyword that must be
 ///         initialized during object construction. The generator ensures these are satisfied either through
 ///         constructor parameters or post-construction initialization.
 ///     </para>
 ///     <para>
-///         <strong>Scoping:</strong> Apply [Factory(FabricationMode.Scoped)] to the class to control
+///         Scoping: Apply [Factory(FabricationMode.Scoped)] to the class to control
 ///         instance lifetime (transient vs scoped).
 ///     </para>
 /// </summary>

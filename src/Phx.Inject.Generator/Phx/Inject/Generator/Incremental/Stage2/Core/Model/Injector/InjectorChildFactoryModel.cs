@@ -19,7 +19,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///     Stage 2 implementation model for generating child injector factory methods.
 /// </summary>
 /// <remarks>
-///     <para><strong>Domain Model:</strong></para>
+///     <para>Domain Model:</para>
 ///     <para>
 ///         InjectorChildFactoryModel represents a factory method that creates hierarchical child
 ///         injector instances. It is the Stage 2 counterpart to 
@@ -27,7 +27,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         "ChildProvider" while Stage 2 uses "ChildFactory" to emphasize the factory pattern.
 ///     </para>
 ///     
-///     <para><strong>Hierarchical Dependency Injection:</strong></para>
+///     <para>Hierarchical Dependency Injection:</para>
 ///     <para>
 ///         Child factories enable scoped sub-containers that inherit access to parent dependencies
 ///         while maintaining isolated state. This models real-world scope hierarchies:
@@ -38,7 +38,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         <item>Game engine (root) → Scene (child) → Entity (grandchild)</item>
 ///     </list>
 ///     
-///     <para><strong>Transformation from Metadata:</strong></para>
+///     <para>Transformation from Metadata:</para>
 ///     <para>
 ///         InjectorChildProviderMapper transforms Stage 1 metadata into this model:
 ///     </para>
@@ -49,7 +49,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         <item>Renames method: ChildProviderMethodName → ChildFactoryMethodName</item>
 ///     </list>
 ///     
-///     <para><strong>Code Generation Pattern:</strong></para>
+///     <para>Code Generation Pattern:</para>
 ///     <para>
 ///         Each InjectorChildFactoryModel generates a method in the parent injector class that:
 ///     </para>
@@ -61,7 +61,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         <item>Returns the child injector interface reference</item>
 ///     </list>
 ///     
-///     <para><strong>Example Transformation:</strong></para>
+///     <para>Example Transformation:</para>
 ///     <code>
 ///         // Parent Interface (Stage 1 Metadata):
 ///         [Injector(typeof(ApplicationSpec))]
@@ -103,7 +103,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         }
 ///     </code>
 ///     
-///     <para><strong>Parent-Child Dependency Flow:</strong></para>
+///     <para>Parent-Child Dependency Flow:</para>
 ///     <para>
 ///         The [Dependency] attribute on the child interface specifies the parent dependency contract.
 ///         This enables compile-time safe access to parent-provided dependencies:
@@ -133,7 +133,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         </item>
 ///     </list>
 ///     
-///     <para><strong>Parameter Propagation (External Dependencies):</strong></para>
+///     <para>Parameter Propagation (External Dependencies):</para>
 ///     <para>
 ///         Parameters represent context-specific data passed from parent to child. These become
 ///         available as "external dependencies" in the child's specifications:
@@ -157,7 +157,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         available to all factories/builders in that specification.
 ///     </para>
 ///     
-///     <para><strong>Scope Isolation and Lifetime:</strong></para>
+///     <para>Scope Isolation and Lifetime:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>State Isolation:</term>
@@ -193,7 +193,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         </item>
 ///     </list>
 ///     
-///     <para><strong>Multi-Level Hierarchies:</strong></para>
+///     <para>Multi-Level Hierarchies:</para>
 ///     <para>
 ///         Child injectors can themselves have child factories, creating arbitrarily deep hierarchies:
 ///     </para>
@@ -211,7 +211,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         accesses grandparent dependencies by requesting them from parent, which delegates to grandparent.
 ///     </para>
 ///     
-///     <para><strong>When to Use Child Injectors:</strong></para>
+///     <para>When to Use Child Injectors:</para>
 ///     <list type="bullet">
 ///         <item>Different lifetime scopes (application vs request vs operation)</item>
 ///         <item>Context-specific dependencies (per-request DB transaction, per-operation state)</item>
@@ -220,7 +220,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         <item>Multi-tenancy (per-tenant child injector with tenant-specific config)</item>
 ///     </list>
 ///     
-///     <para><strong>Relationship to Other Models:</strong></para>
+///     <para>Relationship to Other Models:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             Contrast with <see cref="InjectorProviderModel"/>: Providers return dependency instances,

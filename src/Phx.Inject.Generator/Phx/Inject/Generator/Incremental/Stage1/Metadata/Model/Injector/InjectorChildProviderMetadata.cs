@@ -20,7 +20,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///     Stage 1 metadata for a child provider method that creates hierarchical sub-container instances.
 /// </summary>
 /// <remarks>
-///     <para><strong>Domain Model:</strong></para>
+///     <para>Domain Model:</para>
 ///     <para>
 ///         A child provider is a factory method that creates a scoped child injector. This enables
 ///         hierarchical dependency injection where child containers inherit access to parent-provided
@@ -28,7 +28,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         attribute marks these methods to distinguish them from regular providers.
 ///     </para>
 ///     
-///     <para><strong>Hierarchical Injection Pattern:</strong></para>
+///     <para>Hierarchical Injection Pattern:</para>
 ///     <para>
 ///         Parent-child relationships model nested scopes with different lifetimes:
 ///     </para>
@@ -58,7 +58,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         </item>
 ///     </list>
 ///     
-///     <para><strong>Example User Code:</strong></para>
+///     <para>Example User Code:</para>
 ///     <code>
 ///         // Parent (Application-level injector)
 ///         [Injector(typeof(ApplicationSpec))]
@@ -94,7 +94,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         }
 ///     </code>
 ///     
-///     <para><strong>Parameter Propagation:</strong></para>
+///     <para>Parameter Propagation:</para>
 ///     <para>
 ///         The Parameters collection captures method arguments (e.g., HttpContext, Command) that are
 ///         passed to the child injector's constructor. These parameters become available as "external
@@ -102,7 +102,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         resolution. For example, RequestSpec can use the HttpContext to extract user claims.
 ///     </para>
 ///     
-///     <para><strong>Code Generation:</strong></para>
+///     <para>Code Generation:</para>
 ///     <para>
 ///         Transformed by InjectorChildProviderMapper into <see cref="Stage2.Core.Model.Injector.InjectorChildFactoryModel"/>,
 ///         which generates factory methods that:
@@ -115,7 +115,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         <item>Return the child injector interface reference</item>
 ///     </list>
 ///     
-///     <para><strong>Generated Implementation Pattern:</strong></para>
+///     <para>Generated Implementation Pattern:</para>
 ///     <code>
 ///         // In ApplicationInjector_ApplicationSpec class:
 ///         public IRequestInjector CreateRequestScope(HttpContext httpContext) {
@@ -135,7 +135,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         }
 ///     </code>
 ///     
-///     <para><strong>Dependency Flow:</strong></para>
+///     <para>Dependency Flow:</para>
 ///     <para>
 ///         The [Dependency] attribute on the child injector interface specifies which parent interface
 ///         the child depends on. This must match a [InjectorDependency] interface that exposes parent
@@ -147,7 +147,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         <item>Parent injector resolves from its scope: return specContainer.Fac_Logger()</item>
 ///     </list>
 ///     
-///     <para><strong>Scope Isolation and Lifetime:</strong></para>
+///     <para>Scope Isolation and Lifetime:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Isolation:</term>
@@ -174,7 +174,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         </item>
 ///     </list>
 ///     
-///     <para><strong>Relationship to Other Metadata:</strong></para>
+///     <para>Relationship to Other Metadata:</para>
 ///     <list type="bullet">
 ///         <item>ChildInjectorAttribute: Contains specification types for the child injector</item>
 ///         <item>ChildInjectorType: References the child's InjectorInterfaceMetadata</item>

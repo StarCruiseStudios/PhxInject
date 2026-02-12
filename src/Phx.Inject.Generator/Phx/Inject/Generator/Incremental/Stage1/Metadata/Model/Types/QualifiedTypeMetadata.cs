@@ -26,14 +26,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 ///     or NoQualifierMetadata for unqualified bindings).
 /// </param>
 /// <remarks>
-///     <para><b>Design Purpose:</b></para>
+///     <para>Design Purpose:</para>
 ///     <para>
 ///     Enables multiple bindings of the same type to coexist by associating each with a
 ///     distinct qualifier. For example, you might have @Primary ILogger and @Fallback ILogger
 ///     bindings. The qualifier becomes part of the binding's identity for dependency resolution.
 ///     </para>
 ///     
-///     <para><b>Qualifier Semantics:</b></para>
+///     <para>Qualifier Semantics:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -52,14 +52,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Equality Semantics:</b></para>
+///     <para>Equality Semantics:</para>
 ///     <para>
 ///     Two qualified types are equal if both their type and qualifier match. This ensures
 ///     that @Primary ILogger and @Secondary ILogger are treated as distinct binding keys.
 ///     The Location property is inherited from TypeMetadata and excluded from equality.
 ///     </para>
 ///     
-///     <para><b>When to Use:</b></para>
+///     <para>When to Use:</para>
 ///     <para>
 ///     Use QualifiedTypeMetadata whenever representing a dependency binding, injection site,
 ///     or provided value. Always use this instead of bare TypeMetadata in the DI domain model

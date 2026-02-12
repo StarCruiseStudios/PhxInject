@@ -19,14 +19,14 @@ namespace Phx.Inject.Generator.Incremental.Diagnostics;
 ///     in an in-memory list for batch processing.
 /// </summary>
 /// <remarks>
-///     <para><b>Design Decision:</b></para>
+///     <para>Design Decision:</para>
 ///     <para>
 ///     Uses a simple <c>List&lt;DiagnosticInfo&gt;</c> rather than a concurrent collection
 ///     because each recorder is thread-local. Allocations are minimal since diagnostics are
 ///     typically infrequent (clean code produces few errors).
 ///     </para>
 ///     
-///     <para><b>Exception Handling Strategy:</b></para>
+///     <para>Exception Handling Strategy:</para>
 ///     <para>
 ///     The <c>Capture</c> method wraps user code and converts exceptions into Error results.
 ///     This ensures that even when transformers throw (which they shouldn't, but might due to
@@ -66,20 +66,20 @@ internal class DiagnosticsRecorder : IDiagnosticsRecorder {
     ///     </list>
     /// </returns>
     /// <remarks>
-    ///     <para><b>Exception Handling:</b></para>
+    ///     <para>Exception Handling:</para>
     ///     <list type="bullet">
     ///         <item>
-    ///             <b>GeneratorException:</b> Expected exception carrying diagnostics.
+    ///             GeneratorException: Expected exception carrying diagnostics.
     ///             Captured and returned as Error result with those diagnostics.
     ///         </item>
     ///         <item>
-    ///             <b>Other exceptions:</b> Unexpected (generator bugs). Caught and returned
+    ///             Other exceptions: Unexpected (generator bugs). Caught and returned
     ///             as Error result, preventing compilation crash. However, this indicates
     ///             a generator implementation error that should be fixed.
     ///         </item>
     ///     </list>
     ///     
-    ///     <para><b>Usage Pattern:</b></para>
+    ///     <para>Usage Pattern:</para>
     ///     <para>
     ///     Wrap complex transformation logic in <c>Capture</c> to ensure exceptions don't
     ///     escape and crash the compiler. The recorder is local to this execution and
@@ -96,7 +96,7 @@ internal class DiagnosticsRecorder : IDiagnosticsRecorder {
     ///     </code>
     ///     </example>
     ///     
-    ///     <para><b>Thread Safety:</b></para>
+    ///     <para>Thread Safety:</para>
     ///     <para>
     ///     Creates a new recorder per invocation, so multiple threads can safely call
     ///     <c>Capture</c> concurrently. Each gets its own isolated diagnostic collection.

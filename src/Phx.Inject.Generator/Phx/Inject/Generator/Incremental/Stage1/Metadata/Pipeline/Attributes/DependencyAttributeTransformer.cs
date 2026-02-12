@@ -24,7 +24,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms Dependency attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     <para><b>Purpose - External Dependency Declaration:</b></para>
+///     <para>Purpose - External Dependency Declaration:</para>
 ///     <para>
 ///     [Dependency] marks injector constructor parameters that represent external dependencies
 ///     provided by parent injectors or application code. Unlike specifications (which this injector
@@ -32,7 +32,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     extracts and validates the dependency type.
 ///     </para>
 ///     
-///     <para><b>Attribute Argument - Dependency Type:</b></para>
+///     <para>Attribute Argument - Dependency Type:</para>
 ///     <para>
 ///     Single required argument: the interface type of the dependency. Extracted via
 ///     GetConstructorArgument with predicate filtering for non-array TypedConstant. WHY interface:
@@ -55,7 +55,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Validator Integration - WHY Validation During Transform:</b></para>
+///     <para>Validator Integration - WHY Validation During Transform:</para>
 ///     <para>
 ///     Unlike most transformers that defer all validation, DependencyAttributeTransformer validates
 ///     the extracted type symbol immediately via injected ICodeElementValidator. This is a deliberate
@@ -86,7 +86,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Validation Rules - InterfaceElementValidator:</b></para>
+///     <para>Validation Rules - InterfaceElementValidator:</para>
 ///     <para>
 ///     The injected validator is configured as:
 ///     `new InterfaceElementValidator(requiredAccessibility: CodeElementAccessibility.PublicOrInternal)`
@@ -112,7 +112,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Error Handling - Result.Error with Diagnostic:</b></para>
+///     <para>Error Handling - Result.Error with Diagnostic:</para>
 ///     <para>
 ///     When validation fails, returns `Result.Error&lt;DependencyAttributeMetadata&gt;` with
 ///     DiagnosticInfo. The diagnostic captures:
@@ -133,7 +133,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     IDE, showing a squiggly underline under the [Dependency] attribute with the error message.
 ///     </para>
 ///     
-///     <para><b>Type Model Conversion:</b></para>
+///     <para>Type Model Conversion:</para>
 ///     <para>
 ///     Validated ITypeSymbol is converted to TypeModel via ToTypeModel() before storing in metadata.
 ///     This conversion is critical for incremental generator caching - TypeModel has structural
@@ -141,7 +141,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Compilation lifetime.
 ///     </para>
 ///     
-///     <para><b>Performance - Validation Cost Trade-off:</b></para>
+///     <para>Performance - Validation Cost Trade-off:</para>
 ///     <para>
 ///     InterfaceElementValidator.IsValidSymbol checks TypeKind and Accessibility properties, both
 ///     cheap reads from symbol metadata. Cost is negligible compared to downstream transformations

@@ -19,12 +19,12 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 /// <summary>
 ///     Metadata representing an analyzed specification class.
 ///     <para>
-///         <strong>Specification Pattern:</strong> Defines HOW dependencies are constructed, separate from
+///         Specification Pattern: Defines HOW dependencies are constructed, separate from
 ///         the injector which defines WHAT is exposed. This separation enables reusability, composability,
 ///         and clear separation of concerns between construction logic and API surface.
 ///     </para>
 ///     <para>
-///         <strong>Factory vs Builder:</strong>
+///         Factory vs Builder:
 ///         <list type="bullet">
 ///             <item>Factories create new instances and return non-void types</item>
 ///             <item>Builders configure existing instances and return void</item>

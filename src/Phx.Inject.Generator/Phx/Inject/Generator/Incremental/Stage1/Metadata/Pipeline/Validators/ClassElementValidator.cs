@@ -36,7 +36,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     Collection of attribute checkers that must all pass. Null or empty means no attribute requirements.
 /// </param>
 /// <remarks>
-///     <para><b>Common Usage Patterns:</b></para>
+///     <para>Common Usage Patterns:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -55,7 +55,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Validation Rules - WHY These Constraints:</b></para>
+///     <para>Validation Rules - WHY These Constraints:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>TypeKind == Class:</term>
@@ -90,7 +90,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Syntax vs Symbol Validation Gap:</b></para>
+///     <para>Syntax vs Symbol Validation Gap:</para>
 ///     <para>
 ///     Syntax validation cannot check attribute types (e.g., is @Specification present?) because
 ///     attributes aren't resolved yet. The syntax phase only filters by modifiers like 'static' and
@@ -98,7 +98,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     some nodes pass syntax but fail symbol - this is intentional and acceptable.
 ///     </para>
 ///     
-///     <para><b>Error Reporting:</b></para>
+///     <para>Error Reporting:</para>
 ///     <para>
 ///     This validator returns boolean only - it doesn't generate diagnostics. Diagnostic generation
 ///     happens in the transformer that uses this validator. This separation keeps validation logic
@@ -148,7 +148,7 @@ internal class ClassElementValidator(
 
     /// <inheritdoc />
     /// <remarks>
-    ///     <para><b>Limitation - Attributes Cannot Be Checked:</b></para>
+    ///     <para>Limitation - Attributes Cannot Be Checked:</para>
     ///     <para>
     ///     The syntax-level validation cannot verify attribute types because attributes are just
     ///     syntax nodes here, not resolved symbols. We accept this imprecision - if a class has
@@ -156,7 +156,7 @@ internal class ClassElementValidator(
     ///     The wasted symbol lookup is acceptable given the performance benefit of early filtering.
     ///     </para>
     ///     
-    ///     <para><b>Accessibility Translation:</b></para>
+    ///     <para>Accessibility Translation:</para>
     ///     <para>
     ///     Syntax modifiers don't map 1:1 to semantic accessibility. For example, a class with no
     ///     modifiers is internally accessible by default. We use heuristics here: if PublicOrInternal

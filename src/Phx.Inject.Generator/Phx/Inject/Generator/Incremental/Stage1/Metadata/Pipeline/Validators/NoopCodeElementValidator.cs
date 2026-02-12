@@ -19,14 +19,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     A no-operation validator that accepts all code elements unconditionally.
 /// </summary>
 /// <remarks>
-///     <para><b>Design Purpose - Null Object Pattern:</b></para>
+///     <para>Design Purpose - Null Object Pattern:</para>
 ///     <para>
 ///     This validator implements the Null Object pattern for validation scenarios. Rather than
 ///     using null to represent "no validation needed", we use this singleton instance that always
 ///     returns true. This eliminates null checks throughout validation pipeline code.
 ///     </para>
 ///     
-///     <para><b>WHY This Exists:</b></para>
+///     <para>WHY This Exists:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Optional validation:</term>
@@ -58,14 +58,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Singleton Pattern:</b></para>
+///     <para>Singleton Pattern:</para>
 ///     <para>
 ///     The validator is a singleton because it's stateless and immutable. Creating multiple
 ///     instances would waste memory with no benefit. Private constructor prevents external
 ///     instantiation; callers must use NoopCodeElementValidator.Instance.
 ///     </para>
 ///     
-///     <para><b>Security Note:</b></para>
+///     <para>Security Note:</para>
 ///     <para>
 ///     Always returning true means NO validation occurs. Use this only when you genuinely want
 ///     to accept all code elements. Using noop validator in production validation pipelines
@@ -73,7 +73,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     It's primarily a development/testing tool.
 ///     </para>
 ///     
-///     <para><b>Contrast with Empty AggregateElementValidator:</b></para>
+///     <para>Contrast with Empty AggregateElementValidator:</para>
 ///     <para>
 ///     An AggregateElementValidator with empty validator list returns true for symbols (vacuous truth)
 ///     but false for syntax (no filter passed). NoopCodeElementValidator returns true for both phases.

@@ -23,7 +23,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms FactoryReference attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     <para><b>Purpose - Deferred Fabrication Control:</b></para>
+///     <para>Purpose - Deferred Fabrication Control:</para>
 ///     <para>
 ///     [FactoryReference] marks parameters that should receive a factory delegate rather than a resolved
 ///     instance. This enables lazy initialization, multiple instance creation, or caller-controlled
@@ -31,7 +31,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     referenced factory creates instances.
 ///     </para>
 ///     
-///     <para><b>User Code Pattern - Factory Delegation:</b></para>
+///     <para>User Code Pattern - Factory Delegation:</para>
 ///     <code>
 ///     [Specification]
 ///     public interface IServices {
@@ -53,7 +53,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     creation until needed (lazy initialization).
 ///     </para>
 ///     
-///     <para><b>User Code Pattern - FabricationMode Override:</b></para>
+///     <para>User Code Pattern - FabricationMode Override:</para>
 ///     <code>
 ///     [Specification]
 ///     public interface IServices {
@@ -72,7 +72,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     control over instantiation strategy.
 ///     </para>
 ///     
-///     <para><b>FabricationMode Extraction - Dual Source Pattern:</b></para>
+///     <para>FabricationMode Extraction - Dual Source Pattern:</para>
 ///     <para>
 ///     FabricationMode can be specified via constructor argument or named argument:
 ///     </para>
@@ -97,7 +97,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     for different attribute usage patterns.
 ///     </para>
 ///     
-///     <para><b>Type-Based Enum Extraction - Why Predicate Filtering:</b></para>
+///     <para>Type-Based Enum Extraction - Why Predicate Filtering:</para>
 ///     <para>
 ///     The predicate `argument.Type!.GetFullyQualifiedName() == FabricationModeClassName` filters
 ///     constructor arguments by type rather than position because:
@@ -125,7 +125,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Why FactoryReference Needs Special Handling - Delegate vs Instance:</b></para>
+///     <para>Why FactoryReference Needs Special Handling - Delegate vs Instance:</para>
 ///     <para>
 ///     FactoryReference requires special code generation because:
 ///     </para>
@@ -152,7 +152,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>FabricationMode Interpretation - Default vs Explicit:</b></para>
+///     <para>FabricationMode Interpretation - Default vs Explicit:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Default (0 or unspecified):</term>
@@ -183,7 +183,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Validation Constraints - Enforced by Later Stages:</b></para>
+///     <para>Validation Constraints - Enforced by Later Stages:</para>
 ///     <para>
 ///     Transformer doesn't validate reference semantics. Later validation ensures:
 ///     </para>
@@ -211,7 +211,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Common Errors Prevented:</b></para>
+///     <para>Common Errors Prevented:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Wrong delegate signature:</term>

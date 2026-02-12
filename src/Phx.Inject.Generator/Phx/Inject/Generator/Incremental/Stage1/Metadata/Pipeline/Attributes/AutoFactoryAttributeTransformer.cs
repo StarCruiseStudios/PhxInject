@@ -23,7 +23,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms AutoFactory attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     <para><b>Purpose - Auto-Generated Factory Injection:</b></para>
+///     <para>Purpose - Auto-Generated Factory Injection:</para>
 ///     <para>
 ///     [AutoFactory] marks parameters that should receive an automatically-created factory for producing
 ///     the specified type. Instead of injecting an instance directly or requiring manual factory method
@@ -31,7 +31,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     controlling how the auto-generated factory creates instances.
 ///     </para>
 ///     
-///     <para><b>User Code Pattern - Implicit Factory Generation:</b></para>
+///     <para>User Code Pattern - Implicit Factory Generation:</para>
 ///     <code>
 ///     [Specification]
 ///     public interface IServices {
@@ -49,7 +49,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     and creates a factory delegate automatically. User doesn't need to write explicit factory method.
 ///     </para>
 ///     
-///     <para><b>User Code Pattern - FabricationMode Configuration:</b></para>
+///     <para>User Code Pattern - FabricationMode Configuration:</para>
 ///     <code>
 ///     [Specification]
 ///     public interface IServices {
@@ -64,7 +64,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Scoped caches first instance, Container/ContainerScoped handle child injector scoping.
 ///     </para>
 ///     
-///     <para><b>FabricationMode Extraction - Identical to FactoryReference:</b></para>
+///     <para>FabricationMode Extraction - Identical to FactoryReference:</para>
 ///     <para>
 ///     Extraction logic mirrors FactoryReferenceAttributeTransformer:
 ///     </para>
@@ -88,7 +88,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Type-based filtering ensures resilience across attribute signature changes (see FactoryReference docs).
 ///     </para>
 ///     
-///     <para><b>Why AutoFactory Needs Special Handling - On-Demand Factory Creation:</b></para>
+///     <para>Why AutoFactory Needs Special Handling - On-Demand Factory Creation:</para>
 ///     <para>
 ///     AutoFactory requires special generation because:
 ///     </para>
@@ -115,7 +115,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>AutoFactory vs FactoryReference - When To Use Each:</b></para>
+///     <para>AutoFactory vs FactoryReference - When To Use Each:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>FactoryReference:</term>
@@ -135,7 +135,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>FabricationMode Interpretation - Explicit Control:</b></para>
+///     <para>FabricationMode Interpretation - Explicit Control:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Default (0 or unspecified):</term>
@@ -166,7 +166,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Validation Constraints - Enforced by Later Stages:</b></para>
+///     <para>Validation Constraints - Enforced by Later Stages:</para>
 ///     <para>
 ///     Transformer doesn't validate auto-factory generation feasibility. Later validation ensures:
 ///     </para>
@@ -203,7 +203,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Common Errors Prevented:</b></para>
+///     <para>Common Errors Prevented:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Target type has no accessible constructor:</term>

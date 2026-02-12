@@ -19,7 +19,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///     Stage 1 metadata for an activator method that initializes existing object instances.
 /// </summary>
 /// <remarks>
-///     <para><strong>Domain Model:</strong></para>
+///     <para>Domain Model:</para>
 ///     <para>
 ///         An activator is a void method that accepts an existing object and injects its dependencies.
 ///         This supports scenarios where object construction is external to the DI container (e.g.,
@@ -27,7 +27,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         dependency injection is still desired. Also called the "builder pattern" in this codebase.
 ///     </para>
 ///     
-///     <para><strong>When to Use Activators vs Providers:</strong></para>
+///     <para>When to Use Activators vs Providers:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Use Provider:</term>
@@ -46,7 +46,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         </item>
 ///     </list>
 ///     
-///     <para><strong>Example User Code:</strong></para>
+///     <para>Example User Code:</para>
 ///     <code>
 ///         [Injector(typeof(ViewModelSpec))]
 ///         interface IViewModelInjector {
@@ -58,7 +58,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         }
 ///     </code>
 ///     
-///     <para><strong>Specification Counterpart:</strong></para>
+///     <para>Specification Counterpart:</para>
 ///     <para>
 ///         Activators correspond to [Builder] methods in specifications, not [Factory] methods.
 ///         Builders have void return type and accept the object to initialize as a parameter:
@@ -77,7 +77,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         }
 ///     </code>
 ///     
-///     <para><strong>Code Generation:</strong></para>
+///     <para>Code Generation:</para>
 ///     <para>
 ///         Transformed by InjectorActivatorMapper into <see cref="Stage2.Core.Model.Injector.InjectorBuilderModel"/>,
 ///         which generates implementation methods that:
@@ -89,7 +89,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         <item>Return void (initialization is in-place)</item>
 ///     </list>
 ///     
-///     <para><strong>Generated Implementation Pattern:</strong></para>
+///     <para>Generated Implementation Pattern:</para>
 ///     <code>
 ///         // For: void Initialize(MainViewModel viewModel)
 ///         public void Initialize(MainViewModel viewModel) {
@@ -101,7 +101,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         }
 ///     </code>
 ///     
-///     <para><strong>Scope Implications:</strong></para>
+///     <para>Scope Implications:</para>
 ///     <para>
 ///         Activators resolve dependencies at invocation time, using the current injector's scope.
 ///         The activated object itself is not managed by the container - its lifetime is controlled
@@ -109,7 +109,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         still benefit from dependency injection.
 ///     </para>
 ///     
-///     <para><strong>Common Use Cases:</strong></para>
+///     <para>Common Use Cases:</para>
 ///     <list type="bullet">
 ///         <item>Initializing view models created by UI frameworks</item>
 ///         <item>Injecting into deserialized DTOs</item>

@@ -28,7 +28,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     The common attribute metadata (class name, target, locations) shared by all attributes.
 /// </param>
 /// <remarks>
-///     <para><b>Role in DI Framework:</b></para>
+///     <para>Role in DI Framework:</para>
 ///     <para>
 ///     Enables users to create domain-specific qualifier attributes by marking an attribute
 ///     class with [Qualifier]. This promotes the attribute from a generic annotation to a
@@ -37,7 +37,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     metadata through their own attribute parameters.
 ///     </para>
 ///     
-///     <para><b>What User Declarations Represent:</b></para>
+///     <para>What User Declarations Represent:</para>
 ///     <para>
 ///     When users write "[Qualifier] class ProductionAttribute : Attribute { }", they're declaring
 ///     a new qualifier type. Subsequently, "[Factory] [Production] ILogger Create()" and
@@ -46,7 +46,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     and supports IDE refactoring and find-all-references.
 ///     </para>
 ///     
-///     <para><b>Why These Properties Were Chosen:</b></para>
+///     <para>Why These Properties Were Chosen:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -66,7 +66,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Immutability Requirements:</b></para>
+///     <para>Immutability Requirements:</para>
 ///     <para>
 ///     QualifierType is an immutable TypeMetadata record, and AttributeMetadata is immutable,
 ///     making this a stable cache key. Changes to the qualifier type identity correctly
@@ -75,7 +75,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     bindings using that qualifier.
 ///     </para>
 ///     
-///     <para><b>Relationship to Other Models:</b></para>
+///     <para>Relationship to Other Models:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>

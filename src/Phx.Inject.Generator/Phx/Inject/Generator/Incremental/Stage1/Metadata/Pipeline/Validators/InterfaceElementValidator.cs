@@ -28,14 +28,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     Collection of attribute checkers that must all pass. Null or empty means no attribute requirements.
 /// </param>
 /// <remarks>
-///     <para><b>Design Purpose - Injector Interface Contracts:</b></para>
+///     <para>Design Purpose - Injector Interface Contracts:</para>
 ///     <para>
 ///     Interface validators enforce structural contracts for user-defined injector interfaces.
 ///     Injector interfaces declare what dependencies an application needs to obtain, with abstract
 ///     method signatures serving as the provider contract that the generator will implement.
 ///     </para>
 ///     
-///     <para><b>WHY Validate Interfaces for DI:</b></para>
+///     <para>WHY Validate Interfaces for DI:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Separation of concerns:</term>
@@ -61,7 +61,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Validation Rules - WHY These Constraints:</b></para>
+///     <para>Validation Rules - WHY These Constraints:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>TypeKind == Interface:</term>
@@ -89,7 +89,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Syntax vs Symbol Validation Gap:</b></para>
+///     <para>Syntax vs Symbol Validation Gap:</para>
 ///     <para>
 ///     Syntax validation can only check the 'interface' keyword and modifiers. It cannot verify
 ///     attribute types (is it actually @Injector or just something named similarly?). Symbol validation
@@ -97,7 +97,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     this is expected and acceptable for performance reasons.
 ///     </para>
 ///     
-///     <para><b>What Malformed Code Gets Caught:</b></para>
+///     <para>What Malformed Code Gets Caught:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -149,14 +149,14 @@ internal class InterfaceElementValidator(
 
     /// <inheritdoc />
     /// <remarks>
-    ///     <para><b>Syntax-Level Tradeoffs:</b></para>
+    ///     <para>Syntax-Level Tradeoffs:</para>
     ///     <para>
     ///     Interface declarations are simpler than classes - they cannot be static or abstract
     ///     (all members are implicitly abstract). This makes syntax validation more straightforward
     ///     but also less informative. We only check the declaration type and accessibility modifiers.
     ///     </para>
     ///     
-    ///     <para><b>Conservative Accessibility Filtering:</b></para>
+    ///     <para>Conservative Accessibility Filtering:</para>
     ///     <para>
     ///     When checking PublicOrInternal accessibility, we reject only explicit private/protected modifiers.
     ///     Interfaces without explicit accessibility modifiers default to internal, which passes our filter.

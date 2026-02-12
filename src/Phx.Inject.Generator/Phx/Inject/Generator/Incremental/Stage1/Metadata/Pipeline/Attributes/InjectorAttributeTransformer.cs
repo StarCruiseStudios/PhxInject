@@ -22,14 +22,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms Injector attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     <para><b>Purpose - Root Injector Configuration:</b></para>
+///     <para>Purpose - Root Injector Configuration:</para>
 ///     <para>
 ///     [Injector] marks interfaces or classes that should have generated dependency injector
 ///     implementations. This is the entry point attribute that triggers the entire code generation
 ///     pipeline. The transformer extracts configuration controlling how the injector is generated.
 ///     </para>
 ///     
-///     <para><b>Attribute Arguments - What We Extract and WHY:</b></para>
+///     <para>Attribute Arguments - What We Extract and WHY:</para>
 ///     <list type="number">
 ///         <item>
 ///             <term>GeneratedClassName (string, optional):</term>
@@ -53,7 +53,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Argument Extraction Strategy - Named vs Positional:</b></para>
+///     <para>Argument Extraction Strategy - Named vs Positional:</para>
 ///     <para>
 ///     Checks named arguments first (GetNamedArgument), falls back to constructor arguments
 ///     (GetConstructorArgument). This dual-check pattern handles both attribute invocation styles:
@@ -69,7 +69,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     the Type[] specification array.
 ///     </para>
 ///     
-///     <para><b>Type Argument Handling - ITypeSymbol to TypeModel:</b></para>
+///     <para>Type Argument Handling - ITypeSymbol to TypeModel:</para>
 ///     <para>
 ///     Specification types are extracted as ITypeSymbol from Roslyn, then converted to TypeModel
 ///     via ToTypeModel(). This conversion is crucial:
@@ -92,7 +92,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Error Handling - Why No Validation Here:</b></para>
+///     <para>Error Handling - Why No Validation Here:</para>
 ///     <para>
 ///     This transformer performs no semantic validation (e.g., checking if GeneratedClassName is
 ///     a valid identifier, or if specifications are actually interfaces). Returns ToOkResult()
@@ -120,7 +120,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     GetConstructorArgument extensions return null/default, which later validators can detect.
 ///     </para>
 ///     
-///     <para><b>Performance Considerations:</b></para>
+///     <para>Performance Considerations:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>

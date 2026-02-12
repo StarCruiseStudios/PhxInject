@@ -19,7 +19,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///     Stage 2 implementation model for generating concrete injector container classes.
 /// </summary>
 /// <remarks>
-///     <para><strong>Domain Model:</strong></para>
+///     <para>Domain Model:</para>
 ///     <para>
 ///         InjectorModel represents the complete blueprint for generating a DI container implementation
 ///         class. It transforms Stage 1's user-facing interface metadata into an actionable model that
@@ -27,7 +27,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         user's injector interface.
 ///     </para>
 ///     
-///     <para><strong>Stage 1 → Stage 2 Transformation:</strong></para>
+///     <para>Stage 1 → Stage 2 Transformation:</para>
 ///     <para>
 ///         InjectorMapper transforms <see cref="Stage1.Metadata.Model.Injector.InjectorInterfaceMetadata"/> 
 ///         into this model:
@@ -65,7 +65,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         </item>
 ///     </list>
 ///     
-///     <para><strong>Generated Class Structure:</strong></para>
+///     <para>Generated Class Structure:</para>
 ///     <code>
 ///         // Example generated implementation for:
 ///         // [Injector(typeof(RequestSpec))]
@@ -123,7 +123,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         }
 ///     </code>
 ///     
-///     <para><strong>Specification Container Pattern:</strong></para>
+///     <para>Specification Container Pattern:</para>
 ///     <para>
 ///         Each specification type referenced by the injector generates a corresponding "container"
 ///         class (e.g., RequestSpec → RequestSpec_Container). These containers encapsulate:
@@ -144,7 +144,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         <item>Clear lifetime boundaries (container = scope)</item>
 ///     </list>
 ///     
-///     <para><strong>Code Generation Flow:</strong></para>
+///     <para>Code Generation Flow:</para>
 ///     <para>
 ///         InjectorTemplate (in Legacy pipeline) or equivalent Stage 2 emitter consumes this model:
 ///     </para>
@@ -157,7 +157,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         <item>Render child factory methods (ChildFactories) instantiating child injectors</item>
 ///     </list>
 ///     
-///     <para><strong>Specifications vs ConstructedSpecifications:</strong></para>
+///     <para>Specifications vs ConstructedSpecifications:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Specifications (all):</term>
@@ -177,7 +177,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         </item>
 ///     </list>
 ///     
-///     <para><strong>Scope and Lifetime:</strong></para>
+///     <para>Scope and Lifetime:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Injector Lifetime:</term>
@@ -205,7 +205,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         </item>
 ///     </list>
 ///     
-///     <para><strong>Relationship to Metadata:</strong></para>
+///     <para>Relationship to Metadata:</para>
 ///     <para>
 ///         This is the Stage 2 counterpart to <see cref="Stage1.Metadata.Model.Injector.InjectorInterfaceMetadata"/>.
 ///         Metadata captures "what the user wrote", Model captures "what we will generate".

@@ -19,7 +19,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     Model representing an invocation of a specification container factory method.
 /// </summary>
 /// <remarks>
-///     <para><b>Dependency Resolution Pattern:</b></para>
+///     <para>Dependency Resolution Pattern:</para>
 ///     <para>
 ///     Represents a resolved dependency that must be created by calling one or more factory methods.
 ///     Each invocation captures the chain of factory calls needed to satisfy a parameter or property
@@ -27,21 +27,21 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     multiple specification containers.
 ///     </para>
 ///     
-///     <para><b>Factory Invocation Chains:</b></para>
+///     <para>Factory Invocation Chains:</para>
 ///     <para>
 ///     FactoryInvocationDefs contains an ordered list of factory calls that must execute to produce
 ///     the final value. For simple dependencies, this is a single call. For cross-spec dependencies,
 ///     this chains multiple calls: `containerA.GetSpec() → spec.CreateFoo()`.
 ///     </para>
 ///     
-///     <para><b>Runtime Type Support:</b></para>
+///     <para>Runtime Type Support:</para>
 ///     <para>
 ///     RuntimeFactoryProvidedType enables dependency injection containers to provide concrete
 ///     implementations at runtime (e.g., IService → ServiceImpl). When non-null, the generated
 ///     code accepts this type as a parameter rather than resolving it from the factory graph.
 ///     </para>
 ///     
-///     <para><b>Generated Code Example:</b></para>
+///     <para>Generated Code Example:</para>
 ///     <code>
 ///     // Single invocation:
 ///     var logger = this.CreateLogger();

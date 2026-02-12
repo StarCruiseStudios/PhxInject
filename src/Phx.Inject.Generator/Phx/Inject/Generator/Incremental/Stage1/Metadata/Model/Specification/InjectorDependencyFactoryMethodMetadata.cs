@@ -19,12 +19,12 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 /// <summary>
 ///     Metadata representing an analyzed injector dependency factory method.
 ///     <para>
-///         <strong>Dependency Factory Method:</strong> Defines a parameterless factory in an
+///         Dependency Factory Method: Defines a parameterless factory in an
 ///         InjectorDependency interface, representing a dependency that the parent injector must provide
 ///         to child injectors.
 ///     </para>
 ///     <para>
-///         <strong>Parameterless Requirement:</strong> Must have no parameters because the parent provides
+///         Parameterless Requirement: Must have no parameters because the parent provides
 ///         these dependencies independently of child context. The parent's dependency graph satisfies all
 ///         requirements internally.
 ///     </para>

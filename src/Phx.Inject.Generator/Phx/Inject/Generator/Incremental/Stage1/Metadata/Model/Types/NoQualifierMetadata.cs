@@ -18,21 +18,21 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 ///     Singleton representing an unqualified dependency binding with no distinguishing annotation.
 /// </summary>
 /// <remarks>
-///     <para><b>Design Pattern - Null Object:</b></para>
+///     <para>Design Pattern - Null Object:</para>
 ///     <para>
 ///     Rather than using null to represent "no qualifier," we use this singleton to avoid null checks
 ///     throughout the codebase. This follows the Null Object pattern, allowing qualifier-handling
 ///     code to treat all cases uniformly without special-casing absence.
 ///     </para>
 ///     
-///     <para><b>Singleton Rationale:</b></para>
+///     <para>Singleton Rationale:</para>
 ///     <para>
 ///     Since all instances of "no qualifier" are semantically identical, we use a singleton to
 ///     reduce allocation pressure and enable reference equality checks (obj == NoQualifierMetadata.Instance)
 ///     as a fast path before falling back to structural equality.
 ///     </para>
 ///     
-///     <para><b>Equality Semantics:</b></para>
+///     <para>Equality Semantics:</para>
 ///     <para>
 ///     All NoQualifierMetadata instances are equal by definition, regardless of whether they're
 ///     the singleton or a separate instance (though separate instances should never be created
@@ -40,7 +40,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 ///     or reflection somehow produces additional instances.
 ///     </para>
 ///     
-///     <para><b>Usage in Qualified Types:</b></para>
+///     <para>Usage in Qualified Types:</para>
 ///     <para>
 ///     When paired with a TypeMetadata in QualifiedTypeMetadata, indicates this is the "default"
 ///     binding for the type with no special distinguisher. Injection sites without qualifiers

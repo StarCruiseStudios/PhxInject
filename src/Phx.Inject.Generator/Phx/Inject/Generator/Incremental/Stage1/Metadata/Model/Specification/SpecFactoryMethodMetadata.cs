@@ -19,12 +19,12 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 /// <summary>
 ///     Metadata representing an analyzed specification factory method.
 ///     <para>
-///         <strong>Factory Methods:</strong> Create and return NEW instances of dependencies. Distinguished
+///         Factory Methods: Create and return NEW instances of dependencies. Distinguished
 ///         from Builders by non-void return type. Factories form the core of instance creation in the
 ///         dependency graph.
 ///     </para>
 ///     <para>
-///         <strong>Parameters:</strong> Runtime dependencies injected when this factory is invoked.
+///         Parameters: Runtime dependencies injected when this factory is invoked.
 ///         All parameters must be satisfiable by the dependency graph or provided externally.
 ///     </para>
 /// </summary>

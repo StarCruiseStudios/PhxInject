@@ -20,7 +20,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms Builder attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     <para><b>Purpose - Builder Pattern Support:</b></para>
+///     <para>Purpose - Builder Pattern Support:</para>
 ///     <para>
 ///     [Builder] marks methods that should generate builder pattern implementations. Unlike factories
 ///     which directly return constructed objects, builders return an intermediate builder object that
@@ -28,7 +28,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     no configuration arguments - [Builder] is purely a marker attribute.
 ///     </para>
 ///     
-///     <para><b>Why Marker Attribute (No Arguments):</b></para>
+///     <para>Why Marker Attribute (No Arguments):</para>
 ///     <para>
 ///     Builder attribute has no constructor parameters or named arguments to extract. Its presence
 ///     alone signals the generation strategy. This design is intentional:
@@ -51,14 +51,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Transform Implementation - Minimal Extraction:</b></para>
+///     <para>Transform Implementation - Minimal Extraction:</para>
 ///     <para>
 ///     Transform method only extracts the base AttributeMetadata (location info for diagnostics).
 ///     No argument parsing needed. The BuilderAttributeMetadata constructor receives only the
 ///     base metadata, making this the simplest possible transformer implementation.
 ///     </para>
 ///     
-///     <para><b>Comparison to Factory - Design Philosophy:</b></para>
+///     <para>Comparison to Factory - Design Philosophy:</para>
 ///     <para>
 ///     Factory transformer extracts FabricationMode because factories can use different instantiation
 ///     strategies (constructor vs static method). Builders don't need this because:
@@ -81,14 +81,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Performance - Zero Allocation Beyond Base:</b></para>
+///     <para>Performance - Zero Allocation Beyond Base:</para>
 ///     <para>
 ///     Since no argument extraction occurs, this transformer has minimal CPU overhead. Only cost
 ///     is allocating BuilderAttributeMetadata record, which is unavoidable for incremental caching.
 ///     Fastest possible transformer implementation.
 ///     </para>
 ///     
-///     <para><b>Extension Point - Future Configuration:</b></para>
+///     <para>Extension Point - Future Configuration:</para>
 ///     <para>
 ///     If builder patterns later need configuration (e.g., whether to generate fluent builder vs
 ///     traditional builder), arguments would be added here. Current marker design allows backward-

@@ -19,14 +19,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 ///     distinguish multiple bindings of the same type.
 /// </summary>
 /// <remarks>
-///     <para><b>Design Role:</b></para>
+///     <para>Design Role:</para>
 ///     <para>
 ///     Qualifiers solve the "multiple bindings" problem in dependency injection. When you need
 ///     several implementations of the same interface (e.g., @Primary and @Backup database connections),
 ///     qualifiers tag each binding to make it uniquely identifiable during resolution.
 ///     </para>
 ///     
-///     <para><b>Implementations:</b></para>
+///     <para>Implementations:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>NoQualifierMetadata:</term>
@@ -42,14 +42,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Equality Contract:</b></para>
+///     <para>Equality Contract:</para>
 ///     <para>
 ///     Implementers must provide value-based equality that considers only semantic content,
 ///     excluding Location. Two qualifiers are equal if they represent the same disambiguation
 ///     constraint (same label string, same custom attribute type, or both being "no qualifier").
 ///     </para>
 ///     
-///     <para><b>Immutability Requirement:</b></para>
+///     <para>Immutability Requirement:</para>
 ///     <para>
 ///     All implementations must be immutable records to serve as safe cache keys in Roslyn's
 ///     incremental compilation pipeline. Mutating a qualifier would break incremental caching.

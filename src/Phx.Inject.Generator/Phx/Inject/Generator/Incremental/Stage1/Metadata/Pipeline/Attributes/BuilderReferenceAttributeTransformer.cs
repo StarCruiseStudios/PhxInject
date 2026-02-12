@@ -20,7 +20,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms BuilderReference attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     <para><b>Purpose - Manual Builder Wiring:</b></para>
+///     <para>Purpose - Manual Builder Wiring:</para>
 ///     <para>
 ///     [BuilderReference] marks parameters that should receive an existing builder instance rather than
 ///     creating a new one. This enables factory methods to accept externally-created builders as dependencies,
@@ -28,7 +28,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     which generates the builder internally.
 ///     </para>
 ///     
-///     <para><b>User Code Pattern - External Builder Injection:</b></para>
+///     <para>User Code Pattern - External Builder Injection:</para>
 ///     <code>
 ///     [Specification]
 ///     public interface IServices {
@@ -49,7 +49,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     potentially creating circular dependency. [BuilderReference] tells generator "this is user-provided."
 ///     </para>
 ///     
-///     <para><b>Why BuilderReference Needs Special Handling - Dependency vs Parameter:</b></para>
+///     <para>Why BuilderReference Needs Special Handling - Dependency vs Parameter:</para>
 ///     <para>
 ///     BuilderReference requires special handling because:
 ///     </para>
@@ -76,7 +76,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>No Arguments - Simple Marker Semantics:</b></para>
+///     <para>No Arguments - Simple Marker Semantics:</para>
 ///     <para>
 ///     BuilderReference has no configuration arguments because:
 ///     </para>
@@ -98,7 +98,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>BuilderReference vs FactoryReference - Parallel Patterns:</b></para>
+///     <para>BuilderReference vs FactoryReference - Parallel Patterns:</para>
 ///     <para>
 ///     BuilderReference for builders parallels FactoryReference for factories:
 ///     </para>
@@ -122,7 +122,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Both prevent generator from treating parameter as injected dependency.
 ///     </para>
 ///     
-///     <para><b>Validation Constraints - Enforced by Later Stages:</b></para>
+///     <para>Validation Constraints - Enforced by Later Stages:</para>
 ///     <para>
 ///     Transformer doesn't validate builder usage. Later validation ensures:
 ///     </para>
@@ -150,7 +150,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Common Errors Prevented:</b></para>
+///     <para>Common Errors Prevented:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Circular builder dependency:</term>

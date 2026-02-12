@@ -35,7 +35,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 ///     Location data is diagnostic metadata only and must not affect incremental cache keys.
 /// </param>
 /// <remarks>
-///     <para><b>Design Rationale - Immutability for Incremental Compilation:</b></para>
+///     <para>Design Rationale - Immutability for Incremental Compilation:</para>
 ///     <para>
 ///     This record is designed as a value-semantic cache key for Roslyn's incremental generator pipeline.
 ///     Records provide structural equality by default, but we override Equals/GetHashCode to exclude
@@ -43,7 +43,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 ///     the cache when the type's semantic identity is unchanged.
 ///     </para>
 ///     
-///     <para><b>Nested Type Handling Strategy:</b></para>
+///     <para>Nested Type Handling Strategy:</para>
 ///     <para>
 ///     Nested types are represented by incorporating the containing type's full name into BaseTypeName
 ///     (e.g., "Outer.Inner.Nested"). This design choice simplifies name generation and equality comparison
@@ -51,7 +51,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 ///     would complicate equality semantics and increase cache invalidation sensitivity.
 ///     </para>
 ///     
-///     <para><b>Performance Considerations:</b></para>
+///     <para>Performance Considerations:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -71,7 +71,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>When to Use:</b></para>
+///     <para>When to Use:</para>
 ///     <para>
 ///     Use TypeMetadata when you need a stable, comparable representation of a type's identity
 ///     for incremental caching, code generation, or cross-reference resolution. Do NOT use for
@@ -228,21 +228,21 @@ internal static class TypeSymbolExtensions {
     ///     and nested type path if applicable.
     /// </returns>
     /// <remarks>
-    ///     <para><b>Nested Type Handling:</b></para>
+    ///     <para>Nested Type Handling:</para>
     ///     <para>
     ///     For nested types, recursively constructs the full path by walking up the containing
     ///     type chain and concatenating names (e.g., "Outer.Middle.Inner"). This produces a
     ///     flat representation that simplifies equality checking and name generation.
     ///     </para>
     ///     
-    ///     <para><b>Generic Type Processing:</b></para>
+    ///     <para>Generic Type Processing:</para>
     ///     <para>
     ///     For generic types (INamedTypeSymbol), recursively converts all type arguments.
     ///     Non-generic types receive an empty TypeArguments list. Type parameter constraints
     ///     are not captured since they're not needed for code generation.
     ///     </para>
     ///     
-    ///     <para><b>Location Handling:</b></para>
+    ///     <para>Location Handling:</para>
     ///     <para>
     ///     Extracts the first location for diagnostic purposes, wrapped in GeneratorIgnored
     ///     to exclude it from equality comparisons and incremental caching decisions.

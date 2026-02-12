@@ -45,14 +45,14 @@ internal static class PhxInject {
 ///     Stage 2 pipeline that transforms metadata into executable injection implementations.
 /// </param>
 /// <remarks>
-///     <para><b>Design Philosophy:</b></para>
+///     <para>Design Philosophy:</para>
 ///     <para>
 ///     This generator moves dependency resolution from runtime to compile-time, eliminating
 ///     reflection overhead and detecting configuration errors during build. Unlike traditional
 ///     DI containers, this approach produces AOT-friendly, debuggable code with zero runtime cost.
 ///     </para>
 ///     
-///     <para><b>Two-Stage Architecture:</b></para>
+///     <para>Two-Stage Architecture:</para>
 ///     <list type="number">
 ///         <item>
 ///             <term>Stage 1 (Metadata):</term>
@@ -72,14 +72,14 @@ internal static class PhxInject {
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Incremental Generation:</b></para>
+///     <para>Incremental Generation:</para>
 ///     <para>
 ///     Designed to work efficiently with Roslyn's incremental generator model. Each pipeline
 ///     stage produces cacheable, value-comparable results. When a file changes, only affected
 ///     pipelines re-execute, dramatically improving IDE responsiveness in large solutions.
 ///     </para>
 ///     
-///     <para><b>Thread Safety:</b></para>
+///     <para>Thread Safety:</para>
 ///     <para>
 ///     Generator instances may be shared across builds. All state is immutable or thread-local.
 ///     Pipelines are singleton instances that can safely process multiple syntax trees concurrently.
@@ -118,7 +118,7 @@ internal class IncrementalSourceGenerator(
     ///     critical for maintaining fast incremental compilation in large projects.
     ///     </para>
     ///     
-    ///     <para><b>Pipeline Flow:</b></para>
+    ///     <para>Pipeline Flow:</para>
     ///     <list type="number">
     ///         <item>Process metadata from syntax trees (Stage 1)</item>
     ///         <item>Emit debug representations of parsed metadata (if enabled)</item>

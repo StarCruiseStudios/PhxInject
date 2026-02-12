@@ -21,7 +21,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms Link attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     <para><b>Purpose - Dependency Type Aliasing:</b></para>
+///     <para>Purpose - Dependency Type Aliasing:</para>
 ///     <para>
 ///     [Link(typeof(TInput), typeof(TOutput))] creates type aliases that allow a dependency of one type
 ///     to satisfy requests for another type. Links enable interface-to-implementation mapping,
@@ -29,7 +29,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     The transformer extracts both input and output types plus optional label/qualifier pairs.
 ///     </para>
 ///     
-///     <para><b>User Code Pattern - Type Aliases:</b></para>
+///     <para>User Code Pattern - Type Aliases:</para>
 ///     <code>
 ///     [Link(typeof(UserService), typeof(IUserService))]
 ///     [Link(typeof(IUserService), typeof(IService))]
@@ -46,7 +46,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     IService ← IUserService ← UserService (factory exists), automatically wiring dependencies.
 ///     </para>
 ///     
-///     <para><b>User Code Pattern - Qualified Links:</b></para>
+///     <para>User Code Pattern - Qualified Links:</para>
 ///     <code>
 ///     [Link(typeof(ReadOnlyCache), typeof(ICache),
 ///           OutputLabel = "ReadOnly")]
@@ -66,7 +66,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     enabling fine-grained dependency discrimination.
 ///     </para>
 ///     
-///     <para><b>IAttributeListTransformer - Multiple Links Required:</b></para>
+///     <para>IAttributeListTransformer - Multiple Links Required:</para>
 ///     <para>
 ///     LinkAttributeTransformer implements IAttributeListTransformer rather than IAttributeTransformer
 ///     because:
@@ -89,7 +89,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Constructor and Named Arguments - Dual Extraction Pattern:</b></para>
+///     <para>Constructor and Named Arguments - Dual Extraction Pattern:</para>
 ///     <para>
 ///     Link extraction handles both constructor and named arguments:
 ///     </para>
@@ -115,7 +115,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Nullable types (InputQualifier?, OutputQualifier?) correctly represent optional qualifier parameters.
 ///     </para>
 ///     
-///     <para><b>Why Links Need Special Handling - Graph Resolution:</b></para>
+///     <para>Why Links Need Special Handling - Graph Resolution:</para>
 ///     <para>
 ///     Links create a dependency graph that must be resolved transitively:
 ///     </para>
@@ -142,7 +142,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Validation Constraints - Enforced by Later Stages:</b></para>
+///     <para>Validation Constraints - Enforced by Later Stages:</para>
 ///     <para>
 ///     Transformer doesn't validate link semantics. Later validation ensures:
 ///     </para>
@@ -174,7 +174,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Common Errors Prevented:</b></para>
+///     <para>Common Errors Prevented:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Circular link chain:</term>

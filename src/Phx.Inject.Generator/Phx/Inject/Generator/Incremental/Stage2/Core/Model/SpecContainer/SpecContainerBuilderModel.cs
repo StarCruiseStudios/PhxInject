@@ -19,7 +19,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     Model representing a builder method in a specification container.
 /// </summary>
 /// <remarks>
-///     <para><b>Builder vs Factory Pattern Differences:</b></para>
+///     <para>Builder vs Factory Pattern Differences:</para>
 ///     <para>
 ///     Builders differ from factories in return type and lifecycle semantics:
 ///     - Factory: Returns concrete type T (transient or singleton creation)
@@ -30,7 +30,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     user-defined but dependency resolution is framework-managed.
 ///     </para>
 ///     
-///     <para><b>Relationship to Stage 1 Metadata:</b></para>
+///     <para>Relationship to Stage 1 Metadata:</para>
 ///     <para>
 ///     Derived from Stage 1's SpecBuilderMethodMetadata or SpecBuilderReferenceMetadata.
 ///     Unlike factories which may be auto-generated, builders are always user-defined:
@@ -39,7 +39,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     - Direct: Builder is directly constructed (rare, usually wrapped in method)
 ///     </para>
 ///     
-///     <para><b>Dependency Resolution Pattern:</b></para>
+///     <para>Dependency Resolution Pattern:</para>
 ///     <para>
 ///     Builder arguments are resolved identically to factory arguments - each argument in
 ///     the Arguments collection represents a dependency that must be satisfied by invoking
@@ -47,7 +47,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     but defers final object construction to the caller via `.Build()`.
 ///     </para>
 ///     
-///     <para><b>Generated Code Example:</b></para>
+///     <para>Generated Code Example:</para>
 ///     <code>
 ///     // From: [Builder] public IBuilder&lt;Service&gt; BuildService(ILogger logger) { ... }
 ///     // Generates in container:

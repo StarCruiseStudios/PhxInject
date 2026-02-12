@@ -20,7 +20,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms Specification attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     <para><b>Purpose - Specification Container Marking:</b></para>
+///     <para>Purpose - Specification Container Marking:</para>
 ///     <para>
 ///     [Specification] marks interfaces or abstract classes as containers for factory method
 ///     declarations. This attribute has no arguments - it's a marker attribute that signals
@@ -28,7 +28,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     The transformer simply detects its presence.
 ///     </para>
 ///     
-///     <para><b>User Code Pattern - Specification Interface:</b></para>
+///     <para>User Code Pattern - Specification Interface:</para>
 ///     <code>
 ///     [Specification]
 ///     public interface IUserServices {
@@ -41,7 +41,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     defined by the specification methods within.
 ///     </para>
 ///     
-///     <para><b>Why No Arguments - Simple Detection:</b></para>
+///     <para>Why No Arguments - Simple Detection:</para>
 ///     <para>
 ///     Specification attribute has no configuration because:
 ///     </para>
@@ -63,7 +63,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>ExpectSingleAttribute - Preventing Duplicate Declarations:</b></para>
+///     <para>ExpectSingleAttribute - Preventing Duplicate Declarations:</para>
 ///     <para>
 ///     Uses ExpectSingleAttribute rather than allowing multiple instances because:
 ///     </para>
@@ -85,7 +85,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Common Errors Prevented:</b></para>
+///     <para>Common Errors Prevented:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Multiple [Specification] on same type:</term>

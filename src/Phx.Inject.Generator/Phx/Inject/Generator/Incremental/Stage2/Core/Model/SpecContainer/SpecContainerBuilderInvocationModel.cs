@@ -19,7 +19,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     Model representing an invocation of a specification container builder method.
 /// </summary>
 /// <remarks>
-///     <para><b>Builder Invocation Pattern:</b></para>
+///     <para>Builder Invocation Pattern:</para>
 ///     <para>
 ///     Represents a resolved builder dependency in the dependency graph. While structurally
 ///     similar to factory invocations, builder invocations have different semantics:
@@ -27,7 +27,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     - Builder invocation: Returns an IBuilder&lt;T&gt; that defers creation until .Build()
 ///     </para>
 ///     
-///     <para><b>Cross-Container Builder Dependencies:</b></para>
+///     <para>Cross-Container Builder Dependencies:</para>
 ///     <para>
 ///     Builders can depend on other builders across specification containers, enabling
 ///     compositional builder patterns where one builder uses another builder's output
@@ -35,7 +35,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     container and method name to call.
 ///     </para>
 ///     
-///     <para><b>Generated Code Example:</b></para>
+///     <para>Generated Code Example:</para>
 ///     <code>
 ///     // SpecContainerType = "ServiceSpec_Container"
 ///     // BuilderMethodName = "BuildLogger"
@@ -44,7 +44,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     // Caller can now configure: loggerBuilder.WithLevel(Debug).Build()
 ///     </code>
 ///     
-///     <para><b>Usage in Factory Arguments:</b></para>
+///     <para>Usage in Factory Arguments:</para>
 ///     <para>
 ///     Though defined separately, builder invocations appear in factory Arguments when a
 ///     factory needs a builder as a dependency. This is less common than factory-to-factory

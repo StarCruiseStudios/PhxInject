@@ -18,11 +18,11 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Auto;
 /// <summary>
 ///     Metadata representing a required property for an auto-generated factory.
 ///     <para>
-///         <strong>C# Required Properties:</strong> Properties marked with the 'required' modifier in C# 11+
+///         C# Required Properties: Properties marked with the 'required' modifier in C# 11+
 ///         that MUST be initialized during object construction. The compiler enforces this at call sites.
 ///     </para>
 ///     <para>
-///         <strong>Initialization Strategy:</strong> The generator must ensure these properties are satisfied
+///         Initialization Strategy: The generator must ensure these properties are satisfied
 ///         in the generated factory method, either by:
 ///         <list type="number">
 ///             <item>Resolving the property type from the dependency graph and setting it post-construction</item>
@@ -30,7 +30,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Auto;
 ///         </list>
 ///     </para>
 ///     <para>
-///         <strong>Design Rationale:</strong> Enables constructor injection for dependencies while using
+///         Design Rationale: Enables constructor injection for dependencies while using
 ///         required properties for secondary configuration, maintaining clean separation of concerns.
 ///     </para>
 /// </summary>

@@ -23,14 +23,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     for symbols and false for syntax.
 /// </param>
 /// <remarks>
-///     <para><b>Design Purpose - Compositional Validation:</b></para>
+///     <para>Design Purpose - Compositional Validation:</para>
 ///     <para>
 ///     Aggregate validators enable separation of concerns by combining orthogonal validation rules.
 ///     Rather than a monolithic validator with complex branching logic, each constraint gets its
 ///     own focused validator, then they're composed via aggregation.
 ///     </para>
 ///     
-///     <para><b>WHY Two Different Logical Operators (AND vs OR):</b></para>
+///     <para>WHY Two Different Logical Operators (AND vs OR):</para>
 ///     <para>
 ///     The asymmetry between symbol validation (AND) and syntax validation (OR) reflects their
 ///     different roles in the dual-phase validation pipeline:
@@ -55,7 +55,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Example Scenario:</b></para>
+///     <para>Example Scenario:</para>
 ///     <para>
 ///     Validating classes that are: (public OR internal) AND (partial OR abstract) AND (has @Injector).
 ///     - Symbol phase: All three conditions evaluated with AND (all must be true)
@@ -65,7 +65,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     The OR in syntax is conservative - if we see ANY promising signal, proceed to symbol validation.
 ///     </para>
 ///     
-///     <para><b>Short-Circuit Evaluation:</b></para>
+///     <para>Short-Circuit Evaluation:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -83,7 +83,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     for syntax, put most-likely-to-match first.
 ///     </para>
 ///     
-///     <para><b>Empty Collection Edge Case:</b></para>
+///     <para>Empty Collection Edge Case:</para>
 ///     <para>
 ///     An aggregate with zero validators is unusual but handled gracefully:
 ///     - IsValidSymbol returns true (vacuous truth: all zero constraints are satisfied)
@@ -93,7 +93,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     This is rarely useful in practice but maintains logical consistency with LINQ's .All() and .Any() semantics.
 ///     </para>
 ///     
-///     <para><b>Use Cases:</b></para>
+///     <para>Use Cases:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -112,7 +112,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Alternative Design Rejected:</b></para>
+///     <para>Alternative Design Rejected:</para>
 ///     <para>
 ///     An earlier design used AND for both phases. This was rejected because syntax-phase false negatives
 ///     would silently skip valid code. The current OR-in-syntax design errs on the side of caution,
@@ -124,13 +124,13 @@ internal class AggregateElementValidator(
 ) : ICodeElementValidator {
     /// <inheritdoc />
     /// <remarks>
-    ///     <para><b>AND Logic - All Must Pass:</b></para>
+    ///     <para>AND Logic - All Must Pass:</para>
     ///     <para>
     ///     Returns true only if ALL validators return true. Uses LINQ's .All() which short-circuits
     ///     on first false result, avoiding unnecessary validation work.
     ///     </para>
     ///     
-    ///     <para><b>Empty Collection:</b></para>
+    ///     <para>Empty Collection:</para>
     ///     <para>
     ///     If validators collection is empty, .All() returns true (vacuous truth).
     ///     This represents "no constraints" rather than "reject everything".
@@ -142,13 +142,13 @@ internal class AggregateElementValidator(
 
     /// <inheritdoc />
     /// <remarks>
-    ///     <para><b>OR Logic - Any Can Pass:</b></para>
+    ///     <para>OR Logic - Any Can Pass:</para>
     ///     <para>
     ///     Returns true if ANY validator returns true. Uses LINQ's .Any() which short-circuits
     ///     on first true result.
     ///     </para>
     ///     
-    ///     <para><b>WHY OR Instead of AND:</b></para>
+    ///     <para>WHY OR Instead of AND:</para>
     ///     <para>
     ///     Syntax validation is a conservative pre-filter with incomplete information. If any
     ///     validator sees a promising signal (e.g., has 'partial' keyword, has an attribute,
@@ -157,7 +157,7 @@ internal class AggregateElementValidator(
     ///     from syntax alone.
     ///     </para>
     ///     
-    ///     <para><b>Empty Collection:</b></para>
+    ///     <para>Empty Collection:</para>
     ///     <para>
     ///     If validators collection is empty, .Any() returns false. This represents "no filter
     ///     passed, don't proceed" which is safe default behavior.

@@ -21,7 +21,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 /// </summary>
 /// <typeparam name="TAttributeMetadata">The type of attribute metadata to produce.</typeparam>
 /// <remarks>
-///     <para><b>Architecture - Bridging Roslyn to Domain Model:</b></para>
+///     <para>Architecture - Bridging Roslyn to Domain Model:</para>
 ///     <para>
 ///     Attribute transformers are the critical bridge between Roslyn's semantic model and our
 ///     generator's domain model. They extract attribute arguments from Roslyn's AttributeData
@@ -29,7 +29,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     for incremental generator caching.
 ///     </para>
 ///     
-///     <para><b>Roslyn Attribute Data Traversal Pattern:</b></para>
+///     <para>Roslyn Attribute Data Traversal Pattern:</para>
 ///     <para>
 ///     Roslyn represents attributes through the AttributeData type, which exposes:
 ///     </para>
@@ -69,7 +69,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Why IResult Return Type - Error Handling Strategy:</b></para>
+///     <para>Why IResult Return Type - Error Handling Strategy:</para>
 ///     <para>
 ///     Transform returns IResult&lt;TAttributeMetadata&gt; rather than directly returning metadata
 ///     to support validation and diagnostic generation during transformation. Reasons:
@@ -101,7 +101,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     which the pipeline can surface as compiler errors at the exact attribute location.
 ///     </para>
 ///     
-///     <para><b>Integration with Validators:</b></para>
+///     <para>Integration with Validators:</para>
 ///     <para>
 ///     Some transformers (e.g., DependencyAttributeTransformer) inject ICodeElementValidator
 ///     instances to validate extracted type arguments. This follows single-responsibility:
@@ -109,7 +109,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     their own diagnostics which the transformer wraps in Error results.
 ///     </para>
 ///     
-///     <para><b>Equatability Contract - Incremental Generation Requirement:</b></para>
+///     <para>Equatability Contract - Incremental Generation Requirement:</para>
 ///     <para>
 ///     TAttributeMetadata must implement IEquatable&lt;TAttributeMetadata&gt;. Roslyn's incremental
 ///     generator pipeline uses equality comparison to detect when cached results are still valid.
@@ -117,7 +117,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     dramatically improving IDE responsiveness during typing.
 ///     </para>
 ///     
-///     <para><b>Performance Considerations:</b></para>
+///     <para>Performance Considerations:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -169,7 +169,7 @@ internal static class IAttributeTransformerExtensions {
     /// <param name="targetSymbol">The symbol to check and transform.</param>
     /// <returns>The transform result if the attribute exists; otherwise, null.</returns>
     /// <remarks>
-    ///     <para><b>Check-Then-Transform Pattern:</b></para>
+    ///     <para>Check-Then-Transform Pattern:</para>
     ///     <para>
     ///     Implements safe conditional transformation by checking attribute existence before
     ///     transformation. This is the recommended pattern for optional attributes where absence

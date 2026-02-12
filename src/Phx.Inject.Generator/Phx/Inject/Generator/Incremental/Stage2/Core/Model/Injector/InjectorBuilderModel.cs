@@ -19,7 +19,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///     Stage 2 implementation model for generating builder (activator) methods in injector classes.
 /// </summary>
 /// <remarks>
-///     <para><strong>Domain Model:</strong></para>
+///     <para>Domain Model:</para>
 ///     <para>
 ///         InjectorBuilderModel represents a single builder method that will be generated in the
 ///         concrete injector class. It is the Stage 2 counterpart to 
@@ -28,7 +28,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         existing objects rather than constructing new ones.
 ///     </para>
 ///     
-///     <para><strong>Terminology Note:</strong></para>
+///     <para>Terminology Note:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Stage 1 (Metadata):</term>
@@ -47,7 +47,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         </item>
 ///     </list>
 ///     
-///     <para><strong>Transformation from Metadata:</strong></para>
+///     <para>Transformation from Metadata:</para>
 ///     <para>
 ///         InjectorActivatorMapper transforms Stage 1 metadata into this model:
 ///     </para>
@@ -58,7 +58,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         <item>Renames method: ActivatorMethodName → BuilderMethodName</item>
 ///     </list>
 ///     
-///     <para><strong>Code Generation Pattern:</strong></para>
+///     <para>Code Generation Pattern:</para>
 ///     <para>
 ///         Each InjectorBuilderModel generates a method in the injector class that:
 ///     </para>
@@ -69,7 +69,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         <item>Returns void (initialization is in-place, no return value)</item>
 ///     </list>
 ///     
-///     <para><strong>Example Transformation:</strong></para>
+///     <para>Example Transformation:</para>
 ///     <code>
 ///         // User writes (Stage 1 Metadata):
 ///         [Injector(typeof(ViewModelSpec))]
@@ -95,7 +95,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         }
 ///     </code>
 ///     
-///     <para><strong>Specification Builder Pattern:</strong></para>
+///     <para>Specification Builder Pattern:</para>
 ///     <para>
 ///         The generated method delegates to a specification container's builder method. The builder
 ///         is defined in the specification class with [Builder] attribute:
@@ -119,7 +119,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         from other factories before passing them to the builder.
 ///     </para>
 ///     
-///     <para><strong>When to Use Builders vs Providers:</strong></para>
+///     <para>When to Use Builders vs Providers:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Use Provider (returns T):</term>
@@ -138,7 +138,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         </item>
 ///     </list>
 ///     
-///     <para><strong>Common Use Cases:</strong></para>
+///     <para>Common Use Cases:</para>
 ///     <list type="bullet">
 ///         <item>Initializing framework-created objects (e.g., ASP.NET controllers, WPF view models)</item>
 ///         <item>Injecting into deserialized objects (e.g., DTOs with service dependencies)</item>
@@ -147,7 +147,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         <item>Injecting into pooled objects before reuse</item>
 ///     </list>
 ///     
-///     <para><strong>Qualified Type Resolution:</strong></para>
+///     <para>Qualified Type Resolution:</para>
 ///     <para>
 ///         BuiltType includes qualification metadata (labels) that directs the generator to the
 ///         correct builder method. Follows same pattern as providers:
@@ -157,7 +157,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         <item>Single label: [Label(Admin)] AdminViewModel → Bld_L_Admin_AdminViewModel(target, ...)</item>
 ///     </list>
 ///     
-///     <para><strong>Scope Implications:</strong></para>
+///     <para>Scope Implications:</para>
 ///     <para>
 ///         Builders resolve dependencies at invocation time using the current injector's scope.
 ///         The initialized object itself is NOT managed by the container:
@@ -185,7 +185,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         </item>
 ///     </list>
 ///     
-///     <para><strong>Relationship to Other Models:</strong></para>
+///     <para>Relationship to Other Models:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             Contrast with <see cref="InjectorProviderModel"/>: Builders accept target parameter

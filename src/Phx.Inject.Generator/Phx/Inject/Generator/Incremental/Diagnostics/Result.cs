@@ -23,41 +23,41 @@ namespace Phx.Inject.Generator.Incremental.Diagnostics;
 ///     The success value type. Must be equatable for incremental generator caching.
 /// </typeparam>
 /// <remarks>
-///     <para><b>Design Philosophy:</b></para>
+///     <para>Design Philosophy:</para>
 ///     <para>
 ///     Replaces exception-based error handling with explicit result types. This ensures
 ///     ALL validation errors in a file are collected and reported, not just the first one.
 ///     Users get comprehensive error feedback in a single compilation pass.
 ///     </para>
 ///     
-///     <para><b>Railway-Oriented Programming:</b></para>
+///     <para>Railway-Oriented Programming:</para>
 ///     <para>
 ///     Results flow through transformer pipelines on either a "success track" (carrying values)
 ///     or an "error track" (carrying diagnostics). The <c>Map</c> operation short-circuits
 ///     error results, automatically propagating errors without explicit null checks everywhere.
 ///     </para>
 ///     
-///     <para><b>Incremental Caching:</b></para>
+///     <para>Incremental Caching:</para>
 ///     <para>
 ///     Results are cached by Roslyn's incremental system. Diagnostics are included in equality
 ///     comparisons, so changing an error message triggers recompilation. This is intentional -
 ///     users should see updated error messages even if the underlying issue hasn't changed.
 ///     </para>
 ///     
-///     <para><b>Thread Safety:</b></para>
+///     <para>Thread Safety:</para>
 ///     <para>
 ///     Result instances are immutable and thread-safe. Multiple threads can read the same
 ///     result concurrently. However, the <c>GetValue</c> operation mutates the provided
 ///     <c>IDiagnosticsRecorder</c>, so that recorder must be thread-local.
 ///     </para>
 ///     
-///     <para><b>When to use Ok vs Error:</b></para>
+///     <para>When to use Ok vs Error:</para>
 ///     <list type="bullet">
-///         <item><b>Ok:</b> Transformation succeeded, value is valid (may include warnings)</item>
-///         <item><b>Error:</b> Transformation failed, no valid value exists (always has errors)</item>
+///         <item>Ok: Transformation succeeded, value is valid (may include warnings)</item>
+///         <item>Error: Transformation failed, no valid value exists (always has errors)</item>
 ///     </list>
 ///     
-///     <para><b>DO NOT use for:</b></para>
+///     <para>DO NOT use for:</para>
 ///     <para>
 ///     Internal generator bugs or infrastructure failures. Those should throw exceptions.
 ///     Results are ONLY for user code validation errors that should be presented to developers.
@@ -96,7 +96,7 @@ internal interface IResult<out T> where T : IEquatable<T>? {
     ///     Thrown if called on an Error result. Check <c>IsOk</c> first or use safe helpers.
     /// </exception>
     /// <remarks>
-    ///     <b>Side effect:</b> Adds this result's diagnostics to the recorder. This is the
+    ///     Side effect: Adds this result's diagnostics to the recorder. This is the
     ///     primary mechanism for collecting all errors from a pipeline execution.
     /// </remarks>
     T GetValue(IDiagnosticsRecorder diagnostics);

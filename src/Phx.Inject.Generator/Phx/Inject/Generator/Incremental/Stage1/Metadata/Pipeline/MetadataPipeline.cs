@@ -30,7 +30,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 ///     Aggregated output from all Stage 1 metadata extraction pipeline segments.
 /// </summary>
 /// <remarks>
-///     <para><b>Purpose:</b></para>
+///     <para>Purpose:</para>
 ///     <para>
 ///     Collects the results of parallel metadata extraction pipelines into a single data structure
 ///     for consumption by Stage 2 (core pipeline). Each segment processes a different category of
@@ -38,7 +38,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 ///     incremental compilation infrastructure for optimal performance.
 ///     </para>
 ///     
-///     <para><b>Incremental Compilation Benefits:</b></para>
+///     <para>Incremental Compilation Benefits:</para>
 ///     <para>
 ///     By separating extraction into independent pipeline segments, changes to one file only
 ///     reprocess the affected segments. For example, modifying a specification class doesn't
@@ -61,7 +61,7 @@ internal record MetadataPipelineOutput(
 ///     Stage 1 orchestration layer that coordinates parallel extraction of DI metadata from source code.
 /// </summary>
 /// <remarks>
-///     <para><b>Architectural Role - Two-Stage Processing:</b></para>
+///     <para>Architectural Role - Two-Stage Processing:</para>
 ///     <para>
 ///     MetadataPipeline is the first of two major pipeline stages in the generator architecture.
 ///     Stage 1 (this class) extracts structural metadata from source syntax, while Stage 2 (CorePipeline)
@@ -85,7 +85,7 @@ internal record MetadataPipelineOutput(
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Pipeline Segment Independence:</b></para>
+///     <para>Pipeline Segment Independence:</para>
 ///     <para>
 ///     Each segment processes a specific attribute-marked declaration type independently:
 ///     </para>
@@ -112,7 +112,7 @@ internal record MetadataPipelineOutput(
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Diagnostic Aggregation Strategy:</b></para>
+///     <para>Diagnostic Aggregation Strategy:</para>
 ///     <para>
 ///     Instead of reporting errors during extraction, each segment accumulates diagnostics in
 ///     Result&lt;T&gt; wrappers. The Process method merges all diagnostics into a single stream
@@ -120,7 +120,7 @@ internal record MetadataPipelineOutput(
 ///     malformed declaration causes cascade failures in dependent segments.
 ///     </para>
 ///     
-///     <para><b>Performance Characteristics:</b></para>
+///     <para>Performance Characteristics:</para>
 ///     <para>
 ///     Leverages Roslyn's parallel processing via IncrementalValuesProvider. Each segment's
 ///     predicate filter executes on syntax nodes in parallel, with transformations cached between
@@ -165,7 +165,7 @@ internal class MetadataPipeline(
     ///     and a merged diagnostic stream for error reporting.
     /// </returns>
     /// <remarks>
-    ///     <para><b>Execution Flow:</b></para>
+    ///     <para>Execution Flow:</para>
     ///     <list type="number">
     ///         <item>
     ///             <description>
@@ -194,14 +194,14 @@ internal class MetadataPipeline(
     ///         </item>
     ///     </list>
     ///     
-    ///     <para><b>Diagnostic Merging Tree:</b></para>
+    ///     <para>Diagnostic Merging Tree:</para>
     ///     <para>
     ///     Diagnostics are merged in a binary tree structure to balance merge operations and
     ///     avoid long linear chains that could create performance bottlenecks or stack depth issues.
     ///     The tree structure ensures O(log n) merge depth instead of O(n).
     ///     </para>
     ///     
-    ///     <para><b>Why Not Parallel Execution?</b></para>
+    ///     <para>Why Not Parallel Execution?</para>
     ///     <para>
     ///     While this method executes segments sequentially, the actual work (predicate/transform)
     ///     happens lazily during later pipeline stages. This is registration, not execution.
@@ -284,21 +284,21 @@ internal static class IncrementalGeneratorInitializationContextExtensions {
     /// <param name="context">The generator context for registering outputs.</param>
     /// <returns>The unmodified pipeline output for chaining.</returns>
     /// <remarks>
-    ///     <para><b>Purpose:</b></para>
+    ///     <para>Purpose:</para>
     ///     <para>
     ///     This method exists solely for generator debugging. It generates synthetic C# files showing
     ///     what metadata was extracted from each declaration. These files appear in IDE tooling,
     ///     allowing developers to inspect the metadata pipeline without debugging.
     ///     </para>
     ///     
-    ///     <para><b>WARNING - Performance Impact:</b></para>
+    ///     <para>WARNING - Performance Impact:</para>
     ///     <para>
     ///     Calling this method registers dozens of source output callbacks, each of which executes
     ///     for every matching declaration. This significantly increases generation overhead and IDE
     ///     latency. Should NEVER be enabled in production/release builds.
     ///     </para>
     ///     
-    ///     <para><b>When to Use:</b></para>
+    ///     <para>When to Use:</para>
     ///     <list type="bullet">
     ///         <item>
     ///             <description>Debugging metadata extraction logic during development</description>
@@ -311,14 +311,14 @@ internal static class IncrementalGeneratorInitializationContextExtensions {
     ///         </item>
     ///     </list>
     ///     
-    ///     <para><b>What Gets Generated:</b></para>
+    ///     <para>What Gets Generated:</para>
     ///     <para>
     ///     For each injector, spec, factory, etc., generates a .cs file in the Metadata namespace
     ///     with comments showing extracted providers, activators, factory methods, parameters, etc.
     ///     These files don't compile to useful code - they're structured comments for inspection.
     ///     </para>
     ///     
-    ///     <para><b>Alternative Debugging Approaches:</b></para>
+    ///     <para>Alternative Debugging Approaches:</para>
     ///     <para>
     ///     For production debugging, prefer attaching a debugger to the generator process or adding
     ///     targeted diagnostics. This method is too heavy-weight for anything but deep investigation.

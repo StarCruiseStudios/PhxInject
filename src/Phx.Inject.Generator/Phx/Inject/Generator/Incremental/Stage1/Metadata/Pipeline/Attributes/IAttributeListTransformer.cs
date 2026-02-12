@@ -21,7 +21,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 /// </summary>
 /// <typeparam name="TAttributeMetadata">The type of attribute metadata to produce.</typeparam>
 /// <remarks>
-///     <para><b>Multi-Attribute Support Pattern:</b></para>
+///     <para>Multi-Attribute Support Pattern:</para>
 ///     <para>
 ///     Handles attributes that can appear multiple times on a single symbol. C# allows repeatable
 ///     attributes (marked with [AttributeUsage(AllowMultiple = true)]), which are common in DI
@@ -45,7 +45,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Why Not IResult Return Type:</b></para>
+///     <para>Why Not IResult Return Type:</para>
 ///     <para>
 ///     Unlike single-attribute transformers, list transformers return EquatableList directly without
 ///     wrapping in IResult. Rationale:
@@ -74,7 +74,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     and continue processing remaining attributes, maximizing user feedback in one compilation.
 ///     </para>
 ///     
-///     <para><b>Equatable List - Incremental Caching:</b></para>
+///     <para>Equatable List - Incremental Caching:</para>
 ///     <para>
 ///     Returns EquatableList rather than IEnumerable or array to support incremental generator
 ///     caching. EquatableList implements structural equality (contents and order matter), allowing
@@ -82,14 +82,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Standard collections use reference equality, which breaks caching.
 ///     </para>
 ///     
-///     <para><b>Roslyn Attribute Ordering Guarantee:</b></para>
+///     <para>Roslyn Attribute Ordering Guarantee:</para>
 ///     <para>
 ///     ISymbol.GetAttributes() returns attributes in source declaration order. This ordering is
 ///     preserved through transformation, which matters for attributes where order is semantically
 ///     significant (e.g., first [Qualifier] wins for conflict resolution).
 ///     </para>
 ///     
-///     <para><b>Performance - Batch Processing:</b></para>
+///     <para>Performance - Batch Processing:</para>
 ///     <para>
 ///     List transformers process all matching attributes in a single pass over GetAttributes(),
 ///     amortizing the enumeration cost. More efficient than calling single-attribute transformer

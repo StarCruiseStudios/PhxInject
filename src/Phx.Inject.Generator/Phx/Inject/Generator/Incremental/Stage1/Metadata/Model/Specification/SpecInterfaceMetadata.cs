@@ -19,7 +19,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 /// <summary>
 ///     Metadata representing an analyzed specification interface.
 ///     <para>
-///         <strong>Specification Pattern:</strong> Interface specifications define abstract construction
+///         Specification Pattern: Interface specifications define abstract construction
 ///         contracts, enabling polymorphic injection strategies where multiple implementations can provide
 ///         the same dependency construction logic.
 ///     </para>

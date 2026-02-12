@@ -19,12 +19,12 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Auto;
 /// <summary>
 ///     Metadata representing an analyzed auto-generated builder method.
 ///     <para>
-///         <strong>Auto-Builder Convention:</strong> Static methods annotated with [Builder] attribute
+///         Auto-Builder Convention: Static methods annotated with [Builder] attribute
 ///         on a class are automatically discovered and incorporated into the dependency graph. The method's
 ///         first parameter typically matches the containing class type, representing the instance to configure.
 ///     </para>
 ///     <para>
-///         <strong>Discovery Pattern:</strong> The generator scans classes for static void methods with
+///         Discovery Pattern: The generator scans classes for static void methods with
 ///         [Builder] attributes, extracting configuration logic that can be composed with factory creation.
 ///         This enables separation of construction from configuration.
 ///     </para>

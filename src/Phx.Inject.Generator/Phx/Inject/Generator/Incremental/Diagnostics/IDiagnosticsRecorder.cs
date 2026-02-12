@@ -12,21 +12,21 @@ namespace Phx.Inject.Generator.Incremental.Diagnostics;
 ///     Thread-local accumulator for collecting validation errors and warnings during pipeline execution.
 /// </summary>
 /// <remarks>
-///     <para><b>Purpose:</b></para>
+///     <para>Purpose:</para>
 ///     <para>
 ///     Provides a mutable collection point for diagnostics as transformers process syntax trees.
 ///     Enables "collect all errors, report all errors" semantics rather than failing fast on
 ///     the first problem. Users see comprehensive feedback in a single compilation.
 ///     </para>
 ///     
-///     <para><b>Thread Safety:</b></para>
+///     <para>Thread Safety:</para>
 ///     <para>
-///     <b>NOT thread-safe.</b> Each pipeline execution must use its own recorder instance.
+///     NOT thread-safe. Each pipeline execution must use its own recorder instance.
 ///     Roslyn may process multiple files concurrently, so never share recorders across threads.
 ///     The <c>Capture</c> method creates a thread-local recorder automatically.
 ///     </para>
 ///     
-///     <para><b>Usage Pattern:</b></para>
+///     <para>Usage Pattern:</para>
 ///     <list type="number">
 ///         <item>Create a recorder (typically via <c>DiagnosticsRecorder.Capture</c>)</item>
 ///         <item>Pass it to transformers as they extract <c>IResult</c> values</item>
@@ -34,7 +34,7 @@ namespace Phx.Inject.Generator.Incremental.Diagnostics;
 ///         <item>At the end, recorder contains all errors/warnings from that execution</item>
 ///     </list>
 ///     
-///     <para><b>Architectural Role:</b></para>
+///     <para>Architectural Role:</para>
 ///     <para>
 ///     Decouples error generation (in transformers) from error reporting (in generator output).
 ///     Transformers produce <c>IResult</c> objects with diagnostics; recorders aggregate them;

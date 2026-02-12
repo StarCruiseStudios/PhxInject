@@ -21,7 +21,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Pairs attribute data with its corresponding metadata.
 /// </summary>
 /// <remarks>
-///     <para><b>Dual-View Pattern - Raw Data + Location Context:</b></para>
+///     <para>Dual-View Pattern - Raw Data + Location Context:</para>
 ///     <para>
 ///     Encapsulates both Roslyn's AttributeData (the raw attribute information) and our
 ///     AttributeMetadata (standardized location/context information). This allows transformers
@@ -52,14 +52,14 @@ internal record AttributeMetadataPair(
 ///     Provides methods to transform and query attribute data.
 /// </summary>
 /// <remarks>
-///     <para><b>Foundation Service - Base Attribute Query Layer:</b></para>
+///     <para>Foundation Service - Base Attribute Query Layer:</para>
 ///     <para>
 ///     IAttributeMetadataTransformer is the foundational service that all specific attribute
 ///     transformers depend on. It encapsulates Roslyn attribute querying patterns and provides
 ///     a consistent API for attribute detection and extraction.
 ///     </para>
 ///     
-///     <para><b>Why Separate Interface - Testability and Mocking:</b></para>
+///     <para>Why Separate Interface - Testability and Mocking:</para>
 ///     <para>
 ///     By abstracting attribute queries behind an interface, specific transformers (like
 ///     InjectorAttributeTransformer) can be unit tested by mocking attribute presence/data
@@ -124,7 +124,7 @@ internal interface IAttributeMetadataTransformer {
     /// <returns>The attribute metadata pair.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the attribute is not found.</exception>
     /// <remarks>
-    ///     <para><b>Fail-Fast Pattern for Required Attributes:</b></para>
+    ///     <para>Fail-Fast Pattern for Required Attributes:</para>
     ///     <para>
     ///     Used when transformer is called only after HasAttribute confirmed presence.
     ///     The exception indicates programmer error (calling Transform without checking), not
@@ -144,13 +144,13 @@ internal interface IAttributeMetadataTransformer {
 ///     Transforms attribute data into attribute metadata.
 /// </summary>
 /// <remarks>
-///     <para><b>Singleton Pattern - Stateless Service:</b></para>
+///     <para>Singleton Pattern - Stateless Service:</para>
 ///     <para>
 ///     Implemented as singleton since it has no mutable state and all operations are thread-safe.
 ///     Specific attribute transformers inject this singleton, avoiding redundant allocations.
 ///     </para>
 ///     
-///     <para><b>Roslyn Symbol Walking - GetAttributes() Behavior:</b></para>
+///     <para>Roslyn Symbol Walking - GetAttributes() Behavior:</para>
 ///     <para>
 ///     Leverages ISymbol.GetAttributes(), which returns all attributes applied directly to the
 ///     symbol (not inherited). For type symbols, includes attributes on the type declaration only,
@@ -163,7 +163,7 @@ internal interface IAttributeMetadataTransformer {
 ///     that throw descriptive exceptions.
 ///     </para>
 ///     
-///     <para><b>Performance - Attribute Filtering Strategy:</b></para>
+///     <para>Performance - Attribute Filtering Strategy:</para>
 ///     <para>
 ///     Uses fully qualified name string comparison (GetFullyQualifiedName()) rather than symbol
 ///     equality checks. Trade-off:

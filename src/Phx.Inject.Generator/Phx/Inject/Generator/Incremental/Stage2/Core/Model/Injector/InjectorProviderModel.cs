@@ -19,7 +19,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///     Stage 2 implementation model for generating provider methods in injector classes.
 /// </summary>
 /// <remarks>
-///     <para><strong>Domain Model:</strong></para>
+///     <para>Domain Model:</para>
 ///     <para>
 ///         InjectorProviderModel represents a single provider method that will be generated in the
 ///         concrete injector class. It is the Stage 2 counterpart to 
@@ -27,7 +27,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         resolution strategy information from specification analysis.
 ///     </para>
 ///     
-///     <para><strong>Transformation from Metadata:</strong></para>
+///     <para>Transformation from Metadata:</para>
 ///     <para>
 ///         InjectorProviderMapper transforms Stage 1 metadata into this model:
 ///     </para>
@@ -38,7 +38,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         <item>Preserves method name for interface implementation</item>
 ///     </list>
 ///     
-///     <para><strong>Code Generation Pattern:</strong></para>
+///     <para>Code Generation Pattern:</para>
 ///     <para>
 ///         Each InjectorProviderModel generates a method in the injector class that:
 ///     </para>
@@ -49,7 +49,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         <item>Benefits from singleton caching if the factory is scoped as singleton</item>
 ///     </list>
 ///     
-///     <para><strong>Example Transformation:</strong></para>
+///     <para>Example Transformation:</para>
 ///     <code>
 ///         // User writes (Stage 1 Metadata):
 ///         [Injector(typeof(DatabaseSpec))]
@@ -72,7 +72,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         }
 ///     </code>
 ///     
-///     <para><strong>Qualified Type Resolution:</strong></para>
+///     <para>Qualified Type Resolution:</para>
 ///     <para>
 ///         The ProvidedType includes qualification metadata (labels) that directs the generator to
 ///         the correct factory method. For example:
@@ -83,7 +83,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         <item>Multiple labels: [Label(Primary, ReadOnly)] IDatabase → Fac_L_Primary_ReadOnly_IDatabase()</item>
 ///     </list>
 ///     
-///     <para><strong>Specification Container Delegation:</strong></para>
+///     <para>Specification Container Delegation:</para>
 ///     <para>
 ///         The generated method delegates to a specification container field. The container is
 ///         determined during Stage 2 transformation:
@@ -105,7 +105,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         </item>
 ///     </list>
 ///     
-///     <para><strong>Scope and Caching:</strong></para>
+///     <para>Scope and Caching:</para>
 ///     <para>
 ///         Provider methods inherit the scope behavior defined by the underlying factory:
 ///     </para>
@@ -132,14 +132,14 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 ///         </item>
 ///     </list>
 ///     
-///     <para><strong>Thread Safety:</strong></para>
+///     <para>Thread Safety:</para>
 ///     <para>
 ///         Provider methods delegate to specification factories. If the factory is singleton-scoped,
 ///         the container implements thread-safe caching (typically via lazy initialization or locks).
 ///         If transient, each call is independent and thread-safe by nature.
 ///     </para>
 ///     
-///     <para><strong>Relationship to Other Models:</strong></para>
+///     <para>Relationship to Other Models:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             Contrast with <see cref="InjectorBuilderModel"/>: Providers return values, Builders

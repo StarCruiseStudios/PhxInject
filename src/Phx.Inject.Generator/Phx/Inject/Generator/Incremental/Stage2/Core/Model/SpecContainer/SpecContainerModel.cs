@@ -19,7 +19,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     Model representing a specification container for code generation.
 /// </summary>
 /// <remarks>
-///     <para><b>WHY: Specification Container Pattern</b></para>
+///     <para>WHY: Specification Container Pattern</para>
 ///     <para>
 ///     Consolidates all factory and builder methods from a specification (SpecClassMetadata or
 ///     SpecInterfaceMetadata) into a single generated container class. This aggregation serves three purposes:
@@ -28,7 +28,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     3) Simplifies Injector generation - Injector delegates to containers instead of duplicating factory logic
 ///     </para>
 ///     
-///     <para><b>Relationship to Stage 1 Metadata:</b></para>
+///     <para>Relationship to Stage 1 Metadata:</para>
 ///     <para>
 ///     Derived from Stage 1's SpecClassMetadata or SpecInterfaceMetadata which contain the user-authored
 ///     specification definitions. Stage 2 transforms that metadata into this code generation model:
@@ -37,7 +37,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     - SpecClassMetadata.SpecAttributeMetadata determines SpecInstantiationMode
 ///     </para>
 ///     
-///     <para><b>Generated Code Structure:</b></para>
+///     <para>Generated Code Structure:</para>
 ///     <para>
 ///     Produces a class like: `class MySpec_Container { public T CreateFoo() { ... } }`
 ///     The container class wraps the user's specification instance (for non-static specs) or provides

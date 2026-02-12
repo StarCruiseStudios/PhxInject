@@ -27,7 +27,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     The common attribute metadata (class name, target, locations) shared by all attributes.
 /// </param>
 /// <remarks>
-///     <para><b>Role in DI Framework:</b></para>
+///     <para>Role in DI Framework:</para>
 ///     <para>
 ///     Represents a user-declared factory method that creates and returns new instances of
 ///     dependencies. Factories are the primary mechanism for defining how objects are constructed
@@ -35,7 +35,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     than initializing existing ones.
 ///     </para>
 ///     
-///     <para><b>What User Declarations Represent:</b></para>
+///     <para>What User Declarations Represent:</para>
 ///     <para>
 ///     When users write "[Factory] static MyClass Create(IDependency dep) => new MyClass(dep)",
 ///     this metadata captures that declaration. The method signature defines both what is provided
@@ -43,7 +43,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     whether each call creates a fresh instance or reuses a scoped singleton.
 ///     </para>
 ///     
-///     <para><b>Why These Properties Were Chosen:</b></para>
+///     <para>Why These Properties Were Chosen:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -62,7 +62,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Immutability Requirements:</b></para>
+///     <para>Immutability Requirements:</para>
 ///     <para>
 ///     FabricationMode is an enum (inherently immutable), and AttributeMetadata is itself an
 ///     immutable record. This makes FactoryAttributeMetadata a stable cache key for incremental
@@ -70,7 +70,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     affect generated code structure (fields for scoped vs no fields for recurrent).
 ///     </para>
 ///     
-///     <para><b>Relationship to Other Models:</b></para>
+///     <para>Relationship to Other Models:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>

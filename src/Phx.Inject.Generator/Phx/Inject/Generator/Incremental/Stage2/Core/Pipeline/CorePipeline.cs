@@ -21,7 +21,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline;
 ///     The Stage 1 metadata that serves as input to Stage 2 transformations.
 /// </param>
 /// <remarks>
-///     <para><b>Current State - Pass-Through Architecture:</b></para>
+///     <para>Current State - Pass-Through Architecture:</para>
 ///     <para>
 ///     Currently, CorePipeline is a structural placeholder that passes Stage 1 output through
 ///     unchanged. The actual implementation code generation happens in the rendering stage, not
@@ -30,7 +30,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline;
 ///     final code generation.
 ///     </para>
 ///     
-///     <para><b>Future Enhancement Opportunities:</b></para>
+///     <para>Future Enhancement Opportunities:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -62,7 +62,7 @@ internal record CorePipelineOutput(
 ///     Stage 2 pipeline responsible for transforming validated metadata into implementation models.
 /// </summary>
 /// <remarks>
-///     <para><b>Architectural Position - Two-Stage Design:</b></para>
+///     <para>Architectural Position - Two-Stage Design:</para>
 ///     <para>
 ///     CorePipeline is Stage 2 of the generator's two-stage architecture:
 ///     </para>
@@ -81,7 +81,7 @@ internal record CorePipelineOutput(
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Why Separate Stages?</b></para>
+///     <para>Why Separate Stages?</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Incremental Compilation Optimization:</term>
@@ -112,14 +112,14 @@ internal record CorePipelineOutput(
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Current Implementation - Structural Placeholder:</b></para>
+///     <para>Current Implementation - Structural Placeholder:</para>
 ///     <para>
 ///     Currently, this class is a pass-through that returns metadata unchanged. The actual
 ///     transformation to implementation models happens during source output registration, not
 ///     in this pipeline. This design anticipates future needs without adding complexity now.
 ///     </para>
 ///     
-///     <para><b>Future Direction:</b></para>
+///     <para>Future Direction:</para>
 ///     <para>
 ///     As the generator evolves, Stage 2 could perform whole-program analysis that requires
 ///     seeing all metadata at once (e.g., building a dependency graph across all specs, detecting
@@ -149,14 +149,14 @@ internal class CorePipeline {
     ///     Currently, this is just the input metadata wrapped unchanged.
     /// </returns>
     /// <remarks>
-    ///     <para><b>Current Behavior - Pass-Through:</b></para>
+    ///     <para>Current Behavior - Pass-Through:</para>
     ///     <para>
     ///     Simply wraps the input in CorePipelineOutput without transformation. This maintains
     ///     the two-stage architecture boundary while deferring actual transformation logic to
     ///     the source output phase.
     ///     </para>
     ///     
-    ///     <para><b>Why Not Do Transformation Here?</b></para>
+    ///     <para>Why Not Do Transformation Here?</para>
     ///     <para>
     ///     Current transformation is 1:1 (each metadata element maps directly to generated code).
     ///     When we need M:N transformations or whole-program analysis, this method becomes the

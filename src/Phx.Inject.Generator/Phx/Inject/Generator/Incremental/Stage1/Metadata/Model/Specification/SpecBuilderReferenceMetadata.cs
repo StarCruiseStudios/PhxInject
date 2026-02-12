@@ -19,12 +19,12 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 /// <summary>
 ///     Metadata representing an analyzed specification builder reference.
 ///     <para>
-///         <strong>Builder References:</strong> Wrap existing builder methods (e.g., injection methods,
+///         Builder References: Wrap existing builder methods (e.g., injection methods,
 ///         configuration functions) as Action delegates, enabling reuse of configuration logic defined
 ///         outside the specification.
 ///     </para>
 ///     <para>
-///         <strong>Key Distinction:</strong> References delegate to existing void methods for configuring
+///         Key Distinction: References delegate to existing void methods for configuring
 ///         instances. Example: <c>[BuilderReference] Action&lt;MyClass, int&gt; Configure = MyClass.Inject;</c>
 ///     </para>
 /// </summary>

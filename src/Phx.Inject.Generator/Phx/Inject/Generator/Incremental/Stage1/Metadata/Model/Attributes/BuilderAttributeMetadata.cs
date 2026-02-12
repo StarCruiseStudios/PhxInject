@@ -22,7 +22,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     The common attribute metadata (class name, target, locations) shared by all attributes.
 /// </param>
 /// <remarks>
-///     <para><b>Role in DI Framework:</b></para>
+///     <para>Role in DI Framework:</para>
 ///     <para>
 ///     Represents a user-declared builder method that initializes an existing object by injecting
 ///     dependencies into its properties or fields. Builders complement Factories by enabling
@@ -31,7 +31,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     third-party factories, or classes with complex initialization sequences).
 ///     </para>
 ///     
-///     <para><b>What User Declarations Represent:</b></para>
+///     <para>What User Declarations Represent:</para>
 ///     <para>
 ///     When users write "[Builder] static void Initialize(MyClass target, IDependency dep) { target.Dep = dep; }",
 ///     this metadata captures that declaration. The method signature defines what type is being
@@ -39,7 +39,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     Builders must return void and accept the target instance as the first parameter.
 ///     </para>
 ///     
-///     <para><b>Why These Properties Were Chosen:</b></para>
+///     <para>Why These Properties Were Chosen:</para>
 ///     <para>
 ///     Unlike FactoryAttributeMetadata which includes FabricationMode, builders have no lifetime
 ///     semantics because they operate on existing instances. The builder's behavior is purely
@@ -48,7 +48,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     which extracts parameter types and validates the void return and target parameter.
 ///     </para>
 ///     
-///     <para><b>Code Generation Needs:</b></para>
+///     <para>Code Generation Needs:</para>
 ///     <para>
 ///     Code generation requires knowing which methods are builders (vs factories) to generate
 ///     appropriate invocation code. Builders generate void method calls in injector activator
@@ -57,7 +57,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     (void, target-first) or it's not.
 ///     </para>
 ///     
-///     <para><b>Immutability Requirements:</b></para>
+///     <para>Immutability Requirements:</para>
 ///     <para>
 ///     Contains only the immutable AttributeMetadata record, making this a stable cache key
 ///     for incremental compilation. Changes to the builder method signature affect the
@@ -65,7 +65,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     localizing cache invalidation to signature changes.
 ///     </para>
 ///     
-///     <para><b>Relationship to Other Models:</b></para>
+///     <para>Relationship to Other Models:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>

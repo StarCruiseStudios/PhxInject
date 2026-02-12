@@ -20,14 +20,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///     Stage 1 metadata representing a user-defined injector interface contract.
 /// </summary>
 /// <remarks>
-///     <para><strong>Domain Model:</strong></para>
+///     <para>Domain Model:</para>
 ///     <para>
 ///         An injector interface is the user-facing API for a dependency injection container. Users write
 ///         interfaces decorated with [Injector] that declare what objects they want to retrieve from the
 ///         container. This metadata captures the analyzed contract before transformation to implementation.
 ///     </para>
 ///     
-///     <para><strong>Design Rationale:</strong></para>
+///     <para>Design Rationale:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Interface-First Design:</term>
@@ -54,7 +54,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         </item>
 ///     </list>
 ///     
-///     <para><strong>Example User Code:</strong></para>
+///     <para>Example User Code:</para>
 ///     <code>
 ///         [Injector(typeof(AppSpecification))]
 ///         public interface IApplicationInjector {
@@ -70,13 +70,13 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         }
 ///     </code>
 ///     
-///     <para><strong>Stage 1 → Stage 2 Transformation:</strong></para>
+///     <para>Stage 1 → Stage 2 Transformation:</para>
 ///     <para>
 ///         InjectorMapper transforms this metadata into <see cref="Stage2.Core.Model.Injector.InjectorModel"/>,
 ///         which drives code generation of the implementation class (e.g., ApplicationInjector_AppSpecification).
 ///     </para>
 ///     
-///     <para><strong>Generated Implementation Structure:</strong></para>
+///     <para>Generated Implementation Structure:</para>
 ///     <list type="bullet">
 ///         <item>Constructor: Accepts parent injector (if [Dependency] present) + specifications</item>
 ///         <item>Fields: One per constructed specification, initialized in constructor</item>
@@ -85,7 +85,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         <item>ChildProvider Methods: Instantiate child injector, passing parent as dependency</item>
 ///     </list>
 ///     
-///     <para><strong>Scope and Lifetime:</strong></para>
+///     <para>Scope and Lifetime:</para>
 ///     <para>
 ///         Injectors themselves are stateful containers. If [Dependency] is present, this is a child
 ///         injector that receives its parent as a constructor parameter, enabling hierarchical scopes

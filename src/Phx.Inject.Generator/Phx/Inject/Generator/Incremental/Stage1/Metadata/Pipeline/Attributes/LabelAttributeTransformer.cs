@@ -21,14 +21,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms Label attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     <para><b>Purpose - Dependency Discrimination:</b></para>
+///     <para>Purpose - Dependency Discrimination:</para>
 ///     <para>
 ///     [Label("name")] attributes provide string-based discrimination for dependencies of the same type.
 ///     When multiple dependencies share a type (e.g., multiple ILogger instances), labels distinguish
 ///     between them. The transformer extracts the label string from the attribute's constructor argument.
 ///     </para>
 ///     
-///     <para><b>User Code Pattern - Labeled Dependencies:</b></para>
+///     <para>User Code Pattern - Labeled Dependencies:</para>
 ///     <code>
 ///     [Specification]
 ///     public interface ILoggers {
@@ -48,7 +48,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Without labels, multiple ILogger parameters would be ambiguous.
 ///     </para>
 ///     
-///     <para><b>String Extraction - GetConstructorArgument Pattern:</b></para>
+///     <para>String Extraction - GetConstructorArgument Pattern:</para>
 ///     <para>
 ///     The label string is extracted using:
 ///     `attributeData.GetConstructorArgument&lt;string&gt;(argument => argument.Kind != TypedConstantKind.Array)`
@@ -78,7 +78,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     string parameter. If the attribute exists on the symbol, the argument must exist.
 ///     </para>
 ///     
-///     <para><b>Why Labels vs Qualifiers:</b></para>
+///     <para>Why Labels vs Qualifiers:</para>
 ///     <para>
 ///     Labels use strings while QualifierAttribute uses types. Labels are preferred when:
 ///     </para>
@@ -100,7 +100,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Validation Constraints - Enforced by Later Stages:</b></para>
+///     <para>Validation Constraints - Enforced by Later Stages:</para>
 ///     <para>
 ///     Transformer doesn't validate label contents. Later validation checks:
 ///     </para>
@@ -122,7 +122,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Common Errors Prevented:</b></para>
+///     <para>Common Errors Prevented:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Typo in label string:</term>

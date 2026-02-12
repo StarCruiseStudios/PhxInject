@@ -18,35 +18,35 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     Common interface for all attribute metadata types in the Stage 1 metadata model.
 /// </summary>
 /// <remarks>
-///     <para><b>Role in DI Framework:</b></para>
+///     <para>Role in DI Framework:</para>
 ///     <para>
 ///     Provides a unified abstraction over all framework-specific attributes ([Injector], [Factory],
 ///     [Builder], [Dependency], etc.) that have been analyzed during Stage 1 metadata extraction.
 ///     This enables polymorphic handling of different attribute types in the processing pipeline.
 ///     </para>
 ///     
-///     <para><b>What User Declarations Represent:</b></para>
+///     <para>What User Declarations Represent:</para>
 ///     <para>
 ///     Each implementation corresponds to a specific attribute users apply to configure the DI framework:
 ///     configuration markers (Injector, Specification), binding definitions (Factory, Builder),
 ///     explicit dependencies (Dependency), or qualifier disambiguation (Label, Qualifier).
 ///     </para>
 ///     
-///     <para><b>Design Pattern:</b></para>
+///     <para>Design Pattern:</para>
 ///     <para>
 ///     Uses a tagged union pattern where the AttributeMetadata property provides common base data
 ///     (attribute class name, target name, locations) while derived types add attribute-specific
 ///     properties (e.g., FabricationMode for Factory, Label string for Label attribute).
 ///     </para>
 ///     
-///     <para><b>Immutability Requirements:</b></para>
+///     <para>Immutability Requirements:</para>
 ///     <para>
 ///     All implementations must be immutable records to serve as stable cache keys in incremental
 ///     compilation. The base AttributeMetadata follows the same Location-exclusion pattern as
 ///     TypeMetadata, ensuring that whitespace-only changes don't invalidate cached metadata.
 ///     </para>
 ///     
-///     <para><b>Relationship to Other Models:</b></para>
+///     <para>Relationship to Other Models:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>

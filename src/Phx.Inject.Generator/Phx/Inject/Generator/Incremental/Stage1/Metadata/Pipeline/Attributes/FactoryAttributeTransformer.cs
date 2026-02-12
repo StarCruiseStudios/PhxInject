@@ -23,7 +23,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms Factory attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     <para><b>Purpose - Factory Method Configuration:</b></para>
+///     <para>Purpose - Factory Method Configuration:</para>
 ///     <para>
 ///     [Factory] marks methods that should generate factory implementations for creating objects.
 ///     Factory methods define the signature of what to create (return type) and what dependencies
@@ -31,7 +31,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     creates instances.
 ///     </para>
 ///     
-///     <para><b>Attribute Argument - FabricationMode:</b></para>
+///     <para>Attribute Argument - FabricationMode:</para>
 ///     <para>
 ///     FabricationMode enum controls the instantiation strategy:
 ///     </para>
@@ -62,7 +62,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Enum Extraction - TypedConstant Type Filtering:</b></para>
+///     <para>Enum Extraction - TypedConstant Type Filtering:</para>
 ///     <para>
 ///     FabricationMode extraction uses a predicate to find the correct constructor argument:
 ///     `argument.Type!.GetFullyQualifiedName() == FabricationModeClassName`. This type-based
@@ -91,14 +91,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     literal but should be interpreted as the enum type.
 ///     </para>
 ///     
-///     <para><b>Default Value Handling:</b></para>
+///     <para>Default Value Handling:</para>
 ///     <para>
 ///     GetConstructorArgument falls back to `default(FabricationMode)` if not found. This is safe
 ///     because FabricationMode.Default (0) is explicitly designed as the fallback behavior.
 ///     Validators later decide if Default is acceptable for the target type.
 ///     </para>
 ///     
-///     <para><b>Why No Validation of FabricationMode Value:</b></para>
+///     <para>Why No Validation of FabricationMode Value:</para>
 ///     <para>
 ///     Transformer doesn't validate if the mode is appropriate for the target type (e.g., checking
 ///     if Constructor mode is used on an abstract class). This is deferred to validators because:
@@ -121,7 +121,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Performance - Minimal Allocation:</b></para>
+///     <para>Performance - Minimal Allocation:</para>
 ///     <para>
 ///     Factory metadata contains only a single enum field plus base metadata. Extremely lightweight
 ///     allocation that incremental caching can efficiently compare. Enum comparison is pointer-sized

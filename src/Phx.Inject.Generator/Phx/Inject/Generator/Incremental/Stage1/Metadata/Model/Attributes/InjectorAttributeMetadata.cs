@@ -32,7 +32,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     The common attribute metadata (class name, target, locations) shared by all attributes.
 /// </param>
 /// <remarks>
-///     <para><b>Role in DI Framework:</b></para>
+///     <para>Role in DI Framework:</para>
 ///     <para>
 ///     Represents the user's declaration of a DI container interface. The [Injector] attribute
 ///     marks an interface as the runtime access point for retrieving dependencies. The framework
@@ -40,7 +40,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     specifications provided.
 ///     </para>
 ///     
-///     <para><b>What User Declarations Represent:</b></para>
+///     <para>What User Declarations Represent:</para>
 ///     <para>
 ///     When users write "[Injector(typeof(MySpecification))] interface IMyInjector", this metadata
 ///     captures that declaration. The interface methods become provider methods (parameterless)
@@ -48,7 +48,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     are available to satisfy those provider methods.
 ///     </para>
 ///     
-///     <para><b>Why These Properties Were Chosen:</b></para>
+///     <para>Why These Properties Were Chosen:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -67,7 +67,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Immutability Requirements:</b></para>
+///     <para>Immutability Requirements:</para>
 ///     <para>
 ///     This record serves as a cache key in incremental compilation. All properties must be
 ///     immutable value types or records. The Specifications property uses EquatableList to
@@ -75,7 +75,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     from equality via GeneratorIgnored to prevent cache invalidation on whitespace changes.
 ///     </para>
 ///     
-///     <para><b>Relationship to Other Models:</b></para>
+///     <para>Relationship to Other Models:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>

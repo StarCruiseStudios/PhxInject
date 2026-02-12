@@ -24,7 +24,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 ///     and structurally comparable (IEquatable&lt;T&gt;) for incremental compilation caching.
 /// </typeparam>
 /// <remarks>
-///     <para><b>Singleton vs Collection Pattern:</b></para>
+///     <para>Singleton vs Collection Pattern:</para>
 ///     <para>
 ///     Use ISyntaxValuePipeline (singular) when exactly one instance of the metadata type should
 ///     exist per compilation, such as:
@@ -47,14 +47,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>vs. ISyntaxValuesPipeline (Plural):</b></para>
+///     <para>vs. ISyntaxValuesPipeline (Plural):</para>
 ///     <para>
 ///     Most DI declarations are plural - multiple injectors, specs, factories, etc. Use
 ///     ISyntaxValuesPipeline for those cases. This singular version produces IncrementalValueProvider
 ///     (single value) while plural produces IncrementalValuesProvider (stream of values).
 ///     </para>
 ///     
-///     <para><b>Result Wrapping:</b></para>
+///     <para>Result Wrapping:</para>
 ///     <para>
 ///     Returns IResult&lt;T&gt; rather than T directly to enable error handling without exceptions.
 ///     If metadata extraction fails (malformed syntax, validation errors), the Result contains
@@ -62,7 +62,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 ///     segments even when one fails.
 ///     </para>
 ///     
-///     <para><b>Incremental Compilation Contract:</b></para>
+///     <para>Incremental Compilation Contract:</para>
 ///     <para>
 ///     The IncrementalValueProvider returned is lazy - Select registers a computation but doesn't
 ///     execute it. Roslyn's incremental engine decides when to execute based on cache validity.
@@ -81,7 +81,7 @@ internal interface ISyntaxValuePipeline<T> where T : ISourceCodeElement, IEquata
     ///     pipeline executes. The Result contains either the extracted metadata or diagnostics.
     /// </returns>
     /// <remarks>
-    ///     <para><b>Two-Phase Processing:</b></para>
+    ///     <para>Two-Phase Processing:</para>
     ///     <para>
     ///     Implementation typically calls syntaxProvider.CreateSyntaxProvider with:
     ///     </para>
@@ -104,7 +104,7 @@ internal interface ISyntaxValuePipeline<T> where T : ISourceCodeElement, IEquata
     ///     into a single value (e.g., take first match, or error if multiple found).
     ///     </para>
     ///     
-    ///     <para><b>Caching Behavior:</b></para>
+    ///     <para>Caching Behavior:</para>
     ///     <para>
     ///     Roslyn caches both predicate and transform results. If a syntax node is unchanged and
     ///     the semantic model is unchanged, neither phase re-executes. If syntax changes but

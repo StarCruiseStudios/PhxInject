@@ -37,7 +37,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     Attributes that must not be present. Null/empty means no prohibited attributes.
 /// </param>
 /// <remarks>
-///     <para><b>Design Purpose - Field Injection and State Management:</b></para>
+///     <para>Design Purpose - Field Injection and State Management:</para>
 ///     <para>
 ///     Field validators enable validation of field injection patterns and stateful injector implementations.
 ///     Key DI patterns supported:
@@ -74,7 +74,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>WHY These Constraints Exist:</b></para>
+///     <para>WHY These Constraints Exist:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Readonly enforcement:</term>
@@ -111,7 +111,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>What Malformed Code Gets Caught:</b></para>
+///     <para>What Malformed Code Gets Caught:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -135,7 +135,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Field Injection Controversy:</b></para>
+///     <para>Field Injection Controversy:</para>
 ///     <para>
 ///     Field injection is considered an anti-pattern in modern DI frameworks (constructor injection
 ///     strongly preferred for testability and immutability). However, this validator exists to support
@@ -144,7 +144,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     or property injection when possible.
 ///     </para>
 ///     
-///     <para><b>Syntax vs Symbol Validation Gap:</b></para>
+///     <para>Syntax vs Symbol Validation Gap:</para>
 ///     <para>
 ///     Field declarations can declare multiple variables in one statement (int x, y, z;). Syntax
 ///     validation only sees the FieldDeclarationSyntax, not individual field symbols. All modifier
@@ -152,7 +152,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     why syntax validation is minimal - the syntax/symbol mapping is not 1:1.
 ///     </para>
 ///     
-///     <para><b>Design Tradeoff - Minimal Syntax Filtering:</b></para>
+///     <para>Design Tradeoff - Minimal Syntax Filtering:</para>
 ///     <para>
 ///     Similar to properties, field validators perform minimal syntax filtering. Fields are relatively
 ///     rare as DI injection points, and the multi-declarator syntax makes parsing complex. We accept
@@ -204,13 +204,13 @@ internal class FieldElementValidator(
 
     /// <inheritdoc />
     /// <remarks>
-    ///     <para><b>Intentionally Minimal Syntax Validation:</b></para>
+    ///     <para>Intentionally Minimal Syntax Validation:</para>
     ///     <para>
     ///     This validator only checks that the node is a FieldDeclarationSyntax, performing no
     ///     modifier validation at syntax level. This is a deliberate design choice.
     ///     </para>
     ///     
-    ///     <para><b>WHY Defer Everything to Symbol Phase:</b></para>
+    ///     <para>WHY Defer Everything to Symbol Phase:</para>
     ///     <list type="bullet">
     ///         <item>
     ///             <description>
@@ -235,7 +235,7 @@ internal class FieldElementValidator(
     ///         </item>
     ///     </list>
     ///     
-    ///     <para><b>Multi-Declarator Example:</b></para>
+    ///     <para>Multi-Declarator Example:</para>
     ///     <para>
     ///     Given: 'readonly int x = 1, y = 2;' - This is one FieldDeclarationSyntax but produces two
     ///     IFieldSymbol instances. Syntax validation runs once, symbol validation runs twice.

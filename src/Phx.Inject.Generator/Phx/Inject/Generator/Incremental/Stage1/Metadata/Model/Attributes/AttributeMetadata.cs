@@ -36,14 +36,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     Used for diagnostic reporting but excluded from equality/hashing for cache stability.
 /// </param>
 /// <remarks>
-///     <para><b>Role in DI Framework:</b></para>
+///     <para>Role in DI Framework:</para>
 ///     <para>
 ///     Serves as the base metadata container for all framework attribute types. Contains
 ///     location and identity information needed for diagnostics while maintaining the
 ///     immutability contract required for incremental compilation caching.
 ///     </para>
 ///     
-///     <para><b>Why These Properties:</b></para>
+///     <para>Why These Properties:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -65,7 +65,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Immutability for Incremental Caching:</b></para>
+///     <para>Immutability for Incremental Caching:</para>
 ///     <para>
 ///     Both location properties are wrapped in GeneratorIgnored to exclude them from structural
 ///     equality comparisons. This ensures that moving code around or reformatting doesn't
@@ -73,7 +73,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     prevents inheritance that might violate immutability invariants.
 ///     </para>
 ///     
-///     <para><b>Relationship to Other Models:</b></para>
+///     <para>Relationship to Other Models:</para>
 ///     <para>
 ///     AttributeMetadata is embedded in all specific attribute metadata types (InjectorAttributeMetadata,
 ///     FactoryAttributeMetadata, etc.) as a composition property, providing a consistent base layer.

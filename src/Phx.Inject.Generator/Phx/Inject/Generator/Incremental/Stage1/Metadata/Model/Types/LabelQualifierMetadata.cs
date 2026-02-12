@@ -22,14 +22,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 ///     The metadata extracted from the [Label] attribute, containing the label string value.
 /// </param>
 /// <remarks>
-///     <para><b>Purpose:</b></para>
+///     <para>Purpose:</para>
 ///     <para>
 ///     Label qualifiers provide a lightweight way to distinguish bindings using simple string
 ///     identifiers. Common patterns include named instances (@Named("production") vs @Named("test")),
 ///     environment labels, or logical groupings like "primary" and "secondary."
 ///     </para>
 ///     
-///     <para><b>Design Considerations:</b></para>
+///     <para>Design Considerations:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -48,14 +48,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Equality Semantics:</b></para>
+///     <para>Equality Semantics:</para>
 ///     <para>
 ///     Two label qualifiers are equal if their label strings match exactly. Location is included
 ///     in the hash code but not in equality comparison (BUG: should exclude Location from hash
 ///     to match other qualifier types - this is a technical debt item).
 ///     </para>
 ///     
-///     <para><b>vs. Custom Qualifiers:</b></para>
+///     <para>vs. Custom Qualifiers:</para>
 ///     <para>
 ///     Use label qualifiers for simple string-based disambiguation. Use custom qualifier attributes
 ///     when you want type safety, IDE support, or need to associate additional data with the qualifier.

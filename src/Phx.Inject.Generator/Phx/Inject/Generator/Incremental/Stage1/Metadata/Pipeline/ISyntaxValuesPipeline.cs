@@ -24,7 +24,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 ///     and structurally comparable (IEquatable&lt;T&gt;) for incremental compilation caching.
 /// </typeparam>
 /// <remarks>
-///     <para><b>Collection Pattern for Multiple Declarations:</b></para>
+///     <para>Collection Pattern for Multiple Declarations:</para>
 ///     <para>
 ///     Use ISyntaxValuesPipeline (plural) when multiple instances of the metadata type can coexist
 ///     in a compilation, such as:
@@ -47,14 +47,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>vs. ISyntaxValuePipeline (Singular):</b></para>
+///     <para>vs. ISyntaxValuePipeline (Singular):</para>
 ///     <para>
 ///     For singleton metadata like assembly settings, use ISyntaxValuePipeline which produces
 ///     IncrementalValueProvider (single value). This plural version produces IncrementalValuesProvider
 ///     (stream of values), one per matching declaration.
 ///     </para>
 ///     
-///     <para><b>Result Wrapping Per Element:</b></para>
+///     <para>Result Wrapping Per Element:</para>
 ///     <para>
 ///     Each element in the stream is wrapped in IResult&lt;T&gt;, allowing individual declarations
 ///     to fail independently. If extracting metadata for InjectorA succeeds but InjectorB has errors,
@@ -62,14 +62,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 ///     for remaining elements.
 ///     </para>
 ///     
-///     <para><b>Parallel Processing:</b></para>
+///     <para>Parallel Processing:</para>
 ///     <para>
 ///     Roslyn processes each element in the stream independently and potentially in parallel.
 ///     Predicate and transform must be thread-safe. The order of elements in the stream is undefined
 ///     (do not rely on source file order or declaration order).
 ///     </para>
 ///     
-///     <para><b>Incremental Update Granularity:</b></para>
+///     <para>Incremental Update Granularity:</para>
 ///     <para>
 ///     When a single declaration changes, only that element's transform re-executes. Other elements
 ///     remain cached. This fine-grained caching is why ISyntaxValuesPipeline is preferred over
@@ -89,7 +89,7 @@ internal interface ISyntaxValuesPipeline<T> where T : ISourceCodeElement, IEquat
     ///     one per matching declaration. Each Result contains either extracted metadata or diagnostics.
     /// </returns>
     /// <remarks>
-    ///     <para><b>Two-Phase Processing Per Element:</b></para>
+    ///     <para>Two-Phase Processing Per Element:</para>
     ///     <para>
     ///     Implementation typically calls syntaxProvider.CreateSyntaxProvider with:
     ///     </para>
@@ -110,14 +110,14 @@ internal interface ISyntaxValuesPipeline<T> where T : ISourceCodeElement, IEquat
     ///         </item>
     ///     </list>
     ///     
-    ///     <para><b>Caching and Invalidation:</b></para>
+    ///     <para>Caching and Invalidation:</para>
     ///     <para>
     ///     Each element in the stream is cached independently. Editing fileA.cs only invalidates
     ///     cache entries for declarations in fileA.cs. Declarations in fileB.cs remain cached.
     ///     This granular caching is essential for IDE responsiveness in large codebases.
     ///     </para>
     ///     
-    ///     <para><b>Empty Stream Handling:</b></para>
+    ///     <para>Empty Stream Handling:</para>
     ///     <para>
     ///     If no declarations match the predicate, the stream is empty (not null, not a single
     ///     Result.Failure). Downstream consumers must handle empty streams appropriately.

@@ -18,14 +18,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Checks if a symbol has a specific attribute.
 /// </summary>
 /// <remarks>
-///     <para><b>Roslyn Symbol Attribute Query Pattern:</b></para>
+///     <para>Roslyn Symbol Attribute Query Pattern:</para>
 ///     <para>
 ///     Provides efficient existence checks for attributes on Roslyn symbols without materializing
 ///     full attribute metadata. This is the foundation of the attribute transformer pipeline's
 ///     conditional execution strategy.
 ///     </para>
 ///     
-///     <para><b>Performance Optimization - Why Separate Existence Check:</b></para>
+///     <para>Performance Optimization - Why Separate Existence Check:</para>
 ///     <para>
 ///     Checking attribute existence (HasAttribute) is significantly cheaper than transforming
 ///     attribute data into metadata (Transform). Roslyn's GetAttributes() returns AttributeData
@@ -50,7 +50,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Integration with Validators:</b></para>
+///     <para>Integration with Validators:</para>
 ///     <para>
 ///     ICodeElementValidator implementations use HasAttribute during IsValidSymbol checks to verify
 ///     required attributes exist before attempting transformation. This separates structural validation
@@ -58,7 +58,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     to fail fast and report more precise diagnostic messages.
 ///     </para>
 ///     
-///     <para><b>Thread Safety:</b></para>
+///     <para>Thread Safety:</para>
 ///     <para>
 ///     Implementations must be thread-safe. Roslyn's incremental generator pipeline calls into
 ///     transformers from parallel worker threads during batch processing. The underlying

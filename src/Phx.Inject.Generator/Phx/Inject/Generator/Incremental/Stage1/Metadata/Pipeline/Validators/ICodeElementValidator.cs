@@ -19,7 +19,7 @@ using System.Diagnostics.CodeAnalysis;
 ///     Validates that code elements (symbols and syntax) conform to required structural constraints.
 /// </summary>
 /// <remarks>
-///     <para><b>Dual-Phase Validation Strategy:</b></para>
+///     <para>Dual-Phase Validation Strategy:</para>
 ///     <para>
 ///     Validators operate in two phases corresponding to Roslyn's incremental generator pipeline:
 ///     </para>
@@ -42,14 +42,14 @@ using System.Diagnostics.CodeAnalysis;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Why Two Phases?</b></para>
+///     <para>Why Two Phases?</para>
 ///     <para>
 ///     Syntax validation eliminates 95%+ of nodes cheaply (e.g., reject all private classes when
 ///     we need public). Symbol validation then performs expensive semantic checks only on the small
 ///     remaining set. This two-pass approach is critical for acceptable IDE performance.
 ///     </para>
 ///     
-///     <para><b>Contract Guarantees:</b></para>
+///     <para>Contract Guarantees:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -80,13 +80,13 @@ internal interface ICodeElementValidator {
     ///     False if the symbol violates requirements or is null.
     /// </returns>
     /// <remarks>
-    ///     <para><b>When This Executes:</b></para>
+    ///     <para>When This Executes:</para>
     ///     <para>
     ///     Called during the transform phase of incremental generation, after the predicate phase
     ///     has filtered candidates via IsValidSyntax. At this point, full semantic model is available.
     ///     </para>
     ///     
-    ///     <para><b>What to Validate:</b></para>
+    ///     <para>What to Validate:</para>
     ///     <list type="bullet">
     ///         <item>
     ///             <description>Attribute presence and types (cannot do in syntax phase)</description>
@@ -102,7 +102,7 @@ internal interface ICodeElementValidator {
     ///         </item>
     ///     </list>
     ///     
-    ///     <para><b>NotNullWhen Attribute:</b></para>
+    ///     <para>NotNullWhen Attribute:</para>
     ///     <para>
     ///     The NotNullWhen(true) attribute informs the compiler that if this method returns true,
     ///     the symbol parameter is guaranteed non-null. Callers can safely dereference symbol
@@ -122,14 +122,14 @@ internal interface ICodeElementValidator {
     ///     False if the syntax definitively violates requirements (skip transform phase entirely).
     /// </returns>
     /// <remarks>
-    ///     <para><b>When This Executes:</b></para>
+    ///     <para>When This Executes:</para>
     ///     <para>
     ///     Called during Roslyn's predicate phase, before any semantic analysis or symbol binding.
     ///     Executes on potentially millions of syntax nodes across the compilation, so performance
     ///     is critical. Must complete in microseconds per invocation.
     ///     </para>
     ///     
-    ///     <para><b>What to Validate:</b></para>
+    ///     <para>What to Validate:</para>
     ///     <list type="bullet">
     ///         <item>
     ///             <description>Syntax modifiers (public, static, abstract, partial, etc.)</description>
@@ -142,7 +142,7 @@ internal interface ICodeElementValidator {
     ///         </item>
     ///     </list>
     ///     
-    ///     <para><b>What NOT to Validate:</b></para>
+    ///     <para>What NOT to Validate:</para>
     ///     <list type="bullet">
     ///         <item>
     ///             <description>Attribute types (syntax doesn't resolve attribute symbols)</description>
@@ -155,7 +155,7 @@ internal interface ICodeElementValidator {
     ///         </item>
     ///     </list>
     ///     
-    ///     <para><b>Conservative Bias:</b></para>
+    ///     <para>Conservative Bias:</para>
     ///     <para>
     ///     When uncertain due to incomplete information, prefer returning true (let symbol validation
     ///     decide). The cost of a false positive is one extra symbol lookup. The cost of a false
@@ -179,13 +179,13 @@ internal static class CodeElementValidator {
     ///     An aggregate validator implementing AND logic across all provided validators.
     /// </returns>
     /// <remarks>
-    ///     <para><b>Short-Circuit Evaluation:</b></para>
+    ///     <para>Short-Circuit Evaluation:</para>
     ///     <para>
     ///     The aggregate validator short-circuits on the first failing validator, avoiding
     ///     unnecessary validation work. Order validators from fastest-failing to slowest.
     ///     </para>
     ///     
-    ///     <para><b>Use Case:</b></para>
+    ///     <para>Use Case:</para>
     ///     <para>
     ///     Useful when multiple orthogonal constraints apply to the same code element.
     ///     For example, a class might need to be: public, partial, have specific attributes,

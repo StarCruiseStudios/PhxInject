@@ -22,14 +22,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 ///     The metadata describing the custom qualifier attribute type.
 /// </param>
 /// <remarks>
-///     <para><b>Purpose:</b></para>
+///     <para>Purpose:</para>
 ///     <para>
 ///     Custom qualifiers provide type-safe, IDE-supported disambiguation of bindings. Instead of
 ///     string labels prone to typos, users define attributes like [Production] and [Development]
 ///     marked with [Qualifier], gaining compile-time safety and refactoring support.
 ///     </para>
 ///     
-///     <para><b>Example Usage:</b></para>
+///     <para>Example Usage:</para>
 ///     <code>
 ///     [Qualifier]
 ///     public class ProductionAttribute : Attribute { }
@@ -46,7 +46,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 ///     }
 ///     </code>
 ///     
-///     <para><b>Design Benefits:</b></para>
+///     <para>Design Benefits:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>
@@ -70,13 +70,13 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 ///         </item>
 ///     </list>
 ///     
-///     <para><b>Equality Semantics:</b></para>
+///     <para>Equality Semantics:</para>
 ///     <para>
 ///     Two custom qualifiers are equal if they reference the same attribute type (by fully-qualified
 ///     name). Location is included in hash code but not equality (similar inconsistency to LabelQualifierMetadata).
 ///     </para>
 ///     
-///     <para><b>Limitations:</b></para>
+///     <para>Limitations:</para>
 ///     <para>
 ///     Current implementation treats the qualifier attribute as a marker only - properties on the
 ///     attribute are not captured or considered during matching. This may be enhanced in the future.

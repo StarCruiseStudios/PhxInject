@@ -19,14 +19,14 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///     Stage 1 metadata for a provider method that returns constructed object instances.
 /// </summary>
 /// <remarks>
-///     <para><strong>Domain Model:</strong></para>
+///     <para>Domain Model:</para>
 ///     <para>
 ///         A provider is a factory method on the injector interface that returns a fully constructed
 ///         object. This is the primary pattern for retrieving dependencies from the DI container.
 ///         The method signature determines both the type to construct and any qualifiers (labels).
 ///     </para>
 ///     
-///     <para><strong>Provider vs Activator vs ChildProvider:</strong></para>
+///     <para>Provider vs Activator vs ChildProvider:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <term>Provider (this class):</term>
@@ -51,7 +51,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         </item>
 ///     </list>
 ///     
-///     <para><strong>Example User Code:</strong></para>
+///     <para>Example User Code:</para>
 ///     <code>
 ///         [Injector(typeof(DatabaseSpec))]
 ///         interface IDatabaseInjector {
@@ -64,7 +64,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         }
 ///     </code>
 ///     
-///     <para><strong>Code Generation:</strong></para>
+///     <para>Code Generation:</para>
 ///     <para>
 ///         Transformed by InjectorProviderMapper into <see cref="Stage2.Core.Model.Injector.InjectorProviderModel"/>,
 ///         which generates implementation methods that:
@@ -76,7 +76,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         <item>Return the constructed instance to the caller</item>
 ///     </list>
 ///     
-///     <para><strong>Generated Implementation Pattern:</strong></para>
+///     <para>Generated Implementation Pattern:</para>
 ///     <code>
 ///         // For: IDatabase GetDatabase()
 ///         public IDatabase GetDatabase() {
@@ -89,7 +89,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 ///         }
 ///     </code>
 ///     
-///     <para><strong>Scope Implications:</strong></para>
+///     <para>Scope Implications:</para>
 ///     <para>
 ///         Providers delegate to specification factories, which determine the actual scope/lifetime
 ///         (singleton, transient, scoped). The injector itself manages singleton caching via

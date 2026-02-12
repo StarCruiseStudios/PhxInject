@@ -19,7 +19,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     Model representing a factory method in a specification container.
 /// </summary>
 /// <remarks>
-///     <para><b>Factory Method Purpose:</b></para>
+///     <para>Factory Method Purpose:</para>
 ///     <para>
 ///     Represents a single factory method in the generated SpecContainer that creates instances
 ///     of a specific type. Each factory method resolves its dependencies recursively by invoking
@@ -27,7 +27,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     properties as specified by the [AutoFactory] or [Factory] pattern.
 ///     </para>
 ///     
-///     <para><b>Relationship to Stage 1 Metadata:</b></para>
+///     <para>Relationship to Stage 1 Metadata:</para>
 ///     <para>
 ///     Derived from Stage 1's SpecFactoryMethodMetadata, SpecFactoryPropertyMetadata, or
 ///     SpecFactoryReferenceMetadata. Stage 2 transforms these into invocable factory methods:
@@ -37,7 +37,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     - Constructor: Directly invokes type constructor (AutoFactory pattern)
 ///     </para>
 ///     
-///     <para><b>AutoFactory Required Properties Pattern:</b></para>
+///     <para>AutoFactory Required Properties Pattern:</para>
 ///     <para>
 ///     For [AutoFactory] patterns, the generator analyzes the target type's constructor and
 ///     required properties. RequiredProperties contains initialization for properties marked
@@ -45,7 +45,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 ///     initializer syntax in generated code: `new T(args) { Prop = value }`.
 ///     </para>
 ///     
-///     <para><b>Generated Code Example:</b></para>
+///     <para>Generated Code Example:</para>
 ///     <code>
 ///     // From: [Factory] public IService CreateService(ILogger logger) { ... }
 ///     // Generates in container:

@@ -19,12 +19,12 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 /// <summary>
 ///     Metadata representing an analyzed specification builder method.
 ///     <para>
-///         <strong>Builder Methods:</strong> Configure or inject dependencies into EXISTING instances
+///         Builder Methods: Configure or inject dependencies into EXISTING instances
 ///         rather than creating new ones. Distinguished from Factories by void return type and by
 ///         operating on an already-constructed instance (first parameter).
 ///     </para>
 ///     <para>
-///         <strong>Use Case:</strong> Post-construction dependency injection, property injection,
+///         Use Case: Post-construction dependency injection, property injection,
 ///         or multi-phase initialization where the instance already exists but needs configuration.
 ///     </para>
 /// </summary>

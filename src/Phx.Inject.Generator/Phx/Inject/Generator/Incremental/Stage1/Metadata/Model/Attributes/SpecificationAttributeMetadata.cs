@@ -23,7 +23,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     The common attribute metadata (class name, target, locations) shared by all attributes.
 /// </param>
 /// <remarks>
-///     <para><b>Role in DI Framework:</b></para>
+///     <para>Role in DI Framework:</para>
 ///     <para>
 ///     Represents a user-declared specification class that defines the dependency graph
 ///     configuration. Specifications are the core organizational unit of the DI framework,
@@ -32,7 +32,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     They are the "recipe book" that injectors consult when resolving dependencies.
 ///     </para>
 ///     
-///     <para><b>What User Declarations Represent:</b></para>
+///     <para>What User Declarations Represent:</para>
 ///     <para>
 ///     When users write "[Specification] static class MySpec { ... }", this metadata captures
 ///     that the class contains DI binding definitions. Specifications can be static classes
@@ -41,7 +41,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     injectors or composed with other specifications.
 ///     </para>
 ///     
-///     <para><b>Why These Properties Were Chosen:</b></para>
+///     <para>Why These Properties Were Chosen:</para>
 ///     <para>
 ///     The [Specification] attribute itself has no parameters - it's purely a marker attribute.
 ///     Therefore, only the base AttributeMetadata is needed. The actual specification content
@@ -50,7 +50,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     analysis to SpecificationModel in later pipeline stages.
 ///     </para>
 ///     
-///     <para><b>Code Generation Needs:</b></para>
+///     <para>Code Generation Needs:</para>
 ///     <para>
 ///     Code generation doesn't directly generate code from SpecificationAttributeMetadata itself.
 ///     Instead, this metadata identifies which classes should be analyzed for their contained
@@ -59,7 +59,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     in the generated injector code.
 ///     </para>
 ///     
-///     <para><b>Immutability Requirements:</b></para>
+///     <para>Immutability Requirements:</para>
 ///     <para>
 ///     Contains only the immutable AttributeMetadata record, making this a stable cache key.
 ///     Changes to specification contents (adding/removing factories) affect the individual
@@ -68,7 +68,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 ///     specification.
 ///     </para>
 ///     
-///     <para><b>Relationship to Other Models:</b></para>
+///     <para>Relationship to Other Models:</para>
 ///     <list type="bullet">
 ///         <item>
 ///             <description>

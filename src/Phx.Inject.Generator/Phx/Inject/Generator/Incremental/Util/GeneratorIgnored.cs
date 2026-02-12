@@ -19,7 +19,7 @@ namespace Phx.Inject.Generator.Incremental.Util;
 ///     The value to wrap. Its changes will not trigger incremental regeneration.
 /// </param>
 /// <remarks>
-///     <para><b>Purpose:</b></para>
+///     <para>Purpose:</para>
 ///     <para>
 ///     Roslyn's incremental generators use value equality on model objects to determine if
 ///     regeneration is needed. However, some data (like source file locations) is essential
@@ -28,7 +28,7 @@ namespace Phx.Inject.Generator.Incremental.Util;
 ///     semantics.
 ///     </para>
 ///     
-///     <para><b>Equality Semantics:</b></para>
+///     <para>Equality Semantics:</para>
 ///     <para>
 ///     Two <c>GeneratorIgnored&lt;T&gt;</c> instances are always considered equal regardless
 ///     of their wrapped values, as long as they wrap the same type <c>T</c>. This intentionally
@@ -36,20 +36,20 @@ namespace Phx.Inject.Generator.Incremental.Util;
 ///     compilation where we want to signal "this data doesn't affect output."
 ///     </para>
 ///     
-///     <para><b>Usage Pattern:</b></para>
+///     <para>Usage Pattern:</para>
 ///     <para>
 ///     Primarily used for <see cref="LocationInfo"/> fields in metadata records. Location
 ///     data is needed to report diagnostics at the correct source positions but shouldn't
 ///     trigger recompilation if a type definition is moved within a file.
 ///     </para>
 ///     
-///     <para><b>Performance:</b></para>
+///     <para>Performance:</para>
 ///     <para>
 ///     Minimal overhead - just a single object allocation and type-based hash code.
 ///     Avoids expensive deep comparisons of location data during incremental compilation checks.
 ///     </para>
 ///     
-///     <para><b>When NOT to use:</b></para>
+///     <para>When NOT to use:</para>
 ///     <para>
 ///     Do not wrap semantic data that affects code generation. If changing the value should
 ///     trigger regeneration, do not use this wrapper.
