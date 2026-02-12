@@ -95,4 +95,8 @@ internal static class TypeSymbolExtensions {
             typeArguments,
             typeSymbol.Locations.FirstOrDefault().GeneratorIgnored());
     }
+    
+    public static QualifiedTypeMetadata ToQualifiedTypeModel(this ITypeSymbol typeSymbol, IQualifierMetadata qualifierMetadata) {
+        return new QualifiedTypeMetadata(typeSymbol.ToTypeModel(), qualifierMetadata);
+    }
 }

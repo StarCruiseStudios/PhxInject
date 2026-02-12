@@ -19,7 +19,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 internal class DependencyAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer,
     ICodeElementValidator dependencyTypeValidator
-) : IAttributeTransformer<DependencyAttributeMetadata>, IAttributeChecker {
+) : IAttributeTransformer<DependencyAttributeMetadata> {
     public static DependencyAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance,
         new InterfaceElementValidator(

@@ -11,6 +11,7 @@ using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Auto;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 using Phx.Inject.Generator.Incremental.Util;
@@ -20,8 +21,8 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Auto;
 internal class AutoFactoryRequiredPropertyTransformer(
     ICodeElementValidator elementValidator,
     ICodeElementValidator setterElementValidator,
-    QualifierTransformer qualifierTransformer
-) {
+    ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer
+) : ITransformer<IPropertySymbol, AutoFactoryRequiredPropertyMetadata> {
     public static readonly AutoFactoryRequiredPropertyTransformer Instance = new(
         new PropertyElementValidator(
             CodeElementAccessibility.PublicOrInternal,
@@ -46,13 +47,10 @@ internal class AutoFactoryRequiredPropertyTransformer(
 
     public IResult<AutoFactoryRequiredPropertyMetadata> Transform(IPropertySymbol propertySymbol) {
         return DiagnosticsRecorder.Capture(diagnostics => {
-            var propertyQualifier = qualifierTransformer.Transform(propertySymbol).GetOrThrow(diagnostics);
+            var propertyQualifier = qualifierTransformer.Transform(propertySymbol).OrThrow(diagnostics);
             return new AutoFactoryRequiredPropertyMetadata(
                 propertySymbol.Name,
-                new QualifiedTypeMetadata(
-                    propertySymbol.Type.ToTypeModel(),
-                    propertyQualifier
-                ),
+                propertySymbol.Type.ToQualifiedTypeModel(propertyQualifier),
                 propertySymbol.GetLocationOrDefault().GeneratorIgnored()
             );
         });

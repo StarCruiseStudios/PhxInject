@@ -15,7 +15,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
 internal class SpecificationAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
-) : IAttributeTransformer<SpecificationAttributeMetadata>, IAttributeChecker {
+) : IAttributeTransformer<SpecificationAttributeMetadata> {
     public static SpecificationAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance
     );

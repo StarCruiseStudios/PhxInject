@@ -23,8 +23,8 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specificatio
 internal class InjectorDependencyPipeline(
     ICodeElementValidator elementValidator,
     IAttributeTransformer<InjectorDependencyAttributeMetadata> injectorDependencyAttributeTransformer,
-    SpecFactoryMethodTransformer specFactoryMethodTransformer,
-    SpecFactoryPropertyTransformer specFactoryPropertyTransformer
+    ITransformer<IMethodSymbol, SpecFactoryMethodMetadata> specFactoryMethodTransformer,
+    ITransformer<IPropertySymbol, SpecFactoryPropertyMetadata> specFactoryPropertyTransformer
 ) : ISyntaxValuesPipeline<InjectorDependencyInterfaceMetadata> {
     public static readonly InjectorDependencyPipeline Instance = new(
         new InterfaceElementValidator(
@@ -44,7 +44,7 @@ internal class InjectorDependencyPipeline(
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
                 var injectorDependencyAttributeMetadata = injectorDependencyAttributeTransformer
                     .Transform(targetSymbol)
-                    .GetOrThrow(diagnostics);
+                    .OrThrow(diagnostics);
 
                 var injectorDependencyInterfaceType = targetSymbol.ToTypeModel();
                 

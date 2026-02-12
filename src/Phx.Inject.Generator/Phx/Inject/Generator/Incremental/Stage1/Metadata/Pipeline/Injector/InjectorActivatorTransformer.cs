@@ -21,8 +21,8 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Injector;
 
 internal class InjectorActivatorTransformer(
     ICodeElementValidator elementValidator,
-    QualifierTransformer qualifierTransformer
-) {
+    ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer
+) : ITransformer<IMethodSymbol, InjectorActivatorMetadata> {
     public static readonly InjectorActivatorTransformer Instance = new(
         new MethodElementValidator(
             CodeElementAccessibility.PublicOrInternal,
@@ -43,7 +43,7 @@ internal class InjectorActivatorTransformer(
         return DiagnosticsRecorder.Capture(diagnostics => {
             var name = methodSymbol.Name;
             var activatedType = methodSymbol.Parameters[0].Type.ToTypeModel();
-            var qualifier = qualifierTransformer.Transform(methodSymbol).GetOrThrow(diagnostics);
+            var qualifier = qualifierTransformer.Transform(methodSymbol).OrThrow(diagnostics);
             return new InjectorActivatorMetadata(
                 name,
                 new QualifiedTypeMetadata(activatedType, qualifier),

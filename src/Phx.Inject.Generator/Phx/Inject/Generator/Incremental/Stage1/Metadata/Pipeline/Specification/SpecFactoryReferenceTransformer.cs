@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Incremental.Diagnostics;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
@@ -21,10 +22,10 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specificatio
 
 internal class SpecFactoryReferenceTransformer(
     ICodeElementValidator elementValidator,
-    QualifierTransformer qualifierTransformer,
-    FactoryReferenceAttributeTransformer factoryReferenceAttributeTransformer,
-    PartialAttributeTransformer partialAttributeTransformer
-) {
+    ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer,
+    IAttributeTransformer<FactoryReferenceAttributeMetadata> factoryReferenceAttributeTransformer,
+    IAttributeTransformer<PartialAttributeMetadata> partialAttributeTransformer
+) : ITransformer<ISymbol, SpecFactoryReferenceMetadata> {
     public static readonly SpecFactoryReferenceTransformer Instance = new(
             CodeElementValidator.Of(
             new FieldElementValidator(
@@ -75,28 +76,22 @@ internal class SpecFactoryReferenceTransformer(
 
             // Last type argument is return type, others are parameters
             var returnTypeSymbol = typeArguments[typeArguments.Length - 1];
-            var returnTypeQualifier = qualifierTransformer.Transform(symbol).GetOrThrow(diagnostics);
-            var factoryReturnType = new QualifiedTypeMetadata(
-                returnTypeSymbol.ToTypeModel(),
-                returnTypeQualifier
-            );
+            var returnTypeQualifier = qualifierTransformer.Transform(symbol).OrThrow(diagnostics);
+            var factoryReturnType = returnTypeSymbol.ToQualifiedTypeModel(returnTypeQualifier);
 
             var parameters = typeArguments
                 .Take(typeArguments.Length - 1)
                 .Select(paramType => {
-                    var paramQualifier = qualifierTransformer.Transform(paramType).GetOrThrow(diagnostics);
-                    return new QualifiedTypeMetadata(
-                        paramType.ToTypeModel(),
-                        paramQualifier
-                    );
+                    var paramQualifier = qualifierTransformer.Transform(paramType).OrThrow(diagnostics);
+                    return paramType.ToQualifiedTypeModel(paramQualifier);
                 })
                 .ToImmutableList();
 
             var factoryReferenceAttribute =
-                factoryReferenceAttributeTransformer.Transform(symbol).GetOrThrow(diagnostics);
-            var partialAttribute = partialAttributeTransformer.HasAttribute(symbol)
-                ? partialAttributeTransformer.Transform(symbol).GetOrThrow(diagnostics)
-                : null;
+                factoryReferenceAttributeTransformer.Transform(symbol).OrThrow(diagnostics);
+            var partialAttribute = partialAttributeTransformer
+                .TransformOrNull(symbol)?
+                .OrThrow(diagnostics);
 
             return new SpecFactoryReferenceMetadata(
                 name,

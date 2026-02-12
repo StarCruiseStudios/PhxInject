@@ -21,7 +21,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Injector;
 internal class InjectorChildProviderTransformer(
     ICodeElementValidator elementValidator,
     ChildInjectorAttributeTransformer childInjectorAttributeTransformer
-) {
+) : ITransformer<IMethodSymbol, InjectorChildProviderMetadata> {
     public static readonly InjectorChildProviderTransformer Instance = new(
         new MethodElementValidator(
             CodeElementAccessibility.PublicOrInternal,
@@ -40,7 +40,7 @@ internal class InjectorChildProviderTransformer(
         return DiagnosticsRecorder.Capture(diagnostics => {
             var name = methodSymbol.Name;
             var childInjectorAttribute =
-                childInjectorAttributeTransformer.Transform(methodSymbol).GetOrThrow(diagnostics);
+                childInjectorAttributeTransformer.Transform(methodSymbol).OrThrow(diagnostics);
             var childInjectorType = methodSymbol.ReturnType.ToTypeModel();
             var parameters = methodSymbol.Parameters
                 .Select(p => p.Type.ToTypeModel())

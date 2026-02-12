@@ -16,7 +16,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
 internal class LinkAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
-) : IAttributeListTransformer<LinkAttributeMetadata>, IAttributeChecker {
+) : IAttributeListTransformer<LinkAttributeMetadata> {
     public static LinkAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance
     );

@@ -17,24 +17,25 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Types;
 internal class QualifierTransformer(
     IAttributeTransformer<LabelAttributeMetadata> labelAttributeTransformer,
     IAttributeTransformer<QualifierAttributeMetadata> qualifierAttributeTransformer
-) {
+) : ITransformer<ISymbol, IQualifierMetadata> {
     public static QualifierTransformer Instance { get; } = new(
         LabelAttributeTransformer.Instance,
         QualifierAttributeTransformer.Instance
     );
     
-    private IAttributeChecker? labelChecker = labelAttributeTransformer as IAttributeChecker;
-    private IAttributeChecker? qualifierChecker = qualifierAttributeTransformer as IAttributeChecker;
+    public bool CanTransform(ISymbol input) {
+        return true;
+    }
     
     public IResult<IQualifierMetadata> Transform(ISymbol targetSymbol) {
         return DiagnosticsRecorder.Capture<IQualifierMetadata>(diagnostics => {
-            if (labelChecker?.HasAttribute(targetSymbol) == true) {
-                var labelAttributeMetadata = labelAttributeTransformer.Transform(targetSymbol).GetOrThrow(diagnostics);
+            if (labelAttributeTransformer.HasAttribute(targetSymbol)) {
+                var labelAttributeMetadata = labelAttributeTransformer.Transform(targetSymbol).OrThrow(diagnostics);
                 return new LabelQualifierMetadata(labelAttributeMetadata);
             }
 
-            if (qualifierChecker?.HasAttribute(targetSymbol) == true) {
-                var qualifierAttributeMetadata = qualifierAttributeTransformer.Transform(targetSymbol).GetOrThrow(diagnostics);
+            if (qualifierAttributeTransformer.HasAttribute(targetSymbol)) {
+                var qualifierAttributeMetadata = qualifierAttributeTransformer.Transform(targetSymbol).OrThrow(diagnostics);
                 return new CustomQualifierMetadata(qualifierAttributeMetadata);
             }
 

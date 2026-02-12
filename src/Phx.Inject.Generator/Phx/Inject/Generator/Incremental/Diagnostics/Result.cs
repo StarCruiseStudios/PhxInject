@@ -114,15 +114,15 @@ internal static class Result {
         return false;
     }
     
-    public static T? GetOrNull<T>(this IResult<T> result, IDiagnosticsRecorder diagnostics) where T : class, IEquatable<T>? {
+    public static T? OrNull<T>(this IResult<T> result, IDiagnosticsRecorder diagnostics) where T : class, IEquatable<T>? {
         return result.IsOk ? result.GetValue(diagnostics) : null;
     }
     
-    public static T GetOrElse<T>(this IResult<T> result, IDiagnosticsRecorder diagnostics, Func<T> defaultValue) where T : IEquatable<T> {
+    public static T OrElse<T>(this IResult<T> result, IDiagnosticsRecorder diagnostics, Func<T> defaultValue) where T : IEquatable<T> {
         return result.IsOk ? result.GetValue(diagnostics) : defaultValue();
     }
     
-    public static T GetOrThrow<T>(this IResult<T> result, IDiagnosticsRecorder diagnostics) where T : IEquatable<T>? {
+    public static T OrThrow<T>(this IResult<T> result, IDiagnosticsRecorder diagnostics) where T : IEquatable<T>? {
         return result.IsOk 
             ? result.GetValue(diagnostics)
             : throw new GeneratorException(result.DiagnosticInfo);
@@ -130,7 +130,7 @@ internal static class Result {
     
     public static IEnumerable<T> SelectOrThrow<T>(this IEnumerable<IResult<T>> results, IDiagnosticsRecorder diagnostics) where T : IEquatable<T>? {
         foreach (var result in results) {
-            yield return result.GetOrThrow(diagnostics);
+            yield return result.OrThrow(diagnostics);
         }
     }
 

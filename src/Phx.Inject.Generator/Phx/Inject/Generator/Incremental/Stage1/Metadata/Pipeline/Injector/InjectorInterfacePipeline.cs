@@ -23,10 +23,10 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Injector;
 internal class InjectorInterfacePipeline(
     ICodeElementValidator elementValidator,
     IAttributeTransformer<InjectorAttributeMetadata> injectorAttributeTransformer,
-    InjectorProviderTransformer injectorProviderTransformer,
-    InjectorActivatorTransformer injectorActivatorTransformer,
-    InjectorChildProviderTransformer injectorChildProviderTransformer,
-    DependencyAttributeTransformer dependencyAttributeTransformer
+    ITransformer<IMethodSymbol, InjectorProviderMetadata> injectorProviderTransformer,
+    ITransformer<IMethodSymbol, InjectorActivatorMetadata> injectorActivatorTransformer,
+    ITransformer<IMethodSymbol, InjectorChildProviderMetadata> injectorChildProviderTransformer,
+    IAttributeTransformer<DependencyAttributeMetadata> dependencyAttributeTransformer
 ) : ISyntaxValuesPipeline<InjectorInterfaceMetadata> {
     public static readonly InjectorInterfacePipeline Instance = new(
         new InterfaceElementValidator(
@@ -48,7 +48,7 @@ internal class InjectorInterfacePipeline(
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
                 var injectorAttributeMetadata = injectorAttributeTransformer
                     .Transform(targetSymbol)
-                    .GetOrThrow(diagnostics);
+                    .OrThrow(diagnostics);
 
                 var injectorInterfaceType = targetSymbol.ToTypeModel();
                 var providers = targetSymbol.GetMembers()
@@ -69,10 +69,9 @@ internal class InjectorInterfacePipeline(
                     .Select(injectorChildProviderTransformer.Transform)
                     .SelectOrThrow(diagnostics)
                     .ToImmutableList();
-                DependencyAttributeMetadata? dependencyAttributeMetadata = null;
-                if (dependencyAttributeTransformer.HasAttribute(targetSymbol)) {
-                    dependencyAttributeMetadata = dependencyAttributeTransformer.Transform(targetSymbol).GetOrThrow(diagnostics);
-                }
+                var dependencyAttributeMetadata = dependencyAttributeTransformer
+                    .TransformOrNull(targetSymbol)?
+                    .OrThrow(diagnostics);
                 
                 return new InjectorInterfaceMetadata(
                     injectorInterfaceType,

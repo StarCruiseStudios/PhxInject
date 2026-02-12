@@ -15,7 +15,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
 internal class PartialAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
-) : IAttributeTransformer<PartialAttributeMetadata>, IAttributeChecker {
+) : IAttributeTransformer<PartialAttributeMetadata> {
     public static PartialAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance
     );

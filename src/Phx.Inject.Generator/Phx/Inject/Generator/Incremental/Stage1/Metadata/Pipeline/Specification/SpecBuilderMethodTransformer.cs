@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Incremental.Diagnostics;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
@@ -21,9 +22,9 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specificatio
 
 internal class SpecBuilderMethodTransformer(
     ICodeElementValidator elementValidator,
-    QualifierTransformer qualifierTransformer,
-    BuilderAttributeTransformer builderAttributeTransformer
-) {
+    ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer,
+    IAttributeTransformer<BuilderAttributeMetadata> builderAttributeTransformer
+) : ITransformer<IMethodSymbol, SpecBuilderMethodMetadata> {
     public static readonly SpecBuilderMethodTransformer Instance = new(
         new MethodElementValidator(
             CodeElementAccessibility.PublicOrInternal,
@@ -43,23 +44,17 @@ internal class SpecBuilderMethodTransformer(
     public IResult<SpecBuilderMethodMetadata> Transform(IMethodSymbol methodSymbol) {
         return DiagnosticsRecorder.Capture(diagnostics => {
             var builderMethodName = methodSymbol.Name;
-            var builtTypeQualifier = qualifierTransformer.Transform(methodSymbol).GetOrThrow(diagnostics);
-            var builtType = new QualifiedTypeMetadata(
-                methodSymbol.Parameters[0].Type.ToTypeModel(),
-                builtTypeQualifier
-            );
+            var builtTypeQualifier = qualifierTransformer.Transform(methodSymbol).OrThrow(diagnostics);
+            var builtType = methodSymbol.Parameters[0].Type.ToQualifiedTypeModel(builtTypeQualifier);
 
             var parameters = methodSymbol.Parameters.Skip(1)
                 .Select(param => {
-                    var paramQualifier = qualifierTransformer.Transform(param).GetOrThrow(diagnostics);
-                    return new QualifiedTypeMetadata(
-                        param.Type.ToTypeModel(),
-                        paramQualifier
-                    );
+                    var paramQualifier = qualifierTransformer.Transform(param).OrThrow(diagnostics);
+                    return param.Type.ToQualifiedTypeModel(paramQualifier);
                 })
                 .ToImmutableList();
 
-            var builderAttribute = builderAttributeTransformer.Transform(methodSymbol).GetOrThrow(diagnostics);
+            var builderAttribute = builderAttributeTransformer.Transform(methodSymbol).OrThrow(diagnostics);
 
             return new SpecBuilderMethodMetadata(
                 builderMethodName,

@@ -25,8 +25,8 @@ internal class AutoFactoryPipeline(
     ICodeElementValidator elementValidator,
     ICodeElementValidator constructorValidator,
     IAttributeTransformer<AutoFactoryAttributeMetadata> autoFactoryAttributeTransformer,
-    QualifierTransformer qualifierTransformer,
-    AutoFactoryRequiredPropertyTransformer autoFactoryRequiredPropertyTransformer
+    ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer,
+    ITransformer<IPropertySymbol, AutoFactoryRequiredPropertyMetadata> autoFactoryRequiredPropertyTransformer
 ) : ISyntaxValuesPipeline<AutoFactoryMetadata> {
     public static readonly AutoFactoryPipeline Instance = new(
         new ClassElementValidator(
@@ -52,9 +52,9 @@ internal class AutoFactoryPipeline(
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
                 var autoFactoryAttributeMetadata = autoFactoryAttributeTransformer
                     .Transform(targetSymbol)
-                    .GetOrThrow(diagnostics);
+                    .OrThrow(diagnostics);
 
-                var autoFactoryType = new QualifiedTypeMetadata(targetSymbol.ToTypeModel(), NoQualifierMetadata.Instance);
+                var autoFactoryType = targetSymbol.ToQualifiedTypeModel(NoQualifierMetadata.Instance);
                 
                 // Extract constructor parameters
                 var constructors = targetSymbol.GetMembers()
@@ -67,11 +67,8 @@ internal class AutoFactoryPipeline(
                     var constructor = constructors[0];
                     parameters = constructor.Parameters
                         .Select(param => {
-                            var paramQualifier = qualifierTransformer.Transform(param).GetOrThrow(diagnostics);
-                            return new QualifiedTypeMetadata(
-                                param.Type.ToTypeModel(),
-                                paramQualifier
-                            );
+                            var paramQualifier = qualifierTransformer.Transform(param).OrThrow(diagnostics);
+                            return param.Type.ToQualifiedTypeModel(paramQualifier);
                         })
                         .ToImmutableArray();
                 }

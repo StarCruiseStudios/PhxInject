@@ -34,13 +34,13 @@ internal class PhxInjectSettingsPipeline(
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => phxInjectAttributeTransformer.Transform(context.TargetSymbol))
             .Select((attributeMetadata, _) => DiagnosticsRecorder.Capture(diagnostics => {
-                    return new PhxInjectSettingsMetadata(attributeMetadata.GetOrThrow(diagnostics));
+                    return new PhxInjectSettingsMetadata(attributeMetadata.OrThrow(diagnostics));
             }))
             .Collect()
             .Select((settings, _) => DiagnosticsRecorder.Capture<PhxInjectSettingsMetadata>(diagnostics => {
                 return settings.Length switch {
                     0 => new PhxInjectSettingsMetadata(null),
-                    1 => settings[0].GetOrThrow(diagnostics),
+                    1 => settings[0].OrThrow(diagnostics),
                     _ => settings.Also(s => {
                         foreach (var result in s) {
                             if (result.TryGetValue(diagnostics, out var setting)) {

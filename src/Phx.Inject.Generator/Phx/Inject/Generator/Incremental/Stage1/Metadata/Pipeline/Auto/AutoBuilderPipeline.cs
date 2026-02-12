@@ -24,7 +24,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Auto;
 internal class AutoBuilderPipeline(
     ICodeElementValidator elementValidator,
     IAttributeTransformer<AutoBuilderAttributeMetadata> autoBuilderAttributeTransformer,
-    QualifierTransformer qualifierTransformer
+    ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer
 ) : ISyntaxValuesPipeline<AutoBuilderMetadata> {
     public static readonly AutoBuilderPipeline Instance = new(
         new MethodElementValidator(
@@ -44,24 +44,18 @@ internal class AutoBuilderPipeline(
                 var targetSymbol = (IMethodSymbol)context.TargetSymbol;
                 var autoBuilderAttributeMetadata = autoBuilderAttributeTransformer
                     .Transform(targetSymbol)
-                    .GetOrThrow(diagnostics);
+                    .OrThrow(diagnostics);
                 
                 // The built type is the first parameter of the builder method
                 // Get qualifier from the method itself (for Label attribute)
-                var builtTypeQualifier = qualifierTransformer.Transform(targetSymbol).GetOrThrow(diagnostics);
-                var builtType = new QualifiedTypeMetadata(
-                    targetSymbol.Parameters[0].Type.ToTypeModel(),
-                    builtTypeQualifier
-                );
+                var builtTypeQualifier = qualifierTransformer.Transform(targetSymbol).OrThrow(diagnostics);
+                var builtType = targetSymbol.Parameters[0].Type.ToQualifiedTypeModel(builtTypeQualifier);
                 
                 // Remaining parameters (skip first parameter which is the built type)
                 var parameters = targetSymbol.Parameters.Skip(1)
                     .Select(param => {
-                        var paramQualifier = qualifierTransformer.Transform(param).GetOrThrow(diagnostics);
-                        return new QualifiedTypeMetadata(
-                            param.Type.ToTypeModel(),
-                            paramQualifier
-                        );
+                        var paramQualifier = qualifierTransformer.Transform(param).OrThrow(diagnostics);
+                        return param.Type.ToQualifiedTypeModel(paramQualifier);
                     })
                     .ToImmutableArray();
 

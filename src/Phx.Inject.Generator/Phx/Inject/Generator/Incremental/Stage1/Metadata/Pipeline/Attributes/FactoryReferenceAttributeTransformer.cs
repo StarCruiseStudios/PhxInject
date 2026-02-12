@@ -17,7 +17,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
 internal class FactoryReferenceAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
-) : IAttributeTransformer<FactoryReferenceAttributeMetadata>, IAttributeChecker {
+) : IAttributeTransformer<FactoryReferenceAttributeMetadata> {
     public static FactoryReferenceAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance
     );

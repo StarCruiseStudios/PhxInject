@@ -23,9 +23,9 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specificatio
 
 internal class SpecBuilderReferenceTransformer(
     ICodeElementValidator elementValidator,
-    QualifierTransformer qualifierTransformer,
-    BuilderReferenceAttributeTransformer builderReferenceAttributeTransformer
-) {
+    ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer,
+    IAttributeTransformer<BuilderReferenceAttributeMetadata> builderReferenceAttributeTransformer
+) : ITransformer<ISymbol, SpecBuilderReferenceMetadata> {
     public static readonly SpecBuilderReferenceTransformer Instance = new(
         CodeElementValidator.Of(
             new FieldElementValidator(
@@ -76,24 +76,18 @@ internal class SpecBuilderReferenceTransformer(
 
             // Last type argument is built type, others are parameters
             var builtTypeSymbol = typeArguments[0];
-            var builtTypeQualifier = qualifierTransformer.Transform(symbol).GetOrThrow(diagnostics);
-            var builtType = new QualifiedTypeMetadata(
-                builtTypeSymbol.ToTypeModel(),
-                builtTypeQualifier
-            );
+            var builtTypeQualifier = qualifierTransformer.Transform(symbol).OrThrow(diagnostics);
+            var builtType = builtTypeSymbol.ToQualifiedTypeModel(builtTypeQualifier);
 
             var parameters = typeArguments.Skip(1)
                 .Select(paramType => {
-                    var paramQualifier = qualifierTransformer.Transform(paramType).GetOrThrow(diagnostics);
-                    return new QualifiedTypeMetadata(
-                        paramType.ToTypeModel(),
-                        paramQualifier
-                    );
+                    var paramQualifier = qualifierTransformer.Transform(paramType).OrThrow(diagnostics);
+                    return paramType.ToQualifiedTypeModel(paramQualifier);
                 })
                 .ToImmutableList();
 
             var builderReferenceAttribute =
-                builderReferenceAttributeTransformer.Transform(symbol).GetOrThrow(diagnostics);
+                builderReferenceAttributeTransformer.Transform(symbol).OrThrow(diagnostics);
 
             return new SpecBuilderReferenceMetadata(
                 name,

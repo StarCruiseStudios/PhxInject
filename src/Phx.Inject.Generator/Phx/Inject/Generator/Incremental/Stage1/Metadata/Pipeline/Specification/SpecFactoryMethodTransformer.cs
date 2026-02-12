@@ -21,10 +21,10 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specificatio
 
 internal class SpecFactoryMethodTransformer(
     ICodeElementValidator elementValidator,
-    QualifierTransformer qualifierTransformer,
+    ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer,
     FactoryAttributeTransformer factoryAttributeTransformer,
     PartialAttributeTransformer partialAttributeTransformer
-) {
+) : ITransformer<IMethodSymbol, SpecFactoryMethodMetadata> {
     public static readonly SpecFactoryMethodTransformer Instance = new(
         new MethodElementValidator(
             CodeElementAccessibility.PublicOrInternal,
@@ -44,26 +44,20 @@ internal class SpecFactoryMethodTransformer(
     public IResult<SpecFactoryMethodMetadata> Transform(IMethodSymbol methodSymbol) {
         return DiagnosticsRecorder.Capture(diagnostics => {
             var factoryMethodName = methodSymbol.Name;
-            var returnTypeQualifier = qualifierTransformer.Transform(methodSymbol).GetOrThrow(diagnostics);
-            var factoryReturnType = new QualifiedTypeMetadata(
-                methodSymbol.ReturnType.ToTypeModel(),
-                returnTypeQualifier
-            );
+            var returnTypeQualifier = qualifierTransformer.Transform(methodSymbol).OrThrow(diagnostics);
+            var factoryReturnType = methodSymbol.ReturnType.ToQualifiedTypeModel(returnTypeQualifier);
 
             var parameters = methodSymbol.Parameters
                 .Select(param => {
-                    var paramQualifier = qualifierTransformer.Transform(param).GetOrThrow(diagnostics);
-                    return new QualifiedTypeMetadata(
-                        param.Type.ToTypeModel(),
-                        paramQualifier
-                    );
+                    var paramQualifier = qualifierTransformer.Transform(param).OrThrow(diagnostics);
+                    return param.Type.ToQualifiedTypeModel(paramQualifier);
                 })
                 .ToImmutableList();
 
-            var factoryAttribute = factoryAttributeTransformer.Transform(methodSymbol).GetOrThrow(diagnostics);
-            var partialAttribute = partialAttributeTransformer.HasAttribute(methodSymbol)
-                ? partialAttributeTransformer.Transform(methodSymbol).GetOrThrow(diagnostics)
-                : null;
+            var factoryAttribute = factoryAttributeTransformer.Transform(methodSymbol).OrThrow(diagnostics);
+            var partialAttribute = partialAttributeTransformer
+                .TransformOrNull(methodSymbol)?
+                .OrThrow(diagnostics);
 
             return new SpecFactoryMethodMetadata(
                 factoryMethodName,

@@ -23,12 +23,12 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specificatio
 internal class SpecInterfacePipeline(
     ICodeElementValidator elementValidator,
     IAttributeTransformer<SpecificationAttributeMetadata> specificationAttributeTransformer,
-    SpecFactoryMethodTransformer specFactoryMethodTransformer,
-    SpecFactoryPropertyTransformer specFactoryPropertyTransformer,
-    SpecFactoryReferenceTransformer specFactoryReferenceTransformer,
-    SpecBuilderMethodTransformer specBuilderMethodTransformer,
-    SpecBuilderReferenceTransformer specBuilderReferenceTransformer,
-    LinkAttributeTransformer linkAttributeTransformer
+    ITransformer<IMethodSymbol, SpecFactoryMethodMetadata> specFactoryMethodTransformer,
+    ITransformer<IPropertySymbol, SpecFactoryPropertyMetadata> specFactoryPropertyTransformer,
+    ITransformer<ISymbol, SpecFactoryReferenceMetadata> specFactoryReferenceTransformer,
+    ITransformer<IMethodSymbol, SpecBuilderMethodMetadata> specBuilderMethodTransformer,
+    ITransformer<ISymbol, SpecBuilderReferenceMetadata> specBuilderReferenceTransformer,
+    IAttributeListTransformer<LinkAttributeMetadata> linkAttributeTransformer
 ) : ISyntaxValuesPipeline<SpecInterfaceMetadata> {
     public static readonly SpecInterfacePipeline Instance = new(
         new InterfaceElementValidator(
@@ -52,7 +52,7 @@ internal class SpecInterfacePipeline(
                 var targetSymbol = (ITypeSymbol)context.TargetSymbol;
                 var specificationAttributeMetadata = specificationAttributeTransformer
                     .Transform(targetSymbol)
-                    .GetOrThrow(diagnostics);
+                    .OrThrow(diagnostics);
 
                 var specInterfaceType = targetSymbol.ToTypeModel();
                 

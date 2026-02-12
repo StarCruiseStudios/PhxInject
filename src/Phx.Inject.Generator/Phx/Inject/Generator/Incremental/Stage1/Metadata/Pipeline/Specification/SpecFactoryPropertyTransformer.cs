@@ -10,6 +10,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Incremental.Diagnostics;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
@@ -21,10 +22,10 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specificatio
 
 internal class SpecFactoryPropertyTransformer(
     ICodeElementValidator elementValidator,
-    QualifierTransformer qualifierTransformer,
-    FactoryAttributeTransformer factoryAttributeTransformer,
-    PartialAttributeTransformer partialAttributeTransformer
-) {
+    ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer,
+    IAttributeTransformer<FactoryAttributeMetadata> factoryAttributeTransformer,
+    IAttributeTransformer<PartialAttributeMetadata> partialAttributeTransformer
+) : ITransformer<IPropertySymbol, SpecFactoryPropertyMetadata> {
     public static readonly SpecFactoryPropertyTransformer Instance = new(
         new PropertyElementValidator(
             CodeElementAccessibility.PublicOrInternal,
@@ -49,16 +50,13 @@ internal class SpecFactoryPropertyTransformer(
     public IResult<SpecFactoryPropertyMetadata> Transform(IPropertySymbol propertySymbol) {
         return DiagnosticsRecorder.Capture(diagnostics => {
             var factoryPropertyName = propertySymbol.Name;
-            var returnTypeQualifier = qualifierTransformer.Transform(propertySymbol).GetOrThrow(diagnostics);
-            var factoryReturnType = new QualifiedTypeMetadata(
-                propertySymbol.Type.ToTypeModel(),
-                returnTypeQualifier
-            );
+            var returnTypeQualifier = qualifierTransformer.Transform(propertySymbol).OrThrow(diagnostics);
+            var factoryReturnType = propertySymbol.Type.ToQualifiedTypeModel(returnTypeQualifier);
 
-            var factoryAttribute = factoryAttributeTransformer.Transform(propertySymbol).GetOrThrow(diagnostics);
-            var partialAttribute = partialAttributeTransformer.HasAttribute(propertySymbol)
-                ? partialAttributeTransformer.Transform(propertySymbol).GetOrThrow(diagnostics)
-                : null;
+            var factoryAttribute = factoryAttributeTransformer.Transform(propertySymbol).OrThrow(diagnostics);
+            var partialAttribute = partialAttributeTransformer
+                .TransformOrNull(propertySymbol)?
+                .OrThrow(diagnostics);
 
             return new SpecFactoryPropertyMetadata(
                 factoryPropertyName,

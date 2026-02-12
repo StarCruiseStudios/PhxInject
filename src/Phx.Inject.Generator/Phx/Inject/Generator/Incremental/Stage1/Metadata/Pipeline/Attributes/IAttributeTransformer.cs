@@ -12,6 +12,14 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 
-internal interface IAttributeTransformer<out TAttributeMetadata> where TAttributeMetadata : IAttributeElement, IEquatable<TAttributeMetadata> {
+internal interface IAttributeTransformer<out TAttributeMetadata> : IAttributeChecker where TAttributeMetadata : IAttributeElement, IEquatable<TAttributeMetadata> {
     IResult<TAttributeMetadata> Transform(ISymbol targetSymbol);
+}
+
+internal static class IAttributeTransformerExtensions {
+    public static IResult<TAttributeMetadata>? TransformOrNull<TAttributeMetadata>(this IAttributeTransformer<TAttributeMetadata> transformer, ISymbol targetSymbol) where TAttributeMetadata : IAttributeElement, IEquatable<TAttributeMetadata> {
+        return transformer.HasAttribute(targetSymbol)
+            ? transformer.Transform(targetSymbol)
+            : null;
+    }
 }
