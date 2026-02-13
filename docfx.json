@@ -8,7 +8,7 @@
           ]
         }
       ],
-      "dest": "Documentation/API",
+      "dest": "src/Phx.Inject.Generator/bin/docs",
       "properties": {
         "TargetFramework": "netstandard2.0"
       }
@@ -18,22 +18,22 @@
     "content": [
       {
         "files": [
-          "Documentation/API/**.yml",
-          "Documentation/API/**.md"
+          "src/Phx.Inject.Generator/bin/docs/**.yml",
+          "src/Phx.Inject.Generator/bin/docs/**.md"
         ]
       }
     ],
     "resource": [
       {
         "files": [
-          "Documentation/images/**"
+          "src/Phx.Inject.Generator/bin/docs/images/**"
         ]
       }
     ],
-    "dest": "Documentation/API/_site",
+    "dest": "docs/_site",
     "globalMetadata": {
       "_appTitle": "Phx.Inject.Generator API Documentation",
-      "_appFooter": "Copyright (c) 2022-2024 Star Cruise Studios LLC. All rights reserved."
+      "_appFooter": "Copyright (c) 2022-2026 Star Cruise Studios LLC. All rights reserved."
     }
   }
 }
