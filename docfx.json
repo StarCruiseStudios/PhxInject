@@ -18,9 +18,11 @@
     "content": [
       {
         "files": [
-          "src/Phx.Inject.Generator/bin/docs/**.yml",
-          "src/Phx.Inject.Generator/bin/docs/**.md"
-        ]
+          "**/*.yml",
+          "**/*.md"
+        ],
+        "src": "src/Phx.Inject.Generator/bin/docs",
+        "dest": ""
       }
     ],
     "resource": [
