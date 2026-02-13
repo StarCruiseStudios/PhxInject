@@ -1,0 +1,1349 @@
+### YamlMime:ManagedReference
+items:
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+  commentId: T:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+  id: GeneratorIgnored`1
+  parent: Phx.Inject.Generator.Incremental.Util
+  children:
+  - Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.#ctor(`0)
+  - Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Equals(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0})
+  - Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.GetHashCode
+  - Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.ToString
+  - Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Value
+  langs:
+  - csharp
+  - vb
+  name: GeneratorIgnored<T>
+  nameWithType: GeneratorIgnored<T>
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>
+  type: Class
+  source:
+    remote:
+      path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject
+    id: GeneratorIgnored
+    path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
+    startLine: 57
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject.Generator.Incremental.Util
+  summary: >-
+    Type wrapper that excludes a value from incremental generator equality comparisons,
+
+    preventing unnecessary regeneration when the wrapped value changes.
+  remarks: >-
+    <p>Purpose:</p>
+
+    <p>
+
+    Roslyn's incremental generators use value equality on model objects to determine if
+
+    regeneration is needed. However, some data (like source file locations) is essential
+
+    for diagnostics but irrelevant for code generation decisions. Wrapping such values
+
+    prevents spurious regeneration when, for example, code is reformatted without changing
+
+    semantics.
+
+    </p>
+
+
+    <p>Equality Semantics:</p>
+
+    <p>
+
+    Two <code>GeneratorIgnored&lt;T&gt;</code> instances are always considered equal regardless
+
+    of their wrapped values, as long as they wrap the same type <code>T</code>. This intentionally
+
+    violates normal equality contracts but is correct in the context of incremental
+
+    compilation where we want to signal "this data doesn't affect output."
+
+    </p>
+
+
+    <p>Usage Pattern:</p>
+
+    <p>
+
+    Primarily used for <xref href="Phx.Inject.Generator.Incremental.Util.LocationInfo" data-throw-if-not-resolved="false"></xref> fields in metadata records. Location
+
+    data is needed to report diagnostics at the correct source positions but shouldn't
+
+    trigger recompilation if a type definition is moved within a file.
+
+    </p>
+
+
+    <p>Performance:</p>
+
+    <p>
+
+    Minimal overhead - just a single object allocation and type-based hash code.
+
+    Avoids expensive deep comparisons of location data during incremental compilation checks.
+
+    </p>
+
+
+    <p>When NOT to use:</p>
+
+    <p>
+
+    Do not wrap semantic data that affects code generation. If changing the value should
+
+    trigger regeneration, do not use this wrapper.
+
+    </p>
+  example: []
+  syntax:
+    content: public class GeneratorIgnored<T>
+    typeParameters:
+    - id: T
+      description: The type of value being wrapped. Typically non-semantic data like source locations.
+    content.vb: Public Class GeneratorIgnored(Of T)
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  extensionMethods:
+  - Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{{T}}})
+  - Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{{T}},{TResult}})
+  - Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{{T}}})
+  - Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+  nameWithType.vb: GeneratorIgnored(Of T)
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T)
+  name.vb: GeneratorIgnored(Of T)
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.#ctor(`0)
+  commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.#ctor(`0)
+  id: '#ctor(`0)'
+  parent: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+  langs:
+  - csharp
+  - vb
+  name: GeneratorIgnored(T)
+  nameWithType: GeneratorIgnored<T>.GeneratorIgnored(T)
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.GeneratorIgnored(T)
+  type: Constructor
+  source:
+    remote:
+      path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject
+    id: .ctor
+    path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
+    startLine: 57
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject.Generator.Incremental.Util
+  summary: >-
+    Type wrapper that excludes a value from incremental generator equality comparisons,
+
+    preventing unnecessary regeneration when the wrapped value changes.
+  remarks: >-
+    <p>Purpose:</p>
+
+    <p>
+
+    Roslyn's incremental generators use value equality on model objects to determine if
+
+    regeneration is needed. However, some data (like source file locations) is essential
+
+    for diagnostics but irrelevant for code generation decisions. Wrapping such values
+
+    prevents spurious regeneration when, for example, code is reformatted without changing
+
+    semantics.
+
+    </p>
+
+
+    <p>Equality Semantics:</p>
+
+    <p>
+
+    Two <code>GeneratorIgnored&lt;T&gt;</code> instances are always considered equal regardless
+
+    of their wrapped values, as long as they wrap the same type <code>T</code>. This intentionally
+
+    violates normal equality contracts but is correct in the context of incremental
+
+    compilation where we want to signal "this data doesn't affect output."
+
+    </p>
+
+
+    <p>Usage Pattern:</p>
+
+    <p>
+
+    Primarily used for <xref href="Phx.Inject.Generator.Incremental.Util.LocationInfo" data-throw-if-not-resolved="false"></xref> fields in metadata records. Location
+
+    data is needed to report diagnostics at the correct source positions but shouldn't
+
+    trigger recompilation if a type definition is moved within a file.
+
+    </p>
+
+
+    <p>Performance:</p>
+
+    <p>
+
+    Minimal overhead - just a single object allocation and type-based hash code.
+
+    Avoids expensive deep comparisons of location data during incremental compilation checks.
+
+    </p>
+
+
+    <p>When NOT to use:</p>
+
+    <p>
+
+    Do not wrap semantic data that affects code generation. If changing the value should
+
+    trigger regeneration, do not use this wrapper.
+
+    </p>
+  example: []
+  syntax:
+    content: public GeneratorIgnored(T value)
+    parameters:
+    - id: value
+      type: '{T}'
+      description: The value to wrap. Its changes will not trigger incremental regeneration.
+    content.vb: Public Sub New(value As T)
+  overload: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.#ctor*
+  nameWithType.vb: GeneratorIgnored(Of T).New(T)
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T).New(T)
+  name.vb: New(T)
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Value
+  commentId: P:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Value
+  id: Value
+  parent: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+  langs:
+  - csharp
+  - vb
+  name: Value
+  nameWithType: GeneratorIgnored<T>.Value
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.Value
+  type: Property
+  source:
+    remote:
+      path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject
+    id: Value
+    path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
+    startLine: 65
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject.Generator.Incremental.Util
+  summary: Gets the wrapped value.
+  remarks: >-
+    Access this when you need the actual data (e.g., reporting a diagnostic).
+
+    Do not use this value in equality comparisons that affect incremental compilation.
+  example: []
+  syntax:
+    content: public T Value { get; }
+    parameters: []
+    return:
+      type: '{T}'
+    content.vb: Public ReadOnly Property Value As T
+  overload: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Value*
+  nameWithType.vb: GeneratorIgnored(Of T).Value
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T).Value
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Equals(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0})
+  commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Equals(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0})
+  id: Equals(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0})
+  parent: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+  langs:
+  - csharp
+  - vb
+  name: Equals(GeneratorIgnored<T>?)
+  nameWithType: GeneratorIgnored<T>.Equals(GeneratorIgnored<T>?)
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.Equals(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>?)
+  type: Method
+  source:
+    remote:
+      path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject
+    id: Equals
+    path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
+    startLine: 68
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject.Generator.Incremental.Util
+  example: []
+  syntax:
+    content: public virtual bool Equals(GeneratorIgnored<T>? other)
+    parameters:
+    - id: other
+      type: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    return:
+      type: System.Boolean
+    content.vb: Public Overridable Function Equals(other As GeneratorIgnored(Of T)) As Boolean
+  overload: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Equals*
+  nameWithType.vb: GeneratorIgnored(Of T).Equals(GeneratorIgnored(Of T))
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T).Equals(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T))
+  name.vb: Equals(GeneratorIgnored(Of T))
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.GetHashCode
+  commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.GetHashCode
+  id: GetHashCode
+  parent: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+  langs:
+  - csharp
+  - vb
+  name: GetHashCode()
+  nameWithType: GeneratorIgnored<T>.GetHashCode()
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.GetHashCode()
+  type: Method
+  source:
+    remote:
+      path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject
+    id: GetHashCode
+    path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
+    startLine: 73
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject.Generator.Incremental.Util
+  example: []
+  syntax:
+    content: public override int GetHashCode()
+    return:
+      type: System.Int32
+    content.vb: Public Overrides Function GetHashCode() As Integer
+  overridden: System.Object.GetHashCode
+  overload: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.GetHashCode*
+  nameWithType.vb: GeneratorIgnored(Of T).GetHashCode()
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T).GetHashCode()
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.ToString
+  commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.ToString
+  id: ToString
+  parent: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+  langs:
+  - csharp
+  - vb
+  name: ToString()
+  nameWithType: GeneratorIgnored<T>.ToString()
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.ToString()
+  type: Method
+  source:
+    remote:
+      path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject
+    id: ToString
+    path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
+    startLine: 78
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject.Generator.Incremental.Util
+  example: []
+  syntax:
+    content: public override string ToString()
+    return:
+      type: System.String
+    content.vb: Public Overrides Function ToString() As String
+  overridden: System.Object.ToString
+  overload: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.ToString*
+  nameWithType.vb: GeneratorIgnored(Of T).ToString()
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T).ToString()
+references:
+- uid: Phx.Inject.Generator.Incremental.Util.LocationInfo
+  commentId: T:Phx.Inject.Generator.Incremental.Util.LocationInfo
+  name: LocationInfo
+  nameWithType: LocationInfo
+  fullName: Phx.Inject.Generator.Incremental.Util.LocationInfo
+- uid: Phx.Inject.Generator.Incremental.Util
+  commentId: N:Phx.Inject.Generator.Incremental.Util
+  href: Phx.html
+  name: Phx.Inject.Generator.Incremental.Util
+  nameWithType: Phx.Inject.Generator.Incremental.Util
+  fullName: Phx.Inject.Generator.Incremental.Util
+  spec.csharp:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
+  - name: .
+  - uid: Phx.Inject.Generator
+    name: Generator
+    href: Phx.Inject.Generator.html
+  - name: .
+  - uid: Phx.Inject.Generator.Incremental
+    name: Incremental
+    href: Phx.Inject.Generator.Incremental.html
+  - name: .
+  - uid: Phx.Inject.Generator.Incremental.Util
+    name: Util
+    href: Phx.Inject.Generator.Incremental.Util.html
+  spec.vb:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
+  - name: .
+  - uid: Phx.Inject.Generator
+    name: Generator
+    href: Phx.Inject.Generator.html
+  - name: .
+  - uid: Phx.Inject.Generator.Incremental
+    name: Incremental
+    href: Phx.Inject.Generator.Incremental.html
+  - name: .
+  - uid: Phx.Inject.Generator.Incremental.Util
+    name: Util
+    href: Phx.Inject.Generator.Incremental.Util.html
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  name: Equals(object)
+  nameWithType: object.Equals(object)
+  fullName: object.Equals(object)
+  nameWithType.vb: Object.Equals(Object)
+  fullName.vb: Object.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  name: MemberwiseClone()
+  nameWithType: object.MemberwiseClone()
+  fullName: object.MemberwiseClone()
+  nameWithType.vb: Object.MemberwiseClone()
+  fullName.vb: Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{{T}}})
+  commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
+  parent: Phx.Inject.Common.Util.FunctionalExtensions
+  definition: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
+  name: Also<GeneratorIgnored<T>>(GeneratorIgnored<T>, Action<GeneratorIgnored<T>>)
+  nameWithType: FunctionalExtensions.Also<GeneratorIgnored<T>>(GeneratorIgnored<T>, Action<GeneratorIgnored<T>>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>>(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>, System.Action<Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>>)
+  nameWithType.vb: FunctionalExtensions.Also(Of GeneratorIgnored(Of T))(GeneratorIgnored(Of T), Action(Of GeneratorIgnored(Of T)))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T))(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T), System.Action(Of Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T)))
+  name.vb: Also(Of GeneratorIgnored(Of T))(GeneratorIgnored(Of T), Action(Of GeneratorIgnored(Of T)))
+  spec.csharp:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0},System.Action{Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0}})
+    name: Also
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
+  - name: <
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: '>'
+  - name: (
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: ','
+  - name: " "
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: <
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0},System.Action{Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0}})
+    name: Also
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: )
+  - name: (
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: ','
+  - name: " "
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: )
+  - name: )
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{{T}},{TResult}})
+  commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
+  parent: Phx.Inject.Common.Util.FunctionalExtensions
+  definition: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
+  name: Let<GeneratorIgnored<T>, TResult>(GeneratorIgnored<T>, Func<GeneratorIgnored<T>, TResult>)
+  nameWithType: FunctionalExtensions.Let<GeneratorIgnored<T>, TResult>(GeneratorIgnored<T>, Func<GeneratorIgnored<T>, TResult>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>, TResult>(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>, System.Func<Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>, TResult>)
+  nameWithType.vb: FunctionalExtensions.Let(Of GeneratorIgnored(Of T), TResult)(GeneratorIgnored(Of T), Func(Of GeneratorIgnored(Of T), TResult))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T), TResult)(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T), System.Func(Of Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T), TResult))
+  name.vb: Let(Of GeneratorIgnored(Of T), TResult)(GeneratorIgnored(Of T), Func(Of GeneratorIgnored(Of T), TResult))
+  spec.csharp:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0},System.Func{Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0},``1})
+    name: Let
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
+  - name: <
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: '>'
+  - name: (
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: ','
+  - name: " "
+  - uid: System.Func`2
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-2
+  - name: <
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0},System.Func{Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0},``1})
+    name: Let
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: )
+  - name: (
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: ','
+  - name: " "
+  - uid: System.Func`2
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-2
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: )
+  - name: )
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{{T}}})
+  commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
+  parent: Phx.Inject.Common.Util.FunctionalExtensions
+  definition: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
+  name: Then<GeneratorIgnored<T>>(GeneratorIgnored<T>, Action<GeneratorIgnored<T>>)
+  nameWithType: FunctionalExtensions.Then<GeneratorIgnored<T>>(GeneratorIgnored<T>, Action<GeneratorIgnored<T>>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>>(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>, System.Action<Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>>)
+  nameWithType.vb: FunctionalExtensions.Then(Of GeneratorIgnored(Of T))(GeneratorIgnored(Of T), Action(Of GeneratorIgnored(Of T)))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T))(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T), System.Action(Of Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T)))
+  name.vb: Then(Of GeneratorIgnored(Of T))(GeneratorIgnored(Of T), Action(Of GeneratorIgnored(Of T)))
+  spec.csharp:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0},System.Action{Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0}})
+    name: Then
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
+  - name: <
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: '>'
+  - name: (
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: ','
+  - name: " "
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: <
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0},System.Action{Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0}})
+    name: Then
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: )
+  - name: (
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: ','
+  - name: " "
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: )
+  - name: )
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+  commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
+  parent: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
+  definition: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
+  name: GeneratorIgnored<GeneratorIgnored<T>>(GeneratorIgnored<T>)
+  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<GeneratorIgnored<T>>(GeneratorIgnored<T>)
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>>(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>)
+  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of GeneratorIgnored(Of T))(GeneratorIgnored(Of T))
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T))(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T))
+  name.vb: GeneratorIgnored(Of GeneratorIgnored(Of T))(GeneratorIgnored(Of T))
+  spec.csharp:
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0})
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
+  - name: <
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: '>'
+  - name: (
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0})
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: )
+  - name: (
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
+  commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
+  isExternal: true
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
+  name: Also<T>(T, Action<T>)
+  nameWithType: FunctionalExtensions.Also<T>(T, Action<T>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<T>(T, System.Action<T>)
+  nameWithType.vb: FunctionalExtensions.Also(Of T)(T, Action(Of T))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of T)(T, System.Action(Of T))
+  name.vb: Also(Of T)(T, Action(Of T))
+  spec.csharp:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
+    name: Also
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
+  - name: <
+  - name: T
+  - name: '>'
+  - name: (
+  - name: T
+  - name: ','
+  - name: " "
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: <
+  - name: T
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
+    name: Also
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: (
+  - name: T
+  - name: ','
+  - name: " "
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: )
+- uid: Phx.Inject.Common.Util.FunctionalExtensions
+  commentId: T:Phx.Inject.Common.Util.FunctionalExtensions
+  parent: Phx.Inject.Common.Util
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html
+  name: FunctionalExtensions
+  nameWithType: FunctionalExtensions
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions
+- uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
+  commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
+  isExternal: true
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
+  name: Let<T, TResult>(T, Func<T, TResult>)
+  nameWithType: FunctionalExtensions.Let<T, TResult>(T, Func<T, TResult>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<T, TResult>(T, System.Func<T, TResult>)
+  nameWithType.vb: FunctionalExtensions.Let(Of T, TResult)(T, Func(Of T, TResult))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of T, TResult)(T, System.Func(Of T, TResult))
+  name.vb: Let(Of T, TResult)(T, Func(Of T, TResult))
+  spec.csharp:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
+    name: Let
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
+  - name: <
+  - name: T
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: '>'
+  - name: (
+  - name: T
+  - name: ','
+  - name: " "
+  - uid: System.Func`2
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-2
+  - name: <
+  - name: T
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
+    name: Let
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: )
+  - name: (
+  - name: T
+  - name: ','
+  - name: " "
+  - uid: System.Func`2
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-2
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: )
+  - name: )
+- uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
+  commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
+  isExternal: true
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
+  name: Then<T>(T, Action<T>)
+  nameWithType: FunctionalExtensions.Then<T>(T, Action<T>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<T>(T, System.Action<T>)
+  nameWithType.vb: FunctionalExtensions.Then(Of T)(T, Action(Of T))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of T)(T, System.Action(Of T))
+  name.vb: Then(Of T)(T, Action(Of T))
+  spec.csharp:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
+    name: Then
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
+  - name: <
+  - name: T
+  - name: '>'
+  - name: (
+  - name: T
+  - name: ','
+  - name: " "
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: <
+  - name: T
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
+    name: Then
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: (
+  - name: T
+  - name: ','
+  - name: " "
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: )
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
+  commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
+  name: GeneratorIgnored<T>(T)
+  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<T>(T)
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<T>(T)
+  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of T)(T)
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of T)(T)
+  name.vb: GeneratorIgnored(Of T)(T)
+  spec.csharp:
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
+  - name: <
+  - name: T
+  - name: '>'
+  - name: (
+  - name: T
+  - name: )
+  spec.vb:
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: (
+  - name: T
+  - name: )
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
+  commentId: T:Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
+  parent: Phx.Inject.Generator.Incremental.Util
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html
+  name: GeneratorIgnoredExtensions
+  nameWithType: GeneratorIgnoredExtensions
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
+- uid: Phx.Inject.Common.Util
+  commentId: N:Phx.Inject.Common.Util
+  href: Phx.html
+  name: Phx.Inject.Common.Util
+  nameWithType: Phx.Inject.Common.Util
+  fullName: Phx.Inject.Common.Util
+  spec.csharp:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
+  - name: .
+  - uid: Phx.Inject.Common
+    name: Common
+    href: Phx.Inject.Common.html
+  - name: .
+  - uid: Phx.Inject.Common.Util
+    name: Util
+    href: Phx.Inject.Common.Util.html
+  spec.vb:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
+  - name: .
+  - uid: Phx.Inject.Common
+    name: Common
+    href: Phx.Inject.Common.html
+  - name: .
+  - uid: Phx.Inject.Common.Util
+    name: Util
+    href: Phx.Inject.Common.Util.html
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.#ctor*
+  commentId: Overload:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.#ctor
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1__ctor__0_
+  name: GeneratorIgnored
+  nameWithType: GeneratorIgnored<T>.GeneratorIgnored
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.GeneratorIgnored
+  nameWithType.vb: GeneratorIgnored(Of T).New
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T).New
+  name.vb: New
+- uid: '{T}'
+  commentId: '!:T'
+  definition: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Value*
+  commentId: Overload:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Value
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_Value
+  name: Value
+  nameWithType: GeneratorIgnored<T>.Value
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.Value
+  nameWithType.vb: GeneratorIgnored(Of T).Value
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T).Value
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Equals*
+  commentId: Overload:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Equals
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_Equals_Phx_Inject_Generator_Incremental_Util_GeneratorIgnored__0__
+  name: Equals
+  nameWithType: GeneratorIgnored<T>.Equals
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.Equals
+  nameWithType.vb: GeneratorIgnored(Of T).Equals
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T).Equals
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+  commentId: T:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+  parent: Phx.Inject.Generator.Incremental.Util
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  name: GeneratorIgnored<T>
+  nameWithType: GeneratorIgnored<T>
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>
+  nameWithType.vb: GeneratorIgnored(Of T)
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T)
+  name.vb: GeneratorIgnored(Of T)
+  spec.csharp:
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  spec.vb:
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.boolean
+  name: bool
+  nameWithType: bool
+  fullName: bool
+  nameWithType.vb: Boolean
+  fullName.vb: Boolean
+  name.vb: Boolean
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  name: GetHashCode()
+  nameWithType: object.GetHashCode()
+  fullName: object.GetHashCode()
+  nameWithType.vb: Object.GetHashCode()
+  fullName.vb: Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.GetHashCode*
+  commentId: Overload:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.GetHashCode
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_GetHashCode
+  name: GetHashCode
+  nameWithType: GeneratorIgnored<T>.GetHashCode
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.GetHashCode
+  nameWithType.vb: GeneratorIgnored(Of T).GetHashCode
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T).GetHashCode
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int32
+  name: int
+  nameWithType: int
+  fullName: int
+  nameWithType.vb: Integer
+  fullName.vb: Integer
+  name.vb: Integer
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  name: ToString()
+  nameWithType: object.ToString()
+  fullName: object.ToString()
+  nameWithType.vb: Object.ToString()
+  fullName.vb: Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.ToString*
+  commentId: Overload:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.ToString
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_ToString
+  name: ToString
+  nameWithType: GeneratorIgnored<T>.ToString
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.ToString
+  nameWithType.vb: GeneratorIgnored(Of T).ToString
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T).ToString
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.string
+  name: string
+  nameWithType: string
+  fullName: string
+  nameWithType.vb: String
+  fullName.vb: String
+  name.vb: String

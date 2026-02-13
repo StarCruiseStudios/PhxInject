@@ -1,0 +1,87 @@
+### YamlMime:TableOfContent
+items:
+- uid: Phx.Inject
+  name: Phx.Inject
+  type: Namespace
+  items:
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    type: Class
+  - uid: Phx.Inject.AutoFactoryAttribute
+    name: AutoFactoryAttribute
+    type: Class
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    type: Class
+  - uid: Phx.Inject.BuilderReferenceAttribute
+    name: BuilderReferenceAttribute
+    type: Class
+  - uid: Phx.Inject.ChildInjectorAttribute
+    name: ChildInjectorAttribute
+    type: Class
+  - uid: Phx.Inject.DependencyAttribute
+    name: DependencyAttribute
+    type: Class
+  - uid: Phx.Inject.FabricationMode
+    name: FabricationMode
+    type: Enum
+  - uid: Phx.Inject.FactoryAttribute
+    name: FactoryAttribute
+    type: Class
+  - uid: Phx.Inject.FactoryReferenceAttribute
+    name: FactoryReferenceAttribute
+    type: Class
+  - uid: Phx.Inject.Factory`1
+    name: Factory<T>
+    type: Class
+  - uid: Phx.Inject.InjectionUtil
+    name: InjectionUtil
+    type: Class
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    type: Class
+  - uid: Phx.Inject.InjectorDependencyAttribute
+    name: InjectorDependencyAttribute
+    type: Class
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    type: Class
+  - uid: Phx.Inject.LinkAttribute
+    name: LinkAttribute
+    type: Class
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    type: Class
+  - uid: Phx.Inject.PhxInjectAttribute
+    name: PhxInjectAttribute
+    type: Class
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    type: Class
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    type: Class
+- uid: Phx.Inject.Common.Util
+  name: Phx.Inject.Common.Util
+  type: Namespace
+  items:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions
+    name: FunctionalExtensions
+    type: Class
+  - uid: Phx.Inject.Common.Util.IEnumerableExtensions
+    name: IEnumerableExtensions
+    type: Class
+- uid: Phx.Inject.Generator.Incremental.Util
+  name: Phx.Inject.Generator.Incremental.Util
+  type: Namespace
+  items:
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
+    name: GeneratorIgnoredExtensions
+    type: Class
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
+    name: GeneratorIgnored<T>
+    type: Class
+  - uid: Phx.Inject.Generator.Incremental.Util.LocationExtensions
+    name: LocationExtensions
+    type: Class
+memberLayout: SamePage

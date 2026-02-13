@@ -1,0 +1,1076 @@
+### YamlMime:ManagedReference
+items:
+- uid: Phx.Inject.Factory`1
+  commentId: T:Phx.Inject.Factory`1
+  id: Factory`1
+  parent: Phx.Inject
+  children:
+  - Phx.Inject.Factory`1.#ctor(System.Func{`0})
+  - Phx.Inject.Factory`1.Create
+  langs:
+  - csharp
+  - vb
+  name: Factory<T>
+  nameWithType: Factory<T>
+  fullName: Phx.Inject.Factory<T>
+  type: Class
+  source:
+    remote:
+      path: src/Phx.Inject/Phx/Inject/Factory.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject
+    id: Factory
+    path: src/Phx.Inject/Phx/Inject/Factory.cs
+    startLine: 15
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject
+  summary: >-
+    A type that can be used to inject a dependency on the factory method for a class instead of the
+
+    class itself.
+  example: []
+  syntax:
+    content: public sealed class Factory<T>
+    typeParameters:
+    - id: T
+      description: The type of the dependency.
+    content.vb: Public NotInheritable Class Factory(Of T)
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+  extensionMethods:
+  - Phx.Inject.Factory`1.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.Factory{{T}}})
+  - Phx.Inject.Factory`1.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.Factory{{T}},{TResult}})
+  - Phx.Inject.Factory`1.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.Factory{{T}}})
+  - Phx.Inject.Factory`1.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+  nameWithType.vb: Factory(Of T)
+  fullName.vb: Phx.Inject.Factory(Of T)
+  name.vb: Factory(Of T)
+- uid: Phx.Inject.Factory`1.#ctor(System.Func{`0})
+  commentId: M:Phx.Inject.Factory`1.#ctor(System.Func{`0})
+  id: '#ctor(System.Func{`0})'
+  parent: Phx.Inject.Factory`1
+  langs:
+  - csharp
+  - vb
+  name: Factory(Func<T>)
+  nameWithType: Factory<T>.Factory(Func<T>)
+  fullName: Phx.Inject.Factory<T>.Factory(System.Func<T>)
+  type: Constructor
+  source:
+    remote:
+      path: src/Phx.Inject/Phx/Inject/Factory.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject
+    id: .ctor
+    path: src/Phx.Inject/Phx/Inject/Factory.cs
+    startLine: 20
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject
+  summary: Initializes a new instance of the Factory class.
+  example: []
+  syntax:
+    content: public Factory(Func<T> factory)
+    parameters:
+    - id: factory
+      type: System.Func{{T}}
+      description: The factory method used to construct a new instance of the dependency class.
+    content.vb: Public Sub New(factory As Func(Of T))
+  overload: Phx.Inject.Factory`1.#ctor*
+  nameWithType.vb: Factory(Of T).New(Func(Of T))
+  fullName.vb: Phx.Inject.Factory(Of T).New(System.Func(Of T))
+  name.vb: New(Func(Of T))
+- uid: Phx.Inject.Factory`1.Create
+  commentId: M:Phx.Inject.Factory`1.Create
+  id: Create
+  parent: Phx.Inject.Factory`1
+  langs:
+  - csharp
+  - vb
+  name: Create()
+  nameWithType: Factory<T>.Create()
+  fullName: Phx.Inject.Factory<T>.Create()
+  type: Method
+  source:
+    remote:
+      path: src/Phx.Inject/Phx/Inject/Factory.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject
+    id: Create
+    path: src/Phx.Inject/Phx/Inject/Factory.cs
+    startLine: 26
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject
+  summary: Creates a new instance of the dependency.
+  example: []
+  syntax:
+    content: public T Create()
+    return:
+      type: '{T}'
+      description: A new instance of type T.
+    content.vb: Public Function Create() As T
+  overload: Phx.Inject.Factory`1.Create*
+  nameWithType.vb: Factory(Of T).Create()
+  fullName.vb: Phx.Inject.Factory(Of T).Create()
+references:
+- uid: Phx.Inject
+  commentId: N:Phx.Inject
+  href: Phx.html
+  name: Phx.Inject
+  nameWithType: Phx.Inject
+  fullName: Phx.Inject
+  spec.csharp:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
+  spec.vb:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  name: Equals(object)
+  nameWithType: object.Equals(object)
+  fullName: object.Equals(object)
+  nameWithType.vb: Object.Equals(Object)
+  fullName.vb: Object.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  name: GetHashCode()
+  nameWithType: object.GetHashCode()
+  fullName: object.GetHashCode()
+  nameWithType.vb: Object.GetHashCode()
+  fullName.vb: Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  name: ToString()
+  nameWithType: object.ToString()
+  fullName: object.ToString()
+  nameWithType.vb: Object.ToString()
+  fullName.vb: Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+- uid: Phx.Inject.Factory`1.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.Factory{{T}}})
+  commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
+  parent: Phx.Inject.Common.Util.FunctionalExtensions
+  definition: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
+  name: Also<Factory<T>>(Factory<T>, Action<Factory<T>>)
+  nameWithType: FunctionalExtensions.Also<Factory<T>>(Factory<T>, Action<Factory<T>>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<Phx.Inject.Factory<T>>(Phx.Inject.Factory<T>, System.Action<Phx.Inject.Factory<T>>)
+  nameWithType.vb: FunctionalExtensions.Also(Of Factory(Of T))(Factory(Of T), Action(Of Factory(Of T)))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of Phx.Inject.Factory(Of T))(Phx.Inject.Factory(Of T), System.Action(Of Phx.Inject.Factory(Of T)))
+  name.vb: Also(Of Factory(Of T))(Factory(Of T), Action(Of Factory(Of T)))
+  spec.csharp:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.Factory{`0},System.Action{Phx.Inject.Factory{`0}})
+    name: Also
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
+  - name: <
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: '>'
+  - name: (
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: ','
+  - name: " "
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: <
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.Factory{`0},System.Action{Phx.Inject.Factory{`0}})
+    name: Also
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: )
+  - name: (
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: ','
+  - name: " "
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: )
+  - name: )
+- uid: Phx.Inject.Factory`1.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.Factory{{T}},{TResult}})
+  commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
+  parent: Phx.Inject.Common.Util.FunctionalExtensions
+  definition: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
+  name: Let<Factory<T>, TResult>(Factory<T>, Func<Factory<T>, TResult>)
+  nameWithType: FunctionalExtensions.Let<Factory<T>, TResult>(Factory<T>, Func<Factory<T>, TResult>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<Phx.Inject.Factory<T>, TResult>(Phx.Inject.Factory<T>, System.Func<Phx.Inject.Factory<T>, TResult>)
+  nameWithType.vb: FunctionalExtensions.Let(Of Factory(Of T), TResult)(Factory(Of T), Func(Of Factory(Of T), TResult))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of Phx.Inject.Factory(Of T), TResult)(Phx.Inject.Factory(Of T), System.Func(Of Phx.Inject.Factory(Of T), TResult))
+  name.vb: Let(Of Factory(Of T), TResult)(Factory(Of T), Func(Of Factory(Of T), TResult))
+  spec.csharp:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.Factory{`0},System.Func{Phx.Inject.Factory{`0},``1})
+    name: Let
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
+  - name: <
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: '>'
+  - name: (
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: ','
+  - name: " "
+  - uid: System.Func`2
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-2
+  - name: <
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.Factory{`0},System.Func{Phx.Inject.Factory{`0},``1})
+    name: Let
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: )
+  - name: (
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: ','
+  - name: " "
+  - uid: System.Func`2
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-2
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: )
+  - name: )
+- uid: Phx.Inject.Factory`1.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.Factory{{T}}})
+  commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
+  parent: Phx.Inject.Common.Util.FunctionalExtensions
+  definition: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
+  name: Then<Factory<T>>(Factory<T>, Action<Factory<T>>)
+  nameWithType: FunctionalExtensions.Then<Factory<T>>(Factory<T>, Action<Factory<T>>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<Phx.Inject.Factory<T>>(Phx.Inject.Factory<T>, System.Action<Phx.Inject.Factory<T>>)
+  nameWithType.vb: FunctionalExtensions.Then(Of Factory(Of T))(Factory(Of T), Action(Of Factory(Of T)))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of Phx.Inject.Factory(Of T))(Phx.Inject.Factory(Of T), System.Action(Of Phx.Inject.Factory(Of T)))
+  name.vb: Then(Of Factory(Of T))(Factory(Of T), Action(Of Factory(Of T)))
+  spec.csharp:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.Factory{`0},System.Action{Phx.Inject.Factory{`0}})
+    name: Then
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
+  - name: <
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: '>'
+  - name: (
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: ','
+  - name: " "
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: <
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.Factory{`0},System.Action{Phx.Inject.Factory{`0}})
+    name: Then
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: )
+  - name: (
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: ','
+  - name: " "
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: )
+  - name: )
+- uid: Phx.Inject.Factory`1.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+  commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
+  parent: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
+  definition: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
+  name: GeneratorIgnored<Factory<T>>(Factory<T>)
+  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<Factory<T>>(Factory<T>)
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<Phx.Inject.Factory<T>>(Phx.Inject.Factory<T>)
+  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of Factory(Of T))(Factory(Of T))
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of Phx.Inject.Factory(Of T))(Phx.Inject.Factory(Of T))
+  name.vb: GeneratorIgnored(Of Factory(Of T))(Factory(Of T))
+  spec.csharp:
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.Factory{`0})
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
+  - name: <
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: '>'
+  - name: (
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.Factory{`0})
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: )
+  - name: (
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
+  commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
+  isExternal: true
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
+  name: Also<T>(T, Action<T>)
+  nameWithType: FunctionalExtensions.Also<T>(T, Action<T>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<T>(T, System.Action<T>)
+  nameWithType.vb: FunctionalExtensions.Also(Of T)(T, Action(Of T))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of T)(T, System.Action(Of T))
+  name.vb: Also(Of T)(T, Action(Of T))
+  spec.csharp:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
+    name: Also
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
+  - name: <
+  - name: T
+  - name: '>'
+  - name: (
+  - name: T
+  - name: ','
+  - name: " "
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: <
+  - name: T
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
+    name: Also
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: (
+  - name: T
+  - name: ','
+  - name: " "
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: )
+- uid: Phx.Inject.Common.Util.FunctionalExtensions
+  commentId: T:Phx.Inject.Common.Util.FunctionalExtensions
+  parent: Phx.Inject.Common.Util
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html
+  name: FunctionalExtensions
+  nameWithType: FunctionalExtensions
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions
+- uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
+  commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
+  isExternal: true
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
+  name: Let<T, TResult>(T, Func<T, TResult>)
+  nameWithType: FunctionalExtensions.Let<T, TResult>(T, Func<T, TResult>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<T, TResult>(T, System.Func<T, TResult>)
+  nameWithType.vb: FunctionalExtensions.Let(Of T, TResult)(T, Func(Of T, TResult))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of T, TResult)(T, System.Func(Of T, TResult))
+  name.vb: Let(Of T, TResult)(T, Func(Of T, TResult))
+  spec.csharp:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
+    name: Let
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
+  - name: <
+  - name: T
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: '>'
+  - name: (
+  - name: T
+  - name: ','
+  - name: " "
+  - uid: System.Func`2
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-2
+  - name: <
+  - name: T
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
+    name: Let
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: )
+  - name: (
+  - name: T
+  - name: ','
+  - name: " "
+  - uid: System.Func`2
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-2
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: )
+  - name: )
+- uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
+  commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
+  isExternal: true
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
+  name: Then<T>(T, Action<T>)
+  nameWithType: FunctionalExtensions.Then<T>(T, Action<T>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<T>(T, System.Action<T>)
+  nameWithType.vb: FunctionalExtensions.Then(Of T)(T, Action(Of T))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of T)(T, System.Action(Of T))
+  name.vb: Then(Of T)(T, Action(Of T))
+  spec.csharp:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
+    name: Then
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
+  - name: <
+  - name: T
+  - name: '>'
+  - name: (
+  - name: T
+  - name: ','
+  - name: " "
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: <
+  - name: T
+  - name: '>'
+  - name: )
+  spec.vb:
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
+    name: Then
+    href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: (
+  - name: T
+  - name: ','
+  - name: " "
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: )
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
+  commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
+  name: GeneratorIgnored<T>(T)
+  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<T>(T)
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<T>(T)
+  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of T)(T)
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of T)(T)
+  name.vb: GeneratorIgnored(Of T)(T)
+  spec.csharp:
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
+  - name: <
+  - name: T
+  - name: '>'
+  - name: (
+  - name: T
+  - name: )
+  spec.vb:
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
+    name: GeneratorIgnored
+    href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+  - name: (
+  - name: T
+  - name: )
+- uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
+  commentId: T:Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
+  parent: Phx.Inject.Generator.Incremental.Util
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html
+  name: GeneratorIgnoredExtensions
+  nameWithType: GeneratorIgnoredExtensions
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
+- uid: Phx.Inject.Common.Util
+  commentId: N:Phx.Inject.Common.Util
+  href: Phx.html
+  name: Phx.Inject.Common.Util
+  nameWithType: Phx.Inject.Common.Util
+  fullName: Phx.Inject.Common.Util
+  spec.csharp:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
+  - name: .
+  - uid: Phx.Inject.Common
+    name: Common
+    href: Phx.Inject.Common.html
+  - name: .
+  - uid: Phx.Inject.Common.Util
+    name: Util
+    href: Phx.Inject.Common.Util.html
+  spec.vb:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
+  - name: .
+  - uid: Phx.Inject.Common
+    name: Common
+    href: Phx.Inject.Common.html
+  - name: .
+  - uid: Phx.Inject.Common.Util
+    name: Util
+    href: Phx.Inject.Common.Util.html
+- uid: Phx.Inject.Generator.Incremental.Util
+  commentId: N:Phx.Inject.Generator.Incremental.Util
+  href: Phx.html
+  name: Phx.Inject.Generator.Incremental.Util
+  nameWithType: Phx.Inject.Generator.Incremental.Util
+  fullName: Phx.Inject.Generator.Incremental.Util
+  spec.csharp:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
+  - name: .
+  - uid: Phx.Inject.Generator
+    name: Generator
+    href: Phx.Inject.Generator.html
+  - name: .
+  - uid: Phx.Inject.Generator.Incremental
+    name: Incremental
+    href: Phx.Inject.Generator.Incremental.html
+  - name: .
+  - uid: Phx.Inject.Generator.Incremental.Util
+    name: Util
+    href: Phx.Inject.Generator.Incremental.Util.html
+  spec.vb:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
+  - name: .
+  - uid: Phx.Inject.Generator
+    name: Generator
+    href: Phx.Inject.Generator.html
+  - name: .
+  - uid: Phx.Inject.Generator.Incremental
+    name: Incremental
+    href: Phx.Inject.Generator.Incremental.html
+  - name: .
+  - uid: Phx.Inject.Generator.Incremental.Util
+    name: Util
+    href: Phx.Inject.Generator.Incremental.Util.html
+- uid: Phx.Inject.Factory`1.#ctor*
+  commentId: Overload:Phx.Inject.Factory`1.#ctor
+  href: Phx.Inject.Factory-1.html#Phx_Inject_Factory_1__ctor_System_Func__0__
+  name: Factory
+  nameWithType: Factory<T>.Factory
+  fullName: Phx.Inject.Factory<T>.Factory
+  nameWithType.vb: Factory(Of T).New
+  fullName.vb: Phx.Inject.Factory(Of T).New
+  name.vb: New
+- uid: System.Func{{T}}
+  commentId: T:System.Func{`0}
+  parent: System
+  definition: System.Func`1
+  href: https://learn.microsoft.com/dotnet/api/system.func-1
+  name: Func<T>
+  nameWithType: Func<T>
+  fullName: System.Func<T>
+  nameWithType.vb: Func(Of T)
+  fullName.vb: System.Func(Of T)
+  name.vb: Func(Of T)
+  spec.csharp:
+  - uid: System.Func`1
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-1
+  - name: <
+  - name: T
+  - name: '>'
+  spec.vb:
+  - uid: System.Func`1
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+- uid: System.Func`1
+  commentId: T:System.Func`1
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.func-1
+  name: Func<TResult>
+  nameWithType: Func<TResult>
+  fullName: System.Func<TResult>
+  nameWithType.vb: Func(Of TResult)
+  fullName.vb: System.Func(Of TResult)
+  name.vb: Func(Of TResult)
+  spec.csharp:
+  - uid: System.Func`1
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-1
+  - name: <
+  - name: TResult
+  - name: '>'
+  spec.vb:
+  - uid: System.Func`1
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: TResult
+  - name: )
+- uid: Phx.Inject.Factory`1.Create*
+  commentId: Overload:Phx.Inject.Factory`1.Create
+  href: Phx.Inject.Factory-1.html#Phx_Inject_Factory_1_Create
+  name: Create
+  nameWithType: Factory<T>.Create
+  fullName: Phx.Inject.Factory<T>.Create
+  nameWithType.vb: Factory(Of T).Create
+  fullName.vb: Phx.Inject.Factory(Of T).Create
+- uid: '{T}'
+  commentId: '!:T'
+  definition: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: T
+  name: T
+  nameWithType: T
+  fullName: T

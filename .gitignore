@@ -33,3 +33,6 @@
 *.nupkg
 # NuGet Symbol Packages
 *.snupkg
+
+# DocFx generated site
+Documentation/API/_site/

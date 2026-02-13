@@ -1,0 +1,454 @@
+### YamlMime:ManagedReference
+items:
+- uid: Phx.Inject.Generator.Incremental.Util.LocationExtensions
+  commentId: T:Phx.Inject.Generator.Incremental.Util.LocationExtensions
+  id: LocationExtensions
+  parent: Phx.Inject.Generator.Incremental.Util
+  children:
+  - Phx.Inject.Generator.Incremental.Util.LocationExtensions.OrNone(Microsoft.CodeAnalysis.Location)
+  langs:
+  - csharp
+  - vb
+  name: LocationExtensions
+  nameWithType: LocationExtensions
+  fullName: Phx.Inject.Generator.Incremental.Util.LocationExtensions
+  type: Class
+  source:
+    remote:
+      path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/LocationExtensions.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject
+    id: LocationExtensions
+    path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/LocationExtensions.cs
+    startLine: 38
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject.Generator.Incremental.Util
+  summary: >-
+    Extension methods for Roslyn <xref href="Microsoft.CodeAnalysis.Location" data-throw-if-not-resolved="false"></xref> objects to support incremental generator patterns.
+
+
+    PURPOSE:
+
+    - Provides null-safe operations for locations throughout the generator pipeline
+
+    - Integrates Location instances with the incremental generator's caching system via GeneratorIgnored
+
+    - Ensures diagnostic messages have valid locations even when source information is unavailable
+
+
+    WHY THIS EXISTS:
+
+    Roslyn's Location can be null in various scenarios (generated code, compiler-synthesized members, metadata).
+
+    In incremental generators, proper location handling is critical for:
+
+    1. Accurate diagnostic reporting that points users to the exact source of issues
+
+    2. Correct caching behavior - locations affect equality comparisons but shouldn't trigger regeneration
+
+    3. Safe downstream code that doesn't need constant null checks
+
+
+    INCREMENTAL GENERATOR INTEGRATION:
+
+    The GeneratorIgnored wrapper tells the incremental generator that Location changes should NOT
+
+    trigger regeneration. This is essential because:
+
+    - Location changes (file moves, line number shifts) don't affect semantic meaning
+
+    - Without this, any code reformatting would invalidate the entire cache
+
+    - Diagnostics still get accurate locations, but they don't participate in equality checks
+  example: []
+  syntax:
+    content: public static class LocationExtensions
+    content.vb: Public Module LocationExtensions
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+- uid: Phx.Inject.Generator.Incremental.Util.LocationExtensions.OrNone(Microsoft.CodeAnalysis.Location)
+  commentId: M:Phx.Inject.Generator.Incremental.Util.LocationExtensions.OrNone(Microsoft.CodeAnalysis.Location)
+  id: OrNone(Microsoft.CodeAnalysis.Location)
+  isExtensionMethod: true
+  parent: Phx.Inject.Generator.Incremental.Util.LocationExtensions
+  langs:
+  - csharp
+  - vb
+  name: OrNone(Location?)
+  nameWithType: LocationExtensions.OrNone(Location?)
+  fullName: Phx.Inject.Generator.Incremental.Util.LocationExtensions.OrNone(Microsoft.CodeAnalysis.Location?)
+  type: Method
+  source:
+    remote:
+      path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/LocationExtensions.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject
+    id: OrNone
+    path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/LocationExtensions.cs
+    startLine: 49
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject.Generator.Incremental.Util
+  summary: Returns the <xref href="Microsoft.CodeAnalysis.Location" data-throw-if-not-resolved="false"></xref> or <xref href="Microsoft.CodeAnalysis.Location.None" data-throw-if-not-resolved="false"></xref> if the value is <code> null </code>.
+  remarks: >-
+    PATTERN: Null-coalescing for safe location handling.
+
+    Use this at API boundaries where Location? needs to become Location for downstream consumers.
+
+    Location.None is a special sentinel that indicates "no source location" rather than null.
+  example: []
+  syntax:
+    content: public static Location OrNone(this Location? location)
+    parameters:
+    - id: location
+      type: Microsoft.CodeAnalysis.Location
+      description: The location to return.
+    return:
+      type: Microsoft.CodeAnalysis.Location
+      description: An instance of <xref href="Microsoft.CodeAnalysis.Location" data-throw-if-not-resolved="false"></xref>.
+    content.vb: Public Shared Function OrNone(location As Location) As Location
+  overload: Phx.Inject.Generator.Incremental.Util.LocationExtensions.OrNone*
+  nameWithType.vb: LocationExtensions.OrNone(Location)
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.LocationExtensions.OrNone(Microsoft.CodeAnalysis.Location)
+  name.vb: OrNone(Location)
+references:
+- uid: Microsoft.CodeAnalysis.Location
+  commentId: T:Microsoft.CodeAnalysis.Location
+  parent: Microsoft.CodeAnalysis
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/microsoft.codeanalysis.location
+  name: Location
+  nameWithType: Location
+  fullName: Microsoft.CodeAnalysis.Location
+- uid: Phx.Inject.Generator.Incremental.Util
+  commentId: N:Phx.Inject.Generator.Incremental.Util
+  href: Phx.html
+  name: Phx.Inject.Generator.Incremental.Util
+  nameWithType: Phx.Inject.Generator.Incremental.Util
+  fullName: Phx.Inject.Generator.Incremental.Util
+  spec.csharp:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
+  - name: .
+  - uid: Phx.Inject.Generator
+    name: Generator
+    href: Phx.Inject.Generator.html
+  - name: .
+  - uid: Phx.Inject.Generator.Incremental
+    name: Incremental
+    href: Phx.Inject.Generator.Incremental.html
+  - name: .
+  - uid: Phx.Inject.Generator.Incremental.Util
+    name: Util
+    href: Phx.Inject.Generator.Incremental.Util.html
+  spec.vb:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
+  - name: .
+  - uid: Phx.Inject.Generator
+    name: Generator
+    href: Phx.Inject.Generator.html
+  - name: .
+  - uid: Phx.Inject.Generator.Incremental
+    name: Incremental
+    href: Phx.Inject.Generator.Incremental.html
+  - name: .
+  - uid: Phx.Inject.Generator.Incremental.Util
+    name: Util
+    href: Phx.Inject.Generator.Incremental.Util.html
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  name: Equals(object)
+  nameWithType: object.Equals(object)
+  fullName: object.Equals(object)
+  nameWithType.vb: Object.Equals(Object)
+  fullName.vb: Object.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  name: GetHashCode()
+  nameWithType: object.GetHashCode()
+  fullName: object.GetHashCode()
+  nameWithType.vb: Object.GetHashCode()
+  fullName.vb: Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  name: MemberwiseClone()
+  nameWithType: object.MemberwiseClone()
+  fullName: object.MemberwiseClone()
+  nameWithType.vb: Object.MemberwiseClone()
+  fullName.vb: Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  name: ToString()
+  nameWithType: object.ToString()
+  fullName: object.ToString()
+  nameWithType.vb: Object.ToString()
+  fullName.vb: Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+- uid: Microsoft.CodeAnalysis
+  commentId: N:Microsoft.CodeAnalysis
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/microsoft
+  name: Microsoft.CodeAnalysis
+  nameWithType: Microsoft.CodeAnalysis
+  fullName: Microsoft.CodeAnalysis
+  spec.csharp:
+  - uid: Microsoft
+    name: Microsoft
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/microsoft
+  - name: .
+  - uid: Microsoft.CodeAnalysis
+    name: CodeAnalysis
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/microsoft.codeanalysis
+  spec.vb:
+  - uid: Microsoft
+    name: Microsoft
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/microsoft
+  - name: .
+  - uid: Microsoft.CodeAnalysis
+    name: CodeAnalysis
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/microsoft.codeanalysis
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Microsoft.CodeAnalysis.Location.None
+  commentId: P:Microsoft.CodeAnalysis.Location.None
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/microsoft.codeanalysis.location.none
+  name: None
+  nameWithType: Location.None
+  fullName: Microsoft.CodeAnalysis.Location.None
+- uid: Phx.Inject.Generator.Incremental.Util.LocationExtensions.OrNone*
+  commentId: Overload:Phx.Inject.Generator.Incremental.Util.LocationExtensions.OrNone
+  href: Phx.Inject.Generator.Incremental.Util.LocationExtensions.html#Phx_Inject_Generator_Incremental_Util_LocationExtensions_OrNone_Microsoft_CodeAnalysis_Location_
+  name: OrNone
+  nameWithType: LocationExtensions.OrNone
+  fullName: Phx.Inject.Generator.Incremental.Util.LocationExtensions.OrNone

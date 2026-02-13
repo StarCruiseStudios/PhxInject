@@ -1,0 +1,757 @@
+### YamlMime:ManagedReference
+items:
+- uid: Phx.Inject.Common.Util.FunctionalExtensions
+  commentId: T:Phx.Inject.Common.Util.FunctionalExtensions
+  id: FunctionalExtensions
+  parent: Phx.Inject.Common.Util
+  children:
+  - Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
+  - Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
+  - Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
+  langs:
+  - csharp
+  - vb
+  name: FunctionalExtensions
+  nameWithType: FunctionalExtensions
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions
+  type: Class
+  source:
+    remote:
+      path: src/Phx.Inject.Generator/Phx/Inject/Common/Util/FunctionalExtensions.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject
+    id: FunctionalExtensions
+    path: src/Phx.Inject.Generator/Phx/Inject/Common/Util/FunctionalExtensions.cs
+    startLine: 86
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject.Common.Util
+  summary: >-
+    Extension methods for functional programming patterns inspired by Kotlin/Scala.
+
+
+    PURPOSE:
+
+    - Enables functional transformation and side-effect patterns in C#
+
+    - Reduces temporary variables and improves code flow
+
+    - Makes complex transformations more readable through chaining
+
+
+    WHY THIS EXISTS:
+
+    C# has limited built-in support for functional patterns that are common in other languages.
+
+    These extensions bring three key patterns:
+
+
+    1. Let: Transform a value inline (Kotlin's let, Scala's map)
+
+    2. Also: Perform side effects while passing through a value (Kotlin's also, Scala's tap)
+
+    3. Then: Terminate a chain with a side effect (Kotlin's also at end of chain)
+
+
+    PATTERN COMPARISON:
+
+
+    Traditional C#:
+      var temp = GetValue();
+      var transformed = Transform(temp);
+      Log(transformed);
+      DoSomething(transformed);
+      return transformed;
+
+    With functional extensions:
+      return GetValue()
+          .Let(Transform)
+          .Also(Log)
+          .Also(DoSomething);
+
+    DESIGN DECISIONS:
+
+
+    1. Why "Let" instead of "Map" or "Select"?
+       - LINQ already has Select() for IEnumerable
+       - "Let" is Kotlin terminology, familiar to many developers
+       - Avoids confusion with LINQ operators
+
+    2. Why both "Also" and "Then"?
+       - Also: Returns the value (chainable, for multiple side effects)
+       - Then: Returns void (terminal operation, signals end of chain)
+       - Different signatures prevent accidental misuse
+
+    3. Why are these useful in generators?
+       - Generators involve multi-stage transformations (syntax → symbols → metadata → code)
+       - Each stage may need logging, validation, or diagnostics
+       - These patterns make transformation pipelines explicit and linear
+
+    USAGE EXAMPLES:
+
+
+    Transformation chain:
+      var metadata = symbol
+          .Let(ExtractInfo)
+          .Let(ValidateInfo)
+          .Also(info =&gt; Log($"Processing {info.Name}"))
+          .Let(CreateMetadata);
+
+    Builder pattern enhancement:
+      return new StringBuilder()
+          .Also(sb =&gt; sb.AppendLine("// Generated code"))
+          .Also(sb =&gt; sb.AppendLine($"class {className}"))
+          .Also(sb =&gt; AppendMembers(sb, members))
+          .ToString();
+
+    Side effects without breaking flow:
+      var result = CalculateValue()
+          .Also(val =&gt; Debug.Assert(val &gt; 0, "Expected positive"))
+          .Also(val =&gt; metrics.Record(val))
+          .Let(val =&gt; val * 2);
+
+    PERFORMANCE CONSIDERATIONS:
+
+    - Zero overhead: Calls inline to the provided function/action
+
+    - No allocations beyond what the lambda captures
+
+    - JIT can inline these for optimal performance
+
+    - Equivalent performance to writing the code manually
+  example: []
+  syntax:
+    content: public static class FunctionalExtensions
+    content.vb: Public Module FunctionalExtensions
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+- uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
+  commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
+  id: Let``2(``0,System.Func{``0,``1})
+  isExtensionMethod: true
+  parent: Phx.Inject.Common.Util.FunctionalExtensions
+  langs:
+  - csharp
+  - vb
+  name: Let<T, TResult>(T, Func<T, TResult>)
+  nameWithType: FunctionalExtensions.Let<T, TResult>(T, Func<T, TResult>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<T, TResult>(T, System.Func<T, TResult>)
+  type: Method
+  source:
+    remote:
+      path: src/Phx.Inject.Generator/Phx/Inject/Common/Util/FunctionalExtensions.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject
+    id: Let
+    path: src/Phx.Inject.Generator/Phx/Inject/Common/Util/FunctionalExtensions.cs
+    startLine: 108
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject.Common.Util
+  summary: Transforms a value using the provided function.
+  remarks: >-
+    PATTERN: Inline transformation without temporary variables.
+
+
+    Instead of:
+      var temp = value;
+      var result = Transform(temp);
+
+    Write:
+      var result = value.Let(Transform);
+
+    Especially useful in expression contexts where statements aren't allowed,
+
+    or when building transformation pipelines.
+  example: []
+  syntax:
+    content: public static TResult Let<T, TResult>(this T self, Func<T, TResult> func)
+    parameters:
+    - id: self
+      type: '{T}'
+      description: The input value.
+    - id: func
+      type: System.Func{{T},{TResult}}
+      description: The transformation function.
+    typeParameters:
+    - id: T
+      description: The type of the input value.
+    - id: TResult
+      description: The type of the result.
+    return:
+      type: '{TResult}'
+      description: The result of applying the function to the input.
+    content.vb: Public Shared Function [Let](Of T, TResult)(self As T, func As Func(Of T, TResult)) As TResult
+  overload: Phx.Inject.Common.Util.FunctionalExtensions.Let*
+  nameWithType.vb: FunctionalExtensions.Let(Of T, TResult)(T, Func(Of T, TResult))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of T, TResult)(T, System.Func(Of T, TResult))
+  name.vb: Let(Of T, TResult)(T, Func(Of T, TResult))
+- uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
+  commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
+  id: Also``1(``0,System.Action{``0})
+  isExtensionMethod: true
+  parent: Phx.Inject.Common.Util.FunctionalExtensions
+  langs:
+  - csharp
+  - vb
+  name: Also<T>(T, Action<T>)
+  nameWithType: FunctionalExtensions.Also<T>(T, Action<T>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<T>(T, System.Action<T>)
+  type: Method
+  source:
+    remote:
+      path: src/Phx.Inject.Generator/Phx/Inject/Common/Util/FunctionalExtensions.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject
+    id: Also
+    path: src/Phx.Inject.Generator/Phx/Inject/Common/Util/FunctionalExtensions.cs
+    startLine: 132
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject.Common.Util
+  summary: Performs an action on a value and returns the value.
+  remarks: >-
+    PATTERN: Side effects in a transformation chain.
+
+
+    Use for logging, validation, metrics, or debugging without breaking the flow:
+      return value
+          .Also(v =&gt; Log($"Processing {v}"))
+          .Also(v =&gt; Debug.Assert(v != null))
+          .Let(Transform);
+
+    CHAINABLE:
+
+    Returns the original value, so you can chain multiple Also() calls or
+
+    continue with Let() transformations.
+  example: []
+  syntax:
+    content: public static T Also<T>(this T self, Action<T> action)
+    parameters:
+    - id: self
+      type: '{T}'
+      description: The value.
+    - id: action
+      type: System.Action{{T}}
+      description: The action to perform.
+    typeParameters:
+    - id: T
+      description: The type of the value.
+    return:
+      type: '{T}'
+      description: The original value.
+    content.vb: Public Shared Function Also(Of T)(self As T, action As Action(Of T)) As T
+  overload: Phx.Inject.Common.Util.FunctionalExtensions.Also*
+  nameWithType.vb: FunctionalExtensions.Also(Of T)(T, Action(Of T))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of T)(T, System.Action(Of T))
+  name.vb: Also(Of T)(T, Action(Of T))
+- uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
+  commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
+  id: Then``1(``0,System.Action{``0})
+  isExtensionMethod: true
+  parent: Phx.Inject.Common.Util.FunctionalExtensions
+  langs:
+  - csharp
+  - vb
+  name: Then<T>(T, Action<T>)
+  nameWithType: FunctionalExtensions.Then<T>(T, Action<T>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<T>(T, System.Action<T>)
+  type: Method
+  source:
+    remote:
+      path: src/Phx.Inject.Generator/Phx/Inject/Common/Util/FunctionalExtensions.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject
+    id: Then
+    path: src/Phx.Inject.Generator/Phx/Inject/Common/Util/FunctionalExtensions.cs
+    startLine: 158
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject.Common.Util
+  summary: Performs an action on a value.
+  remarks: >-
+    PATTERN: Terminal operation for a transformation chain.
+
+
+    Use to end a chain with a side effect:
+      value
+          .Let(Transform)
+          .Also(Validate)
+          .Then(Save);  // Final operation, returns void
+
+    DIFFERENCE FROM ALSO:
+
+    - Also: Returns the value (chainable)
+
+    - Then: Returns void (terminal, cannot chain further)
+
+
+    This makes the intent clear: Then signals "this is the end of the chain."
+  example: []
+  syntax:
+    content: public static void Then<T>(this T self, Action<T> action)
+    parameters:
+    - id: self
+      type: '{T}'
+      description: The value.
+    - id: action
+      type: System.Action{{T}}
+      description: The action to perform.
+    typeParameters:
+    - id: T
+      description: The type of the value.
+    content.vb: Public Shared Sub [Then](Of T)(self As T, action As Action(Of T))
+  overload: Phx.Inject.Common.Util.FunctionalExtensions.Then*
+  nameWithType.vb: FunctionalExtensions.Then(Of T)(T, Action(Of T))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of T)(T, System.Action(Of T))
+  name.vb: Then(Of T)(T, Action(Of T))
+references:
+- uid: Phx.Inject.Common.Util
+  commentId: N:Phx.Inject.Common.Util
+  href: Phx.html
+  name: Phx.Inject.Common.Util
+  nameWithType: Phx.Inject.Common.Util
+  fullName: Phx.Inject.Common.Util
+  spec.csharp:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
+  - name: .
+  - uid: Phx.Inject.Common
+    name: Common
+    href: Phx.Inject.Common.html
+  - name: .
+  - uid: Phx.Inject.Common.Util
+    name: Util
+    href: Phx.Inject.Common.Util.html
+  spec.vb:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
+  - name: .
+  - uid: Phx.Inject.Common
+    name: Common
+    href: Phx.Inject.Common.html
+  - name: .
+  - uid: Phx.Inject.Common.Util
+    name: Util
+    href: Phx.Inject.Common.Util.html
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  name: Equals(object)
+  nameWithType: object.Equals(object)
+  fullName: object.Equals(object)
+  nameWithType.vb: Object.Equals(Object)
+  fullName.vb: Object.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  name: GetHashCode()
+  nameWithType: object.GetHashCode()
+  fullName: object.GetHashCode()
+  nameWithType.vb: Object.GetHashCode()
+  fullName.vb: Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  name: MemberwiseClone()
+  nameWithType: object.MemberwiseClone()
+  fullName: object.MemberwiseClone()
+  nameWithType.vb: Object.MemberwiseClone()
+  fullName.vb: Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  name: ToString()
+  nameWithType: object.ToString()
+  fullName: object.ToString()
+  nameWithType.vb: Object.ToString()
+  fullName.vb: Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Phx.Inject.Common.Util.FunctionalExtensions.Let*
+  commentId: Overload:Phx.Inject.Common.Util.FunctionalExtensions.Let
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
+  name: Let
+  nameWithType: FunctionalExtensions.Let
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let
+- uid: '{T}'
+  commentId: '!:T'
+  definition: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: System.Func{{T},{TResult}}
+  commentId: T:System.Func{``0,``1}
+  parent: System
+  definition: System.Func`2
+  href: https://learn.microsoft.com/dotnet/api/system.func-2
+  name: Func<T, TResult>
+  nameWithType: Func<T, TResult>
+  fullName: System.Func<T, TResult>
+  nameWithType.vb: Func(Of T, TResult)
+  fullName.vb: System.Func(Of T, TResult)
+  name.vb: Func(Of T, TResult)
+  spec.csharp:
+  - uid: System.Func`2
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-2
+  - name: <
+  - name: T
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: '>'
+  spec.vb:
+  - uid: System.Func`2
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-2
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: )
+- uid: '{TResult}'
+  commentId: '!:TResult'
+  definition: TResult
+  name: TResult
+  nameWithType: TResult
+  fullName: TResult
+- uid: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: System.Func`2
+  commentId: T:System.Func`2
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.func-2
+  name: Func<T, TResult>
+  nameWithType: Func<T, TResult>
+  fullName: System.Func<T, TResult>
+  nameWithType.vb: Func(Of T, TResult)
+  fullName.vb: System.Func(Of T, TResult)
+  name.vb: Func(Of T, TResult)
+  spec.csharp:
+  - uid: System.Func`2
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-2
+  - name: <
+  - name: T
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: '>'
+  spec.vb:
+  - uid: System.Func`2
+    name: Func
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.func-2
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: ','
+  - name: " "
+  - name: TResult
+  - name: )
+- uid: TResult
+  commentId: '!:TResult'
+  name: TResult
+  nameWithType: TResult
+  fullName: TResult
+- uid: Phx.Inject.Common.Util.FunctionalExtensions.Also*
+  commentId: Overload:Phx.Inject.Common.Util.FunctionalExtensions.Also
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
+  name: Also
+  nameWithType: FunctionalExtensions.Also
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also
+- uid: System.Action{{T}}
+  commentId: T:System.Action{``0}
+  parent: System
+  definition: System.Action`1
+  href: https://learn.microsoft.com/dotnet/api/system.action-1
+  name: Action<T>
+  nameWithType: Action<T>
+  fullName: System.Action<T>
+  nameWithType.vb: Action(Of T)
+  fullName.vb: System.Action(Of T)
+  name.vb: Action(Of T)
+  spec.csharp:
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: <
+  - name: T
+  - name: '>'
+  spec.vb:
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+- uid: System.Action`1
+  commentId: T:System.Action`1
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.action-1
+  name: Action<T>
+  nameWithType: Action<T>
+  fullName: System.Action<T>
+  nameWithType.vb: Action(Of T)
+  fullName.vb: System.Action(Of T)
+  name.vb: Action(Of T)
+  spec.csharp:
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: <
+  - name: T
+  - name: '>'
+  spec.vb:
+  - uid: System.Action`1
+    name: Action
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.action-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+- uid: Phx.Inject.Common.Util.FunctionalExtensions.Then*
+  commentId: Overload:Phx.Inject.Common.Util.FunctionalExtensions.Then
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
+  name: Then
+  nameWithType: FunctionalExtensions.Then
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then

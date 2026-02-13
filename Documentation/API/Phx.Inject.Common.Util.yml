@@ -1,0 +1,69 @@
+### YamlMime:ManagedReference
+items:
+- uid: Phx.Inject.Common.Util
+  commentId: N:Phx.Inject.Common.Util
+  id: Phx.Inject.Common.Util
+  children:
+  - Phx.Inject.Common.Util.FunctionalExtensions
+  - Phx.Inject.Common.Util.IEnumerableExtensions
+  langs:
+  - csharp
+  - vb
+  name: Phx.Inject.Common.Util
+  nameWithType: Phx.Inject.Common.Util
+  fullName: Phx.Inject.Common.Util
+  type: Namespace
+  assemblies:
+  - Phx.Inject.Generator
+references:
+- uid: Phx.Inject.Common.Util.FunctionalExtensions
+  commentId: T:Phx.Inject.Common.Util.FunctionalExtensions
+  parent: Phx.Inject.Common.Util
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html
+  name: FunctionalExtensions
+  nameWithType: FunctionalExtensions
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions
+- uid: Phx.Inject.Common.Util.IEnumerableExtensions
+  commentId: T:Phx.Inject.Common.Util.IEnumerableExtensions
+  href: Phx.Inject.Common.Util.IEnumerableExtensions.html
+  name: IEnumerableExtensions
+  nameWithType: IEnumerableExtensions
+  fullName: Phx.Inject.Common.Util.IEnumerableExtensions
+- uid: Phx.Inject.Common.Util
+  commentId: N:Phx.Inject.Common.Util
+  href: Phx.html
+  name: Phx.Inject.Common.Util
+  nameWithType: Phx.Inject.Common.Util
+  fullName: Phx.Inject.Common.Util
+  spec.csharp:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
+  - name: .
+  - uid: Phx.Inject.Common
+    name: Common
+    href: Phx.Inject.Common.html
+  - name: .
+  - uid: Phx.Inject.Common.Util
+    name: Util
+    href: Phx.Inject.Common.Util.html
+  spec.vb:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
+  - name: .
+  - uid: Phx.Inject.Common
+    name: Common
+    href: Phx.Inject.Common.html
+  - name: .
+  - uid: Phx.Inject.Common.Util
+    name: Util
+    href: Phx.Inject.Common.Util.html

@@ -1,0 +1,191 @@
+### YamlMime:ManagedReference
+items:
+- uid: Phx.Inject
+  commentId: N:Phx.Inject
+  id: Phx.Inject
+  children:
+  - Phx.Inject.AutoBuilderAttribute
+  - Phx.Inject.AutoFactoryAttribute
+  - Phx.Inject.BuilderAttribute
+  - Phx.Inject.BuilderReferenceAttribute
+  - Phx.Inject.ChildInjectorAttribute
+  - Phx.Inject.DependencyAttribute
+  - Phx.Inject.FabricationMode
+  - Phx.Inject.FactoryAttribute
+  - Phx.Inject.FactoryReferenceAttribute
+  - Phx.Inject.Factory`1
+  - Phx.Inject.InjectionUtil
+  - Phx.Inject.InjectorAttribute
+  - Phx.Inject.InjectorDependencyAttribute
+  - Phx.Inject.LabelAttribute
+  - Phx.Inject.LinkAttribute
+  - Phx.Inject.PartialAttribute
+  - Phx.Inject.PhxInjectAttribute
+  - Phx.Inject.QualifierAttribute
+  - Phx.Inject.SpecificationAttribute
+  langs:
+  - csharp
+  - vb
+  name: Phx.Inject
+  nameWithType: Phx.Inject
+  fullName: Phx.Inject
+  type: Namespace
+  assemblies:
+  - Phx.Inject.Generator
+references:
+- uid: Phx.Inject.AutoBuilderAttribute
+  commentId: T:Phx.Inject.AutoBuilderAttribute
+  href: Phx.Inject.AutoBuilderAttribute.html
+  name: AutoBuilderAttribute
+  nameWithType: AutoBuilderAttribute
+  fullName: Phx.Inject.AutoBuilderAttribute
+- uid: Phx.Inject.AutoFactoryAttribute
+  commentId: T:Phx.Inject.AutoFactoryAttribute
+  href: Phx.Inject.AutoFactoryAttribute.html
+  name: AutoFactoryAttribute
+  nameWithType: AutoFactoryAttribute
+  fullName: Phx.Inject.AutoFactoryAttribute
+- uid: Phx.Inject.BuilderAttribute
+  commentId: T:Phx.Inject.BuilderAttribute
+  href: Phx.Inject.BuilderAttribute.html
+  name: BuilderAttribute
+  nameWithType: BuilderAttribute
+  fullName: Phx.Inject.BuilderAttribute
+- uid: Phx.Inject.BuilderReferenceAttribute
+  commentId: T:Phx.Inject.BuilderReferenceAttribute
+  href: Phx.Inject.BuilderReferenceAttribute.html
+  name: BuilderReferenceAttribute
+  nameWithType: BuilderReferenceAttribute
+  fullName: Phx.Inject.BuilderReferenceAttribute
+- uid: Phx.Inject.ChildInjectorAttribute
+  commentId: T:Phx.Inject.ChildInjectorAttribute
+  href: Phx.Inject.ChildInjectorAttribute.html
+  name: ChildInjectorAttribute
+  nameWithType: ChildInjectorAttribute
+  fullName: Phx.Inject.ChildInjectorAttribute
+- uid: Phx.Inject.DependencyAttribute
+  commentId: T:Phx.Inject.DependencyAttribute
+  href: Phx.Inject.DependencyAttribute.html
+  name: DependencyAttribute
+  nameWithType: DependencyAttribute
+  fullName: Phx.Inject.DependencyAttribute
+- uid: Phx.Inject.FabricationMode
+  commentId: T:Phx.Inject.FabricationMode
+  parent: Phx.Inject
+  href: Phx.Inject.FabricationMode.html
+  name: FabricationMode
+  nameWithType: FabricationMode
+  fullName: Phx.Inject.FabricationMode
+- uid: Phx.Inject.Factory`1
+  commentId: T:Phx.Inject.Factory`1
+  href: Phx.Inject.Factory-1.html
+  name: Factory<T>
+  nameWithType: Factory<T>
+  fullName: Phx.Inject.Factory<T>
+  nameWithType.vb: Factory(Of T)
+  fullName.vb: Phx.Inject.Factory(Of T)
+  name.vb: Factory(Of T)
+  spec.csharp:
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: <
+  - name: T
+  - name: '>'
+  spec.vb:
+  - uid: Phx.Inject.Factory`1
+    name: Factory
+    href: Phx.Inject.Factory-1.html
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+- uid: Phx.Inject.FactoryAttribute
+  commentId: T:Phx.Inject.FactoryAttribute
+  href: Phx.Inject.FactoryAttribute.html
+  name: FactoryAttribute
+  nameWithType: FactoryAttribute
+  fullName: Phx.Inject.FactoryAttribute
+- uid: Phx.Inject.FactoryReferenceAttribute
+  commentId: T:Phx.Inject.FactoryReferenceAttribute
+  href: Phx.Inject.FactoryReferenceAttribute.html
+  name: FactoryReferenceAttribute
+  nameWithType: FactoryReferenceAttribute
+  fullName: Phx.Inject.FactoryReferenceAttribute
+- uid: Phx.Inject.InjectionUtil
+  commentId: T:Phx.Inject.InjectionUtil
+  href: Phx.Inject.InjectionUtil.html
+  name: InjectionUtil
+  nameWithType: InjectionUtil
+  fullName: Phx.Inject.InjectionUtil
+- uid: Phx.Inject.InjectorAttribute
+  commentId: T:Phx.Inject.InjectorAttribute
+  href: Phx.Inject.InjectorAttribute.html
+  name: InjectorAttribute
+  nameWithType: InjectorAttribute
+  fullName: Phx.Inject.InjectorAttribute
+- uid: Phx.Inject.InjectorDependencyAttribute
+  commentId: T:Phx.Inject.InjectorDependencyAttribute
+  href: Phx.Inject.InjectorDependencyAttribute.html
+  name: InjectorDependencyAttribute
+  nameWithType: InjectorDependencyAttribute
+  fullName: Phx.Inject.InjectorDependencyAttribute
+- uid: Phx.Inject.LabelAttribute
+  commentId: T:Phx.Inject.LabelAttribute
+  href: Phx.Inject.LabelAttribute.html
+  name: LabelAttribute
+  nameWithType: LabelAttribute
+  fullName: Phx.Inject.LabelAttribute
+- uid: Phx.Inject.LinkAttribute
+  commentId: T:Phx.Inject.LinkAttribute
+  href: Phx.Inject.LinkAttribute.html
+  name: LinkAttribute
+  nameWithType: LinkAttribute
+  fullName: Phx.Inject.LinkAttribute
+- uid: Phx.Inject.PartialAttribute
+  commentId: T:Phx.Inject.PartialAttribute
+  href: Phx.Inject.PartialAttribute.html
+  name: PartialAttribute
+  nameWithType: PartialAttribute
+  fullName: Phx.Inject.PartialAttribute
+- uid: Phx.Inject.PhxInjectAttribute
+  commentId: T:Phx.Inject.PhxInjectAttribute
+  href: Phx.Inject.PhxInjectAttribute.html
+  name: PhxInjectAttribute
+  nameWithType: PhxInjectAttribute
+  fullName: Phx.Inject.PhxInjectAttribute
+- uid: Phx.Inject.QualifierAttribute
+  commentId: T:Phx.Inject.QualifierAttribute
+  href: Phx.Inject.QualifierAttribute.html
+  name: QualifierAttribute
+  nameWithType: QualifierAttribute
+  fullName: Phx.Inject.QualifierAttribute
+- uid: Phx.Inject.SpecificationAttribute
+  commentId: T:Phx.Inject.SpecificationAttribute
+  href: Phx.Inject.SpecificationAttribute.html
+  name: SpecificationAttribute
+  nameWithType: SpecificationAttribute
+  fullName: Phx.Inject.SpecificationAttribute
+- uid: Phx.Inject
+  commentId: N:Phx.Inject
+  href: Phx.html
+  name: Phx.Inject
+  nameWithType: Phx.Inject
+  fullName: Phx.Inject
+  spec.csharp:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
+  spec.vb:
+  - uid: Phx
+    name: Phx
+    href: Phx.html
+  - name: .
+  - uid: Phx.Inject
+    name: Inject
+    href: Phx.Inject.html
