@@ -1,42 +1,42 @@
 ### YamlMime:ManagedReference
 items:
-- uid: Phx.Inject.AutoFactoryAttribute
-  commentId: T:Phx.Inject.AutoFactoryAttribute
-  id: AutoFactoryAttribute
+- uid: Phx.Inject.SpecificationAttribute
+  commentId: T:Phx.Inject.SpecificationAttribute
+  id: SpecificationAttribute
   parent: Phx.Inject
-  children:
-  - Phx.Inject.AutoFactoryAttribute.#ctor
-  - Phx.Inject.AutoFactoryAttribute.#ctor(Phx.Inject.FabricationMode)
-  - Phx.Inject.AutoFactoryAttribute.FabricationMode
+  children: []
   langs:
   - csharp
   - vb
-  name: AutoFactoryAttribute
-  nameWithType: AutoFactoryAttribute
-  fullName: Phx.Inject.AutoFactoryAttribute
+  name: SpecificationAttribute
+  nameWithType: SpecificationAttribute
+  fullName: Phx.Inject.SpecificationAttribute
   type: Class
   source:
     remote:
-      path: src/Phx.Inject/Phx/Inject/AutoFactoryAttribute.cs
+      path: src/Phx.Inject/Phx/Inject/SpecificationAttribute.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
-    id: AutoFactoryAttribute
-    path: src/Phx.Inject/Phx/Inject/AutoFactoryAttribute.cs
-    startLine: 13
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
+    id: SpecificationAttribute
+    path: src/Phx.Inject/Phx/Inject/SpecificationAttribute.cs
+    startLine: 14
   assemblies:
   - Phx.Inject.Generator
   namespace: Phx.Inject
-  summary: Annotates a type or constructor that will be invoked to construct a given dependency.
+  summary: >-
+    Annotates a specification class that contains factory methods and links used to construct a
+
+    DAG.
   example: []
   syntax:
     content: >-
-      [AttributeUsage(AttributeTargets.Class|AttributeTargets.Constructor, Inherited = false)]
+      [AttributeUsage(AttributeTargets.Class|AttributeTargets.Interface, Inherited = false)]
 
-      public class AutoFactoryAttribute : Attribute
+      public class SpecificationAttribute : Attribute
     content.vb: >-
-      <AttributeUsage(AttributeTargets.ClassOrAttributeTargets.Constructor, Inherited:=False)>
+      <AttributeUsage(AttributeTargets.ClassOrAttributeTargets.Interface, Inherited:=False)>
 
-      Public Class AutoFactoryAttribute Inherits Attribute
+      Public Class SpecificationAttribute Inherits Attribute
   inheritance:
   - System.Object
   - System.Attribute
@@ -84,120 +84,20 @@ items:
   - System.Object.ReferenceEquals(System.Object,System.Object)
   - System.Object.ToString
   extensionMethods:
-  - Phx.Inject.AutoFactoryAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.AutoFactoryAttribute})
-  - Phx.Inject.AutoFactoryAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.AutoFactoryAttribute,{TResult}})
-  - Phx.Inject.AutoFactoryAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.AutoFactoryAttribute})
-  - Phx.Inject.AutoFactoryAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+  - Phx.Inject.SpecificationAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.SpecificationAttribute})
+  - Phx.Inject.SpecificationAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.SpecificationAttribute,{TResult}})
+  - Phx.Inject.SpecificationAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.SpecificationAttribute})
+  - Phx.Inject.SpecificationAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
   attributes:
   - type: System.AttributeUsageAttribute
     ctor: System.AttributeUsageAttribute.#ctor(System.AttributeTargets)
     arguments:
     - type: System.AttributeTargets
-      value: 36
+      value: 1028
     namedArguments:
     - name: Inherited
       type: System.Boolean
       value: false
-- uid: Phx.Inject.AutoFactoryAttribute.FabricationMode
-  commentId: P:Phx.Inject.AutoFactoryAttribute.FabricationMode
-  id: FabricationMode
-  parent: Phx.Inject.AutoFactoryAttribute
-  langs:
-  - csharp
-  - vb
-  name: FabricationMode
-  nameWithType: AutoFactoryAttribute.FabricationMode
-  fullName: Phx.Inject.AutoFactoryAttribute.FabricationMode
-  type: Property
-  source:
-    remote:
-      path: src/Phx.Inject/Phx/Inject/AutoFactoryAttribute.cs
-      branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
-    id: FabricationMode
-    path: src/Phx.Inject/Phx/Inject/AutoFactoryAttribute.cs
-    startLine: 19
-  assemblies:
-  - Phx.Inject.Generator
-  namespace: Phx.Inject
-  summary: >-
-    Indicates the <xref href="Phx.Inject.AutoFactoryAttribute.FabricationMode" data-throw-if-not-resolved="false"></xref> used when invoking this factory method more than
-
-    once.
-  example: []
-  syntax:
-    content: public FabricationMode FabricationMode { get; set; }
-    parameters: []
-    return:
-      type: Phx.Inject.FabricationMode
-    content.vb: Public Property FabricationMode As FabricationMode
-  overload: Phx.Inject.AutoFactoryAttribute.FabricationMode*
-- uid: Phx.Inject.AutoFactoryAttribute.#ctor
-  commentId: M:Phx.Inject.AutoFactoryAttribute.#ctor
-  id: '#ctor'
-  parent: Phx.Inject.AutoFactoryAttribute
-  langs:
-  - csharp
-  - vb
-  name: AutoFactoryAttribute()
-  nameWithType: AutoFactoryAttribute.AutoFactoryAttribute()
-  fullName: Phx.Inject.AutoFactoryAttribute.AutoFactoryAttribute()
-  type: Constructor
-  source:
-    remote:
-      path: src/Phx.Inject/Phx/Inject/AutoFactoryAttribute.cs
-      branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
-    id: .ctor
-    path: src/Phx.Inject/Phx/Inject/AutoFactoryAttribute.cs
-    startLine: 22
-  assemblies:
-  - Phx.Inject.Generator
-  namespace: Phx.Inject
-  summary: Initializes a new instance of the <xref href="Phx.Inject.AutoFactoryAttribute" data-throw-if-not-resolved="false"></xref> class.
-  example: []
-  syntax:
-    content: public AutoFactoryAttribute()
-    content.vb: Public Sub New()
-  overload: Phx.Inject.AutoFactoryAttribute.#ctor*
-  nameWithType.vb: AutoFactoryAttribute.New()
-  fullName.vb: Phx.Inject.AutoFactoryAttribute.New()
-  name.vb: New()
-- uid: Phx.Inject.AutoFactoryAttribute.#ctor(Phx.Inject.FabricationMode)
-  commentId: M:Phx.Inject.AutoFactoryAttribute.#ctor(Phx.Inject.FabricationMode)
-  id: '#ctor(Phx.Inject.FabricationMode)'
-  parent: Phx.Inject.AutoFactoryAttribute
-  langs:
-  - csharp
-  - vb
-  name: AutoFactoryAttribute(FabricationMode)
-  nameWithType: AutoFactoryAttribute.AutoFactoryAttribute(FabricationMode)
-  fullName: Phx.Inject.AutoFactoryAttribute.AutoFactoryAttribute(Phx.Inject.FabricationMode)
-  type: Constructor
-  source:
-    remote:
-      path: src/Phx.Inject/Phx/Inject/AutoFactoryAttribute.cs
-      branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
-    id: .ctor
-    path: src/Phx.Inject/Phx/Inject/AutoFactoryAttribute.cs
-    startLine: 28
-  assemblies:
-  - Phx.Inject.Generator
-  namespace: Phx.Inject
-  summary: Initializes a new instance of the <xref href="Phx.Inject.AutoFactoryAttribute" data-throw-if-not-resolved="false"></xref> class.
-  example: []
-  syntax:
-    content: public AutoFactoryAttribute(FabricationMode fabricationMode)
-    parameters:
-    - id: fabricationMode
-      type: Phx.Inject.FabricationMode
-      description: The <xref href="Phx.Inject.AutoFactoryAttribute.FabricationMode" data-throw-if-not-resolved="false"></xref> used when invoking this factory method more than once.
-    content.vb: Public Sub New(fabricationMode As FabricationMode)
-  overload: Phx.Inject.AutoFactoryAttribute.#ctor*
-  nameWithType.vb: AutoFactoryAttribute.New(FabricationMode)
-  fullName.vb: Phx.Inject.AutoFactoryAttribute.New(Phx.Inject.FabricationMode)
-  name.vb: New(FabricationMode)
 references:
 - uid: Phx.Inject
   commentId: N:Phx.Inject
@@ -2008,30 +1908,30 @@ references:
     href: https://learn.microsoft.com/dotnet/api/system.object.tostring
   - name: (
   - name: )
-- uid: Phx.Inject.AutoFactoryAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.AutoFactoryAttribute})
+- uid: Phx.Inject.SpecificationAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.SpecificationAttribute})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
-  name: Also<AutoFactoryAttribute>(AutoFactoryAttribute, Action<AutoFactoryAttribute>)
-  nameWithType: FunctionalExtensions.Also<AutoFactoryAttribute>(AutoFactoryAttribute, Action<AutoFactoryAttribute>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<Phx.Inject.AutoFactoryAttribute>(Phx.Inject.AutoFactoryAttribute, System.Action<Phx.Inject.AutoFactoryAttribute>)
-  nameWithType.vb: FunctionalExtensions.Also(Of AutoFactoryAttribute)(AutoFactoryAttribute, Action(Of AutoFactoryAttribute))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of Phx.Inject.AutoFactoryAttribute)(Phx.Inject.AutoFactoryAttribute, System.Action(Of Phx.Inject.AutoFactoryAttribute))
-  name.vb: Also(Of AutoFactoryAttribute)(AutoFactoryAttribute, Action(Of AutoFactoryAttribute))
+  name: Also<SpecificationAttribute>(SpecificationAttribute, Action<SpecificationAttribute>)
+  nameWithType: FunctionalExtensions.Also<SpecificationAttribute>(SpecificationAttribute, Action<SpecificationAttribute>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<Phx.Inject.SpecificationAttribute>(Phx.Inject.SpecificationAttribute, System.Action<Phx.Inject.SpecificationAttribute>)
+  nameWithType.vb: FunctionalExtensions.Also(Of SpecificationAttribute)(SpecificationAttribute, Action(Of SpecificationAttribute))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of Phx.Inject.SpecificationAttribute)(Phx.Inject.SpecificationAttribute, System.Action(Of Phx.Inject.SpecificationAttribute))
+  name.vb: Also(Of SpecificationAttribute)(SpecificationAttribute, Action(Of SpecificationAttribute))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.AutoFactoryAttribute,System.Action{Phx.Inject.AutoFactoryAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.SpecificationAttribute,System.Action{Phx.Inject.SpecificationAttribute})
     name: Also
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
   - name: <
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2039,26 +1939,26 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.action-1
   - name: <
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.AutoFactoryAttribute,System.Action{Phx.Inject.AutoFactoryAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.SpecificationAttribute,System.Action{Phx.Inject.SpecificationAttribute})
     name: Also
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2068,38 +1968,38 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: )
   - name: )
-- uid: Phx.Inject.AutoFactoryAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.AutoFactoryAttribute,{TResult}})
+- uid: Phx.Inject.SpecificationAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.SpecificationAttribute,{TResult}})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
-  name: Let<AutoFactoryAttribute, TResult>(AutoFactoryAttribute, Func<AutoFactoryAttribute, TResult>)
-  nameWithType: FunctionalExtensions.Let<AutoFactoryAttribute, TResult>(AutoFactoryAttribute, Func<AutoFactoryAttribute, TResult>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<Phx.Inject.AutoFactoryAttribute, TResult>(Phx.Inject.AutoFactoryAttribute, System.Func<Phx.Inject.AutoFactoryAttribute, TResult>)
-  nameWithType.vb: FunctionalExtensions.Let(Of AutoFactoryAttribute, TResult)(AutoFactoryAttribute, Func(Of AutoFactoryAttribute, TResult))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of Phx.Inject.AutoFactoryAttribute, TResult)(Phx.Inject.AutoFactoryAttribute, System.Func(Of Phx.Inject.AutoFactoryAttribute, TResult))
-  name.vb: Let(Of AutoFactoryAttribute, TResult)(AutoFactoryAttribute, Func(Of AutoFactoryAttribute, TResult))
+  name: Let<SpecificationAttribute, TResult>(SpecificationAttribute, Func<SpecificationAttribute, TResult>)
+  nameWithType: FunctionalExtensions.Let<SpecificationAttribute, TResult>(SpecificationAttribute, Func<SpecificationAttribute, TResult>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<Phx.Inject.SpecificationAttribute, TResult>(Phx.Inject.SpecificationAttribute, System.Func<Phx.Inject.SpecificationAttribute, TResult>)
+  nameWithType.vb: FunctionalExtensions.Let(Of SpecificationAttribute, TResult)(SpecificationAttribute, Func(Of SpecificationAttribute, TResult))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of Phx.Inject.SpecificationAttribute, TResult)(Phx.Inject.SpecificationAttribute, System.Func(Of Phx.Inject.SpecificationAttribute, TResult))
+  name.vb: Let(Of SpecificationAttribute, TResult)(SpecificationAttribute, Func(Of SpecificationAttribute, TResult))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.AutoFactoryAttribute,System.Func{Phx.Inject.AutoFactoryAttribute,``1})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.SpecificationAttribute,System.Func{Phx.Inject.SpecificationAttribute,``1})
     name: Let
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
   - name: <
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: '>'
   - name: (
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: ','
   - name: " "
   - uid: System.Func`2
@@ -2107,32 +2007,32 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.func-2
   - name: <
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.AutoFactoryAttribute,System.Func{Phx.Inject.AutoFactoryAttribute,``1})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.SpecificationAttribute,System.Func{Phx.Inject.SpecificationAttribute,``1})
     name: Let
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: )
   - name: (
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: ','
   - name: " "
   - uid: System.Func`2
@@ -2142,38 +2042,38 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: )
   - name: )
-- uid: Phx.Inject.AutoFactoryAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.AutoFactoryAttribute})
+- uid: Phx.Inject.SpecificationAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.SpecificationAttribute})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
-  name: Then<AutoFactoryAttribute>(AutoFactoryAttribute, Action<AutoFactoryAttribute>)
-  nameWithType: FunctionalExtensions.Then<AutoFactoryAttribute>(AutoFactoryAttribute, Action<AutoFactoryAttribute>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<Phx.Inject.AutoFactoryAttribute>(Phx.Inject.AutoFactoryAttribute, System.Action<Phx.Inject.AutoFactoryAttribute>)
-  nameWithType.vb: FunctionalExtensions.Then(Of AutoFactoryAttribute)(AutoFactoryAttribute, Action(Of AutoFactoryAttribute))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of Phx.Inject.AutoFactoryAttribute)(Phx.Inject.AutoFactoryAttribute, System.Action(Of Phx.Inject.AutoFactoryAttribute))
-  name.vb: Then(Of AutoFactoryAttribute)(AutoFactoryAttribute, Action(Of AutoFactoryAttribute))
+  name: Then<SpecificationAttribute>(SpecificationAttribute, Action<SpecificationAttribute>)
+  nameWithType: FunctionalExtensions.Then<SpecificationAttribute>(SpecificationAttribute, Action<SpecificationAttribute>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<Phx.Inject.SpecificationAttribute>(Phx.Inject.SpecificationAttribute, System.Action<Phx.Inject.SpecificationAttribute>)
+  nameWithType.vb: FunctionalExtensions.Then(Of SpecificationAttribute)(SpecificationAttribute, Action(Of SpecificationAttribute))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of Phx.Inject.SpecificationAttribute)(Phx.Inject.SpecificationAttribute, System.Action(Of Phx.Inject.SpecificationAttribute))
+  name.vb: Then(Of SpecificationAttribute)(SpecificationAttribute, Action(Of SpecificationAttribute))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.AutoFactoryAttribute,System.Action{Phx.Inject.AutoFactoryAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.SpecificationAttribute,System.Action{Phx.Inject.SpecificationAttribute})
     name: Then
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
   - name: <
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2181,26 +2081,26 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.action-1
   - name: <
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.AutoFactoryAttribute,System.Action{Phx.Inject.AutoFactoryAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.SpecificationAttribute,System.Action{Phx.Inject.SpecificationAttribute})
     name: Then
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2210,51 +2110,51 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: )
   - name: )
-- uid: Phx.Inject.AutoFactoryAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+- uid: Phx.Inject.SpecificationAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
   commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
   parent: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
   definition: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
   href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
-  name: GeneratorIgnored<AutoFactoryAttribute>(AutoFactoryAttribute)
-  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<AutoFactoryAttribute>(AutoFactoryAttribute)
-  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<Phx.Inject.AutoFactoryAttribute>(Phx.Inject.AutoFactoryAttribute)
-  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of AutoFactoryAttribute)(AutoFactoryAttribute)
-  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of Phx.Inject.AutoFactoryAttribute)(Phx.Inject.AutoFactoryAttribute)
-  name.vb: GeneratorIgnored(Of AutoFactoryAttribute)(AutoFactoryAttribute)
+  name: GeneratorIgnored<SpecificationAttribute>(SpecificationAttribute)
+  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<SpecificationAttribute>(SpecificationAttribute)
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<Phx.Inject.SpecificationAttribute>(Phx.Inject.SpecificationAttribute)
+  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of SpecificationAttribute)(SpecificationAttribute)
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of Phx.Inject.SpecificationAttribute)(Phx.Inject.SpecificationAttribute)
+  name.vb: GeneratorIgnored(Of SpecificationAttribute)(SpecificationAttribute)
   spec.csharp:
-  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.AutoFactoryAttribute)
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.SpecificationAttribute)
     name: GeneratorIgnored
     href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
   - name: <
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.AutoFactoryAttribute)
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.SpecificationAttribute)
     name: GeneratorIgnored
     href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.AutoFactoryAttribute
-    name: AutoFactoryAttribute
-    href: Phx.Inject.AutoFactoryAttribute.html
+  - uid: Phx.Inject.SpecificationAttribute
+    name: SpecificationAttribute
+    href: Phx.Inject.SpecificationAttribute.html
   - name: )
 - uid: System
   commentId: N:System
@@ -2560,37 +2460,3 @@ references:
   - uid: Phx.Inject.Generator.Incremental.Util
     name: Util
     href: Phx.Inject.Generator.Incremental.Util.html
-- uid: Phx.Inject.AutoFactoryAttribute.FabricationMode
-  commentId: P:Phx.Inject.AutoFactoryAttribute.FabricationMode
-  href: Phx.Inject.AutoFactoryAttribute.html#Phx_Inject_AutoFactoryAttribute_FabricationMode
-  name: FabricationMode
-  nameWithType: AutoFactoryAttribute.FabricationMode
-  fullName: Phx.Inject.AutoFactoryAttribute.FabricationMode
-- uid: Phx.Inject.AutoFactoryAttribute.FabricationMode*
-  commentId: Overload:Phx.Inject.AutoFactoryAttribute.FabricationMode
-  href: Phx.Inject.AutoFactoryAttribute.html#Phx_Inject_AutoFactoryAttribute_FabricationMode
-  name: FabricationMode
-  nameWithType: AutoFactoryAttribute.FabricationMode
-  fullName: Phx.Inject.AutoFactoryAttribute.FabricationMode
-- uid: Phx.Inject.FabricationMode
-  commentId: T:Phx.Inject.FabricationMode
-  parent: Phx.Inject
-  href: Phx.Inject.FabricationMode.html
-  name: FabricationMode
-  nameWithType: FabricationMode
-  fullName: Phx.Inject.FabricationMode
-- uid: Phx.Inject.AutoFactoryAttribute
-  commentId: T:Phx.Inject.AutoFactoryAttribute
-  href: Phx.Inject.AutoFactoryAttribute.html
-  name: AutoFactoryAttribute
-  nameWithType: AutoFactoryAttribute
-  fullName: Phx.Inject.AutoFactoryAttribute
-- uid: Phx.Inject.AutoFactoryAttribute.#ctor*
-  commentId: Overload:Phx.Inject.AutoFactoryAttribute.#ctor
-  href: Phx.Inject.AutoFactoryAttribute.html#Phx_Inject_AutoFactoryAttribute__ctor
-  name: AutoFactoryAttribute
-  nameWithType: AutoFactoryAttribute.AutoFactoryAttribute
-  fullName: Phx.Inject.AutoFactoryAttribute.AutoFactoryAttribute
-  nameWithType.vb: AutoFactoryAttribute.New
-  fullName.vb: Phx.Inject.AutoFactoryAttribute.New
-  name.vb: New

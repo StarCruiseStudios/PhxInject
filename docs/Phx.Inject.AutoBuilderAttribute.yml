@@ -1,41 +1,42 @@
 ### YamlMime:ManagedReference
 items:
-- uid: Phx.Inject.DependencyAttribute
-  commentId: T:Phx.Inject.DependencyAttribute
-  id: DependencyAttribute
+- uid: Phx.Inject.AutoBuilderAttribute
+  commentId: T:Phx.Inject.AutoBuilderAttribute
+  id: AutoBuilderAttribute
   parent: Phx.Inject
-  children:
-  - Phx.Inject.DependencyAttribute.#ctor(System.Type)
-  - Phx.Inject.DependencyAttribute.DependencyType
+  children: []
   langs:
   - csharp
   - vb
-  name: DependencyAttribute
-  nameWithType: DependencyAttribute
-  fullName: Phx.Inject.DependencyAttribute
+  name: AutoBuilderAttribute
+  nameWithType: AutoBuilderAttribute
+  fullName: Phx.Inject.AutoBuilderAttribute
   type: Class
   source:
     remote:
-      path: src/Phx.Inject/Phx/Inject/DependencyAttribute.cs
+      path: src/Phx.Inject/Phx/Inject/AutoBuilderAttribute.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
-    id: DependencyAttribute
-    path: src/Phx.Inject/Phx/Inject/DependencyAttribute.cs
-    startLine: 11
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
+    id: AutoBuilderAttribute
+    path: src/Phx.Inject/Phx/Inject/AutoBuilderAttribute.cs
+    startLine: 14
   assemblies:
   - Phx.Inject.Generator
   namespace: Phx.Inject
-  summary: Defines an dependency that is required by an injector interface.
+  summary: >-
+    Annotates a builder method that will be invoked to complete the construction of a given
+
+    dependency.
   example: []
   syntax:
     content: >-
-      [AttributeUsage(AttributeTargets.Interface)]
+      [AttributeUsage(AttributeTargets.Method, Inherited = false)]
 
-      public class DependencyAttribute : Attribute
+      public class AutoBuilderAttribute : Attribute
     content.vb: >-
-      <AttributeUsage(AttributeTargets.Interface)>
+      <AttributeUsage(AttributeTargets.Method, Inherited:=False)>
 
-      Public Class DependencyAttribute Inherits Attribute
+      Public Class AutoBuilderAttribute Inherits Attribute
   inheritance:
   - System.Object
   - System.Attribute
@@ -83,82 +84,20 @@ items:
   - System.Object.ReferenceEquals(System.Object,System.Object)
   - System.Object.ToString
   extensionMethods:
-  - Phx.Inject.DependencyAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.DependencyAttribute})
-  - Phx.Inject.DependencyAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.DependencyAttribute,{TResult}})
-  - Phx.Inject.DependencyAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.DependencyAttribute})
-  - Phx.Inject.DependencyAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+  - Phx.Inject.AutoBuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.AutoBuilderAttribute})
+  - Phx.Inject.AutoBuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.AutoBuilderAttribute,{TResult}})
+  - Phx.Inject.AutoBuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.AutoBuilderAttribute})
+  - Phx.Inject.AutoBuilderAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
   attributes:
   - type: System.AttributeUsageAttribute
     ctor: System.AttributeUsageAttribute.#ctor(System.AttributeTargets)
     arguments:
     - type: System.AttributeTargets
-      value: 1024
-- uid: Phx.Inject.DependencyAttribute.DependencyType
-  commentId: P:Phx.Inject.DependencyAttribute.DependencyType
-  id: DependencyType
-  parent: Phx.Inject.DependencyAttribute
-  langs:
-  - csharp
-  - vb
-  name: DependencyType
-  nameWithType: DependencyAttribute.DependencyType
-  fullName: Phx.Inject.DependencyAttribute.DependencyType
-  type: Property
-  source:
-    remote:
-      path: src/Phx.Inject/Phx/Inject/DependencyAttribute.cs
-      branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
-    id: DependencyType
-    path: src/Phx.Inject/Phx/Inject/DependencyAttribute.cs
-    startLine: 14
-  assemblies:
-  - Phx.Inject.Generator
-  namespace: Phx.Inject
-  summary: Gets the type of the dependency.
-  example: []
-  syntax:
-    content: public Type DependencyType { get; }
-    parameters: []
-    return:
-      type: System.Type
-    content.vb: Public ReadOnly Property DependencyType As Type
-  overload: Phx.Inject.DependencyAttribute.DependencyType*
-- uid: Phx.Inject.DependencyAttribute.#ctor(System.Type)
-  commentId: M:Phx.Inject.DependencyAttribute.#ctor(System.Type)
-  id: '#ctor(System.Type)'
-  parent: Phx.Inject.DependencyAttribute
-  langs:
-  - csharp
-  - vb
-  name: DependencyAttribute(Type)
-  nameWithType: DependencyAttribute.DependencyAttribute(Type)
-  fullName: Phx.Inject.DependencyAttribute.DependencyAttribute(System.Type)
-  type: Constructor
-  source:
-    remote:
-      path: src/Phx.Inject/Phx/Inject/DependencyAttribute.cs
-      branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
-    id: .ctor
-    path: src/Phx.Inject/Phx/Inject/DependencyAttribute.cs
-    startLine: 18
-  assemblies:
-  - Phx.Inject.Generator
-  namespace: Phx.Inject
-  summary: Initialzes a new instance of the <xref href="Phx.Inject.DependencyAttribute" data-throw-if-not-resolved="false"></xref> class.
-  example: []
-  syntax:
-    content: public DependencyAttribute(Type dependencyType)
-    parameters:
-    - id: dependencyType
-      type: System.Type
-      description: The type of the dependency.
-    content.vb: Public Sub New(dependencyType As Type)
-  overload: Phx.Inject.DependencyAttribute.#ctor*
-  nameWithType.vb: DependencyAttribute.New(Type)
-  fullName.vb: Phx.Inject.DependencyAttribute.New(System.Type)
-  name.vb: New(Type)
+      value: 64
+    namedArguments:
+    - name: Inherited
+      type: System.Boolean
+      value: false
 references:
 - uid: Phx.Inject
   commentId: N:Phx.Inject
@@ -1969,30 +1908,30 @@ references:
     href: https://learn.microsoft.com/dotnet/api/system.object.tostring
   - name: (
   - name: )
-- uid: Phx.Inject.DependencyAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.DependencyAttribute})
+- uid: Phx.Inject.AutoBuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.AutoBuilderAttribute})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
-  name: Also<DependencyAttribute>(DependencyAttribute, Action<DependencyAttribute>)
-  nameWithType: FunctionalExtensions.Also<DependencyAttribute>(DependencyAttribute, Action<DependencyAttribute>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<Phx.Inject.DependencyAttribute>(Phx.Inject.DependencyAttribute, System.Action<Phx.Inject.DependencyAttribute>)
-  nameWithType.vb: FunctionalExtensions.Also(Of DependencyAttribute)(DependencyAttribute, Action(Of DependencyAttribute))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of Phx.Inject.DependencyAttribute)(Phx.Inject.DependencyAttribute, System.Action(Of Phx.Inject.DependencyAttribute))
-  name.vb: Also(Of DependencyAttribute)(DependencyAttribute, Action(Of DependencyAttribute))
+  name: Also<AutoBuilderAttribute>(AutoBuilderAttribute, Action<AutoBuilderAttribute>)
+  nameWithType: FunctionalExtensions.Also<AutoBuilderAttribute>(AutoBuilderAttribute, Action<AutoBuilderAttribute>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<Phx.Inject.AutoBuilderAttribute>(Phx.Inject.AutoBuilderAttribute, System.Action<Phx.Inject.AutoBuilderAttribute>)
+  nameWithType.vb: FunctionalExtensions.Also(Of AutoBuilderAttribute)(AutoBuilderAttribute, Action(Of AutoBuilderAttribute))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of Phx.Inject.AutoBuilderAttribute)(Phx.Inject.AutoBuilderAttribute, System.Action(Of Phx.Inject.AutoBuilderAttribute))
+  name.vb: Also(Of AutoBuilderAttribute)(AutoBuilderAttribute, Action(Of AutoBuilderAttribute))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.DependencyAttribute,System.Action{Phx.Inject.DependencyAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.AutoBuilderAttribute,System.Action{Phx.Inject.AutoBuilderAttribute})
     name: Also
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
   - name: <
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2000,26 +1939,26 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.action-1
   - name: <
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.DependencyAttribute,System.Action{Phx.Inject.DependencyAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.AutoBuilderAttribute,System.Action{Phx.Inject.AutoBuilderAttribute})
     name: Also
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2029,38 +1968,38 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: )
   - name: )
-- uid: Phx.Inject.DependencyAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.DependencyAttribute,{TResult}})
+- uid: Phx.Inject.AutoBuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.AutoBuilderAttribute,{TResult}})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
-  name: Let<DependencyAttribute, TResult>(DependencyAttribute, Func<DependencyAttribute, TResult>)
-  nameWithType: FunctionalExtensions.Let<DependencyAttribute, TResult>(DependencyAttribute, Func<DependencyAttribute, TResult>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<Phx.Inject.DependencyAttribute, TResult>(Phx.Inject.DependencyAttribute, System.Func<Phx.Inject.DependencyAttribute, TResult>)
-  nameWithType.vb: FunctionalExtensions.Let(Of DependencyAttribute, TResult)(DependencyAttribute, Func(Of DependencyAttribute, TResult))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of Phx.Inject.DependencyAttribute, TResult)(Phx.Inject.DependencyAttribute, System.Func(Of Phx.Inject.DependencyAttribute, TResult))
-  name.vb: Let(Of DependencyAttribute, TResult)(DependencyAttribute, Func(Of DependencyAttribute, TResult))
+  name: Let<AutoBuilderAttribute, TResult>(AutoBuilderAttribute, Func<AutoBuilderAttribute, TResult>)
+  nameWithType: FunctionalExtensions.Let<AutoBuilderAttribute, TResult>(AutoBuilderAttribute, Func<AutoBuilderAttribute, TResult>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<Phx.Inject.AutoBuilderAttribute, TResult>(Phx.Inject.AutoBuilderAttribute, System.Func<Phx.Inject.AutoBuilderAttribute, TResult>)
+  nameWithType.vb: FunctionalExtensions.Let(Of AutoBuilderAttribute, TResult)(AutoBuilderAttribute, Func(Of AutoBuilderAttribute, TResult))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of Phx.Inject.AutoBuilderAttribute, TResult)(Phx.Inject.AutoBuilderAttribute, System.Func(Of Phx.Inject.AutoBuilderAttribute, TResult))
+  name.vb: Let(Of AutoBuilderAttribute, TResult)(AutoBuilderAttribute, Func(Of AutoBuilderAttribute, TResult))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.DependencyAttribute,System.Func{Phx.Inject.DependencyAttribute,``1})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.AutoBuilderAttribute,System.Func{Phx.Inject.AutoBuilderAttribute,``1})
     name: Let
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
   - name: <
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: '>'
   - name: (
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: ','
   - name: " "
   - uid: System.Func`2
@@ -2068,32 +2007,32 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.func-2
   - name: <
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.DependencyAttribute,System.Func{Phx.Inject.DependencyAttribute,``1})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.AutoBuilderAttribute,System.Func{Phx.Inject.AutoBuilderAttribute,``1})
     name: Let
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: )
   - name: (
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: ','
   - name: " "
   - uid: System.Func`2
@@ -2103,38 +2042,38 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: )
   - name: )
-- uid: Phx.Inject.DependencyAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.DependencyAttribute})
+- uid: Phx.Inject.AutoBuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.AutoBuilderAttribute})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
-  name: Then<DependencyAttribute>(DependencyAttribute, Action<DependencyAttribute>)
-  nameWithType: FunctionalExtensions.Then<DependencyAttribute>(DependencyAttribute, Action<DependencyAttribute>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<Phx.Inject.DependencyAttribute>(Phx.Inject.DependencyAttribute, System.Action<Phx.Inject.DependencyAttribute>)
-  nameWithType.vb: FunctionalExtensions.Then(Of DependencyAttribute)(DependencyAttribute, Action(Of DependencyAttribute))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of Phx.Inject.DependencyAttribute)(Phx.Inject.DependencyAttribute, System.Action(Of Phx.Inject.DependencyAttribute))
-  name.vb: Then(Of DependencyAttribute)(DependencyAttribute, Action(Of DependencyAttribute))
+  name: Then<AutoBuilderAttribute>(AutoBuilderAttribute, Action<AutoBuilderAttribute>)
+  nameWithType: FunctionalExtensions.Then<AutoBuilderAttribute>(AutoBuilderAttribute, Action<AutoBuilderAttribute>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<Phx.Inject.AutoBuilderAttribute>(Phx.Inject.AutoBuilderAttribute, System.Action<Phx.Inject.AutoBuilderAttribute>)
+  nameWithType.vb: FunctionalExtensions.Then(Of AutoBuilderAttribute)(AutoBuilderAttribute, Action(Of AutoBuilderAttribute))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of Phx.Inject.AutoBuilderAttribute)(Phx.Inject.AutoBuilderAttribute, System.Action(Of Phx.Inject.AutoBuilderAttribute))
+  name.vb: Then(Of AutoBuilderAttribute)(AutoBuilderAttribute, Action(Of AutoBuilderAttribute))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.DependencyAttribute,System.Action{Phx.Inject.DependencyAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.AutoBuilderAttribute,System.Action{Phx.Inject.AutoBuilderAttribute})
     name: Then
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
   - name: <
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2142,26 +2081,26 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.action-1
   - name: <
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.DependencyAttribute,System.Action{Phx.Inject.DependencyAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.AutoBuilderAttribute,System.Action{Phx.Inject.AutoBuilderAttribute})
     name: Then
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2171,51 +2110,51 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: )
   - name: )
-- uid: Phx.Inject.DependencyAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+- uid: Phx.Inject.AutoBuilderAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
   commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
   parent: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
   definition: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
   href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
-  name: GeneratorIgnored<DependencyAttribute>(DependencyAttribute)
-  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<DependencyAttribute>(DependencyAttribute)
-  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<Phx.Inject.DependencyAttribute>(Phx.Inject.DependencyAttribute)
-  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of DependencyAttribute)(DependencyAttribute)
-  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of Phx.Inject.DependencyAttribute)(Phx.Inject.DependencyAttribute)
-  name.vb: GeneratorIgnored(Of DependencyAttribute)(DependencyAttribute)
+  name: GeneratorIgnored<AutoBuilderAttribute>(AutoBuilderAttribute)
+  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<AutoBuilderAttribute>(AutoBuilderAttribute)
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<Phx.Inject.AutoBuilderAttribute>(Phx.Inject.AutoBuilderAttribute)
+  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of AutoBuilderAttribute)(AutoBuilderAttribute)
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of Phx.Inject.AutoBuilderAttribute)(Phx.Inject.AutoBuilderAttribute)
+  name.vb: GeneratorIgnored(Of AutoBuilderAttribute)(AutoBuilderAttribute)
   spec.csharp:
-  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.DependencyAttribute)
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.AutoBuilderAttribute)
     name: GeneratorIgnored
     href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
   - name: <
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.DependencyAttribute)
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.AutoBuilderAttribute)
     name: GeneratorIgnored
     href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.DependencyAttribute
-    name: DependencyAttribute
-    href: Phx.Inject.DependencyAttribute.html
+  - uid: Phx.Inject.AutoBuilderAttribute
+    name: AutoBuilderAttribute
+    href: Phx.Inject.AutoBuilderAttribute.html
   - name: )
 - uid: System
   commentId: N:System
@@ -2521,32 +2460,3 @@ references:
   - uid: Phx.Inject.Generator.Incremental.Util
     name: Util
     href: Phx.Inject.Generator.Incremental.Util.html
-- uid: Phx.Inject.DependencyAttribute.DependencyType*
-  commentId: Overload:Phx.Inject.DependencyAttribute.DependencyType
-  href: Phx.Inject.DependencyAttribute.html#Phx_Inject_DependencyAttribute_DependencyType
-  name: DependencyType
-  nameWithType: DependencyAttribute.DependencyType
-  fullName: Phx.Inject.DependencyAttribute.DependencyType
-- uid: System.Type
-  commentId: T:System.Type
-  parent: System
-  isExternal: true
-  href: https://learn.microsoft.com/dotnet/api/system.type
-  name: Type
-  nameWithType: Type
-  fullName: System.Type
-- uid: Phx.Inject.DependencyAttribute
-  commentId: T:Phx.Inject.DependencyAttribute
-  href: Phx.Inject.DependencyAttribute.html
-  name: DependencyAttribute
-  nameWithType: DependencyAttribute
-  fullName: Phx.Inject.DependencyAttribute
-- uid: Phx.Inject.DependencyAttribute.#ctor*
-  commentId: Overload:Phx.Inject.DependencyAttribute.#ctor
-  href: Phx.Inject.DependencyAttribute.html#Phx_Inject_DependencyAttribute__ctor_System_Type_
-  name: DependencyAttribute
-  nameWithType: DependencyAttribute.DependencyAttribute
-  fullName: Phx.Inject.DependencyAttribute.DependencyAttribute
-  nameWithType.vb: DependencyAttribute.New
-  fullName.vb: Phx.Inject.DependencyAttribute.New
-  name.vb: New

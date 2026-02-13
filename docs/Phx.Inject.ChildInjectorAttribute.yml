@@ -16,7 +16,7 @@ items:
     remote:
       path: src/Phx.Inject/Phx/Inject/ChildInjectorAttribute.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: ChildInjectorAttribute
     path: src/Phx.Inject/Phx/Inject/ChildInjectorAttribute.cs
     startLine: 11

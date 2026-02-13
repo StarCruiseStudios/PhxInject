@@ -18,7 +18,7 @@ items:
     remote:
       path: src/Phx.Inject/Phx/Inject/Factory.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: Factory
     path: src/Phx.Inject/Phx/Inject/Factory.cs
     startLine: 15
@@ -68,7 +68,7 @@ items:
     remote:
       path: src/Phx.Inject/Phx/Inject/Factory.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: .ctor
     path: src/Phx.Inject/Phx/Inject/Factory.cs
     startLine: 20
@@ -103,7 +103,7 @@ items:
     remote:
       path: src/Phx.Inject/Phx/Inject/Factory.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: Create
     path: src/Phx.Inject/Phx/Inject/Factory.cs
     startLine: 26

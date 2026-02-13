@@ -1,42 +1,42 @@
 ### YamlMime:ManagedReference
 items:
-- uid: Phx.Inject.BuilderReferenceAttribute
-  commentId: T:Phx.Inject.BuilderReferenceAttribute
-  id: BuilderReferenceAttribute
+- uid: Phx.Inject.BuilderAttribute
+  commentId: T:Phx.Inject.BuilderAttribute
+  id: BuilderAttribute
   parent: Phx.Inject
   children: []
   langs:
   - csharp
   - vb
-  name: BuilderReferenceAttribute
-  nameWithType: BuilderReferenceAttribute
-  fullName: Phx.Inject.BuilderReferenceAttribute
+  name: BuilderAttribute
+  nameWithType: BuilderAttribute
+  fullName: Phx.Inject.BuilderAttribute
   type: Class
   source:
     remote:
-      path: src/Phx.Inject/Phx/Inject/BuilderReferenceAttribute.cs
+      path: src/Phx.Inject/Phx/Inject/BuilderAttribute.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
-    id: BuilderReferenceAttribute
-    path: src/Phx.Inject/Phx/Inject/BuilderReferenceAttribute.cs
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
+    id: BuilderAttribute
+    path: src/Phx.Inject/Phx/Inject/BuilderAttribute.cs
     startLine: 14
   assemblies:
   - Phx.Inject.Generator
   namespace: Phx.Inject
   summary: >-
-    Annotates a field or property that references a builder method that will be invoked to complete
+    Annotates a builder method that will be invoked to complete the construction of a given
 
-    the construction of a given dependency.
+    dependency.
   example: []
   syntax:
     content: >-
-      [AttributeUsage(AttributeTargets.Property|AttributeTargets.Field)]
+      [AttributeUsage(AttributeTargets.Method, Inherited = false)]
 
-      public class BuilderReferenceAttribute : Attribute
+      public class BuilderAttribute : Attribute
     content.vb: >-
-      <AttributeUsage(AttributeTargets.PropertyOrAttributeTargets.Field)>
+      <AttributeUsage(AttributeTargets.Method, Inherited:=False)>
 
-      Public Class BuilderReferenceAttribute Inherits Attribute
+      Public Class BuilderAttribute Inherits Attribute
   inheritance:
   - System.Object
   - System.Attribute
@@ -84,16 +84,20 @@ items:
   - System.Object.ReferenceEquals(System.Object,System.Object)
   - System.Object.ToString
   extensionMethods:
-  - Phx.Inject.BuilderReferenceAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.BuilderReferenceAttribute})
-  - Phx.Inject.BuilderReferenceAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.BuilderReferenceAttribute,{TResult}})
-  - Phx.Inject.BuilderReferenceAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.BuilderReferenceAttribute})
-  - Phx.Inject.BuilderReferenceAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+  - Phx.Inject.BuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.BuilderAttribute})
+  - Phx.Inject.BuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.BuilderAttribute,{TResult}})
+  - Phx.Inject.BuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.BuilderAttribute})
+  - Phx.Inject.BuilderAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
   attributes:
   - type: System.AttributeUsageAttribute
     ctor: System.AttributeUsageAttribute.#ctor(System.AttributeTargets)
     arguments:
     - type: System.AttributeTargets
-      value: 384
+      value: 64
+    namedArguments:
+    - name: Inherited
+      type: System.Boolean
+      value: false
 references:
 - uid: Phx.Inject
   commentId: N:Phx.Inject
@@ -1904,30 +1908,30 @@ references:
     href: https://learn.microsoft.com/dotnet/api/system.object.tostring
   - name: (
   - name: )
-- uid: Phx.Inject.BuilderReferenceAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.BuilderReferenceAttribute})
+- uid: Phx.Inject.BuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.BuilderAttribute})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
-  name: Also<BuilderReferenceAttribute>(BuilderReferenceAttribute, Action<BuilderReferenceAttribute>)
-  nameWithType: FunctionalExtensions.Also<BuilderReferenceAttribute>(BuilderReferenceAttribute, Action<BuilderReferenceAttribute>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<Phx.Inject.BuilderReferenceAttribute>(Phx.Inject.BuilderReferenceAttribute, System.Action<Phx.Inject.BuilderReferenceAttribute>)
-  nameWithType.vb: FunctionalExtensions.Also(Of BuilderReferenceAttribute)(BuilderReferenceAttribute, Action(Of BuilderReferenceAttribute))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of Phx.Inject.BuilderReferenceAttribute)(Phx.Inject.BuilderReferenceAttribute, System.Action(Of Phx.Inject.BuilderReferenceAttribute))
-  name.vb: Also(Of BuilderReferenceAttribute)(BuilderReferenceAttribute, Action(Of BuilderReferenceAttribute))
+  name: Also<BuilderAttribute>(BuilderAttribute, Action<BuilderAttribute>)
+  nameWithType: FunctionalExtensions.Also<BuilderAttribute>(BuilderAttribute, Action<BuilderAttribute>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<Phx.Inject.BuilderAttribute>(Phx.Inject.BuilderAttribute, System.Action<Phx.Inject.BuilderAttribute>)
+  nameWithType.vb: FunctionalExtensions.Also(Of BuilderAttribute)(BuilderAttribute, Action(Of BuilderAttribute))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of Phx.Inject.BuilderAttribute)(Phx.Inject.BuilderAttribute, System.Action(Of Phx.Inject.BuilderAttribute))
+  name.vb: Also(Of BuilderAttribute)(BuilderAttribute, Action(Of BuilderAttribute))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.BuilderReferenceAttribute,System.Action{Phx.Inject.BuilderReferenceAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.BuilderAttribute,System.Action{Phx.Inject.BuilderAttribute})
     name: Also
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
   - name: <
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -1935,26 +1939,26 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.action-1
   - name: <
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.BuilderReferenceAttribute,System.Action{Phx.Inject.BuilderReferenceAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.BuilderAttribute,System.Action{Phx.Inject.BuilderAttribute})
     name: Also
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -1964,38 +1968,38 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: )
   - name: )
-- uid: Phx.Inject.BuilderReferenceAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.BuilderReferenceAttribute,{TResult}})
+- uid: Phx.Inject.BuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.BuilderAttribute,{TResult}})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
-  name: Let<BuilderReferenceAttribute, TResult>(BuilderReferenceAttribute, Func<BuilderReferenceAttribute, TResult>)
-  nameWithType: FunctionalExtensions.Let<BuilderReferenceAttribute, TResult>(BuilderReferenceAttribute, Func<BuilderReferenceAttribute, TResult>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<Phx.Inject.BuilderReferenceAttribute, TResult>(Phx.Inject.BuilderReferenceAttribute, System.Func<Phx.Inject.BuilderReferenceAttribute, TResult>)
-  nameWithType.vb: FunctionalExtensions.Let(Of BuilderReferenceAttribute, TResult)(BuilderReferenceAttribute, Func(Of BuilderReferenceAttribute, TResult))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of Phx.Inject.BuilderReferenceAttribute, TResult)(Phx.Inject.BuilderReferenceAttribute, System.Func(Of Phx.Inject.BuilderReferenceAttribute, TResult))
-  name.vb: Let(Of BuilderReferenceAttribute, TResult)(BuilderReferenceAttribute, Func(Of BuilderReferenceAttribute, TResult))
+  name: Let<BuilderAttribute, TResult>(BuilderAttribute, Func<BuilderAttribute, TResult>)
+  nameWithType: FunctionalExtensions.Let<BuilderAttribute, TResult>(BuilderAttribute, Func<BuilderAttribute, TResult>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<Phx.Inject.BuilderAttribute, TResult>(Phx.Inject.BuilderAttribute, System.Func<Phx.Inject.BuilderAttribute, TResult>)
+  nameWithType.vb: FunctionalExtensions.Let(Of BuilderAttribute, TResult)(BuilderAttribute, Func(Of BuilderAttribute, TResult))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of Phx.Inject.BuilderAttribute, TResult)(Phx.Inject.BuilderAttribute, System.Func(Of Phx.Inject.BuilderAttribute, TResult))
+  name.vb: Let(Of BuilderAttribute, TResult)(BuilderAttribute, Func(Of BuilderAttribute, TResult))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.BuilderReferenceAttribute,System.Func{Phx.Inject.BuilderReferenceAttribute,``1})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.BuilderAttribute,System.Func{Phx.Inject.BuilderAttribute,``1})
     name: Let
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
   - name: <
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: '>'
   - name: (
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: ','
   - name: " "
   - uid: System.Func`2
@@ -2003,32 +2007,32 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.func-2
   - name: <
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.BuilderReferenceAttribute,System.Func{Phx.Inject.BuilderReferenceAttribute,``1})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.BuilderAttribute,System.Func{Phx.Inject.BuilderAttribute,``1})
     name: Let
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: )
   - name: (
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: ','
   - name: " "
   - uid: System.Func`2
@@ -2038,38 +2042,38 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: )
   - name: )
-- uid: Phx.Inject.BuilderReferenceAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.BuilderReferenceAttribute})
+- uid: Phx.Inject.BuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.BuilderAttribute})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
-  name: Then<BuilderReferenceAttribute>(BuilderReferenceAttribute, Action<BuilderReferenceAttribute>)
-  nameWithType: FunctionalExtensions.Then<BuilderReferenceAttribute>(BuilderReferenceAttribute, Action<BuilderReferenceAttribute>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<Phx.Inject.BuilderReferenceAttribute>(Phx.Inject.BuilderReferenceAttribute, System.Action<Phx.Inject.BuilderReferenceAttribute>)
-  nameWithType.vb: FunctionalExtensions.Then(Of BuilderReferenceAttribute)(BuilderReferenceAttribute, Action(Of BuilderReferenceAttribute))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of Phx.Inject.BuilderReferenceAttribute)(Phx.Inject.BuilderReferenceAttribute, System.Action(Of Phx.Inject.BuilderReferenceAttribute))
-  name.vb: Then(Of BuilderReferenceAttribute)(BuilderReferenceAttribute, Action(Of BuilderReferenceAttribute))
+  name: Then<BuilderAttribute>(BuilderAttribute, Action<BuilderAttribute>)
+  nameWithType: FunctionalExtensions.Then<BuilderAttribute>(BuilderAttribute, Action<BuilderAttribute>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<Phx.Inject.BuilderAttribute>(Phx.Inject.BuilderAttribute, System.Action<Phx.Inject.BuilderAttribute>)
+  nameWithType.vb: FunctionalExtensions.Then(Of BuilderAttribute)(BuilderAttribute, Action(Of BuilderAttribute))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of Phx.Inject.BuilderAttribute)(Phx.Inject.BuilderAttribute, System.Action(Of Phx.Inject.BuilderAttribute))
+  name.vb: Then(Of BuilderAttribute)(BuilderAttribute, Action(Of BuilderAttribute))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.BuilderReferenceAttribute,System.Action{Phx.Inject.BuilderReferenceAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.BuilderAttribute,System.Action{Phx.Inject.BuilderAttribute})
     name: Then
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
   - name: <
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2077,26 +2081,26 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.action-1
   - name: <
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.BuilderReferenceAttribute,System.Action{Phx.Inject.BuilderReferenceAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.BuilderAttribute,System.Action{Phx.Inject.BuilderAttribute})
     name: Then
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2106,51 +2110,51 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: )
   - name: )
-- uid: Phx.Inject.BuilderReferenceAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+- uid: Phx.Inject.BuilderAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
   commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
   parent: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
   definition: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
   href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
-  name: GeneratorIgnored<BuilderReferenceAttribute>(BuilderReferenceAttribute)
-  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<BuilderReferenceAttribute>(BuilderReferenceAttribute)
-  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<Phx.Inject.BuilderReferenceAttribute>(Phx.Inject.BuilderReferenceAttribute)
-  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of BuilderReferenceAttribute)(BuilderReferenceAttribute)
-  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of Phx.Inject.BuilderReferenceAttribute)(Phx.Inject.BuilderReferenceAttribute)
-  name.vb: GeneratorIgnored(Of BuilderReferenceAttribute)(BuilderReferenceAttribute)
+  name: GeneratorIgnored<BuilderAttribute>(BuilderAttribute)
+  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<BuilderAttribute>(BuilderAttribute)
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<Phx.Inject.BuilderAttribute>(Phx.Inject.BuilderAttribute)
+  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of BuilderAttribute)(BuilderAttribute)
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of Phx.Inject.BuilderAttribute)(Phx.Inject.BuilderAttribute)
+  name.vb: GeneratorIgnored(Of BuilderAttribute)(BuilderAttribute)
   spec.csharp:
-  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.BuilderReferenceAttribute)
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.BuilderAttribute)
     name: GeneratorIgnored
     href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
   - name: <
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.BuilderReferenceAttribute)
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.BuilderAttribute)
     name: GeneratorIgnored
     href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.BuilderReferenceAttribute
-    name: BuilderReferenceAttribute
-    href: Phx.Inject.BuilderReferenceAttribute.html
+  - uid: Phx.Inject.BuilderAttribute
+    name: BuilderAttribute
+    href: Phx.Inject.BuilderAttribute.html
   - name: )
 - uid: System
   commentId: N:System

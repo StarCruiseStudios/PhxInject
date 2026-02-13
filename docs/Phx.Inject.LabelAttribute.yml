@@ -1,43 +1,44 @@
 ### YamlMime:ManagedReference
 items:
-- uid: Phx.Inject.QualifierAttribute
-  commentId: T:Phx.Inject.QualifierAttribute
-  id: QualifierAttribute
+- uid: Phx.Inject.LabelAttribute
+  commentId: T:Phx.Inject.LabelAttribute
+  id: LabelAttribute
   parent: Phx.Inject
   children:
-  - Phx.Inject.QualifierAttribute.Usage
+  - Phx.Inject.LabelAttribute.#ctor(System.String)
+  - Phx.Inject.LabelAttribute.Label
   langs:
   - csharp
   - vb
-  name: QualifierAttribute
-  nameWithType: QualifierAttribute
-  fullName: Phx.Inject.QualifierAttribute
+  name: LabelAttribute
+  nameWithType: LabelAttribute
+  fullName: Phx.Inject.LabelAttribute
   type: Class
   source:
     remote:
-      path: src/Phx.Inject/Phx/Inject/QualifierAttribute.cs
+      path: src/Phx.Inject/Phx/Inject/LabelAttribute.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
-    id: QualifierAttribute
-    path: src/Phx.Inject/Phx/Inject/QualifierAttribute.cs
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
+    id: LabelAttribute
+    path: src/Phx.Inject/Phx/Inject/LabelAttribute.cs
     startLine: 14
   assemblies:
   - Phx.Inject.Generator
   namespace: Phx.Inject
   summary: >-
-    Annotates an attribute as a qualifier that can be applied to a factory method or dependency as
+    Annotates a factory method or dependency with a unique label used to discriminate them from
 
-    a unique label used to discriminate them from other dependencies with the same type.
+    other dependencies with the same type.
   example: []
   syntax:
     content: >-
-      [AttributeUsage(AttributeTargets.Class, Inherited = false)]
+      [AttributeUsage(AttributeTargets.Class|AttributeTargets.Struct|AttributeTargets.Constructor|AttributeTargets.Method|AttributeTargets.Property|AttributeTargets.Field|AttributeTargets.Interface|AttributeTargets.Parameter, Inherited = false)]
 
-      public class QualifierAttribute : Attribute
+      public class LabelAttribute : Attribute
     content.vb: >-
-      <AttributeUsage(AttributeTargets.Class, Inherited:=False)>
+      <AttributeUsage(AttributeTargets.ClassOrAttributeTargets.StructOrAttributeTargets.ConstructorOrAttributeTargets.MethodOrAttributeTargets.PropertyOrAttributeTargets.FieldOrAttributeTargets.InterfaceOrAttributeTargets.Parameter, Inherited:=False)>
 
-      Public Class QualifierAttribute Inherits Attribute
+      Public Class LabelAttribute Inherits Attribute
   inheritance:
   - System.Object
   - System.Attribute
@@ -85,49 +86,86 @@ items:
   - System.Object.ReferenceEquals(System.Object,System.Object)
   - System.Object.ToString
   extensionMethods:
-  - Phx.Inject.QualifierAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.QualifierAttribute})
-  - Phx.Inject.QualifierAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.QualifierAttribute,{TResult}})
-  - Phx.Inject.QualifierAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.QualifierAttribute})
-  - Phx.Inject.QualifierAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+  - Phx.Inject.LabelAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.LabelAttribute})
+  - Phx.Inject.LabelAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.LabelAttribute,{TResult}})
+  - Phx.Inject.LabelAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.LabelAttribute})
+  - Phx.Inject.LabelAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
   attributes:
   - type: System.AttributeUsageAttribute
     ctor: System.AttributeUsageAttribute.#ctor(System.AttributeTargets)
     arguments:
     - type: System.AttributeTargets
-      value: 4
+      value: 3564
     namedArguments:
     - name: Inherited
       type: System.Boolean
       value: false
-- uid: Phx.Inject.QualifierAttribute.Usage
-  commentId: F:Phx.Inject.QualifierAttribute.Usage
-  id: Usage
-  parent: Phx.Inject.QualifierAttribute
+- uid: Phx.Inject.LabelAttribute.Label
+  commentId: P:Phx.Inject.LabelAttribute.Label
+  id: Label
+  parent: Phx.Inject.LabelAttribute
   langs:
   - csharp
   - vb
-  name: Usage
-  nameWithType: QualifierAttribute.Usage
-  fullName: Phx.Inject.QualifierAttribute.Usage
-  type: Field
+  name: Label
+  nameWithType: LabelAttribute.Label
+  fullName: Phx.Inject.LabelAttribute.Label
+  type: Property
   source:
     remote:
-      path: src/Phx.Inject/Phx/Inject/QualifierAttribute.cs
+      path: src/Phx.Inject/Phx/Inject/LabelAttribute.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
-    id: Usage
-    path: src/Phx.Inject/Phx/Inject/QualifierAttribute.cs
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
+    id: Label
+    path: src/Phx.Inject/Phx/Inject/LabelAttribute.cs
     startLine: 17
   assemblies:
   - Phx.Inject.Generator
   namespace: Phx.Inject
-  summary: The <xref href="System.AttributeTargets" data-throw-if-not-resolved="false"></xref> flags applied to a qualifier attribute.
+  summary: The unique name for this label.
   example: []
   syntax:
-    content: public const AttributeTargets Usage = Class | Struct | Constructor | Method | Property | Field | Interface | Parameter
+    content: public string Label { get; }
+    parameters: []
     return:
-      type: System.AttributeTargets
-    content.vb: Public Const Usage As AttributeTargets = Class Or Struct Or Constructor Or Method Or Property Or Field Or Interface Or Parameter
+      type: System.String
+    content.vb: Public ReadOnly Property Label As String
+  overload: Phx.Inject.LabelAttribute.Label*
+- uid: Phx.Inject.LabelAttribute.#ctor(System.String)
+  commentId: M:Phx.Inject.LabelAttribute.#ctor(System.String)
+  id: '#ctor(System.String)'
+  parent: Phx.Inject.LabelAttribute
+  langs:
+  - csharp
+  - vb
+  name: LabelAttribute(string)
+  nameWithType: LabelAttribute.LabelAttribute(string)
+  fullName: Phx.Inject.LabelAttribute.LabelAttribute(string)
+  type: Constructor
+  source:
+    remote:
+      path: src/Phx.Inject/Phx/Inject/LabelAttribute.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
+    id: .ctor
+    path: src/Phx.Inject/Phx/Inject/LabelAttribute.cs
+    startLine: 21
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject
+  summary: Initializes a new instance of the <xref href="Phx.Inject.LabelAttribute" data-throw-if-not-resolved="false"></xref> class.
+  example: []
+  syntax:
+    content: public LabelAttribute(string label)
+    parameters:
+    - id: label
+      type: System.String
+      description: The unique name for this label.
+    content.vb: Public Sub New(label As String)
+  overload: Phx.Inject.LabelAttribute.#ctor*
+  nameWithType.vb: LabelAttribute.New(String)
+  fullName.vb: Phx.Inject.LabelAttribute.New(String)
+  name.vb: New(String)
 references:
 - uid: Phx.Inject
   commentId: N:Phx.Inject
@@ -1938,30 +1976,30 @@ references:
     href: https://learn.microsoft.com/dotnet/api/system.object.tostring
   - name: (
   - name: )
-- uid: Phx.Inject.QualifierAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.QualifierAttribute})
+- uid: Phx.Inject.LabelAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.LabelAttribute})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
-  name: Also<QualifierAttribute>(QualifierAttribute, Action<QualifierAttribute>)
-  nameWithType: FunctionalExtensions.Also<QualifierAttribute>(QualifierAttribute, Action<QualifierAttribute>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<Phx.Inject.QualifierAttribute>(Phx.Inject.QualifierAttribute, System.Action<Phx.Inject.QualifierAttribute>)
-  nameWithType.vb: FunctionalExtensions.Also(Of QualifierAttribute)(QualifierAttribute, Action(Of QualifierAttribute))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of Phx.Inject.QualifierAttribute)(Phx.Inject.QualifierAttribute, System.Action(Of Phx.Inject.QualifierAttribute))
-  name.vb: Also(Of QualifierAttribute)(QualifierAttribute, Action(Of QualifierAttribute))
+  name: Also<LabelAttribute>(LabelAttribute, Action<LabelAttribute>)
+  nameWithType: FunctionalExtensions.Also<LabelAttribute>(LabelAttribute, Action<LabelAttribute>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<Phx.Inject.LabelAttribute>(Phx.Inject.LabelAttribute, System.Action<Phx.Inject.LabelAttribute>)
+  nameWithType.vb: FunctionalExtensions.Also(Of LabelAttribute)(LabelAttribute, Action(Of LabelAttribute))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of Phx.Inject.LabelAttribute)(Phx.Inject.LabelAttribute, System.Action(Of Phx.Inject.LabelAttribute))
+  name.vb: Also(Of LabelAttribute)(LabelAttribute, Action(Of LabelAttribute))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.QualifierAttribute,System.Action{Phx.Inject.QualifierAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.LabelAttribute,System.Action{Phx.Inject.LabelAttribute})
     name: Also
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
   - name: <
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -1969,26 +2007,26 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.action-1
   - name: <
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.QualifierAttribute,System.Action{Phx.Inject.QualifierAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.LabelAttribute,System.Action{Phx.Inject.LabelAttribute})
     name: Also
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -1998,38 +2036,38 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: )
   - name: )
-- uid: Phx.Inject.QualifierAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.QualifierAttribute,{TResult}})
+- uid: Phx.Inject.LabelAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.LabelAttribute,{TResult}})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
-  name: Let<QualifierAttribute, TResult>(QualifierAttribute, Func<QualifierAttribute, TResult>)
-  nameWithType: FunctionalExtensions.Let<QualifierAttribute, TResult>(QualifierAttribute, Func<QualifierAttribute, TResult>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<Phx.Inject.QualifierAttribute, TResult>(Phx.Inject.QualifierAttribute, System.Func<Phx.Inject.QualifierAttribute, TResult>)
-  nameWithType.vb: FunctionalExtensions.Let(Of QualifierAttribute, TResult)(QualifierAttribute, Func(Of QualifierAttribute, TResult))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of Phx.Inject.QualifierAttribute, TResult)(Phx.Inject.QualifierAttribute, System.Func(Of Phx.Inject.QualifierAttribute, TResult))
-  name.vb: Let(Of QualifierAttribute, TResult)(QualifierAttribute, Func(Of QualifierAttribute, TResult))
+  name: Let<LabelAttribute, TResult>(LabelAttribute, Func<LabelAttribute, TResult>)
+  nameWithType: FunctionalExtensions.Let<LabelAttribute, TResult>(LabelAttribute, Func<LabelAttribute, TResult>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<Phx.Inject.LabelAttribute, TResult>(Phx.Inject.LabelAttribute, System.Func<Phx.Inject.LabelAttribute, TResult>)
+  nameWithType.vb: FunctionalExtensions.Let(Of LabelAttribute, TResult)(LabelAttribute, Func(Of LabelAttribute, TResult))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of Phx.Inject.LabelAttribute, TResult)(Phx.Inject.LabelAttribute, System.Func(Of Phx.Inject.LabelAttribute, TResult))
+  name.vb: Let(Of LabelAttribute, TResult)(LabelAttribute, Func(Of LabelAttribute, TResult))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.QualifierAttribute,System.Func{Phx.Inject.QualifierAttribute,``1})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.LabelAttribute,System.Func{Phx.Inject.LabelAttribute,``1})
     name: Let
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
   - name: <
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: '>'
   - name: (
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: ','
   - name: " "
   - uid: System.Func`2
@@ -2037,32 +2075,32 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.func-2
   - name: <
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.QualifierAttribute,System.Func{Phx.Inject.QualifierAttribute,``1})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.LabelAttribute,System.Func{Phx.Inject.LabelAttribute,``1})
     name: Let
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: )
   - name: (
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: ','
   - name: " "
   - uid: System.Func`2
@@ -2072,38 +2110,38 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: )
   - name: )
-- uid: Phx.Inject.QualifierAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.QualifierAttribute})
+- uid: Phx.Inject.LabelAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.LabelAttribute})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
-  name: Then<QualifierAttribute>(QualifierAttribute, Action<QualifierAttribute>)
-  nameWithType: FunctionalExtensions.Then<QualifierAttribute>(QualifierAttribute, Action<QualifierAttribute>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<Phx.Inject.QualifierAttribute>(Phx.Inject.QualifierAttribute, System.Action<Phx.Inject.QualifierAttribute>)
-  nameWithType.vb: FunctionalExtensions.Then(Of QualifierAttribute)(QualifierAttribute, Action(Of QualifierAttribute))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of Phx.Inject.QualifierAttribute)(Phx.Inject.QualifierAttribute, System.Action(Of Phx.Inject.QualifierAttribute))
-  name.vb: Then(Of QualifierAttribute)(QualifierAttribute, Action(Of QualifierAttribute))
+  name: Then<LabelAttribute>(LabelAttribute, Action<LabelAttribute>)
+  nameWithType: FunctionalExtensions.Then<LabelAttribute>(LabelAttribute, Action<LabelAttribute>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<Phx.Inject.LabelAttribute>(Phx.Inject.LabelAttribute, System.Action<Phx.Inject.LabelAttribute>)
+  nameWithType.vb: FunctionalExtensions.Then(Of LabelAttribute)(LabelAttribute, Action(Of LabelAttribute))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of Phx.Inject.LabelAttribute)(Phx.Inject.LabelAttribute, System.Action(Of Phx.Inject.LabelAttribute))
+  name.vb: Then(Of LabelAttribute)(LabelAttribute, Action(Of LabelAttribute))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.QualifierAttribute,System.Action{Phx.Inject.QualifierAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.LabelAttribute,System.Action{Phx.Inject.LabelAttribute})
     name: Then
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
   - name: <
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2111,26 +2149,26 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.action-1
   - name: <
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.QualifierAttribute,System.Action{Phx.Inject.QualifierAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.LabelAttribute,System.Action{Phx.Inject.LabelAttribute})
     name: Then
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2140,51 +2178,51 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: )
   - name: )
-- uid: Phx.Inject.QualifierAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+- uid: Phx.Inject.LabelAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
   commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
   parent: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
   definition: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
   href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
-  name: GeneratorIgnored<QualifierAttribute>(QualifierAttribute)
-  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<QualifierAttribute>(QualifierAttribute)
-  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<Phx.Inject.QualifierAttribute>(Phx.Inject.QualifierAttribute)
-  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of QualifierAttribute)(QualifierAttribute)
-  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of Phx.Inject.QualifierAttribute)(Phx.Inject.QualifierAttribute)
-  name.vb: GeneratorIgnored(Of QualifierAttribute)(QualifierAttribute)
+  name: GeneratorIgnored<LabelAttribute>(LabelAttribute)
+  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<LabelAttribute>(LabelAttribute)
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<Phx.Inject.LabelAttribute>(Phx.Inject.LabelAttribute)
+  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of LabelAttribute)(LabelAttribute)
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of Phx.Inject.LabelAttribute)(Phx.Inject.LabelAttribute)
+  name.vb: GeneratorIgnored(Of LabelAttribute)(LabelAttribute)
   spec.csharp:
-  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.QualifierAttribute)
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.LabelAttribute)
     name: GeneratorIgnored
     href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
   - name: <
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.QualifierAttribute)
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.LabelAttribute)
     name: GeneratorIgnored
     href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.QualifierAttribute
-    name: QualifierAttribute
-    href: Phx.Inject.QualifierAttribute.html
+  - uid: Phx.Inject.LabelAttribute
+    name: LabelAttribute
+    href: Phx.Inject.LabelAttribute.html
   - name: )
 - uid: System
   commentId: N:System
@@ -2490,11 +2528,35 @@ references:
   - uid: Phx.Inject.Generator.Incremental.Util
     name: Util
     href: Phx.Inject.Generator.Incremental.Util.html
-- uid: System.AttributeTargets
-  commentId: T:System.AttributeTargets
+- uid: Phx.Inject.LabelAttribute.Label*
+  commentId: Overload:Phx.Inject.LabelAttribute.Label
+  href: Phx.Inject.LabelAttribute.html#Phx_Inject_LabelAttribute_Label
+  name: Label
+  nameWithType: LabelAttribute.Label
+  fullName: Phx.Inject.LabelAttribute.Label
+- uid: System.String
+  commentId: T:System.String
   parent: System
   isExternal: true
-  href: https://learn.microsoft.com/dotnet/api/system.attributetargets
-  name: AttributeTargets
-  nameWithType: AttributeTargets
-  fullName: System.AttributeTargets
+  href: https://learn.microsoft.com/dotnet/api/system.string
+  name: string
+  nameWithType: string
+  fullName: string
+  nameWithType.vb: String
+  fullName.vb: String
+  name.vb: String
+- uid: Phx.Inject.LabelAttribute
+  commentId: T:Phx.Inject.LabelAttribute
+  href: Phx.Inject.LabelAttribute.html
+  name: LabelAttribute
+  nameWithType: LabelAttribute
+  fullName: Phx.Inject.LabelAttribute
+- uid: Phx.Inject.LabelAttribute.#ctor*
+  commentId: Overload:Phx.Inject.LabelAttribute.#ctor
+  href: Phx.Inject.LabelAttribute.html#Phx_Inject_LabelAttribute__ctor_System_String_
+  name: LabelAttribute
+  nameWithType: LabelAttribute.LabelAttribute
+  fullName: Phx.Inject.LabelAttribute.LabelAttribute
+  nameWithType.vb: LabelAttribute.New
+  fullName.vb: Phx.Inject.LabelAttribute.New
+  name.vb: New

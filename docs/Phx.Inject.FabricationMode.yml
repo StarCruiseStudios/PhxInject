@@ -20,7 +20,7 @@ items:
     remote:
       path: src/Phx.Inject/Phx/Inject/FabricationMode.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: FabricationMode
     path: src/Phx.Inject/Phx/Inject/FabricationMode.cs
     startLine: 11
@@ -52,7 +52,7 @@ items:
     remote:
       path: src/Phx.Inject/Phx/Inject/FabricationMode.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: Recurrent
     path: src/Phx.Inject/Phx/Inject/FabricationMode.cs
     startLine: 15
@@ -80,7 +80,7 @@ items:
     remote:
       path: src/Phx.Inject/Phx/Inject/FabricationMode.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: Scoped
     path: src/Phx.Inject/Phx/Inject/FabricationMode.cs
     startLine: 21
@@ -111,7 +111,7 @@ items:
     remote:
       path: src/Phx.Inject/Phx/Inject/FabricationMode.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: Container
     path: src/Phx.Inject/Phx/Inject/FabricationMode.cs
     startLine: 27
@@ -142,7 +142,7 @@ items:
     remote:
       path: src/Phx.Inject/Phx/Inject/FabricationMode.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: ContainerScoped
     path: src/Phx.Inject/Phx/Inject/FabricationMode.cs
     startLine: 33

@@ -1,42 +1,44 @@
 ### YamlMime:ManagedReference
 items:
-- uid: Phx.Inject.FactoryAttribute
-  commentId: T:Phx.Inject.FactoryAttribute
-  id: FactoryAttribute
+- uid: Phx.Inject.PartialAttribute
+  commentId: T:Phx.Inject.PartialAttribute
+  id: PartialAttribute
   parent: Phx.Inject
-  children:
-  - Phx.Inject.FactoryAttribute.#ctor
-  - Phx.Inject.FactoryAttribute.#ctor(Phx.Inject.FabricationMode)
-  - Phx.Inject.FactoryAttribute.FabricationMode
+  children: []
   langs:
   - csharp
   - vb
-  name: FactoryAttribute
-  nameWithType: FactoryAttribute
-  fullName: Phx.Inject.FactoryAttribute
+  name: PartialAttribute
+  nameWithType: PartialAttribute
+  fullName: Phx.Inject.PartialAttribute
   type: Class
   source:
     remote:
-      path: src/Phx.Inject/Phx/Inject/FactoryAttribute.cs
+      path: src/Phx.Inject/Phx/Inject/PartialAttribute.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
-    id: FactoryAttribute
-    path: src/Phx.Inject/Phx/Inject/FactoryAttribute.cs
-    startLine: 13
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
+    id: PartialAttribute
+    path: src/Phx.Inject/Phx/Inject/PartialAttribute.cs
+    startLine: 15
   assemblies:
   - Phx.Inject.Generator
   namespace: Phx.Inject
-  summary: Annotates a factory method that will be invoked to construct a given dependency.
+  summary: >-
+    Annotates a factory method as a partial factory. This can be used on a factory that returns a
+
+    List, Set, or Dictionary to indicate that multiple factories with the same type and qualifiers
+
+    should be combined into a single dependency.
   example: []
   syntax:
     content: >-
       [AttributeUsage(AttributeTargets.Method|AttributeTargets.Property, Inherited = false)]
 
-      public class FactoryAttribute : Attribute
+      public class PartialAttribute : Attribute
     content.vb: >-
       <AttributeUsage(AttributeTargets.MethodOrAttributeTargets.Property, Inherited:=False)>
 
-      Public Class FactoryAttribute Inherits Attribute
+      Public Class PartialAttribute Inherits Attribute
   inheritance:
   - System.Object
   - System.Attribute
@@ -84,10 +86,10 @@ items:
   - System.Object.ReferenceEquals(System.Object,System.Object)
   - System.Object.ToString
   extensionMethods:
-  - Phx.Inject.FactoryAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.FactoryAttribute})
-  - Phx.Inject.FactoryAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.FactoryAttribute,{TResult}})
-  - Phx.Inject.FactoryAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.FactoryAttribute})
-  - Phx.Inject.FactoryAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+  - Phx.Inject.PartialAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.PartialAttribute})
+  - Phx.Inject.PartialAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.PartialAttribute,{TResult}})
+  - Phx.Inject.PartialAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.PartialAttribute})
+  - Phx.Inject.PartialAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
   attributes:
   - type: System.AttributeUsageAttribute
     ctor: System.AttributeUsageAttribute.#ctor(System.AttributeTargets)
@@ -98,106 +100,6 @@ items:
     - name: Inherited
       type: System.Boolean
       value: false
-- uid: Phx.Inject.FactoryAttribute.FabricationMode
-  commentId: P:Phx.Inject.FactoryAttribute.FabricationMode
-  id: FabricationMode
-  parent: Phx.Inject.FactoryAttribute
-  langs:
-  - csharp
-  - vb
-  name: FabricationMode
-  nameWithType: FactoryAttribute.FabricationMode
-  fullName: Phx.Inject.FactoryAttribute.FabricationMode
-  type: Property
-  source:
-    remote:
-      path: src/Phx.Inject/Phx/Inject/FactoryAttribute.cs
-      branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
-    id: FabricationMode
-    path: src/Phx.Inject/Phx/Inject/FactoryAttribute.cs
-    startLine: 19
-  assemblies:
-  - Phx.Inject.Generator
-  namespace: Phx.Inject
-  summary: >-
-    Indicates the <xref href="Phx.Inject.FactoryAttribute.FabricationMode" data-throw-if-not-resolved="false"></xref> used when invoking this factory method more than
-
-    once.
-  example: []
-  syntax:
-    content: public FabricationMode FabricationMode { get; set; }
-    parameters: []
-    return:
-      type: Phx.Inject.FabricationMode
-    content.vb: Public Property FabricationMode As FabricationMode
-  overload: Phx.Inject.FactoryAttribute.FabricationMode*
-- uid: Phx.Inject.FactoryAttribute.#ctor
-  commentId: M:Phx.Inject.FactoryAttribute.#ctor
-  id: '#ctor'
-  parent: Phx.Inject.FactoryAttribute
-  langs:
-  - csharp
-  - vb
-  name: FactoryAttribute()
-  nameWithType: FactoryAttribute.FactoryAttribute()
-  fullName: Phx.Inject.FactoryAttribute.FactoryAttribute()
-  type: Constructor
-  source:
-    remote:
-      path: src/Phx.Inject/Phx/Inject/FactoryAttribute.cs
-      branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
-    id: .ctor
-    path: src/Phx.Inject/Phx/Inject/FactoryAttribute.cs
-    startLine: 22
-  assemblies:
-  - Phx.Inject.Generator
-  namespace: Phx.Inject
-  summary: Initializes a new instance of the <xref href="Phx.Inject.FactoryAttribute" data-throw-if-not-resolved="false"></xref> class.
-  example: []
-  syntax:
-    content: public FactoryAttribute()
-    content.vb: Public Sub New()
-  overload: Phx.Inject.FactoryAttribute.#ctor*
-  nameWithType.vb: FactoryAttribute.New()
-  fullName.vb: Phx.Inject.FactoryAttribute.New()
-  name.vb: New()
-- uid: Phx.Inject.FactoryAttribute.#ctor(Phx.Inject.FabricationMode)
-  commentId: M:Phx.Inject.FactoryAttribute.#ctor(Phx.Inject.FabricationMode)
-  id: '#ctor(Phx.Inject.FabricationMode)'
-  parent: Phx.Inject.FactoryAttribute
-  langs:
-  - csharp
-  - vb
-  name: FactoryAttribute(FabricationMode)
-  nameWithType: FactoryAttribute.FactoryAttribute(FabricationMode)
-  fullName: Phx.Inject.FactoryAttribute.FactoryAttribute(Phx.Inject.FabricationMode)
-  type: Constructor
-  source:
-    remote:
-      path: src/Phx.Inject/Phx/Inject/FactoryAttribute.cs
-      branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
-    id: .ctor
-    path: src/Phx.Inject/Phx/Inject/FactoryAttribute.cs
-    startLine: 28
-  assemblies:
-  - Phx.Inject.Generator
-  namespace: Phx.Inject
-  summary: Initializes a new instance of the <xref href="Phx.Inject.FactoryAttribute" data-throw-if-not-resolved="false"></xref> class.
-  example: []
-  syntax:
-    content: public FactoryAttribute(FabricationMode fabricationMode)
-    parameters:
-    - id: fabricationMode
-      type: Phx.Inject.FabricationMode
-      description: The <xref href="Phx.Inject.FactoryAttribute.FabricationMode" data-throw-if-not-resolved="false"></xref> used when invoking this factory method more than once.
-    content.vb: Public Sub New(fabricationMode As FabricationMode)
-  overload: Phx.Inject.FactoryAttribute.#ctor*
-  nameWithType.vb: FactoryAttribute.New(FabricationMode)
-  fullName.vb: Phx.Inject.FactoryAttribute.New(Phx.Inject.FabricationMode)
-  name.vb: New(FabricationMode)
 references:
 - uid: Phx.Inject
   commentId: N:Phx.Inject
@@ -2008,30 +1910,30 @@ references:
     href: https://learn.microsoft.com/dotnet/api/system.object.tostring
   - name: (
   - name: )
-- uid: Phx.Inject.FactoryAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.FactoryAttribute})
+- uid: Phx.Inject.PartialAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.PartialAttribute})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
-  name: Also<FactoryAttribute>(FactoryAttribute, Action<FactoryAttribute>)
-  nameWithType: FunctionalExtensions.Also<FactoryAttribute>(FactoryAttribute, Action<FactoryAttribute>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<Phx.Inject.FactoryAttribute>(Phx.Inject.FactoryAttribute, System.Action<Phx.Inject.FactoryAttribute>)
-  nameWithType.vb: FunctionalExtensions.Also(Of FactoryAttribute)(FactoryAttribute, Action(Of FactoryAttribute))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of Phx.Inject.FactoryAttribute)(Phx.Inject.FactoryAttribute, System.Action(Of Phx.Inject.FactoryAttribute))
-  name.vb: Also(Of FactoryAttribute)(FactoryAttribute, Action(Of FactoryAttribute))
+  name: Also<PartialAttribute>(PartialAttribute, Action<PartialAttribute>)
+  nameWithType: FunctionalExtensions.Also<PartialAttribute>(PartialAttribute, Action<PartialAttribute>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<Phx.Inject.PartialAttribute>(Phx.Inject.PartialAttribute, System.Action<Phx.Inject.PartialAttribute>)
+  nameWithType.vb: FunctionalExtensions.Also(Of PartialAttribute)(PartialAttribute, Action(Of PartialAttribute))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of Phx.Inject.PartialAttribute)(Phx.Inject.PartialAttribute, System.Action(Of Phx.Inject.PartialAttribute))
+  name.vb: Also(Of PartialAttribute)(PartialAttribute, Action(Of PartialAttribute))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.FactoryAttribute,System.Action{Phx.Inject.FactoryAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.PartialAttribute,System.Action{Phx.Inject.PartialAttribute})
     name: Also
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
   - name: <
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2039,26 +1941,26 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.action-1
   - name: <
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.FactoryAttribute,System.Action{Phx.Inject.FactoryAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.PartialAttribute,System.Action{Phx.Inject.PartialAttribute})
     name: Also
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2068,38 +1970,38 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: )
   - name: )
-- uid: Phx.Inject.FactoryAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.FactoryAttribute,{TResult}})
+- uid: Phx.Inject.PartialAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.PartialAttribute,{TResult}})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
-  name: Let<FactoryAttribute, TResult>(FactoryAttribute, Func<FactoryAttribute, TResult>)
-  nameWithType: FunctionalExtensions.Let<FactoryAttribute, TResult>(FactoryAttribute, Func<FactoryAttribute, TResult>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<Phx.Inject.FactoryAttribute, TResult>(Phx.Inject.FactoryAttribute, System.Func<Phx.Inject.FactoryAttribute, TResult>)
-  nameWithType.vb: FunctionalExtensions.Let(Of FactoryAttribute, TResult)(FactoryAttribute, Func(Of FactoryAttribute, TResult))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of Phx.Inject.FactoryAttribute, TResult)(Phx.Inject.FactoryAttribute, System.Func(Of Phx.Inject.FactoryAttribute, TResult))
-  name.vb: Let(Of FactoryAttribute, TResult)(FactoryAttribute, Func(Of FactoryAttribute, TResult))
+  name: Let<PartialAttribute, TResult>(PartialAttribute, Func<PartialAttribute, TResult>)
+  nameWithType: FunctionalExtensions.Let<PartialAttribute, TResult>(PartialAttribute, Func<PartialAttribute, TResult>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<Phx.Inject.PartialAttribute, TResult>(Phx.Inject.PartialAttribute, System.Func<Phx.Inject.PartialAttribute, TResult>)
+  nameWithType.vb: FunctionalExtensions.Let(Of PartialAttribute, TResult)(PartialAttribute, Func(Of PartialAttribute, TResult))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of Phx.Inject.PartialAttribute, TResult)(Phx.Inject.PartialAttribute, System.Func(Of Phx.Inject.PartialAttribute, TResult))
+  name.vb: Let(Of PartialAttribute, TResult)(PartialAttribute, Func(Of PartialAttribute, TResult))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.FactoryAttribute,System.Func{Phx.Inject.FactoryAttribute,``1})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.PartialAttribute,System.Func{Phx.Inject.PartialAttribute,``1})
     name: Let
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
   - name: <
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: '>'
   - name: (
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: ','
   - name: " "
   - uid: System.Func`2
@@ -2107,32 +2009,32 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.func-2
   - name: <
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.FactoryAttribute,System.Func{Phx.Inject.FactoryAttribute,``1})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.PartialAttribute,System.Func{Phx.Inject.PartialAttribute,``1})
     name: Let
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: )
   - name: (
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: ','
   - name: " "
   - uid: System.Func`2
@@ -2142,38 +2044,38 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: )
   - name: )
-- uid: Phx.Inject.FactoryAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.FactoryAttribute})
+- uid: Phx.Inject.PartialAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.PartialAttribute})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
-  name: Then<FactoryAttribute>(FactoryAttribute, Action<FactoryAttribute>)
-  nameWithType: FunctionalExtensions.Then<FactoryAttribute>(FactoryAttribute, Action<FactoryAttribute>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<Phx.Inject.FactoryAttribute>(Phx.Inject.FactoryAttribute, System.Action<Phx.Inject.FactoryAttribute>)
-  nameWithType.vb: FunctionalExtensions.Then(Of FactoryAttribute)(FactoryAttribute, Action(Of FactoryAttribute))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of Phx.Inject.FactoryAttribute)(Phx.Inject.FactoryAttribute, System.Action(Of Phx.Inject.FactoryAttribute))
-  name.vb: Then(Of FactoryAttribute)(FactoryAttribute, Action(Of FactoryAttribute))
+  name: Then<PartialAttribute>(PartialAttribute, Action<PartialAttribute>)
+  nameWithType: FunctionalExtensions.Then<PartialAttribute>(PartialAttribute, Action<PartialAttribute>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<Phx.Inject.PartialAttribute>(Phx.Inject.PartialAttribute, System.Action<Phx.Inject.PartialAttribute>)
+  nameWithType.vb: FunctionalExtensions.Then(Of PartialAttribute)(PartialAttribute, Action(Of PartialAttribute))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of Phx.Inject.PartialAttribute)(Phx.Inject.PartialAttribute, System.Action(Of Phx.Inject.PartialAttribute))
+  name.vb: Then(Of PartialAttribute)(PartialAttribute, Action(Of PartialAttribute))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.FactoryAttribute,System.Action{Phx.Inject.FactoryAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.PartialAttribute,System.Action{Phx.Inject.PartialAttribute})
     name: Then
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
   - name: <
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2181,26 +2083,26 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.action-1
   - name: <
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.FactoryAttribute,System.Action{Phx.Inject.FactoryAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.PartialAttribute,System.Action{Phx.Inject.PartialAttribute})
     name: Then
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2210,51 +2112,51 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: )
   - name: )
-- uid: Phx.Inject.FactoryAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+- uid: Phx.Inject.PartialAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
   commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
   parent: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
   definition: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
   href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
-  name: GeneratorIgnored<FactoryAttribute>(FactoryAttribute)
-  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<FactoryAttribute>(FactoryAttribute)
-  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<Phx.Inject.FactoryAttribute>(Phx.Inject.FactoryAttribute)
-  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of FactoryAttribute)(FactoryAttribute)
-  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of Phx.Inject.FactoryAttribute)(Phx.Inject.FactoryAttribute)
-  name.vb: GeneratorIgnored(Of FactoryAttribute)(FactoryAttribute)
+  name: GeneratorIgnored<PartialAttribute>(PartialAttribute)
+  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<PartialAttribute>(PartialAttribute)
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<Phx.Inject.PartialAttribute>(Phx.Inject.PartialAttribute)
+  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of PartialAttribute)(PartialAttribute)
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of Phx.Inject.PartialAttribute)(Phx.Inject.PartialAttribute)
+  name.vb: GeneratorIgnored(Of PartialAttribute)(PartialAttribute)
   spec.csharp:
-  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.FactoryAttribute)
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.PartialAttribute)
     name: GeneratorIgnored
     href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
   - name: <
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.FactoryAttribute)
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.PartialAttribute)
     name: GeneratorIgnored
     href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.FactoryAttribute
-    name: FactoryAttribute
-    href: Phx.Inject.FactoryAttribute.html
+  - uid: Phx.Inject.PartialAttribute
+    name: PartialAttribute
+    href: Phx.Inject.PartialAttribute.html
   - name: )
 - uid: System
   commentId: N:System
@@ -2560,37 +2462,3 @@ references:
   - uid: Phx.Inject.Generator.Incremental.Util
     name: Util
     href: Phx.Inject.Generator.Incremental.Util.html
-- uid: Phx.Inject.FactoryAttribute.FabricationMode
-  commentId: P:Phx.Inject.FactoryAttribute.FabricationMode
-  href: Phx.Inject.FactoryAttribute.html#Phx_Inject_FactoryAttribute_FabricationMode
-  name: FabricationMode
-  nameWithType: FactoryAttribute.FabricationMode
-  fullName: Phx.Inject.FactoryAttribute.FabricationMode
-- uid: Phx.Inject.FactoryAttribute.FabricationMode*
-  commentId: Overload:Phx.Inject.FactoryAttribute.FabricationMode
-  href: Phx.Inject.FactoryAttribute.html#Phx_Inject_FactoryAttribute_FabricationMode
-  name: FabricationMode
-  nameWithType: FactoryAttribute.FabricationMode
-  fullName: Phx.Inject.FactoryAttribute.FabricationMode
-- uid: Phx.Inject.FabricationMode
-  commentId: T:Phx.Inject.FabricationMode
-  parent: Phx.Inject
-  href: Phx.Inject.FabricationMode.html
-  name: FabricationMode
-  nameWithType: FabricationMode
-  fullName: Phx.Inject.FabricationMode
-- uid: Phx.Inject.FactoryAttribute
-  commentId: T:Phx.Inject.FactoryAttribute
-  href: Phx.Inject.FactoryAttribute.html
-  name: FactoryAttribute
-  nameWithType: FactoryAttribute
-  fullName: Phx.Inject.FactoryAttribute
-- uid: Phx.Inject.FactoryAttribute.#ctor*
-  commentId: Overload:Phx.Inject.FactoryAttribute.#ctor
-  href: Phx.Inject.FactoryAttribute.html#Phx_Inject_FactoryAttribute__ctor
-  name: FactoryAttribute
-  nameWithType: FactoryAttribute.FactoryAttribute
-  fullName: Phx.Inject.FactoryAttribute.FactoryAttribute
-  nameWithType.vb: FactoryAttribute.New
-  fullName.vb: Phx.Inject.FactoryAttribute.New
-  name.vb: New

@@ -18,7 +18,7 @@ items:
     remote:
       path: src/Phx.Inject.Generator/Phx/Inject/Common/Util/IEnumerableExtensions.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: IEnumerableExtensions
     path: src/Phx.Inject.Generator/Phx/Inject/Common/Util/IEnumerableExtensions.cs
     startLine: 72
@@ -127,7 +127,7 @@ items:
     remote:
       path: src/Phx.Inject.Generator/Phx/Inject/Common/Util/IEnumerableExtensions.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: AppendIfNotNull
     path: src/Phx.Inject.Generator/Phx/Inject/Common/Util/IEnumerableExtensions.cs
     startLine: 96
@@ -194,7 +194,7 @@ items:
     remote:
       path: src/Phx.Inject.Generator/Phx/Inject/Common/Util/IEnumerableExtensions.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: ToImmutableMultiMap
     path: src/Phx.Inject.Generator/Phx/Inject/Common/Util/IEnumerableExtensions.cs
     startLine: 135

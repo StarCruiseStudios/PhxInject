@@ -1,42 +1,43 @@
 ### YamlMime:ManagedReference
 items:
-- uid: Phx.Inject.AutoBuilderAttribute
-  commentId: T:Phx.Inject.AutoBuilderAttribute
-  id: AutoBuilderAttribute
+- uid: Phx.Inject.InjectorAttribute
+  commentId: T:Phx.Inject.InjectorAttribute
+  id: InjectorAttribute
   parent: Phx.Inject
-  children: []
+  children:
+  - Phx.Inject.InjectorAttribute.#ctor(System.String,System.Type[])
+  - Phx.Inject.InjectorAttribute.#ctor(System.Type[])
+  - Phx.Inject.InjectorAttribute.GeneratedClassName
+  - Phx.Inject.InjectorAttribute.Specifications
   langs:
   - csharp
   - vb
-  name: AutoBuilderAttribute
-  nameWithType: AutoBuilderAttribute
-  fullName: Phx.Inject.AutoBuilderAttribute
+  name: InjectorAttribute
+  nameWithType: InjectorAttribute
+  fullName: Phx.Inject.InjectorAttribute
   type: Class
   source:
     remote:
-      path: src/Phx.Inject/Phx/Inject/AutoBuilderAttribute.cs
+      path: src/Phx.Inject/Phx/Inject/InjectorAttribute.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
-    id: AutoBuilderAttribute
-    path: src/Phx.Inject/Phx/Inject/AutoBuilderAttribute.cs
-    startLine: 14
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
+    id: InjectorAttribute
+    path: src/Phx.Inject/Phx/Inject/InjectorAttribute.cs
+    startLine: 11
   assemblies:
   - Phx.Inject.Generator
   namespace: Phx.Inject
-  summary: >-
-    Annotates a builder method that will be invoked to complete the construction of a given
-
-    dependency.
+  summary: Annotates an injector interface as the entry point to a DAG.
   example: []
   syntax:
     content: >-
-      [AttributeUsage(AttributeTargets.Method, Inherited = false)]
+      [AttributeUsage(AttributeTargets.Interface)]
 
-      public class AutoBuilderAttribute : Attribute
+      public class InjectorAttribute : Attribute
     content.vb: >-
-      <AttributeUsage(AttributeTargets.Method, Inherited:=False)>
+      <AttributeUsage(AttributeTargets.Interface)>
 
-      Public Class AutoBuilderAttribute Inherits Attribute
+      Public Class InjectorAttribute Inherits Attribute
   inheritance:
   - System.Object
   - System.Attribute
@@ -84,20 +85,157 @@ items:
   - System.Object.ReferenceEquals(System.Object,System.Object)
   - System.Object.ToString
   extensionMethods:
-  - Phx.Inject.AutoBuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.AutoBuilderAttribute})
-  - Phx.Inject.AutoBuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.AutoBuilderAttribute,{TResult}})
-  - Phx.Inject.AutoBuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.AutoBuilderAttribute})
-  - Phx.Inject.AutoBuilderAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+  - Phx.Inject.InjectorAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.InjectorAttribute})
+  - Phx.Inject.InjectorAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.InjectorAttribute,{TResult}})
+  - Phx.Inject.InjectorAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.InjectorAttribute})
+  - Phx.Inject.InjectorAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
   attributes:
   - type: System.AttributeUsageAttribute
     ctor: System.AttributeUsageAttribute.#ctor(System.AttributeTargets)
     arguments:
     - type: System.AttributeTargets
-      value: 64
-    namedArguments:
-    - name: Inherited
-      type: System.Boolean
-      value: false
+      value: 1024
+- uid: Phx.Inject.InjectorAttribute.GeneratedClassName
+  commentId: P:Phx.Inject.InjectorAttribute.GeneratedClassName
+  id: GeneratedClassName
+  parent: Phx.Inject.InjectorAttribute
+  langs:
+  - csharp
+  - vb
+  name: GeneratedClassName
+  nameWithType: InjectorAttribute.GeneratedClassName
+  fullName: Phx.Inject.InjectorAttribute.GeneratedClassName
+  type: Property
+  source:
+    remote:
+      path: src/Phx.Inject/Phx/Inject/InjectorAttribute.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
+    id: GeneratedClassName
+    path: src/Phx.Inject/Phx/Inject/InjectorAttribute.cs
+    startLine: 19
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject
+  summary: The name to use for the generated injector class.
+  remarks: >-
+    This value may be null if no custom class name is specified. If no custom name is specified a
+
+    default value of "GeneratedXyz" will be used, where Xyz is the annotated interface's name with
+
+    the leading "I" removed, if there is one.
+  example: []
+  syntax:
+    content: public string? GeneratedClassName { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property GeneratedClassName As String
+  overload: Phx.Inject.InjectorAttribute.GeneratedClassName*
+- uid: Phx.Inject.InjectorAttribute.Specifications
+  commentId: P:Phx.Inject.InjectorAttribute.Specifications
+  id: Specifications
+  parent: Phx.Inject.InjectorAttribute
+  langs:
+  - csharp
+  - vb
+  name: Specifications
+  nameWithType: InjectorAttribute.Specifications
+  fullName: Phx.Inject.InjectorAttribute.Specifications
+  type: Property
+  source:
+    remote:
+      path: src/Phx.Inject/Phx/Inject/InjectorAttribute.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
+    id: Specifications
+    path: src/Phx.Inject/Phx/Inject/InjectorAttribute.cs
+    startLine: 22
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject
+  summary: A collection of specification types used by this injector.
+  example: []
+  syntax:
+    content: public IEnumerable<Type> Specifications { get; }
+    parameters: []
+    return:
+      type: System.Collections.Generic.IEnumerable{System.Type}
+    content.vb: Public ReadOnly Property Specifications As IEnumerable(Of Type)
+  overload: Phx.Inject.InjectorAttribute.Specifications*
+- uid: Phx.Inject.InjectorAttribute.#ctor(System.Type[])
+  commentId: M:Phx.Inject.InjectorAttribute.#ctor(System.Type[])
+  id: '#ctor(System.Type[])'
+  parent: Phx.Inject.InjectorAttribute
+  langs:
+  - csharp
+  - vb
+  name: InjectorAttribute(params Type[])
+  nameWithType: InjectorAttribute.InjectorAttribute(params Type[])
+  fullName: Phx.Inject.InjectorAttribute.InjectorAttribute(params System.Type[])
+  type: Constructor
+  source:
+    remote:
+      path: src/Phx.Inject/Phx/Inject/InjectorAttribute.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
+    id: .ctor
+    path: src/Phx.Inject/Phx/Inject/InjectorAttribute.cs
+    startLine: 26
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject
+  summary: Initializes a new instance of the <xref href="Phx.Inject.InjectorAttribute" data-throw-if-not-resolved="false"></xref> class.
+  example: []
+  syntax:
+    content: public InjectorAttribute(params Type[] specifications)
+    parameters:
+    - id: specifications
+      type: System.Type[]
+      description: A collection of specification types used by this injector.
+    content.vb: Public Sub New(ParamArray specifications As Type())
+  overload: Phx.Inject.InjectorAttribute.#ctor*
+  nameWithType.vb: InjectorAttribute.New(ParamArray Type())
+  fullName.vb: Phx.Inject.InjectorAttribute.New(ParamArray System.Type())
+  name.vb: New(ParamArray Type())
+- uid: Phx.Inject.InjectorAttribute.#ctor(System.String,System.Type[])
+  commentId: M:Phx.Inject.InjectorAttribute.#ctor(System.String,System.Type[])
+  id: '#ctor(System.String,System.Type[])'
+  parent: Phx.Inject.InjectorAttribute
+  langs:
+  - csharp
+  - vb
+  name: InjectorAttribute(string?, params Type[])
+  nameWithType: InjectorAttribute.InjectorAttribute(string?, params Type[])
+  fullName: Phx.Inject.InjectorAttribute.InjectorAttribute(string?, params System.Type[])
+  type: Constructor
+  source:
+    remote:
+      path: src/Phx.Inject/Phx/Inject/InjectorAttribute.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
+    id: .ctor
+    path: src/Phx.Inject/Phx/Inject/InjectorAttribute.cs
+    startLine: 33
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject
+  summary: Initializes a new instance of the <xref href="Phx.Inject.InjectorAttribute" data-throw-if-not-resolved="false"></xref> class.
+  example: []
+  syntax:
+    content: public InjectorAttribute(string? generatedClassName, params Type[] specifications)
+    parameters:
+    - id: generatedClassName
+      type: System.String
+      description: The name to use for the generated injector class.
+    - id: specifications
+      type: System.Type[]
+      description: A collection of specification types used by this injector.
+    content.vb: Public Sub New(generatedClassName As String, ParamArray specifications As Type())
+  overload: Phx.Inject.InjectorAttribute.#ctor*
+  nameWithType.vb: InjectorAttribute.New(String, ParamArray Type())
+  fullName.vb: Phx.Inject.InjectorAttribute.New(String, ParamArray System.Type())
+  name.vb: New(String, ParamArray Type())
 references:
 - uid: Phx.Inject
   commentId: N:Phx.Inject
@@ -1908,30 +2046,30 @@ references:
     href: https://learn.microsoft.com/dotnet/api/system.object.tostring
   - name: (
   - name: )
-- uid: Phx.Inject.AutoBuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.AutoBuilderAttribute})
+- uid: Phx.Inject.InjectorAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.InjectorAttribute})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
-  name: Also<AutoBuilderAttribute>(AutoBuilderAttribute, Action<AutoBuilderAttribute>)
-  nameWithType: FunctionalExtensions.Also<AutoBuilderAttribute>(AutoBuilderAttribute, Action<AutoBuilderAttribute>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<Phx.Inject.AutoBuilderAttribute>(Phx.Inject.AutoBuilderAttribute, System.Action<Phx.Inject.AutoBuilderAttribute>)
-  nameWithType.vb: FunctionalExtensions.Also(Of AutoBuilderAttribute)(AutoBuilderAttribute, Action(Of AutoBuilderAttribute))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of Phx.Inject.AutoBuilderAttribute)(Phx.Inject.AutoBuilderAttribute, System.Action(Of Phx.Inject.AutoBuilderAttribute))
-  name.vb: Also(Of AutoBuilderAttribute)(AutoBuilderAttribute, Action(Of AutoBuilderAttribute))
+  name: Also<InjectorAttribute>(InjectorAttribute, Action<InjectorAttribute>)
+  nameWithType: FunctionalExtensions.Also<InjectorAttribute>(InjectorAttribute, Action<InjectorAttribute>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<Phx.Inject.InjectorAttribute>(Phx.Inject.InjectorAttribute, System.Action<Phx.Inject.InjectorAttribute>)
+  nameWithType.vb: FunctionalExtensions.Also(Of InjectorAttribute)(InjectorAttribute, Action(Of InjectorAttribute))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of Phx.Inject.InjectorAttribute)(Phx.Inject.InjectorAttribute, System.Action(Of Phx.Inject.InjectorAttribute))
+  name.vb: Also(Of InjectorAttribute)(InjectorAttribute, Action(Of InjectorAttribute))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.AutoBuilderAttribute,System.Action{Phx.Inject.AutoBuilderAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.InjectorAttribute,System.Action{Phx.Inject.InjectorAttribute})
     name: Also
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
   - name: <
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -1939,26 +2077,26 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.action-1
   - name: <
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.AutoBuilderAttribute,System.Action{Phx.Inject.AutoBuilderAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.InjectorAttribute,System.Action{Phx.Inject.InjectorAttribute})
     name: Also
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -1968,38 +2106,38 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: )
   - name: )
-- uid: Phx.Inject.AutoBuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.AutoBuilderAttribute,{TResult}})
+- uid: Phx.Inject.InjectorAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.InjectorAttribute,{TResult}})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
-  name: Let<AutoBuilderAttribute, TResult>(AutoBuilderAttribute, Func<AutoBuilderAttribute, TResult>)
-  nameWithType: FunctionalExtensions.Let<AutoBuilderAttribute, TResult>(AutoBuilderAttribute, Func<AutoBuilderAttribute, TResult>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<Phx.Inject.AutoBuilderAttribute, TResult>(Phx.Inject.AutoBuilderAttribute, System.Func<Phx.Inject.AutoBuilderAttribute, TResult>)
-  nameWithType.vb: FunctionalExtensions.Let(Of AutoBuilderAttribute, TResult)(AutoBuilderAttribute, Func(Of AutoBuilderAttribute, TResult))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of Phx.Inject.AutoBuilderAttribute, TResult)(Phx.Inject.AutoBuilderAttribute, System.Func(Of Phx.Inject.AutoBuilderAttribute, TResult))
-  name.vb: Let(Of AutoBuilderAttribute, TResult)(AutoBuilderAttribute, Func(Of AutoBuilderAttribute, TResult))
+  name: Let<InjectorAttribute, TResult>(InjectorAttribute, Func<InjectorAttribute, TResult>)
+  nameWithType: FunctionalExtensions.Let<InjectorAttribute, TResult>(InjectorAttribute, Func<InjectorAttribute, TResult>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<Phx.Inject.InjectorAttribute, TResult>(Phx.Inject.InjectorAttribute, System.Func<Phx.Inject.InjectorAttribute, TResult>)
+  nameWithType.vb: FunctionalExtensions.Let(Of InjectorAttribute, TResult)(InjectorAttribute, Func(Of InjectorAttribute, TResult))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of Phx.Inject.InjectorAttribute, TResult)(Phx.Inject.InjectorAttribute, System.Func(Of Phx.Inject.InjectorAttribute, TResult))
+  name.vb: Let(Of InjectorAttribute, TResult)(InjectorAttribute, Func(Of InjectorAttribute, TResult))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.AutoBuilderAttribute,System.Func{Phx.Inject.AutoBuilderAttribute,``1})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.InjectorAttribute,System.Func{Phx.Inject.InjectorAttribute,``1})
     name: Let
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
   - name: <
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: '>'
   - name: (
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: ','
   - name: " "
   - uid: System.Func`2
@@ -2007,32 +2145,32 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.func-2
   - name: <
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.AutoBuilderAttribute,System.Func{Phx.Inject.AutoBuilderAttribute,``1})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.InjectorAttribute,System.Func{Phx.Inject.InjectorAttribute,``1})
     name: Let
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: )
   - name: (
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: ','
   - name: " "
   - uid: System.Func`2
@@ -2042,38 +2180,38 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: )
   - name: )
-- uid: Phx.Inject.AutoBuilderAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.AutoBuilderAttribute})
+- uid: Phx.Inject.InjectorAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.InjectorAttribute})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
-  name: Then<AutoBuilderAttribute>(AutoBuilderAttribute, Action<AutoBuilderAttribute>)
-  nameWithType: FunctionalExtensions.Then<AutoBuilderAttribute>(AutoBuilderAttribute, Action<AutoBuilderAttribute>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<Phx.Inject.AutoBuilderAttribute>(Phx.Inject.AutoBuilderAttribute, System.Action<Phx.Inject.AutoBuilderAttribute>)
-  nameWithType.vb: FunctionalExtensions.Then(Of AutoBuilderAttribute)(AutoBuilderAttribute, Action(Of AutoBuilderAttribute))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of Phx.Inject.AutoBuilderAttribute)(Phx.Inject.AutoBuilderAttribute, System.Action(Of Phx.Inject.AutoBuilderAttribute))
-  name.vb: Then(Of AutoBuilderAttribute)(AutoBuilderAttribute, Action(Of AutoBuilderAttribute))
+  name: Then<InjectorAttribute>(InjectorAttribute, Action<InjectorAttribute>)
+  nameWithType: FunctionalExtensions.Then<InjectorAttribute>(InjectorAttribute, Action<InjectorAttribute>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<Phx.Inject.InjectorAttribute>(Phx.Inject.InjectorAttribute, System.Action<Phx.Inject.InjectorAttribute>)
+  nameWithType.vb: FunctionalExtensions.Then(Of InjectorAttribute)(InjectorAttribute, Action(Of InjectorAttribute))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of Phx.Inject.InjectorAttribute)(Phx.Inject.InjectorAttribute, System.Action(Of Phx.Inject.InjectorAttribute))
+  name.vb: Then(Of InjectorAttribute)(InjectorAttribute, Action(Of InjectorAttribute))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.AutoBuilderAttribute,System.Action{Phx.Inject.AutoBuilderAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.InjectorAttribute,System.Action{Phx.Inject.InjectorAttribute})
     name: Then
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
   - name: <
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2081,26 +2219,26 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.action-1
   - name: <
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.AutoBuilderAttribute,System.Action{Phx.Inject.AutoBuilderAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.InjectorAttribute,System.Action{Phx.Inject.InjectorAttribute})
     name: Then
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2110,51 +2248,51 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: )
   - name: )
-- uid: Phx.Inject.AutoBuilderAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+- uid: Phx.Inject.InjectorAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
   commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
   parent: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
   definition: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
   href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
-  name: GeneratorIgnored<AutoBuilderAttribute>(AutoBuilderAttribute)
-  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<AutoBuilderAttribute>(AutoBuilderAttribute)
-  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<Phx.Inject.AutoBuilderAttribute>(Phx.Inject.AutoBuilderAttribute)
-  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of AutoBuilderAttribute)(AutoBuilderAttribute)
-  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of Phx.Inject.AutoBuilderAttribute)(Phx.Inject.AutoBuilderAttribute)
-  name.vb: GeneratorIgnored(Of AutoBuilderAttribute)(AutoBuilderAttribute)
+  name: GeneratorIgnored<InjectorAttribute>(InjectorAttribute)
+  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<InjectorAttribute>(InjectorAttribute)
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<Phx.Inject.InjectorAttribute>(Phx.Inject.InjectorAttribute)
+  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of InjectorAttribute)(InjectorAttribute)
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of Phx.Inject.InjectorAttribute)(Phx.Inject.InjectorAttribute)
+  name.vb: GeneratorIgnored(Of InjectorAttribute)(InjectorAttribute)
   spec.csharp:
-  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.AutoBuilderAttribute)
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.InjectorAttribute)
     name: GeneratorIgnored
     href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
   - name: <
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.AutoBuilderAttribute)
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.InjectorAttribute)
     name: GeneratorIgnored
     href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.AutoBuilderAttribute
-    name: AutoBuilderAttribute
-    href: Phx.Inject.AutoBuilderAttribute.html
+  - uid: Phx.Inject.InjectorAttribute
+    name: InjectorAttribute
+    href: Phx.Inject.InjectorAttribute.html
   - name: )
 - uid: System
   commentId: N:System
@@ -2460,3 +2598,164 @@ references:
   - uid: Phx.Inject.Generator.Incremental.Util
     name: Util
     href: Phx.Inject.Generator.Incremental.Util.html
+- uid: Phx.Inject.InjectorAttribute.GeneratedClassName*
+  commentId: Overload:Phx.Inject.InjectorAttribute.GeneratedClassName
+  href: Phx.Inject.InjectorAttribute.html#Phx_Inject_InjectorAttribute_GeneratedClassName
+  name: GeneratedClassName
+  nameWithType: InjectorAttribute.GeneratedClassName
+  fullName: Phx.Inject.InjectorAttribute.GeneratedClassName
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.string
+  name: string
+  nameWithType: string
+  fullName: string
+  nameWithType.vb: String
+  fullName.vb: String
+  name.vb: String
+- uid: Phx.Inject.InjectorAttribute.Specifications*
+  commentId: Overload:Phx.Inject.InjectorAttribute.Specifications
+  href: Phx.Inject.InjectorAttribute.html#Phx_Inject_InjectorAttribute_Specifications
+  name: Specifications
+  nameWithType: InjectorAttribute.Specifications
+  fullName: Phx.Inject.InjectorAttribute.Specifications
+- uid: System.Collections.Generic.IEnumerable{System.Type}
+  commentId: T:System.Collections.Generic.IEnumerable{System.Type}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
+  name: IEnumerable<Type>
+  nameWithType: IEnumerable<Type>
+  fullName: System.Collections.Generic.IEnumerable<System.Type>
+  nameWithType.vb: IEnumerable(Of Type)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of System.Type)
+  name.vb: IEnumerable(Of Type)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
+  - name: <
+  - uid: System.Type
+    name: Type
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.type
+  - name: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: System.Type
+    name: Type
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.type
+  - name: )
+- uid: System.Collections.Generic.IEnumerable`1
+  commentId: T:System.Collections.Generic.IEnumerable`1
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
+  name: IEnumerable<T>
+  nameWithType: IEnumerable<T>
+  fullName: System.Collections.Generic.IEnumerable<T>
+  nameWithType.vb: IEnumerable(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
+  name.vb: IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
+  - name: <
+  - name: T
+  - name: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+  spec.csharp:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Collections
+    name: Collections
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections
+  - name: .
+  - uid: System.Collections.Generic
+    name: Generic
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic
+  spec.vb:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Collections
+    name: Collections
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections
+  - name: .
+  - uid: System.Collections.Generic
+    name: Generic
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic
+- uid: Phx.Inject.InjectorAttribute
+  commentId: T:Phx.Inject.InjectorAttribute
+  href: Phx.Inject.InjectorAttribute.html
+  name: InjectorAttribute
+  nameWithType: InjectorAttribute
+  fullName: Phx.Inject.InjectorAttribute
+- uid: Phx.Inject.InjectorAttribute.#ctor*
+  commentId: Overload:Phx.Inject.InjectorAttribute.#ctor
+  href: Phx.Inject.InjectorAttribute.html#Phx_Inject_InjectorAttribute__ctor_System_Type___
+  name: InjectorAttribute
+  nameWithType: InjectorAttribute.InjectorAttribute
+  fullName: Phx.Inject.InjectorAttribute.InjectorAttribute
+  nameWithType.vb: InjectorAttribute.New
+  fullName.vb: Phx.Inject.InjectorAttribute.New
+  name.vb: New
+- uid: System.Type[]
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.type
+  name: Type[]
+  nameWithType: Type[]
+  fullName: System.Type[]
+  nameWithType.vb: Type()
+  fullName.vb: System.Type()
+  name.vb: Type()
+  spec.csharp:
+  - uid: System.Type
+    name: Type
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.type
+  - name: '['
+  - name: ']'
+  spec.vb:
+  - uid: System.Type
+    name: Type
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.type
+  - name: (
+  - name: )

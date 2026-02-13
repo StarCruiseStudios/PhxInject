@@ -1,42 +1,43 @@
 ### YamlMime:ManagedReference
 items:
-- uid: Phx.Inject.SpecificationAttribute
-  commentId: T:Phx.Inject.SpecificationAttribute
-  id: SpecificationAttribute
+- uid: Phx.Inject.QualifierAttribute
+  commentId: T:Phx.Inject.QualifierAttribute
+  id: QualifierAttribute
   parent: Phx.Inject
-  children: []
+  children:
+  - Phx.Inject.QualifierAttribute.Usage
   langs:
   - csharp
   - vb
-  name: SpecificationAttribute
-  nameWithType: SpecificationAttribute
-  fullName: Phx.Inject.SpecificationAttribute
+  name: QualifierAttribute
+  nameWithType: QualifierAttribute
+  fullName: Phx.Inject.QualifierAttribute
   type: Class
   source:
     remote:
-      path: src/Phx.Inject/Phx/Inject/SpecificationAttribute.cs
+      path: src/Phx.Inject/Phx/Inject/QualifierAttribute.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
-    id: SpecificationAttribute
-    path: src/Phx.Inject/Phx/Inject/SpecificationAttribute.cs
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
+    id: QualifierAttribute
+    path: src/Phx.Inject/Phx/Inject/QualifierAttribute.cs
     startLine: 14
   assemblies:
   - Phx.Inject.Generator
   namespace: Phx.Inject
   summary: >-
-    Annotates a specification class that contains factory methods and links used to construct a
+    Annotates an attribute as a qualifier that can be applied to a factory method or dependency as
 
-    DAG.
+    a unique label used to discriminate them from other dependencies with the same type.
   example: []
   syntax:
     content: >-
-      [AttributeUsage(AttributeTargets.Class|AttributeTargets.Interface, Inherited = false)]
+      [AttributeUsage(AttributeTargets.Class, Inherited = false)]
 
-      public class SpecificationAttribute : Attribute
+      public class QualifierAttribute : Attribute
     content.vb: >-
-      <AttributeUsage(AttributeTargets.ClassOrAttributeTargets.Interface, Inherited:=False)>
+      <AttributeUsage(AttributeTargets.Class, Inherited:=False)>
 
-      Public Class SpecificationAttribute Inherits Attribute
+      Public Class QualifierAttribute Inherits Attribute
   inheritance:
   - System.Object
   - System.Attribute
@@ -84,20 +85,49 @@ items:
   - System.Object.ReferenceEquals(System.Object,System.Object)
   - System.Object.ToString
   extensionMethods:
-  - Phx.Inject.SpecificationAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.SpecificationAttribute})
-  - Phx.Inject.SpecificationAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.SpecificationAttribute,{TResult}})
-  - Phx.Inject.SpecificationAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.SpecificationAttribute})
-  - Phx.Inject.SpecificationAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+  - Phx.Inject.QualifierAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.QualifierAttribute})
+  - Phx.Inject.QualifierAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.QualifierAttribute,{TResult}})
+  - Phx.Inject.QualifierAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.QualifierAttribute})
+  - Phx.Inject.QualifierAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
   attributes:
   - type: System.AttributeUsageAttribute
     ctor: System.AttributeUsageAttribute.#ctor(System.AttributeTargets)
     arguments:
     - type: System.AttributeTargets
-      value: 1028
+      value: 4
     namedArguments:
     - name: Inherited
       type: System.Boolean
       value: false
+- uid: Phx.Inject.QualifierAttribute.Usage
+  commentId: F:Phx.Inject.QualifierAttribute.Usage
+  id: Usage
+  parent: Phx.Inject.QualifierAttribute
+  langs:
+  - csharp
+  - vb
+  name: Usage
+  nameWithType: QualifierAttribute.Usage
+  fullName: Phx.Inject.QualifierAttribute.Usage
+  type: Field
+  source:
+    remote:
+      path: src/Phx.Inject/Phx/Inject/QualifierAttribute.cs
+      branch: copilot/generate-docfx-markdown-site
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
+    id: Usage
+    path: src/Phx.Inject/Phx/Inject/QualifierAttribute.cs
+    startLine: 17
+  assemblies:
+  - Phx.Inject.Generator
+  namespace: Phx.Inject
+  summary: The <xref href="System.AttributeTargets" data-throw-if-not-resolved="false"></xref> flags applied to a qualifier attribute.
+  example: []
+  syntax:
+    content: public const AttributeTargets Usage = Class | Struct | Constructor | Method | Property | Field | Interface | Parameter
+    return:
+      type: System.AttributeTargets
+    content.vb: Public Const Usage As AttributeTargets = Class Or Struct Or Constructor Or Method Or Property Or Field Or Interface Or Parameter
 references:
 - uid: Phx.Inject
   commentId: N:Phx.Inject
@@ -1908,30 +1938,30 @@ references:
     href: https://learn.microsoft.com/dotnet/api/system.object.tostring
   - name: (
   - name: )
-- uid: Phx.Inject.SpecificationAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.SpecificationAttribute})
+- uid: Phx.Inject.QualifierAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Also``1(System.Action{Phx.Inject.QualifierAttribute})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
-  name: Also<SpecificationAttribute>(SpecificationAttribute, Action<SpecificationAttribute>)
-  nameWithType: FunctionalExtensions.Also<SpecificationAttribute>(SpecificationAttribute, Action<SpecificationAttribute>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<Phx.Inject.SpecificationAttribute>(Phx.Inject.SpecificationAttribute, System.Action<Phx.Inject.SpecificationAttribute>)
-  nameWithType.vb: FunctionalExtensions.Also(Of SpecificationAttribute)(SpecificationAttribute, Action(Of SpecificationAttribute))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of Phx.Inject.SpecificationAttribute)(Phx.Inject.SpecificationAttribute, System.Action(Of Phx.Inject.SpecificationAttribute))
-  name.vb: Also(Of SpecificationAttribute)(SpecificationAttribute, Action(Of SpecificationAttribute))
+  name: Also<QualifierAttribute>(QualifierAttribute, Action<QualifierAttribute>)
+  nameWithType: FunctionalExtensions.Also<QualifierAttribute>(QualifierAttribute, Action<QualifierAttribute>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<Phx.Inject.QualifierAttribute>(Phx.Inject.QualifierAttribute, System.Action<Phx.Inject.QualifierAttribute>)
+  nameWithType.vb: FunctionalExtensions.Also(Of QualifierAttribute)(QualifierAttribute, Action(Of QualifierAttribute))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Also(Of Phx.Inject.QualifierAttribute)(Phx.Inject.QualifierAttribute, System.Action(Of Phx.Inject.QualifierAttribute))
+  name.vb: Also(Of QualifierAttribute)(QualifierAttribute, Action(Of QualifierAttribute))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.SpecificationAttribute,System.Action{Phx.Inject.SpecificationAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.QualifierAttribute,System.Action{Phx.Inject.QualifierAttribute})
     name: Also
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
   - name: <
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -1939,26 +1969,26 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.action-1
   - name: <
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.SpecificationAttribute,System.Action{Phx.Inject.SpecificationAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(Phx.Inject.QualifierAttribute,System.Action{Phx.Inject.QualifierAttribute})
     name: Also
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -1968,38 +1998,38 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: )
   - name: )
-- uid: Phx.Inject.SpecificationAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.SpecificationAttribute,{TResult}})
+- uid: Phx.Inject.QualifierAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Let``2(System.Func{Phx.Inject.QualifierAttribute,{TResult}})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
-  name: Let<SpecificationAttribute, TResult>(SpecificationAttribute, Func<SpecificationAttribute, TResult>)
-  nameWithType: FunctionalExtensions.Let<SpecificationAttribute, TResult>(SpecificationAttribute, Func<SpecificationAttribute, TResult>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<Phx.Inject.SpecificationAttribute, TResult>(Phx.Inject.SpecificationAttribute, System.Func<Phx.Inject.SpecificationAttribute, TResult>)
-  nameWithType.vb: FunctionalExtensions.Let(Of SpecificationAttribute, TResult)(SpecificationAttribute, Func(Of SpecificationAttribute, TResult))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of Phx.Inject.SpecificationAttribute, TResult)(Phx.Inject.SpecificationAttribute, System.Func(Of Phx.Inject.SpecificationAttribute, TResult))
-  name.vb: Let(Of SpecificationAttribute, TResult)(SpecificationAttribute, Func(Of SpecificationAttribute, TResult))
+  name: Let<QualifierAttribute, TResult>(QualifierAttribute, Func<QualifierAttribute, TResult>)
+  nameWithType: FunctionalExtensions.Let<QualifierAttribute, TResult>(QualifierAttribute, Func<QualifierAttribute, TResult>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<Phx.Inject.QualifierAttribute, TResult>(Phx.Inject.QualifierAttribute, System.Func<Phx.Inject.QualifierAttribute, TResult>)
+  nameWithType.vb: FunctionalExtensions.Let(Of QualifierAttribute, TResult)(QualifierAttribute, Func(Of QualifierAttribute, TResult))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Let(Of Phx.Inject.QualifierAttribute, TResult)(Phx.Inject.QualifierAttribute, System.Func(Of Phx.Inject.QualifierAttribute, TResult))
+  name.vb: Let(Of QualifierAttribute, TResult)(QualifierAttribute, Func(Of QualifierAttribute, TResult))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.SpecificationAttribute,System.Func{Phx.Inject.SpecificationAttribute,``1})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.QualifierAttribute,System.Func{Phx.Inject.QualifierAttribute,``1})
     name: Let
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
   - name: <
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: '>'
   - name: (
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: ','
   - name: " "
   - uid: System.Func`2
@@ -2007,32 +2037,32 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.func-2
   - name: <
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.SpecificationAttribute,System.Func{Phx.Inject.SpecificationAttribute,``1})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(Phx.Inject.QualifierAttribute,System.Func{Phx.Inject.QualifierAttribute,``1})
     name: Let
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: )
   - name: (
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: ','
   - name: " "
   - uid: System.Func`2
@@ -2042,38 +2072,38 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: ','
   - name: " "
   - name: TResult
   - name: )
   - name: )
-- uid: Phx.Inject.SpecificationAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.SpecificationAttribute})
+- uid: Phx.Inject.QualifierAttribute.Phx.Inject.Common.Util.FunctionalExtensions.Then``1(System.Action{Phx.Inject.QualifierAttribute})
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
   parent: Phx.Inject.Common.Util.FunctionalExtensions
   definition: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
   href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
-  name: Then<SpecificationAttribute>(SpecificationAttribute, Action<SpecificationAttribute>)
-  nameWithType: FunctionalExtensions.Then<SpecificationAttribute>(SpecificationAttribute, Action<SpecificationAttribute>)
-  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<Phx.Inject.SpecificationAttribute>(Phx.Inject.SpecificationAttribute, System.Action<Phx.Inject.SpecificationAttribute>)
-  nameWithType.vb: FunctionalExtensions.Then(Of SpecificationAttribute)(SpecificationAttribute, Action(Of SpecificationAttribute))
-  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of Phx.Inject.SpecificationAttribute)(Phx.Inject.SpecificationAttribute, System.Action(Of Phx.Inject.SpecificationAttribute))
-  name.vb: Then(Of SpecificationAttribute)(SpecificationAttribute, Action(Of SpecificationAttribute))
+  name: Then<QualifierAttribute>(QualifierAttribute, Action<QualifierAttribute>)
+  nameWithType: FunctionalExtensions.Then<QualifierAttribute>(QualifierAttribute, Action<QualifierAttribute>)
+  fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<Phx.Inject.QualifierAttribute>(Phx.Inject.QualifierAttribute, System.Action<Phx.Inject.QualifierAttribute>)
+  nameWithType.vb: FunctionalExtensions.Then(Of QualifierAttribute)(QualifierAttribute, Action(Of QualifierAttribute))
+  fullName.vb: Phx.Inject.Common.Util.FunctionalExtensions.Then(Of Phx.Inject.QualifierAttribute)(Phx.Inject.QualifierAttribute, System.Action(Of Phx.Inject.QualifierAttribute))
+  name.vb: Then(Of QualifierAttribute)(QualifierAttribute, Action(Of QualifierAttribute))
   spec.csharp:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.SpecificationAttribute,System.Action{Phx.Inject.SpecificationAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.QualifierAttribute,System.Action{Phx.Inject.QualifierAttribute})
     name: Then
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
   - name: <
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2081,26 +2111,26 @@ references:
     isExternal: true
     href: https://learn.microsoft.com/dotnet/api/system.action-1
   - name: <
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: '>'
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.SpecificationAttribute,System.Action{Phx.Inject.SpecificationAttribute})
+  - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(Phx.Inject.QualifierAttribute,System.Action{Phx.Inject.QualifierAttribute})
     name: Then
     href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: ','
   - name: " "
   - uid: System.Action`1
@@ -2110,51 +2140,51 @@ references:
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: )
   - name: )
-- uid: Phx.Inject.SpecificationAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
+- uid: Phx.Inject.QualifierAttribute.Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1
   commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
   parent: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
   definition: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
   href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
-  name: GeneratorIgnored<SpecificationAttribute>(SpecificationAttribute)
-  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<SpecificationAttribute>(SpecificationAttribute)
-  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<Phx.Inject.SpecificationAttribute>(Phx.Inject.SpecificationAttribute)
-  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of SpecificationAttribute)(SpecificationAttribute)
-  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of Phx.Inject.SpecificationAttribute)(Phx.Inject.SpecificationAttribute)
-  name.vb: GeneratorIgnored(Of SpecificationAttribute)(SpecificationAttribute)
+  name: GeneratorIgnored<QualifierAttribute>(QualifierAttribute)
+  nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored<QualifierAttribute>(QualifierAttribute)
+  fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<Phx.Inject.QualifierAttribute>(Phx.Inject.QualifierAttribute)
+  nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of QualifierAttribute)(QualifierAttribute)
+  fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored(Of Phx.Inject.QualifierAttribute)(Phx.Inject.QualifierAttribute)
+  name.vb: GeneratorIgnored(Of QualifierAttribute)(QualifierAttribute)
   spec.csharp:
-  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.SpecificationAttribute)
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.QualifierAttribute)
     name: GeneratorIgnored
     href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
   - name: <
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: '>'
   - name: (
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: )
   spec.vb:
-  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.SpecificationAttribute)
+  - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(Phx.Inject.QualifierAttribute)
     name: GeneratorIgnored
     href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
   - name: (
   - name: Of
   - name: " "
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: )
   - name: (
-  - uid: Phx.Inject.SpecificationAttribute
-    name: SpecificationAttribute
-    href: Phx.Inject.SpecificationAttribute.html
+  - uid: Phx.Inject.QualifierAttribute
+    name: QualifierAttribute
+    href: Phx.Inject.QualifierAttribute.html
   - name: )
 - uid: System
   commentId: N:System
@@ -2460,3 +2490,11 @@ references:
   - uid: Phx.Inject.Generator.Incremental.Util
     name: Util
     href: Phx.Inject.Generator.Incremental.Util.html
+- uid: System.AttributeTargets
+  commentId: T:System.AttributeTargets
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.attributetargets
+  name: AttributeTargets
+  nameWithType: AttributeTargets
+  fullName: System.AttributeTargets

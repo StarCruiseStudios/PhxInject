@@ -21,7 +21,7 @@ items:
     remote:
       path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: GeneratorIgnored
     path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
     startLine: 57
@@ -136,7 +136,7 @@ items:
     remote:
       path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: .ctor
     path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
     startLine: 57
@@ -240,7 +240,7 @@ items:
     remote:
       path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: Value
     path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
     startLine: 65
@@ -277,7 +277,7 @@ items:
     remote:
       path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: Equals
     path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
     startLine: 68
@@ -312,7 +312,7 @@ items:
     remote:
       path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: GetHashCode
     path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
     startLine: 73
@@ -344,7 +344,7 @@ items:
     remote:
       path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
       branch: copilot/generate-docfx-markdown-site
-      repo: https://github.com/StarCruiseStudios/PhxInject
+      repo: https://github.com/StarCruiseStudios/PhxInject.git
     id: ToString
     path: src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs
     startLine: 78
