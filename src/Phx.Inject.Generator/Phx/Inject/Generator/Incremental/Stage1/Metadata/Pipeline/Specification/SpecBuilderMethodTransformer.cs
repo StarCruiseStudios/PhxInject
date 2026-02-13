@@ -24,11 +24,17 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specification;
 
+/// <summary>
+/// Transforms specification builder methods into metadata.
+/// </summary>
 internal class SpecBuilderMethodTransformer(
     ICodeElementValidator elementValidator,
     ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer,
     IAttributeTransformer<BuilderAttributeMetadata> builderAttributeTransformer
 ) : ITransformer<IMethodSymbol, SpecBuilderMethodMetadata> {
+    /// <summary>
+    /// Gets the singleton instance.
+    /// </summary>
     public static readonly SpecBuilderMethodTransformer Instance = new(
         new MethodElementValidator(
             CodeElementAccessibility.PublicOrInternal,
@@ -41,10 +47,12 @@ internal class SpecBuilderMethodTransformer(
         BuilderAttributeTransformer.Instance
     );
 
+    /// <inheritdoc />
     public bool CanTransform(IMethodSymbol methodSymbol) {
         return elementValidator.IsValidSymbol(methodSymbol);
     }
 
+    /// <inheritdoc />
     public IResult<SpecBuilderMethodMetadata> Transform(IMethodSymbol methodSymbol) {
         return DiagnosticsRecorder.Capture(diagnostics => {
             var builderMethodName = methodSymbol.Name;

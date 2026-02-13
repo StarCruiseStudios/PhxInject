@@ -15,15 +15,32 @@ using Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline.Injector;
 
+/// <summary>
+///     Mapper for transforming injector child provider metadata into child factory models.
+/// </summary>
 internal static class InjectorChildFactoryMapper {
+    /// <summary> Gets the singleton mapper instance. </summary>
     public static readonly InjectorChildFactoryMapperInstance Instance = new();
 
+    /// <summary>
+    ///     Maps injector child provider metadata to a child factory model.
+    /// </summary>
+    /// <param name="metadata"> The child provider metadata to map. </param>
+    /// <returns> The mapped child factory model. </returns>
     public static InjectorChildFactoryModel Map(InjectorChildProviderMetadata metadata) {
         return Instance.Map(metadata);
     }
 }
 
+/// <summary>
+///     Instance mapper for transforming injector child provider metadata into child factory models.
+/// </summary>
 internal class InjectorChildFactoryMapperInstance {
+    /// <summary>
+    ///     Maps injector child provider metadata to a child factory model.
+    /// </summary>
+    /// <param name="metadata"> The child provider metadata to map. </param>
+    /// <returns> The mapped child factory model. </returns>
     public InjectorChildFactoryModel Map(InjectorChildProviderMetadata metadata) {
         return new InjectorChildFactoryModel(
             metadata.ChildInjectorType,

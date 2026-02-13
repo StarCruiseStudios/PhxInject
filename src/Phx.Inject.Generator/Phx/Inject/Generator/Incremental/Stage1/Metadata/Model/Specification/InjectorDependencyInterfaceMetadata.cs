@@ -16,6 +16,24 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 
+/// <summary>
+///     Metadata representing an analyzed injector dependency interface.
+///     <para>
+///         InjectorDependency Pattern: Enables composition by defining the contract for
+///         dependencies that a child injector requires from its parent. The parent provides implementations
+///         via this interface, creating a clear boundary between injector hierarchies.
+///     </para>
+///     <para>
+///         Constraints: Can ONLY contain Factories (no Builders or References).
+///         All factories must be parameterless, as they represent the parent's ability to provide
+///         dependencies on-demand without requiring context from the child.
+///     </para>
+/// </summary>
+/// <param name="InjectorDependencyInterfaceType"> The dependency contract interface type. </param>
+/// <param name="FactoryMethods"> Parameterless factory methods defining required parent dependencies. </param>
+/// <param name="FactoryProperties"> Parameterless factory properties for parent-provided dependencies. </param>
+/// <param name="InjectorDependencyAttributeMetadata"> The [InjectorDependency] attribute metadata. </param>
+/// <param name="Location"> The source location of the interface definition. </param>
 internal record InjectorDependencyInterfaceMetadata(
     TypeMetadata InjectorDependencyInterfaceType,
     EquatableList<SpecFactoryMethodMetadata> FactoryMethods,

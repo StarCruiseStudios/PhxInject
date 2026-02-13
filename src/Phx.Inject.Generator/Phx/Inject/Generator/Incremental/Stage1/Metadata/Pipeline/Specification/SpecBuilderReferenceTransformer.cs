@@ -24,11 +24,17 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specification;
 
+/// <summary>
+/// Transforms specification builder references into metadata.
+/// </summary>
 internal class SpecBuilderReferenceTransformer(
     ICodeElementValidator elementValidator,
     ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer,
     IAttributeTransformer<BuilderReferenceAttributeMetadata> builderReferenceAttributeTransformer
 ) : ITransformer<ISymbol, SpecBuilderReferenceMetadata> {
+    /// <summary>
+    /// Gets the singleton instance.
+    /// </summary>
     public static readonly SpecBuilderReferenceTransformer Instance = new(
         CodeElementValidator.Of(
             new FieldElementValidator(
@@ -55,10 +61,12 @@ internal class SpecBuilderReferenceTransformer(
         BuilderReferenceAttributeTransformer.Instance
     );
 
+    /// <inheritdoc />
     public bool CanTransform(ISymbol symbol) {
         return elementValidator.IsValidSymbol(symbol);
     }
 
+    /// <inheritdoc />
     public IResult<SpecBuilderReferenceMetadata> Transform(ISymbol symbol) {
         return DiagnosticsRecorder.Capture(diagnostics => {
             var (name, type) = symbol switch {

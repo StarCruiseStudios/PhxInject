@@ -16,6 +16,12 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Context;
 
+/// <summary>
+///     Model representing the complete injection context for code generation.
+/// </summary>
+/// <param name="Injector"> The injector model to generate. </param>
+/// <param name="SpecContainers"> The specification containers used by the injector. </param>
+/// <param name="Location"> The source location where this context is defined. </param>
 internal record InjectionContextModel(
     InjectorModel Injector,
     IEnumerable<SpecContainerModel> SpecContainers,

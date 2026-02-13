@@ -16,6 +16,23 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 
+/// <summary>
+///     Metadata representing an analyzed injector dependency factory method.
+///     <para>
+///         Dependency Factory Method: Defines a parameterless factory in an
+///         InjectorDependency interface, representing a dependency that the parent injector must provide
+///         to child injectors.
+///     </para>
+///     <para>
+///         Parameterless Requirement: Must have no parameters because the parent provides
+///         these dependencies independently of child context. The parent's dependency graph satisfies all
+///         requirements internally.
+///     </para>
+/// </summary>
+/// <param name="FactoryMethodName"> The name of the dependency factory method. </param>
+/// <param name="FactoryReturnType"> The type that the parent must be able to provide. </param>
+/// <param name="FactoryAttributeMetadata"> The [Factory] attribute metadata. </param>
+/// <param name="Location"> The source location of the method definition. </param>
 internal record InjectorDependencyFactoryMethodMetadata(
     string FactoryMethodName,
     QualifiedTypeMetadata FactoryReturnType,

@@ -23,6 +23,9 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Auto;
 
+/// <summary>
+/// Pipeline for processing AutoFactory attributes into metadata.
+/// </summary>
 internal class AutoFactoryPipeline(
     ICodeElementValidator elementValidator,
     ICodeElementValidator constructorValidator,
@@ -30,6 +33,9 @@ internal class AutoFactoryPipeline(
     ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer,
     ITransformer<IPropertySymbol, AutoFactoryRequiredPropertyMetadata> autoFactoryRequiredPropertyTransformer
 ) : ISyntaxValuesPipeline<AutoFactoryMetadata> {
+    /// <summary>
+    /// Gets the singleton instance.
+    /// </summary>
     public static readonly AutoFactoryPipeline Instance = new(
         new ClassElementValidator(
             CodeElementAccessibility.PublicOrInternal,
@@ -44,6 +50,7 @@ internal class AutoFactoryPipeline(
         QualifierTransformer.Instance,
         AutoFactoryRequiredPropertyTransformer.Instance);
     
+    /// <inheritdoc />
     public IncrementalValuesProvider<IResult<AutoFactoryMetadata>> Select(
         SyntaxValueProvider syntaxProvider
     ) {

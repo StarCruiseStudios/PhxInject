@@ -14,23 +14,45 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Diagnostics;
 
+/// <summary>
+///     Exception thrown during code generation that contains diagnostic information.
+/// </summary>
 internal class GeneratorException : Exception {
+    /// <summary> The diagnostics associated with this exception. </summary>
     public EquatableList<DiagnosticInfo> DiagnosticInfos { get; }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GeneratorException"/> class.
+    /// </summary>
+    /// <param name="diagnosticInfos"> The diagnostics associated with this exception. </param>
     public GeneratorException(EquatableList<DiagnosticInfo> diagnosticInfos)
         : base(BuildMessage(diagnosticInfos)) {
         DiagnosticInfos = diagnosticInfos;
     }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GeneratorException"/> class with an inner exception.
+    /// </summary>
+    /// <param name="diagnosticInfos"> The diagnostics associated with this exception. </param>
+    /// <param name="innerException"> The inner exception. </param>
     public GeneratorException(EquatableList<DiagnosticInfo> diagnosticInfos, Exception? innerException)
         : base(BuildMessage(diagnosticInfos), innerException) {
         DiagnosticInfos = diagnosticInfos;
     }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GeneratorException"/> class.
+    /// </summary>
+    /// <param name="diagnosticInfos"> The diagnostics associated with this exception. </param>
     public GeneratorException(params DiagnosticInfo[] diagnosticInfos)
         : this(diagnosticInfos.ToEquatableList()) {
     }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="GeneratorException"/> class with an inner exception.
+    /// </summary>
+    /// <param name="innerException"> The inner exception. </param>
+    /// <param name="diagnosticInfos"> The diagnostics associated with this exception. </param>
     public GeneratorException(Exception? innerException, params DiagnosticInfo[] diagnosticInfos)
         : this(diagnosticInfos.ToEquatableList(), innerException) {
     }

@@ -14,6 +14,11 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
+/// <summary>
+///     Metadata representing an analyzed [FactoryReference] attribute.
+/// </summary>
+/// <param name="FabricationMode"> The fabrication mode for the factory reference. </param>
+/// <param name="AttributeMetadata"> The underlying attribute metadata. </param>
 internal record FactoryReferenceAttributeMetadata(
     FabricationMode FabricationMode,
     AttributeMetadata AttributeMetadata

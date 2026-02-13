@@ -15,6 +15,10 @@ using static Phx.Inject.Generator.Incremental.PhxInject;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
+/// <summary>
+///     Metadata representing an analyzed [AutoBuilder] attribute.
+/// </summary>
+/// <param name="AttributeMetadata"> The underlying attribute metadata. </param>
 internal record AutoBuilderAttributeMetadata(
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {

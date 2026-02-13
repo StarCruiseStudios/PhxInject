@@ -17,17 +17,39 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline.SpecContainer;
 
+/// <summary>
+///     Mapper for transforming specification metadata into spec container models.
+/// </summary>
 internal static class SpecContainerMapper {
+    /// <summary> Gets the singleton mapper instance. </summary>
     public static readonly SpecContainerMapperInstance Instance = new();
 
+    /// <summary>
+    ///     Maps specification class metadata to a spec container model.
+    /// </summary>
+    /// <param name="injectorType"> The injector type that owns this spec container. </param>
+    /// <param name="metadata"> The specification class metadata to map. </param>
+    /// <returns> The mapped spec container model. </returns>
     public static SpecContainerModel Map(TypeMetadata injectorType, SpecClassMetadata metadata) {
         return Instance.Map(injectorType, metadata);
     }
 
+    /// <summary>
+    ///     Maps specification interface metadata to a spec container model.
+    /// </summary>
+    /// <param name="injectorType"> The injector type that owns this spec container. </param>
+    /// <param name="metadata"> The specification interface metadata to map. </param>
+    /// <returns> The mapped spec container model. </returns>
     public static SpecContainerModel Map(TypeMetadata injectorType, SpecInterfaceMetadata metadata) {
         return Instance.Map(injectorType, metadata);
     }
 
+    /// <summary>
+    ///     Maps injector dependency interface metadata to a spec container model.
+    /// </summary>
+    /// <param name="injectorType"> The injector type that owns this spec container. </param>
+    /// <param name="metadata"> The dependency interface metadata to map. </param>
+    /// <returns> The mapped spec container model. </returns>
     public static SpecContainerModel Map(
         TypeMetadata injectorType,
         InjectorDependencyInterfaceMetadata metadata
@@ -36,7 +58,16 @@ internal static class SpecContainerMapper {
     }
 }
 
+/// <summary>
+///     Instance mapper for transforming specification metadata into spec container models.
+/// </summary>
 internal class SpecContainerMapperInstance {
+    /// <summary>
+    ///     Maps specification class metadata to a spec container model.
+    /// </summary>
+    /// <param name="injectorType"> The injector type that owns this spec container. </param>
+    /// <param name="metadata"> The specification class metadata to map. </param>
+    /// <returns> The mapped spec container model. </returns>
     public SpecContainerModel Map(TypeMetadata injectorType, SpecClassMetadata metadata) {
         var specType = metadata.SpecType;
         var specContainerType = injectorType.CreateSpecContainerType(specType);
@@ -56,6 +87,12 @@ internal class SpecContainerMapperInstance {
         );
     }
 
+    /// <summary>
+    ///     Maps specification interface metadata to a spec container model.
+    /// </summary>
+    /// <param name="injectorType"> The injector type that owns this spec container. </param>
+    /// <param name="metadata"> The specification interface metadata to map. </param>
+    /// <returns> The mapped spec container model. </returns>
     public SpecContainerModel Map(TypeMetadata injectorType, SpecInterfaceMetadata metadata) {
         var specType = metadata.SpecInterfaceType;
         var specContainerType = injectorType.CreateSpecContainerType(specType);
@@ -75,6 +112,12 @@ internal class SpecContainerMapperInstance {
         );
     }
 
+    /// <summary>
+    ///     Maps injector dependency interface metadata to a spec container model.
+    /// </summary>
+    /// <param name="injectorType"> The injector type that owns this spec container. </param>
+    /// <param name="metadata"> The dependency interface metadata to map. </param>
+    /// <returns> The mapped spec container model. </returns>
     public SpecContainerModel Map(
         TypeMetadata injectorType,
         InjectorDependencyInterfaceMetadata metadata

@@ -23,12 +23,18 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specification;
 
+/// <summary>
+/// Transforms specification factory methods into metadata.
+/// </summary>
 internal class SpecFactoryMethodTransformer(
     ICodeElementValidator elementValidator,
     ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer,
     FactoryAttributeTransformer factoryAttributeTransformer,
     PartialAttributeTransformer partialAttributeTransformer
 ) : ITransformer<IMethodSymbol, SpecFactoryMethodMetadata> {
+    /// <summary>
+    /// Gets the singleton instance.
+    /// </summary>
     public static readonly SpecFactoryMethodTransformer Instance = new(
         new MethodElementValidator(
             CodeElementAccessibility.PublicOrInternal,
@@ -41,10 +47,12 @@ internal class SpecFactoryMethodTransformer(
         PartialAttributeTransformer.Instance
     );
 
+    /// <inheritdoc />
     public bool CanTransform(IMethodSymbol methodSymbol) {
         return elementValidator.IsValidSymbol(methodSymbol);
     }
 
+    /// <inheritdoc />
     public IResult<SpecFactoryMethodMetadata> Transform(IMethodSymbol methodSymbol) {
         return DiagnosticsRecorder.Capture(diagnostics => {
             var factoryMethodName = methodSymbol.Name;

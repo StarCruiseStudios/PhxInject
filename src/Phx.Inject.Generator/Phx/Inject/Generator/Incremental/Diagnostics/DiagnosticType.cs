@@ -14,33 +14,60 @@ using Microsoft.CodeAnalysis;
 
 namespace Phx.Inject.Generator.Incremental.Diagnostics;
 
+/// <summary>
+///     Defines the type and metadata for a diagnostic that can be reported during code generation.
+/// </summary>
 internal class DiagnosticType {
+    /// <summary> The diagnostic category for all injection-related diagnostics. </summary>
     private const string InjectionCategory = "Injection";
+    
+    /// <summary> The prefix used for all Phx.Inject diagnostic IDs. </summary>
     private const string PhxInjectIdPrefix = "PHXINJECT";
+    
+    /// <summary> Debug information diagnostic. </summary>
     public static readonly DiagnosticType DebugMessage = new(
         PhxInjectIdPrefix + "9000",
         "Debug",
         InjectionCategory,
         DiagnosticSeverity.Info);
     
+    /// <summary> Diagnostic for unexpected errors during generation. </summary>
     public static readonly DiagnosticType UnexpectedError = new(
         PhxInjectIdPrefix + "0001",
         "An unexpected error occurred.",
         InjectionCategory,
         DiagnosticSeverity.Error);
 
+    /// <summary> Diagnostic for internal generator errors. </summary>
     public static readonly DiagnosticType InternalError = new(
         PhxInjectIdPrefix + "0002",
         "An internal error occurred while generating injection.",
         InjectionCategory,
         DiagnosticSeverity.Error);
     
+    /// <summary> The unique diagnostic identifier. </summary>
     public string Id { get; }
+    
+    /// <summary> The diagnostic title. </summary>
     public string Title { get; }
+    
+    /// <summary> The diagnostic category. </summary>
     public string Category { get; }
+    
+    /// <summary> The diagnostic severity level. </summary>
     public DiagnosticSeverity Severity { get; }
+    
+    /// <summary> Indicates whether this diagnostic is enabled by default. </summary>
     public bool IsEnabledByDefault { get; }
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="DiagnosticType"/> class.
+    /// </summary>
+    /// <param name="id"> The unique diagnostic identifier. </param>
+    /// <param name="title"> The diagnostic title. </param>
+    /// <param name="category"> The diagnostic category. </param>
+    /// <param name="severity"> The diagnostic severity level. </param>
+    /// <param name="isEnabledByDefault"> Indicates whether this diagnostic is enabled by default. </param>
     private DiagnosticType(
         string id,
         string title,
@@ -54,11 +81,13 @@ internal class DiagnosticType {
         Severity = severity;
         IsEnabledByDefault = isEnabledByDefault;
     }
-        
+    
+    /// <inheritdoc cref="IEquatable{T}.Equals(T)"/>
     public virtual bool Equals(DiagnosticType? other) {
         return other is not null && Id == other.Id;
     }
 
+    /// <inheritdoc cref="Object.GetHashCode"/>
     public override int GetHashCode() {
         return Id.GetHashCode();
     }

@@ -51,13 +51,24 @@ internal record PhxInjectSettingsMetadata(
         (attributeMetadata?.Location).OrNone()
     ) { }
 
+    /// <summary> Interface for providers that transform PhxInjectAttributeMetadata into settings. </summary>
     public interface IValuesProvider {
+        /// <summary> Transforms attribute metadata into settings metadata. </summary>
+        /// <param name="context"> The PhxInjectAttributeMetadata to transform. </param>
+        /// <param name="cancellationToken"> The cancellation token. </param>
+        /// <returns> A new PhxInjectSettingsMetadata instance. </returns>
         PhxInjectSettingsMetadata Transform(PhxInjectAttributeMetadata context, CancellationToken cancellationToken);
     }
 
+    /// <summary> Default implementation of IValuesProvider for transforming settings. </summary>
     public class ValuesProvider : IValuesProvider {
+        /// <summary> Gets the singleton instance of the ValuesProvider. </summary>
         public static readonly ValuesProvider Instance = new();
 
+        /// <summary> Transforms attribute metadata into settings metadata. </summary>
+        /// <param name="attributeMetadata"> The attribute metadata to transform. </param>
+        /// <param name="cancellationToken"> The cancellation token. </param>
+        /// <returns> A new PhxInjectSettingsMetadata instance. </returns>
         public PhxInjectSettingsMetadata Transform(
             PhxInjectAttributeMetadata attributeMetadata,
             CancellationToken cancellationToken) {

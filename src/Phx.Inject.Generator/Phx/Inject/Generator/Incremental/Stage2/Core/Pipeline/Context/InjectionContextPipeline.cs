@@ -22,9 +22,21 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline.Context;
 
+/// <summary>
+///     Pipeline for transforming injector and specification metadata into injection context models.
+/// </summary>
 internal class InjectionContextPipeline {
+    /// <summary> Gets the singleton instance of the injection context pipeline. </summary>
     public static readonly InjectionContextPipeline Instance = new();
 
+    /// <summary>
+    ///     Transforms Stage 1 metadata into Stage 2 injection context models.
+    /// </summary>
+    /// <param name="injectorMetadataProvider"> Provider for injector interface metadata. </param>
+    /// <param name="specClassMetadataProvider"> Provider for specification class metadata. </param>
+    /// <param name="specInterfaceMetadataProvider"> Provider for specification interface metadata. </param>
+    /// <param name="injectorDependencyMetadataProvider"> Provider for injector dependency metadata. </param>
+    /// <returns> Provider of injection context models. </returns>
     public IncrementalValuesProvider<InjectionContextModel> Select(
         IncrementalValuesProvider<InjectorInterfaceMetadata> injectorMetadataProvider,
         IncrementalValuesProvider<SpecClassMetadata> specClassMetadataProvider,

@@ -15,6 +15,11 @@ using static Phx.Inject.Generator.Incremental.PhxInject;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
+/// <summary>
+///     Metadata representing an analyzed [AutoFactory] attribute.
+/// </summary>
+/// <param name="FabricationMode"> The fabrication mode for the auto factory. </param>
+/// <param name="AttributeMetadata"> The underlying attribute metadata. </param>
 internal record AutoFactoryAttributeMetadata(
     FabricationMode FabricationMode,
     AttributeMetadata AttributeMetadata

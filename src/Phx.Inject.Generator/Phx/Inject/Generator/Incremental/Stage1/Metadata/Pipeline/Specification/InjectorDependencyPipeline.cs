@@ -23,12 +23,18 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specification;
 
+/// <summary>
+/// Pipeline for processing InjectorDependency interface declarations into metadata.
+/// </summary>
 internal class InjectorDependencyPipeline(
     ICodeElementValidator elementValidator,
     IAttributeTransformer<InjectorDependencyAttributeMetadata> injectorDependencyAttributeTransformer,
     ITransformer<IMethodSymbol, SpecFactoryMethodMetadata> specFactoryMethodTransformer,
     ITransformer<IPropertySymbol, SpecFactoryPropertyMetadata> specFactoryPropertyTransformer
 ) : ISyntaxValuesPipeline<InjectorDependencyInterfaceMetadata> {
+    /// <summary>
+    /// Gets the singleton instance.
+    /// </summary>
     public static readonly InjectorDependencyPipeline Instance = new(
         new InterfaceElementValidator(
             CodeElementAccessibility.PublicOrInternal
@@ -37,6 +43,7 @@ internal class InjectorDependencyPipeline(
         SpecFactoryMethodTransformer.Instance,
         SpecFactoryPropertyTransformer.Instance);
     
+    /// <inheritdoc />
     public IncrementalValuesProvider<IResult<InjectorDependencyInterfaceMetadata>> Select(
         SyntaxValueProvider syntaxProvider
     ) {

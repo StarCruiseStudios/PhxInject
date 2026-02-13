@@ -17,9 +17,19 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline.Injector;
 
+/// <summary>
+///     Mapper for transforming injector interface metadata into injector models.
+/// </summary>
 internal class InjectorMapper {
+    /// <summary> Gets the singleton instance of the injector mapper. </summary>
     public static readonly InjectorMapper Instance = new();
 
+    /// <summary>
+    ///     Maps injector interface metadata to an injector model.
+    /// </summary>
+    /// <param name="metadata"> The injector interface metadata to map. </param>
+    /// <param name="constructedSpecifications"> The specifications that are constructed by the injector. </param>
+    /// <returns> The mapped injector model. </returns>
     public InjectorModel Map(
         InjectorInterfaceMetadata metadata,
         IEnumerable<TypeMetadata> constructedSpecifications

@@ -15,6 +15,16 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
+/// <summary>
+///     Metadata representing an analyzed [Link] attribute.
+/// </summary>
+/// <param name="Input"> The input type metadata. </param>
+/// <param name="Output"> The output type metadata. </param>
+/// <param name="InputLabel"> The optional label for the input type. </param>
+/// <param name="InputQualifier"> The optional qualifier type for the input. </param>
+/// <param name="OutputLabel"> The optional label for the output type. </param>
+/// <param name="OutputQualifier"> The optional qualifier type for the output. </param>
+/// <param name="AttributeMetadata"> The underlying attribute metadata. </param>
 internal record LinkAttributeMetadata(
     TypeMetadata Input,
     TypeMetadata Output,

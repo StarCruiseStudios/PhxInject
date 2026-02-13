@@ -14,6 +14,10 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
+/// <summary>
+///     Metadata representing an analyzed [ChildInjector] attribute.
+/// </summary>
+/// <param name="AttributeMetadata"> The underlying attribute metadata. </param>
 internal record ChildInjectorAttributeMetadata(
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {

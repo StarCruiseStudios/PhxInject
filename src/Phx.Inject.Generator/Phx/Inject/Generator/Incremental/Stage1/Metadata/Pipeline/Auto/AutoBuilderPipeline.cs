@@ -23,11 +23,17 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Auto;
 
+/// <summary>
+/// Pipeline for processing AutoBuilder attributes into metadata.
+/// </summary>
 internal class AutoBuilderPipeline(
     ICodeElementValidator elementValidator,
     IAttributeTransformer<AutoBuilderAttributeMetadata> autoBuilderAttributeTransformer,
     ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer
 ) : ISyntaxValuesPipeline<AutoBuilderMetadata> {
+    /// <summary>
+    /// Gets the singleton instance.
+    /// </summary>
     public static readonly AutoBuilderPipeline Instance = new(
         new MethodElementValidator(
             CodeElementAccessibility.PublicOrInternal,
@@ -36,6 +42,7 @@ internal class AutoBuilderPipeline(
         AutoBuilderAttributeTransformer.Instance,
         QualifierTransformer.Instance);
     
+    /// <inheritdoc />
     public IncrementalValuesProvider<IResult<AutoBuilderMetadata>> Select(
         SyntaxValueProvider syntaxProvider
     ) {

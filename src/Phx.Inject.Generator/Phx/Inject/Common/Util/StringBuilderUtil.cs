@@ -14,7 +14,15 @@ using System.Text;
 
 namespace Phx.Inject.Common.Util;
 
+/// <summary>
+///     Utility methods for working with <see cref="StringBuilder"/>.
+/// </summary>
 internal static class StringBuilderUtil {
+    /// <summary>
+    ///     Builds a string using a <see cref="StringBuilder"/> and an action.
+    /// </summary>
+    /// <param name="build"> The action that builds the string. </param>
+    /// <returns> The resulting string. </returns>
     public static string BuildString(Action<StringBuilder> build) {
         var builder = new StringBuilder();
         build(builder);

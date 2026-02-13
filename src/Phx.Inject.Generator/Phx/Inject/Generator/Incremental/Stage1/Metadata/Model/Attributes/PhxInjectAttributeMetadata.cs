@@ -14,6 +14,13 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
+/// <summary>
+///     Metadata representing an analyzed [PhxInject] attribute.
+/// </summary>
+/// <param name="TabSize"> The optional number of spaces for indentation. </param>
+/// <param name="GeneratedFileExtension"> The optional file extension for generated files. </param>
+/// <param name="NullableEnabled"> The optional nullable reference types setting. </param>
+/// <param name="AttributeMetadata"> The underlying attribute metadata. </param>
 internal record PhxInjectAttributeMetadata(
     int? TabSize,
     string? GeneratedFileExtension,

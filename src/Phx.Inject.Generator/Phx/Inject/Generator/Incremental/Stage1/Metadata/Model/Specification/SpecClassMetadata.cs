@@ -16,6 +16,31 @@ using Phx.Inject.Generator.Incremental.Util;
 
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 
+/// <summary>
+///     Metadata representing an analyzed specification class.
+///     <para>
+///         Specification Pattern: Defines HOW dependencies are constructed, separate from
+///         the injector which defines WHAT is exposed. This separation enables reusability, composability,
+///         and clear separation of concerns between construction logic and API surface.
+///     </para>
+///     <para>
+///         Factory vs Builder:
+///         <list type="bullet">
+///             <item>Factories create new instances and return non-void types</item>
+///             <item>Builders configure existing instances and return void</item>
+///             <item>References wrap existing methods as delegates for reuse</item>
+///         </list>
+///     </para>
+/// </summary>
+/// <param name="SpecType"> The type metadata of the specification class. </param>
+/// <param name="FactoryMethods"> Factory methods that create and return new instances. </param>
+/// <param name="FactoryProperties"> Factory properties that expose instance creation via getters. </param>
+/// <param name="FactoryReferences"> Wrapped factory methods exposed as Func delegates. </param>
+/// <param name="BuilderMethods"> Builder methods that configure existing instances (void return). </param>
+/// <param name="BuilderReferences"> Wrapped builder methods exposed as Action delegates. </param>
+/// <param name="Links"> Link attributes that connect this specification to injectors. </param>
+/// <param name="SpecAttributeMetadata"> The [Specification] attribute metadata. </param>
+/// <param name="Location"> The source location of the class definition. </param>
 internal record SpecClassMetadata(
     TypeMetadata SpecType,
     EquatableList<SpecFactoryMethodMetadata> FactoryMethods,
