@@ -4,7 +4,7 @@ This directory contains auto-generated API documentation for the Phx.Inject.Gene
 
 ## Generation
 
-The API documentation is automatically generated during the build process using [DocFX](https://dotfx.io/). The documentation is generated from XML documentation comments in the source code.
+The API documentation is automatically generated during the build process using [DocFX](https://dotnet.github.io/docfx/). The documentation is generated from XML documentation comments in the source code.
 
 ## Files
 
