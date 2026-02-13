@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class GeneratorIgnored&lt;T&gt; | Phx.Inject.Generator API Documentation </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class GeneratorIgnored&lt;T&gt; | Phx.Inject.Generator API Documentation ">
+    
+    <meta name="description" content="Type wrapper that excludes a value from incremental generator equality comparisons, preventing unnecessary regeneration when the wrapped value changes.">
+      <link rel="shortcut icon" href="favicon.ico">
+      <link rel="stylesheet" href="styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="styles/docfx.css">
+      <link rel="stylesheet" href="styles/main.css">
+      <meta property="docfx:navrel" content="toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="index.html">
+                <img id="logo" class="svg" src="logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1">
+
+
+
+  <h1 id="Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1" data-uid="Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1" class="text-break">Class GeneratorIgnored&lt;T&gt;</h1>
+  <div class="markdown level0 summary"><p>Type wrapper that excludes a value from incremental generator equality comparisons,
+preventing unnecessary regeneration when the wrapped value changes.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">GeneratorIgnored&lt;T&gt;</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Phx.html">Phx</a>.<a class="xref" href="Phx.Inject.html">Inject</a>.<a class="xref" href="Phx.Inject.Generator.html">Generator</a>.<a class="xref" href="Phx.Inject.Generator.Incremental.html">Incremental</a>.<a class="xref" href="Phx.Inject.Generator.Incremental.Util.html">Util</a></h6>
+  <h6><strong>Assembly</strong>: Phx.Inject.Generator.dll</h6>
+  <h5 id="Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class GeneratorIgnored&lt;T&gt;</code></pre>
+  </div>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
+        <td><p>The type of value being wrapped. Typically non-semantic data like source locations.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>Purpose:</p>
+<p>
+Roslyn's incremental generators use value equality on model objects to determine if
+regeneration is needed. However, some data (like source file locations) is essential
+for diagnostics but irrelevant for code generation decisions. Wrapping such values
+prevents spurious regeneration when, for example, code is reformatted without changing
+semantics.
+</p>
+<p>Equality Semantics:</p>
+<p>
+Two <code>GeneratorIgnored&lt;T&gt;</code> instances are always considered equal regardless
+of their wrapped values, as long as they wrap the same type <code>T</code>. This intentionally
+violates normal equality contracts but is correct in the context of incremental
+compilation where we want to signal "this data doesn't affect output."
+</p>
+<p>Usage Pattern:</p>
+<p>
+Primarily used for <span class="xref">Phx.Inject.Generator.Incremental.Util.LocationInfo</span> fields in metadata records. Location
+data is needed to report diagnostics at the correct source positions but shouldn't
+trigger recompilation if a type definition is moved within a file.
+</p>
+<p>Performance:</p>
+<p>
+Minimal overhead - just a single object allocation and type-based hash code.
+Avoids expensive deep comparisons of location data during incremental compilation checks.
+</p>
+<p>When NOT to use:</p>
+<p>
+Do not wrap semantic data that affects code generation. If changing the value should
+trigger regeneration, do not use this wrapper.
+</p>
+</div>
+  <h3 id="constructors">Constructors
+</h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/StarCruiseStudios/PhxInject/new/main/apiSpec/new?filename=Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1__ctor__0_.md&amp;value=---%0Auid%3A%20Phx.Inject.Generator.Incremental.Util.GeneratorIgnored%601.%23ctor(%600)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/StarCruiseStudios/PhxInject/blob/main/src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs/#L58">View Source</a>
+  </span>
+  <a id="Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1__ctor_" data-uid="Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.#ctor*"></a>
+  <h4 id="Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1__ctor__0_" data-uid="Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.#ctor(`0)">GeneratorIgnored(T)</h4>
+  <div class="markdown level1 summary"><p>Type wrapper that excludes a value from incremental generator equality comparisons,
+preventing unnecessary regeneration when the wrapped value changes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public GeneratorIgnored(T value)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">T</span></td>
+        <td><span class="parametername">value</span></td>
+        <td><p>The value to wrap. Its changes will not trigger incremental regeneration.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1__ctor__0__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Purpose:</p>
+<p>
+Roslyn's incremental generators use value equality on model objects to determine if
+regeneration is needed. However, some data (like source file locations) is essential
+for diagnostics but irrelevant for code generation decisions. Wrapping such values
+prevents spurious regeneration when, for example, code is reformatted without changing
+semantics.
+</p>
+<p>Equality Semantics:</p>
+<p>
+Two <code>GeneratorIgnored&lt;T&gt;</code> instances are always considered equal regardless
+of their wrapped values, as long as they wrap the same type <code>T</code>. This intentionally
+violates normal equality contracts but is correct in the context of incremental
+compilation where we want to signal "this data doesn't affect output."
+</p>
+<p>Usage Pattern:</p>
+<p>
+Primarily used for <span class="xref">Phx.Inject.Generator.Incremental.Util.LocationInfo</span> fields in metadata records. Location
+data is needed to report diagnostics at the correct source positions but shouldn't
+trigger recompilation if a type definition is moved within a file.
+</p>
+<p>Performance:</p>
+<p>
+Minimal overhead - just a single object allocation and type-based hash code.
+Avoids expensive deep comparisons of location data during incremental compilation checks.
+</p>
+<p>When NOT to use:</p>
+<p>
+Do not wrap semantic data that affects code generation. If changing the value should
+trigger regeneration, do not use this wrapper.
+</p>
+</div>
+  <h3 id="properties">Properties
+</h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/StarCruiseStudios/PhxInject/new/main/apiSpec/new?filename=Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_Value.md&amp;value=---%0Auid%3A%20Phx.Inject.Generator.Incremental.Util.GeneratorIgnored%601.Value%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/StarCruiseStudios/PhxInject/blob/main/src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs/#L66">View Source</a>
+  </span>
+  <a id="Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_Value_" data-uid="Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Value*"></a>
+  <h4 id="Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_Value" data-uid="Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Value">Value</h4>
+  <div class="markdown level1 summary"><p>Gets the wrapped value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public T Value { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">T</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_Value_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Access this when you need the actual data (e.g., reporting a diagnostic).
+Do not use this value in equality comparisons that affect incremental compilation.</p>
+</div>
+  <h3 id="methods">Methods
+</h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/StarCruiseStudios/PhxInject/new/main/apiSpec/new?filename=Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_Equals_Phx_Inject_Generator_Incremental_Util_GeneratorIgnored__0__.md&amp;value=---%0Auid%3A%20Phx.Inject.Generator.Incremental.Util.GeneratorIgnored%601.Equals(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored%7B%600%7D)%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/StarCruiseStudios/PhxInject/blob/main/src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs/#L69">View Source</a>
+  </span>
+  <a id="Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_Equals_" data-uid="Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Equals*"></a>
+  <h4 id="Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_Equals_Phx_Inject_Generator_Incremental_Util_GeneratorIgnored__0__" data-uid="Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Equals(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0})">Equals(GeneratorIgnored&lt;T&gt;?)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public virtual bool Equals(GeneratorIgnored&lt;T&gt;? other)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html">GeneratorIgnored</a>&lt;T&gt;</td>
+        <td><span class="parametername">other</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/StarCruiseStudios/PhxInject/new/main/apiSpec/new?filename=Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_GetHashCode.md&amp;value=---%0Auid%3A%20Phx.Inject.Generator.Incremental.Util.GeneratorIgnored%601.GetHashCode%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/StarCruiseStudios/PhxInject/blob/main/src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs/#L74">View Source</a>
+  </span>
+  <a id="Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_GetHashCode_" data-uid="Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.GetHashCode*"></a>
+  <h4 id="Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_GetHashCode" data-uid="Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.GetHashCode">GetHashCode()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int GetHashCode()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/StarCruiseStudios/PhxInject/new/main/apiSpec/new?filename=Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_ToString.md&amp;value=---%0Auid%3A%20Phx.Inject.Generator.Incremental.Util.GeneratorIgnored%601.ToString%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Edit this page</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/StarCruiseStudios/PhxInject/blob/main/src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs/#L79">View Source</a>
+  </span>
+  <a id="Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_ToString_" data-uid="Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.ToString*"></a>
+  <h4 id="Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_ToString" data-uid="Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.ToString">ToString()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a></div>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__">FunctionalExtensions.Also&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__">FunctionalExtensions.Let&lt;T, TResult&gt;(T, Func&lt;T, TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__">FunctionalExtensions.Then&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_">GeneratorIgnoredExtensions.GeneratorIgnored&lt;T&gt;(T)</a>
+  </div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/StarCruiseStudios/PhxInject/new/main/apiSpec/new?filename=Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1.md&amp;value=---%0Auid%3A%20Phx.Inject.Generator.Incremental.Util.GeneratorIgnored%601%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Edit this page</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/StarCruiseStudios/PhxInject/blob/main/src/Phx.Inject.Generator/Phx/Inject/Generator/Incremental/Util/GeneratorIgnored.cs/#L58" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      Copyright (c) 2022-2026 Star Cruise Studios LLC. All rights reserved.
+      
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="styles/docfx.js"></script>
+    <script type="text/javascript" src="styles/main.js"></script>
+  </body>
+</html>

@@ -3,25 +3,25 @@ sorted: true
 references:
 - uid: Phx.Inject
   name: Phx.Inject
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.html
+  href: Phx.Inject.html
   commentId: N:Phx.Inject
   fullName: Phx.Inject
   nameWithType: Phx.Inject
 - uid: Phx.Inject.AutoBuilderAttribute
   name: AutoBuilderAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.AutoBuilderAttribute.html
+  href: Phx.Inject.AutoBuilderAttribute.html
   commentId: T:Phx.Inject.AutoBuilderAttribute
   fullName: Phx.Inject.AutoBuilderAttribute
   nameWithType: AutoBuilderAttribute
 - uid: Phx.Inject.AutoFactoryAttribute
   name: AutoFactoryAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.AutoFactoryAttribute.html
+  href: Phx.Inject.AutoFactoryAttribute.html
   commentId: T:Phx.Inject.AutoFactoryAttribute
   fullName: Phx.Inject.AutoFactoryAttribute
   nameWithType: AutoFactoryAttribute
 - uid: Phx.Inject.AutoFactoryAttribute.#ctor
   name: AutoFactoryAttribute()
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.AutoFactoryAttribute.html#Phx_Inject_AutoFactoryAttribute__ctor
+  href: Phx.Inject.AutoFactoryAttribute.html#Phx_Inject_AutoFactoryAttribute__ctor
   commentId: M:Phx.Inject.AutoFactoryAttribute.#ctor
   name.vb: New()
   fullName: Phx.Inject.AutoFactoryAttribute.AutoFactoryAttribute()
@@ -30,7 +30,7 @@ references:
   nameWithType.vb: AutoFactoryAttribute.New()
 - uid: Phx.Inject.AutoFactoryAttribute.#ctor(Phx.Inject.FabricationMode)
   name: AutoFactoryAttribute(FabricationMode)
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.AutoFactoryAttribute.html#Phx_Inject_AutoFactoryAttribute__ctor_Phx_Inject_FabricationMode_
+  href: Phx.Inject.AutoFactoryAttribute.html#Phx_Inject_AutoFactoryAttribute__ctor_Phx_Inject_FabricationMode_
   commentId: M:Phx.Inject.AutoFactoryAttribute.#ctor(Phx.Inject.FabricationMode)
   name.vb: New(FabricationMode)
   fullName: Phx.Inject.AutoFactoryAttribute.AutoFactoryAttribute(Phx.Inject.FabricationMode)
@@ -39,7 +39,7 @@ references:
   nameWithType.vb: AutoFactoryAttribute.New(FabricationMode)
 - uid: Phx.Inject.AutoFactoryAttribute.#ctor*
   name: AutoFactoryAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.AutoFactoryAttribute.html#Phx_Inject_AutoFactoryAttribute__ctor_
+  href: Phx.Inject.AutoFactoryAttribute.html#Phx_Inject_AutoFactoryAttribute__ctor_
   commentId: Overload:Phx.Inject.AutoFactoryAttribute.#ctor
   isSpec: "True"
   name.vb: New
@@ -49,57 +49,57 @@ references:
   nameWithType.vb: AutoFactoryAttribute.New
 - uid: Phx.Inject.AutoFactoryAttribute.FabricationMode
   name: FabricationMode
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.AutoFactoryAttribute.html#Phx_Inject_AutoFactoryAttribute_FabricationMode
+  href: Phx.Inject.AutoFactoryAttribute.html#Phx_Inject_AutoFactoryAttribute_FabricationMode
   commentId: P:Phx.Inject.AutoFactoryAttribute.FabricationMode
   fullName: Phx.Inject.AutoFactoryAttribute.FabricationMode
   nameWithType: AutoFactoryAttribute.FabricationMode
 - uid: Phx.Inject.AutoFactoryAttribute.FabricationMode*
   name: FabricationMode
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.AutoFactoryAttribute.html#Phx_Inject_AutoFactoryAttribute_FabricationMode_
+  href: Phx.Inject.AutoFactoryAttribute.html#Phx_Inject_AutoFactoryAttribute_FabricationMode_
   commentId: Overload:Phx.Inject.AutoFactoryAttribute.FabricationMode
   isSpec: "True"
   fullName: Phx.Inject.AutoFactoryAttribute.FabricationMode
   nameWithType: AutoFactoryAttribute.FabricationMode
 - uid: Phx.Inject.BuilderAttribute
   name: BuilderAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.BuilderAttribute.html
+  href: Phx.Inject.BuilderAttribute.html
   commentId: T:Phx.Inject.BuilderAttribute
   fullName: Phx.Inject.BuilderAttribute
   nameWithType: BuilderAttribute
 - uid: Phx.Inject.BuilderReferenceAttribute
   name: BuilderReferenceAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.BuilderReferenceAttribute.html
+  href: Phx.Inject.BuilderReferenceAttribute.html
   commentId: T:Phx.Inject.BuilderReferenceAttribute
   fullName: Phx.Inject.BuilderReferenceAttribute
   nameWithType: BuilderReferenceAttribute
 - uid: Phx.Inject.ChildInjectorAttribute
   name: ChildInjectorAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.ChildInjectorAttribute.html
+  href: Phx.Inject.ChildInjectorAttribute.html
   commentId: T:Phx.Inject.ChildInjectorAttribute
   fullName: Phx.Inject.ChildInjectorAttribute
   nameWithType: ChildInjectorAttribute
 - uid: Phx.Inject.Common.Util
   name: Phx.Inject.Common.Util
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.html
+  href: Phx.Inject.Common.Util.html
   commentId: N:Phx.Inject.Common.Util
   fullName: Phx.Inject.Common.Util
   nameWithType: Phx.Inject.Common.Util
 - uid: Phx.Inject.Common.Util.FunctionalExtensions
   name: FunctionalExtensions
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.html
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html
   commentId: T:Phx.Inject.Common.Util.FunctionalExtensions
   fullName: Phx.Inject.Common.Util.FunctionalExtensions
   nameWithType: FunctionalExtensions
 - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also*
   name: Also
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also_
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also_
   commentId: Overload:Phx.Inject.Common.Util.FunctionalExtensions.Also
   isSpec: "True"
   fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also
   nameWithType: FunctionalExtensions.Also
 - uid: Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
   name: Also<T>(T, Action<T>)
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Also__1___0_System_Action___0__
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Also``1(``0,System.Action{``0})
   name.vb: Also(Of T)(T, Action(Of T))
   fullName: Phx.Inject.Common.Util.FunctionalExtensions.Also<T>(T, System.Action<T>)
@@ -108,14 +108,14 @@ references:
   nameWithType.vb: FunctionalExtensions.Also(Of T)(T, Action(Of T))
 - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let*
   name: Let
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let_
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let_
   commentId: Overload:Phx.Inject.Common.Util.FunctionalExtensions.Let
   isSpec: "True"
   fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let
   nameWithType: FunctionalExtensions.Let
 - uid: Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
   name: Let<T, TResult>(T, Func<T, TResult>)
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Let__2___0_System_Func___0___1__
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Let``2(``0,System.Func{``0,``1})
   name.vb: Let(Of T, TResult)(T, Func(Of T, TResult))
   fullName: Phx.Inject.Common.Util.FunctionalExtensions.Let<T, TResult>(T, System.Func<T, TResult>)
@@ -124,14 +124,14 @@ references:
   nameWithType.vb: FunctionalExtensions.Let(Of T, TResult)(T, Func(Of T, TResult))
 - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then*
   name: Then
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then_
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then_
   commentId: Overload:Phx.Inject.Common.Util.FunctionalExtensions.Then
   isSpec: "True"
   fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then
   nameWithType: FunctionalExtensions.Then
 - uid: Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
   name: Then<T>(T, Action<T>)
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
+  href: Phx.Inject.Common.Util.FunctionalExtensions.html#Phx_Inject_Common_Util_FunctionalExtensions_Then__1___0_System_Action___0__
   commentId: M:Phx.Inject.Common.Util.FunctionalExtensions.Then``1(``0,System.Action{``0})
   name.vb: Then(Of T)(T, Action(Of T))
   fullName: Phx.Inject.Common.Util.FunctionalExtensions.Then<T>(T, System.Action<T>)
@@ -140,20 +140,20 @@ references:
   nameWithType.vb: FunctionalExtensions.Then(Of T)(T, Action(Of T))
 - uid: Phx.Inject.Common.Util.IEnumerableExtensions
   name: IEnumerableExtensions
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.html
+  href: Phx.Inject.Common.Util.IEnumerableExtensions.html
   commentId: T:Phx.Inject.Common.Util.IEnumerableExtensions
   fullName: Phx.Inject.Common.Util.IEnumerableExtensions
   nameWithType: IEnumerableExtensions
 - uid: Phx.Inject.Common.Util.IEnumerableExtensions.AppendIfNotNull*
   name: AppendIfNotNull
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.html#Phx_Inject_Common_Util_IEnumerableExtensions_AppendIfNotNull_
+  href: Phx.Inject.Common.Util.IEnumerableExtensions.html#Phx_Inject_Common_Util_IEnumerableExtensions_AppendIfNotNull_
   commentId: Overload:Phx.Inject.Common.Util.IEnumerableExtensions.AppendIfNotNull
   isSpec: "True"
   fullName: Phx.Inject.Common.Util.IEnumerableExtensions.AppendIfNotNull
   nameWithType: IEnumerableExtensions.AppendIfNotNull
 - uid: Phx.Inject.Common.Util.IEnumerableExtensions.AppendIfNotNull``1(System.Collections.Generic.IEnumerable{``0},``0)
   name: AppendIfNotNull<TSource>(IEnumerable<TSource>, TSource?)
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.html#Phx_Inject_Common_Util_IEnumerableExtensions_AppendIfNotNull__1_System_Collections_Generic_IEnumerable___0____0_
+  href: Phx.Inject.Common.Util.IEnumerableExtensions.html#Phx_Inject_Common_Util_IEnumerableExtensions_AppendIfNotNull__1_System_Collections_Generic_IEnumerable___0____0_
   commentId: M:Phx.Inject.Common.Util.IEnumerableExtensions.AppendIfNotNull``1(System.Collections.Generic.IEnumerable{``0},``0)
   name.vb: AppendIfNotNull(Of TSource)(IEnumerable(Of TSource), TSource)
   fullName: Phx.Inject.Common.Util.IEnumerableExtensions.AppendIfNotNull<TSource>(System.Collections.Generic.IEnumerable<TSource>, TSource?)
@@ -162,14 +162,14 @@ references:
   nameWithType.vb: IEnumerableExtensions.AppendIfNotNull(Of TSource)(IEnumerable(Of TSource), TSource)
 - uid: Phx.Inject.Common.Util.IEnumerableExtensions.ToImmutableMultiMap*
   name: ToImmutableMultiMap
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.html#Phx_Inject_Common_Util_IEnumerableExtensions_ToImmutableMultiMap_
+  href: Phx.Inject.Common.Util.IEnumerableExtensions.html#Phx_Inject_Common_Util_IEnumerableExtensions_ToImmutableMultiMap_
   commentId: Overload:Phx.Inject.Common.Util.IEnumerableExtensions.ToImmutableMultiMap
   isSpec: "True"
   fullName: Phx.Inject.Common.Util.IEnumerableExtensions.ToImmutableMultiMap
   nameWithType: IEnumerableExtensions.ToImmutableMultiMap
 - uid: Phx.Inject.Common.Util.IEnumerableExtensions.ToImmutableMultiMap``3(System.Collections.Generic.IDictionary{``0,``2})
   name: ToImmutableMultiMap<TKey, TValue, TList>(IDictionary<TKey, TList>)
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.html#Phx_Inject_Common_Util_IEnumerableExtensions_ToImmutableMultiMap__3_System_Collections_Generic_IDictionary___0___2__
+  href: Phx.Inject.Common.Util.IEnumerableExtensions.html#Phx_Inject_Common_Util_IEnumerableExtensions_ToImmutableMultiMap__3_System_Collections_Generic_IDictionary___0___2__
   commentId: M:Phx.Inject.Common.Util.IEnumerableExtensions.ToImmutableMultiMap``3(System.Collections.Generic.IDictionary{``0,``2})
   name.vb: ToImmutableMultiMap(Of TKey, TValue, TList)(IDictionary(Of TKey, TList))
   fullName: Phx.Inject.Common.Util.IEnumerableExtensions.ToImmutableMultiMap<TKey, TValue, TList>(System.Collections.Generic.IDictionary<TKey, TList>)
@@ -178,13 +178,13 @@ references:
   nameWithType.vb: IEnumerableExtensions.ToImmutableMultiMap(Of TKey, TValue, TList)(IDictionary(Of TKey, TList))
 - uid: Phx.Inject.DependencyAttribute
   name: DependencyAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.DependencyAttribute.html
+  href: Phx.Inject.DependencyAttribute.html
   commentId: T:Phx.Inject.DependencyAttribute
   fullName: Phx.Inject.DependencyAttribute
   nameWithType: DependencyAttribute
 - uid: Phx.Inject.DependencyAttribute.#ctor(System.Type)
   name: DependencyAttribute(Type)
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.DependencyAttribute.html#Phx_Inject_DependencyAttribute__ctor_System_Type_
+  href: Phx.Inject.DependencyAttribute.html#Phx_Inject_DependencyAttribute__ctor_System_Type_
   commentId: M:Phx.Inject.DependencyAttribute.#ctor(System.Type)
   name.vb: New(Type)
   fullName: Phx.Inject.DependencyAttribute.DependencyAttribute(System.Type)
@@ -193,7 +193,7 @@ references:
   nameWithType.vb: DependencyAttribute.New(Type)
 - uid: Phx.Inject.DependencyAttribute.#ctor*
   name: DependencyAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.DependencyAttribute.html#Phx_Inject_DependencyAttribute__ctor_
+  href: Phx.Inject.DependencyAttribute.html#Phx_Inject_DependencyAttribute__ctor_
   commentId: Overload:Phx.Inject.DependencyAttribute.#ctor
   isSpec: "True"
   name.vb: New
@@ -203,56 +203,56 @@ references:
   nameWithType.vb: DependencyAttribute.New
 - uid: Phx.Inject.DependencyAttribute.DependencyType
   name: DependencyType
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.DependencyAttribute.html#Phx_Inject_DependencyAttribute_DependencyType
+  href: Phx.Inject.DependencyAttribute.html#Phx_Inject_DependencyAttribute_DependencyType
   commentId: P:Phx.Inject.DependencyAttribute.DependencyType
   fullName: Phx.Inject.DependencyAttribute.DependencyType
   nameWithType: DependencyAttribute.DependencyType
 - uid: Phx.Inject.DependencyAttribute.DependencyType*
   name: DependencyType
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.DependencyAttribute.html#Phx_Inject_DependencyAttribute_DependencyType_
+  href: Phx.Inject.DependencyAttribute.html#Phx_Inject_DependencyAttribute_DependencyType_
   commentId: Overload:Phx.Inject.DependencyAttribute.DependencyType
   isSpec: "True"
   fullName: Phx.Inject.DependencyAttribute.DependencyType
   nameWithType: DependencyAttribute.DependencyType
 - uid: Phx.Inject.FabricationMode
   name: FabricationMode
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.FabricationMode.html
+  href: Phx.Inject.FabricationMode.html
   commentId: T:Phx.Inject.FabricationMode
   fullName: Phx.Inject.FabricationMode
   nameWithType: FabricationMode
 - uid: Phx.Inject.FabricationMode.Container
   name: Container
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.FabricationMode.html#Phx_Inject_FabricationMode_Container
+  href: Phx.Inject.FabricationMode.html#Phx_Inject_FabricationMode_Container
   commentId: F:Phx.Inject.FabricationMode.Container
   fullName: Phx.Inject.FabricationMode.Container
   nameWithType: FabricationMode.Container
 - uid: Phx.Inject.FabricationMode.ContainerScoped
   name: ContainerScoped
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.FabricationMode.html#Phx_Inject_FabricationMode_ContainerScoped
+  href: Phx.Inject.FabricationMode.html#Phx_Inject_FabricationMode_ContainerScoped
   commentId: F:Phx.Inject.FabricationMode.ContainerScoped
   fullName: Phx.Inject.FabricationMode.ContainerScoped
   nameWithType: FabricationMode.ContainerScoped
 - uid: Phx.Inject.FabricationMode.Recurrent
   name: Recurrent
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.FabricationMode.html#Phx_Inject_FabricationMode_Recurrent
+  href: Phx.Inject.FabricationMode.html#Phx_Inject_FabricationMode_Recurrent
   commentId: F:Phx.Inject.FabricationMode.Recurrent
   fullName: Phx.Inject.FabricationMode.Recurrent
   nameWithType: FabricationMode.Recurrent
 - uid: Phx.Inject.FabricationMode.Scoped
   name: Scoped
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.FabricationMode.html#Phx_Inject_FabricationMode_Scoped
+  href: Phx.Inject.FabricationMode.html#Phx_Inject_FabricationMode_Scoped
   commentId: F:Phx.Inject.FabricationMode.Scoped
   fullName: Phx.Inject.FabricationMode.Scoped
   nameWithType: FabricationMode.Scoped
 - uid: Phx.Inject.FactoryAttribute
   name: FactoryAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryAttribute.html
+  href: Phx.Inject.FactoryAttribute.html
   commentId: T:Phx.Inject.FactoryAttribute
   fullName: Phx.Inject.FactoryAttribute
   nameWithType: FactoryAttribute
 - uid: Phx.Inject.FactoryAttribute.#ctor
   name: FactoryAttribute()
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryAttribute.html#Phx_Inject_FactoryAttribute__ctor
+  href: Phx.Inject.FactoryAttribute.html#Phx_Inject_FactoryAttribute__ctor
   commentId: M:Phx.Inject.FactoryAttribute.#ctor
   name.vb: New()
   fullName: Phx.Inject.FactoryAttribute.FactoryAttribute()
@@ -261,7 +261,7 @@ references:
   nameWithType.vb: FactoryAttribute.New()
 - uid: Phx.Inject.FactoryAttribute.#ctor(Phx.Inject.FabricationMode)
   name: FactoryAttribute(FabricationMode)
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryAttribute.html#Phx_Inject_FactoryAttribute__ctor_Phx_Inject_FabricationMode_
+  href: Phx.Inject.FactoryAttribute.html#Phx_Inject_FactoryAttribute__ctor_Phx_Inject_FabricationMode_
   commentId: M:Phx.Inject.FactoryAttribute.#ctor(Phx.Inject.FabricationMode)
   name.vb: New(FabricationMode)
   fullName: Phx.Inject.FactoryAttribute.FactoryAttribute(Phx.Inject.FabricationMode)
@@ -270,7 +270,7 @@ references:
   nameWithType.vb: FactoryAttribute.New(FabricationMode)
 - uid: Phx.Inject.FactoryAttribute.#ctor*
   name: FactoryAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryAttribute.html#Phx_Inject_FactoryAttribute__ctor_
+  href: Phx.Inject.FactoryAttribute.html#Phx_Inject_FactoryAttribute__ctor_
   commentId: Overload:Phx.Inject.FactoryAttribute.#ctor
   isSpec: "True"
   name.vb: New
@@ -280,26 +280,26 @@ references:
   nameWithType.vb: FactoryAttribute.New
 - uid: Phx.Inject.FactoryAttribute.FabricationMode
   name: FabricationMode
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryAttribute.html#Phx_Inject_FactoryAttribute_FabricationMode
+  href: Phx.Inject.FactoryAttribute.html#Phx_Inject_FactoryAttribute_FabricationMode
   commentId: P:Phx.Inject.FactoryAttribute.FabricationMode
   fullName: Phx.Inject.FactoryAttribute.FabricationMode
   nameWithType: FactoryAttribute.FabricationMode
 - uid: Phx.Inject.FactoryAttribute.FabricationMode*
   name: FabricationMode
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryAttribute.html#Phx_Inject_FactoryAttribute_FabricationMode_
+  href: Phx.Inject.FactoryAttribute.html#Phx_Inject_FactoryAttribute_FabricationMode_
   commentId: Overload:Phx.Inject.FactoryAttribute.FabricationMode
   isSpec: "True"
   fullName: Phx.Inject.FactoryAttribute.FabricationMode
   nameWithType: FactoryAttribute.FabricationMode
 - uid: Phx.Inject.FactoryReferenceAttribute
   name: FactoryReferenceAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryReferenceAttribute.html
+  href: Phx.Inject.FactoryReferenceAttribute.html
   commentId: T:Phx.Inject.FactoryReferenceAttribute
   fullName: Phx.Inject.FactoryReferenceAttribute
   nameWithType: FactoryReferenceAttribute
 - uid: Phx.Inject.FactoryReferenceAttribute.#ctor
   name: FactoryReferenceAttribute()
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryReferenceAttribute.html#Phx_Inject_FactoryReferenceAttribute__ctor
+  href: Phx.Inject.FactoryReferenceAttribute.html#Phx_Inject_FactoryReferenceAttribute__ctor
   commentId: M:Phx.Inject.FactoryReferenceAttribute.#ctor
   name.vb: New()
   fullName: Phx.Inject.FactoryReferenceAttribute.FactoryReferenceAttribute()
@@ -308,7 +308,7 @@ references:
   nameWithType.vb: FactoryReferenceAttribute.New()
 - uid: Phx.Inject.FactoryReferenceAttribute.#ctor(Phx.Inject.FabricationMode)
   name: FactoryReferenceAttribute(FabricationMode)
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryReferenceAttribute.html#Phx_Inject_FactoryReferenceAttribute__ctor_Phx_Inject_FabricationMode_
+  href: Phx.Inject.FactoryReferenceAttribute.html#Phx_Inject_FactoryReferenceAttribute__ctor_Phx_Inject_FabricationMode_
   commentId: M:Phx.Inject.FactoryReferenceAttribute.#ctor(Phx.Inject.FabricationMode)
   name.vb: New(FabricationMode)
   fullName: Phx.Inject.FactoryReferenceAttribute.FactoryReferenceAttribute(Phx.Inject.FabricationMode)
@@ -317,7 +317,7 @@ references:
   nameWithType.vb: FactoryReferenceAttribute.New(FabricationMode)
 - uid: Phx.Inject.FactoryReferenceAttribute.#ctor*
   name: FactoryReferenceAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryReferenceAttribute.html#Phx_Inject_FactoryReferenceAttribute__ctor_
+  href: Phx.Inject.FactoryReferenceAttribute.html#Phx_Inject_FactoryReferenceAttribute__ctor_
   commentId: Overload:Phx.Inject.FactoryReferenceAttribute.#ctor
   isSpec: "True"
   name.vb: New
@@ -327,20 +327,20 @@ references:
   nameWithType.vb: FactoryReferenceAttribute.New
 - uid: Phx.Inject.FactoryReferenceAttribute.FabricationMode
   name: FabricationMode
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryReferenceAttribute.html#Phx_Inject_FactoryReferenceAttribute_FabricationMode
+  href: Phx.Inject.FactoryReferenceAttribute.html#Phx_Inject_FactoryReferenceAttribute_FabricationMode
   commentId: P:Phx.Inject.FactoryReferenceAttribute.FabricationMode
   fullName: Phx.Inject.FactoryReferenceAttribute.FabricationMode
   nameWithType: FactoryReferenceAttribute.FabricationMode
 - uid: Phx.Inject.FactoryReferenceAttribute.FabricationMode*
   name: FabricationMode
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryReferenceAttribute.html#Phx_Inject_FactoryReferenceAttribute_FabricationMode_
+  href: Phx.Inject.FactoryReferenceAttribute.html#Phx_Inject_FactoryReferenceAttribute_FabricationMode_
   commentId: Overload:Phx.Inject.FactoryReferenceAttribute.FabricationMode
   isSpec: "True"
   fullName: Phx.Inject.FactoryReferenceAttribute.FabricationMode
   nameWithType: FactoryReferenceAttribute.FabricationMode
 - uid: Phx.Inject.Factory`1
   name: Factory<T>
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Factory-1.html
+  href: Phx.Inject.Factory-1.html
   commentId: T:Phx.Inject.Factory`1
   name.vb: Factory(Of T)
   fullName: Phx.Inject.Factory<T>
@@ -349,7 +349,7 @@ references:
   nameWithType.vb: Factory(Of T)
 - uid: Phx.Inject.Factory`1.#ctor(System.Func{`0})
   name: Factory(Func<T>)
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Factory-1.html#Phx_Inject_Factory_1__ctor_System_Func__0__
+  href: Phx.Inject.Factory-1.html#Phx_Inject_Factory_1__ctor_System_Func__0__
   commentId: M:Phx.Inject.Factory`1.#ctor(System.Func{`0})
   name.vb: New(Func(Of T))
   fullName: Phx.Inject.Factory<T>.Factory(System.Func<T>)
@@ -358,7 +358,7 @@ references:
   nameWithType.vb: Factory(Of T).New(Func(Of T))
 - uid: Phx.Inject.Factory`1.#ctor*
   name: Factory
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Factory-1.html#Phx_Inject_Factory_1__ctor_
+  href: Phx.Inject.Factory-1.html#Phx_Inject_Factory_1__ctor_
   commentId: Overload:Phx.Inject.Factory`1.#ctor
   isSpec: "True"
   name.vb: New
@@ -368,7 +368,7 @@ references:
   nameWithType.vb: Factory(Of T).New
 - uid: Phx.Inject.Factory`1.Create
   name: Create()
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Factory-1.html#Phx_Inject_Factory_1_Create
+  href: Phx.Inject.Factory-1.html#Phx_Inject_Factory_1_Create
   commentId: M:Phx.Inject.Factory`1.Create
   fullName: Phx.Inject.Factory<T>.Create()
   fullName.vb: Phx.Inject.Factory(Of T).Create()
@@ -376,7 +376,7 @@ references:
   nameWithType.vb: Factory(Of T).Create()
 - uid: Phx.Inject.Factory`1.Create*
   name: Create
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Factory-1.html#Phx_Inject_Factory_1_Create_
+  href: Phx.Inject.Factory-1.html#Phx_Inject_Factory_1_Create_
   commentId: Overload:Phx.Inject.Factory`1.Create
   isSpec: "True"
   fullName: Phx.Inject.Factory<T>.Create
@@ -385,26 +385,26 @@ references:
   nameWithType.vb: Factory(Of T).Create
 - uid: Phx.Inject.Generator.Incremental.Util
   name: Phx.Inject.Generator.Incremental.Util
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.html
+  href: Phx.Inject.Generator.Incremental.Util.html
   commentId: N:Phx.Inject.Generator.Incremental.Util
   fullName: Phx.Inject.Generator.Incremental.Util
   nameWithType: Phx.Inject.Generator.Incremental.Util
 - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
   name: GeneratorIgnoredExtensions
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html
   commentId: T:Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
   fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions
   nameWithType: GeneratorIgnoredExtensions
 - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored*
   name: GeneratorIgnored
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored_
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored_
   commentId: Overload:Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored
   isSpec: "True"
   fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored
   nameWithType: GeneratorIgnoredExtensions.GeneratorIgnored
 - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
   name: GeneratorIgnored<T>(T)
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnoredExtensions_GeneratorIgnored__1___0_
   commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored``1(``0)
   name.vb: GeneratorIgnored(Of T)(T)
   fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored<T>(T)
@@ -413,7 +413,7 @@ references:
   nameWithType.vb: GeneratorIgnoredExtensions.GeneratorIgnored(Of T)(T)
 - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
   name: GeneratorIgnored<T>
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html
   commentId: T:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1
   name.vb: GeneratorIgnored(Of T)
   fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>
@@ -422,7 +422,7 @@ references:
   nameWithType.vb: GeneratorIgnored(Of T)
 - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.#ctor(`0)
   name: GeneratorIgnored(T)
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1__ctor__0_
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1__ctor__0_
   commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.#ctor(`0)
   name.vb: New(T)
   fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.GeneratorIgnored(T)
@@ -431,7 +431,7 @@ references:
   nameWithType.vb: GeneratorIgnored(Of T).New(T)
 - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.#ctor*
   name: GeneratorIgnored
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1__ctor_
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1__ctor_
   commentId: Overload:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.#ctor
   isSpec: "True"
   name.vb: New
@@ -441,7 +441,7 @@ references:
   nameWithType.vb: GeneratorIgnored(Of T).New
 - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Equals(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0})
   name: Equals(GeneratorIgnored<T>?)
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_Equals_Phx_Inject_Generator_Incremental_Util_GeneratorIgnored__0__
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_Equals_Phx_Inject_Generator_Incremental_Util_GeneratorIgnored__0__
   commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Equals(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored{`0})
   name.vb: Equals(GeneratorIgnored(Of T))
   fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.Equals(Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>?)
@@ -450,7 +450,7 @@ references:
   nameWithType.vb: GeneratorIgnored(Of T).Equals(GeneratorIgnored(Of T))
 - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Equals*
   name: Equals
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_Equals_
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_Equals_
   commentId: Overload:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Equals
   isSpec: "True"
   fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.Equals
@@ -459,7 +459,7 @@ references:
   nameWithType.vb: GeneratorIgnored(Of T).Equals
 - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.GetHashCode
   name: GetHashCode()
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_GetHashCode
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_GetHashCode
   commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.GetHashCode
   fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.GetHashCode()
   fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T).GetHashCode()
@@ -467,7 +467,7 @@ references:
   nameWithType.vb: GeneratorIgnored(Of T).GetHashCode()
 - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.GetHashCode*
   name: GetHashCode
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_GetHashCode_
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_GetHashCode_
   commentId: Overload:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.GetHashCode
   isSpec: "True"
   fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.GetHashCode
@@ -476,7 +476,7 @@ references:
   nameWithType.vb: GeneratorIgnored(Of T).GetHashCode
 - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.ToString
   name: ToString()
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_ToString
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_ToString
   commentId: M:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.ToString
   fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.ToString()
   fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T).ToString()
@@ -484,7 +484,7 @@ references:
   nameWithType.vb: GeneratorIgnored(Of T).ToString()
 - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.ToString*
   name: ToString
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_ToString_
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_ToString_
   commentId: Overload:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.ToString
   isSpec: "True"
   fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.ToString
@@ -493,7 +493,7 @@ references:
   nameWithType.vb: GeneratorIgnored(Of T).ToString
 - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Value
   name: Value
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_Value
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_Value
   commentId: P:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Value
   fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.Value
   fullName.vb: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored(Of T).Value
@@ -501,7 +501,7 @@ references:
   nameWithType.vb: GeneratorIgnored(Of T).Value
 - uid: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Value*
   name: Value
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_Value_
+  href: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html#Phx_Inject_Generator_Incremental_Util_GeneratorIgnored_1_Value_
   commentId: Overload:Phx.Inject.Generator.Incremental.Util.GeneratorIgnored`1.Value
   isSpec: "True"
   fullName: Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>.Value
@@ -510,13 +510,13 @@ references:
   nameWithType.vb: GeneratorIgnored(Of T).Value
 - uid: Phx.Inject.Generator.Incremental.Util.LocationExtensions
   name: LocationExtensions
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.html
+  href: Phx.Inject.Generator.Incremental.Util.LocationExtensions.html
   commentId: T:Phx.Inject.Generator.Incremental.Util.LocationExtensions
   fullName: Phx.Inject.Generator.Incremental.Util.LocationExtensions
   nameWithType: LocationExtensions
 - uid: Phx.Inject.Generator.Incremental.Util.LocationExtensions.OrNone(Microsoft.CodeAnalysis.Location)
   name: OrNone(Location?)
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.html#Phx_Inject_Generator_Incremental_Util_LocationExtensions_OrNone_Microsoft_CodeAnalysis_Location_
+  href: Phx.Inject.Generator.Incremental.Util.LocationExtensions.html#Phx_Inject_Generator_Incremental_Util_LocationExtensions_OrNone_Microsoft_CodeAnalysis_Location_
   commentId: M:Phx.Inject.Generator.Incremental.Util.LocationExtensions.OrNone(Microsoft.CodeAnalysis.Location)
   name.vb: OrNone(Location)
   fullName: Phx.Inject.Generator.Incremental.Util.LocationExtensions.OrNone(Microsoft.CodeAnalysis.Location?)
@@ -525,34 +525,34 @@ references:
   nameWithType.vb: LocationExtensions.OrNone(Location)
 - uid: Phx.Inject.Generator.Incremental.Util.LocationExtensions.OrNone*
   name: OrNone
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.html#Phx_Inject_Generator_Incremental_Util_LocationExtensions_OrNone_
+  href: Phx.Inject.Generator.Incremental.Util.LocationExtensions.html#Phx_Inject_Generator_Incremental_Util_LocationExtensions_OrNone_
   commentId: Overload:Phx.Inject.Generator.Incremental.Util.LocationExtensions.OrNone
   isSpec: "True"
   fullName: Phx.Inject.Generator.Incremental.Util.LocationExtensions.OrNone
   nameWithType: LocationExtensions.OrNone
 - uid: Phx.Inject.InjectionUtil
   name: InjectionUtil
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectionUtil.html
+  href: Phx.Inject.InjectionUtil.html
   commentId: T:Phx.Inject.InjectionUtil
   fullName: Phx.Inject.InjectionUtil
   nameWithType: InjectionUtil
 - uid: Phx.Inject.InjectionUtil.Combine*
   name: Combine
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectionUtil.html#Phx_Inject_InjectionUtil_Combine_
+  href: Phx.Inject.InjectionUtil.html#Phx_Inject_InjectionUtil_Combine_
   commentId: Overload:Phx.Inject.InjectionUtil.Combine
   isSpec: "True"
   fullName: Phx.Inject.InjectionUtil.Combine
   nameWithType: InjectionUtil.Combine
 - uid: Phx.Inject.InjectionUtil.CombineReadOnlySet*
   name: CombineReadOnlySet
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectionUtil.html#Phx_Inject_InjectionUtil_CombineReadOnlySet_
+  href: Phx.Inject.InjectionUtil.html#Phx_Inject_InjectionUtil_CombineReadOnlySet_
   commentId: Overload:Phx.Inject.InjectionUtil.CombineReadOnlySet
   isSpec: "True"
   fullName: Phx.Inject.InjectionUtil.CombineReadOnlySet
   nameWithType: InjectionUtil.CombineReadOnlySet
 - uid: Phx.Inject.InjectionUtil.CombineReadOnlySet``1(System.Collections.Generic.IEnumerable{``0}[])
   name: CombineReadOnlySet<T>(params IEnumerable<T>[])
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectionUtil.html#Phx_Inject_InjectionUtil_CombineReadOnlySet__1_System_Collections_Generic_IEnumerable___0____
+  href: Phx.Inject.InjectionUtil.html#Phx_Inject_InjectionUtil_CombineReadOnlySet__1_System_Collections_Generic_IEnumerable___0____
   commentId: M:Phx.Inject.InjectionUtil.CombineReadOnlySet``1(System.Collections.Generic.IEnumerable{``0}[])
   name.vb: CombineReadOnlySet(Of T)(ParamArray IEnumerable(Of T)())
   fullName: Phx.Inject.InjectionUtil.CombineReadOnlySet<T>(params System.Collections.Generic.IEnumerable<T>[])
@@ -561,7 +561,7 @@ references:
   nameWithType.vb: InjectionUtil.CombineReadOnlySet(Of T)(ParamArray IEnumerable(Of T)())
 - uid: Phx.Inject.InjectionUtil.Combine``1(System.Collections.Generic.IReadOnlyList{``0}[])
   name: Combine<T>(params IReadOnlyList<T>[])
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectionUtil.html#Phx_Inject_InjectionUtil_Combine__1_System_Collections_Generic_IReadOnlyList___0____
+  href: Phx.Inject.InjectionUtil.html#Phx_Inject_InjectionUtil_Combine__1_System_Collections_Generic_IReadOnlyList___0____
   commentId: M:Phx.Inject.InjectionUtil.Combine``1(System.Collections.Generic.IReadOnlyList{``0}[])
   name.vb: Combine(Of T)(ParamArray IReadOnlyList(Of T)())
   fullName: Phx.Inject.InjectionUtil.Combine<T>(params System.Collections.Generic.IReadOnlyList<T>[])
@@ -570,7 +570,7 @@ references:
   nameWithType.vb: InjectionUtil.Combine(Of T)(ParamArray IReadOnlyList(Of T)())
 - uid: Phx.Inject.InjectionUtil.Combine``1(System.Collections.Generic.ISet{``0}[])
   name: Combine<T>(params ISet<T>[])
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectionUtil.html#Phx_Inject_InjectionUtil_Combine__1_System_Collections_Generic_ISet___0____
+  href: Phx.Inject.InjectionUtil.html#Phx_Inject_InjectionUtil_Combine__1_System_Collections_Generic_ISet___0____
   commentId: M:Phx.Inject.InjectionUtil.Combine``1(System.Collections.Generic.ISet{``0}[])
   name.vb: Combine(Of T)(ParamArray ISet(Of T)())
   fullName: Phx.Inject.InjectionUtil.Combine<T>(params System.Collections.Generic.ISet<T>[])
@@ -579,7 +579,7 @@ references:
   nameWithType.vb: InjectionUtil.Combine(Of T)(ParamArray ISet(Of T)())
 - uid: Phx.Inject.InjectionUtil.Combine``2(System.Collections.Generic.IReadOnlyDictionary{``0,``1}[])
   name: Combine<K, V>(params IReadOnlyDictionary<K, V>[])
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectionUtil.html#Phx_Inject_InjectionUtil_Combine__2_System_Collections_Generic_IReadOnlyDictionary___0___1____
+  href: Phx.Inject.InjectionUtil.html#Phx_Inject_InjectionUtil_Combine__2_System_Collections_Generic_IReadOnlyDictionary___0___1____
   commentId: M:Phx.Inject.InjectionUtil.Combine``2(System.Collections.Generic.IReadOnlyDictionary{``0,``1}[])
   name.vb: Combine(Of K, V)(ParamArray IReadOnlyDictionary(Of K, V)())
   fullName: Phx.Inject.InjectionUtil.Combine<K, V>(params System.Collections.Generic.IReadOnlyDictionary<K, V>[])
@@ -588,13 +588,13 @@ references:
   nameWithType.vb: InjectionUtil.Combine(Of K, V)(ParamArray IReadOnlyDictionary(Of K, V)())
 - uid: Phx.Inject.InjectorAttribute
   name: InjectorAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorAttribute.html
+  href: Phx.Inject.InjectorAttribute.html
   commentId: T:Phx.Inject.InjectorAttribute
   fullName: Phx.Inject.InjectorAttribute
   nameWithType: InjectorAttribute
 - uid: Phx.Inject.InjectorAttribute.#ctor(System.String,System.Type[])
   name: InjectorAttribute(string?, params Type[])
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorAttribute.html#Phx_Inject_InjectorAttribute__ctor_System_String_System_Type___
+  href: Phx.Inject.InjectorAttribute.html#Phx_Inject_InjectorAttribute__ctor_System_String_System_Type___
   commentId: M:Phx.Inject.InjectorAttribute.#ctor(System.String,System.Type[])
   name.vb: New(String, ParamArray Type())
   fullName: Phx.Inject.InjectorAttribute.InjectorAttribute(string?, params System.Type[])
@@ -603,7 +603,7 @@ references:
   nameWithType.vb: InjectorAttribute.New(String, ParamArray Type())
 - uid: Phx.Inject.InjectorAttribute.#ctor(System.Type[])
   name: InjectorAttribute(params Type[])
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorAttribute.html#Phx_Inject_InjectorAttribute__ctor_System_Type___
+  href: Phx.Inject.InjectorAttribute.html#Phx_Inject_InjectorAttribute__ctor_System_Type___
   commentId: M:Phx.Inject.InjectorAttribute.#ctor(System.Type[])
   name.vb: New(ParamArray Type())
   fullName: Phx.Inject.InjectorAttribute.InjectorAttribute(params System.Type[])
@@ -612,7 +612,7 @@ references:
   nameWithType.vb: InjectorAttribute.New(ParamArray Type())
 - uid: Phx.Inject.InjectorAttribute.#ctor*
   name: InjectorAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorAttribute.html#Phx_Inject_InjectorAttribute__ctor_
+  href: Phx.Inject.InjectorAttribute.html#Phx_Inject_InjectorAttribute__ctor_
   commentId: Overload:Phx.Inject.InjectorAttribute.#ctor
   isSpec: "True"
   name.vb: New
@@ -622,45 +622,45 @@ references:
   nameWithType.vb: InjectorAttribute.New
 - uid: Phx.Inject.InjectorAttribute.GeneratedClassName
   name: GeneratedClassName
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorAttribute.html#Phx_Inject_InjectorAttribute_GeneratedClassName
+  href: Phx.Inject.InjectorAttribute.html#Phx_Inject_InjectorAttribute_GeneratedClassName
   commentId: P:Phx.Inject.InjectorAttribute.GeneratedClassName
   fullName: Phx.Inject.InjectorAttribute.GeneratedClassName
   nameWithType: InjectorAttribute.GeneratedClassName
 - uid: Phx.Inject.InjectorAttribute.GeneratedClassName*
   name: GeneratedClassName
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorAttribute.html#Phx_Inject_InjectorAttribute_GeneratedClassName_
+  href: Phx.Inject.InjectorAttribute.html#Phx_Inject_InjectorAttribute_GeneratedClassName_
   commentId: Overload:Phx.Inject.InjectorAttribute.GeneratedClassName
   isSpec: "True"
   fullName: Phx.Inject.InjectorAttribute.GeneratedClassName
   nameWithType: InjectorAttribute.GeneratedClassName
 - uid: Phx.Inject.InjectorAttribute.Specifications
   name: Specifications
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorAttribute.html#Phx_Inject_InjectorAttribute_Specifications
+  href: Phx.Inject.InjectorAttribute.html#Phx_Inject_InjectorAttribute_Specifications
   commentId: P:Phx.Inject.InjectorAttribute.Specifications
   fullName: Phx.Inject.InjectorAttribute.Specifications
   nameWithType: InjectorAttribute.Specifications
 - uid: Phx.Inject.InjectorAttribute.Specifications*
   name: Specifications
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorAttribute.html#Phx_Inject_InjectorAttribute_Specifications_
+  href: Phx.Inject.InjectorAttribute.html#Phx_Inject_InjectorAttribute_Specifications_
   commentId: Overload:Phx.Inject.InjectorAttribute.Specifications
   isSpec: "True"
   fullName: Phx.Inject.InjectorAttribute.Specifications
   nameWithType: InjectorAttribute.Specifications
 - uid: Phx.Inject.InjectorDependencyAttribute
   name: InjectorDependencyAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorDependencyAttribute.html
+  href: Phx.Inject.InjectorDependencyAttribute.html
   commentId: T:Phx.Inject.InjectorDependencyAttribute
   fullName: Phx.Inject.InjectorDependencyAttribute
   nameWithType: InjectorDependencyAttribute
 - uid: Phx.Inject.LabelAttribute
   name: LabelAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LabelAttribute.html
+  href: Phx.Inject.LabelAttribute.html
   commentId: T:Phx.Inject.LabelAttribute
   fullName: Phx.Inject.LabelAttribute
   nameWithType: LabelAttribute
 - uid: Phx.Inject.LabelAttribute.#ctor(System.String)
   name: LabelAttribute(string)
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LabelAttribute.html#Phx_Inject_LabelAttribute__ctor_System_String_
+  href: Phx.Inject.LabelAttribute.html#Phx_Inject_LabelAttribute__ctor_System_String_
   commentId: M:Phx.Inject.LabelAttribute.#ctor(System.String)
   name.vb: New(String)
   fullName: Phx.Inject.LabelAttribute.LabelAttribute(string)
@@ -669,7 +669,7 @@ references:
   nameWithType.vb: LabelAttribute.New(String)
 - uid: Phx.Inject.LabelAttribute.#ctor*
   name: LabelAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LabelAttribute.html#Phx_Inject_LabelAttribute__ctor_
+  href: Phx.Inject.LabelAttribute.html#Phx_Inject_LabelAttribute__ctor_
   commentId: Overload:Phx.Inject.LabelAttribute.#ctor
   isSpec: "True"
   name.vb: New
@@ -679,26 +679,26 @@ references:
   nameWithType.vb: LabelAttribute.New
 - uid: Phx.Inject.LabelAttribute.Label
   name: Label
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LabelAttribute.html#Phx_Inject_LabelAttribute_Label
+  href: Phx.Inject.LabelAttribute.html#Phx_Inject_LabelAttribute_Label
   commentId: P:Phx.Inject.LabelAttribute.Label
   fullName: Phx.Inject.LabelAttribute.Label
   nameWithType: LabelAttribute.Label
 - uid: Phx.Inject.LabelAttribute.Label*
   name: Label
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LabelAttribute.html#Phx_Inject_LabelAttribute_Label_
+  href: Phx.Inject.LabelAttribute.html#Phx_Inject_LabelAttribute_Label_
   commentId: Overload:Phx.Inject.LabelAttribute.Label
   isSpec: "True"
   fullName: Phx.Inject.LabelAttribute.Label
   nameWithType: LabelAttribute.Label
 - uid: Phx.Inject.LinkAttribute
   name: LinkAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.html
+  href: Phx.Inject.LinkAttribute.html
   commentId: T:Phx.Inject.LinkAttribute
   fullName: Phx.Inject.LinkAttribute
   nameWithType: LinkAttribute
 - uid: Phx.Inject.LinkAttribute.#ctor(System.Type,System.Type)
   name: LinkAttribute(Type, Type)
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute__ctor_System_Type_System_Type_
+  href: Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute__ctor_System_Type_System_Type_
   commentId: M:Phx.Inject.LinkAttribute.#ctor(System.Type,System.Type)
   name.vb: New(Type, Type)
   fullName: Phx.Inject.LinkAttribute.LinkAttribute(System.Type, System.Type)
@@ -707,7 +707,7 @@ references:
   nameWithType.vb: LinkAttribute.New(Type, Type)
 - uid: Phx.Inject.LinkAttribute.#ctor*
   name: LinkAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute__ctor_
+  href: Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute__ctor_
   commentId: Overload:Phx.Inject.LinkAttribute.#ctor
   isSpec: "True"
   name.vb: New
@@ -717,166 +717,166 @@ references:
   nameWithType.vb: LinkAttribute.New
 - uid: Phx.Inject.LinkAttribute.Input
   name: Input
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_Input
+  href: Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_Input
   commentId: P:Phx.Inject.LinkAttribute.Input
   fullName: Phx.Inject.LinkAttribute.Input
   nameWithType: LinkAttribute.Input
 - uid: Phx.Inject.LinkAttribute.Input*
   name: Input
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_Input_
+  href: Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_Input_
   commentId: Overload:Phx.Inject.LinkAttribute.Input
   isSpec: "True"
   fullName: Phx.Inject.LinkAttribute.Input
   nameWithType: LinkAttribute.Input
 - uid: Phx.Inject.LinkAttribute.InputLabel
   name: InputLabel
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_InputLabel
+  href: Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_InputLabel
   commentId: P:Phx.Inject.LinkAttribute.InputLabel
   fullName: Phx.Inject.LinkAttribute.InputLabel
   nameWithType: LinkAttribute.InputLabel
 - uid: Phx.Inject.LinkAttribute.InputLabel*
   name: InputLabel
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_InputLabel_
+  href: Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_InputLabel_
   commentId: Overload:Phx.Inject.LinkAttribute.InputLabel
   isSpec: "True"
   fullName: Phx.Inject.LinkAttribute.InputLabel
   nameWithType: LinkAttribute.InputLabel
 - uid: Phx.Inject.LinkAttribute.InputQualifier
   name: InputQualifier
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_InputQualifier
+  href: Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_InputQualifier
   commentId: P:Phx.Inject.LinkAttribute.InputQualifier
   fullName: Phx.Inject.LinkAttribute.InputQualifier
   nameWithType: LinkAttribute.InputQualifier
 - uid: Phx.Inject.LinkAttribute.InputQualifier*
   name: InputQualifier
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_InputQualifier_
+  href: Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_InputQualifier_
   commentId: Overload:Phx.Inject.LinkAttribute.InputQualifier
   isSpec: "True"
   fullName: Phx.Inject.LinkAttribute.InputQualifier
   nameWithType: LinkAttribute.InputQualifier
 - uid: Phx.Inject.LinkAttribute.Output
   name: Output
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_Output
+  href: Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_Output
   commentId: P:Phx.Inject.LinkAttribute.Output
   fullName: Phx.Inject.LinkAttribute.Output
   nameWithType: LinkAttribute.Output
 - uid: Phx.Inject.LinkAttribute.Output*
   name: Output
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_Output_
+  href: Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_Output_
   commentId: Overload:Phx.Inject.LinkAttribute.Output
   isSpec: "True"
   fullName: Phx.Inject.LinkAttribute.Output
   nameWithType: LinkAttribute.Output
 - uid: Phx.Inject.LinkAttribute.OutputLabel
   name: OutputLabel
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_OutputLabel
+  href: Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_OutputLabel
   commentId: P:Phx.Inject.LinkAttribute.OutputLabel
   fullName: Phx.Inject.LinkAttribute.OutputLabel
   nameWithType: LinkAttribute.OutputLabel
 - uid: Phx.Inject.LinkAttribute.OutputLabel*
   name: OutputLabel
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_OutputLabel_
+  href: Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_OutputLabel_
   commentId: Overload:Phx.Inject.LinkAttribute.OutputLabel
   isSpec: "True"
   fullName: Phx.Inject.LinkAttribute.OutputLabel
   nameWithType: LinkAttribute.OutputLabel
 - uid: Phx.Inject.LinkAttribute.OutputQualifier
   name: OutputQualifier
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_OutputQualifier
+  href: Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_OutputQualifier
   commentId: P:Phx.Inject.LinkAttribute.OutputQualifier
   fullName: Phx.Inject.LinkAttribute.OutputQualifier
   nameWithType: LinkAttribute.OutputQualifier
 - uid: Phx.Inject.LinkAttribute.OutputQualifier*
   name: OutputQualifier
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_OutputQualifier_
+  href: Phx.Inject.LinkAttribute.html#Phx_Inject_LinkAttribute_OutputQualifier_
   commentId: Overload:Phx.Inject.LinkAttribute.OutputQualifier
   isSpec: "True"
   fullName: Phx.Inject.LinkAttribute.OutputQualifier
   nameWithType: LinkAttribute.OutputQualifier
 - uid: Phx.Inject.PartialAttribute
   name: PartialAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.PartialAttribute.html
+  href: Phx.Inject.PartialAttribute.html
   commentId: T:Phx.Inject.PartialAttribute
   fullName: Phx.Inject.PartialAttribute
   nameWithType: PartialAttribute
 - uid: Phx.Inject.PhxInjectAttribute
   name: PhxInjectAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.PhxInjectAttribute.html
+  href: Phx.Inject.PhxInjectAttribute.html
   commentId: T:Phx.Inject.PhxInjectAttribute
   fullName: Phx.Inject.PhxInjectAttribute
   nameWithType: PhxInjectAttribute
 - uid: Phx.Inject.PhxInjectAttribute.DefaultGeneratedFileExtension
   name: DefaultGeneratedFileExtension
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_DefaultGeneratedFileExtension
+  href: Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_DefaultGeneratedFileExtension
   commentId: F:Phx.Inject.PhxInjectAttribute.DefaultGeneratedFileExtension
   fullName: Phx.Inject.PhxInjectAttribute.DefaultGeneratedFileExtension
   nameWithType: PhxInjectAttribute.DefaultGeneratedFileExtension
 - uid: Phx.Inject.PhxInjectAttribute.DefaultNullableEnabled
   name: DefaultNullableEnabled
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_DefaultNullableEnabled
+  href: Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_DefaultNullableEnabled
   commentId: F:Phx.Inject.PhxInjectAttribute.DefaultNullableEnabled
   fullName: Phx.Inject.PhxInjectAttribute.DefaultNullableEnabled
   nameWithType: PhxInjectAttribute.DefaultNullableEnabled
 - uid: Phx.Inject.PhxInjectAttribute.DefaultTabSize
   name: DefaultTabSize
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_DefaultTabSize
+  href: Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_DefaultTabSize
   commentId: F:Phx.Inject.PhxInjectAttribute.DefaultTabSize
   fullName: Phx.Inject.PhxInjectAttribute.DefaultTabSize
   nameWithType: PhxInjectAttribute.DefaultTabSize
 - uid: Phx.Inject.PhxInjectAttribute.GeneratedFileExtension
   name: GeneratedFileExtension
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_GeneratedFileExtension
+  href: Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_GeneratedFileExtension
   commentId: P:Phx.Inject.PhxInjectAttribute.GeneratedFileExtension
   fullName: Phx.Inject.PhxInjectAttribute.GeneratedFileExtension
   nameWithType: PhxInjectAttribute.GeneratedFileExtension
 - uid: Phx.Inject.PhxInjectAttribute.GeneratedFileExtension*
   name: GeneratedFileExtension
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_GeneratedFileExtension_
+  href: Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_GeneratedFileExtension_
   commentId: Overload:Phx.Inject.PhxInjectAttribute.GeneratedFileExtension
   isSpec: "True"
   fullName: Phx.Inject.PhxInjectAttribute.GeneratedFileExtension
   nameWithType: PhxInjectAttribute.GeneratedFileExtension
 - uid: Phx.Inject.PhxInjectAttribute.NullableEnabled
   name: NullableEnabled
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_NullableEnabled
+  href: Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_NullableEnabled
   commentId: P:Phx.Inject.PhxInjectAttribute.NullableEnabled
   fullName: Phx.Inject.PhxInjectAttribute.NullableEnabled
   nameWithType: PhxInjectAttribute.NullableEnabled
 - uid: Phx.Inject.PhxInjectAttribute.NullableEnabled*
   name: NullableEnabled
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_NullableEnabled_
+  href: Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_NullableEnabled_
   commentId: Overload:Phx.Inject.PhxInjectAttribute.NullableEnabled
   isSpec: "True"
   fullName: Phx.Inject.PhxInjectAttribute.NullableEnabled
   nameWithType: PhxInjectAttribute.NullableEnabled
 - uid: Phx.Inject.PhxInjectAttribute.TabSize
   name: TabSize
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_TabSize
+  href: Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_TabSize
   commentId: P:Phx.Inject.PhxInjectAttribute.TabSize
   fullName: Phx.Inject.PhxInjectAttribute.TabSize
   nameWithType: PhxInjectAttribute.TabSize
 - uid: Phx.Inject.PhxInjectAttribute.TabSize*
   name: TabSize
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_TabSize_
+  href: Phx.Inject.PhxInjectAttribute.html#Phx_Inject_PhxInjectAttribute_TabSize_
   commentId: Overload:Phx.Inject.PhxInjectAttribute.TabSize
   isSpec: "True"
   fullName: Phx.Inject.PhxInjectAttribute.TabSize
   nameWithType: PhxInjectAttribute.TabSize
 - uid: Phx.Inject.QualifierAttribute
   name: QualifierAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.QualifierAttribute.html
+  href: Phx.Inject.QualifierAttribute.html
   commentId: T:Phx.Inject.QualifierAttribute
   fullName: Phx.Inject.QualifierAttribute
   nameWithType: QualifierAttribute
 - uid: Phx.Inject.QualifierAttribute.Usage
   name: Usage
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.QualifierAttribute.html#Phx_Inject_QualifierAttribute_Usage
+  href: Phx.Inject.QualifierAttribute.html#Phx_Inject_QualifierAttribute_Usage
   commentId: F:Phx.Inject.QualifierAttribute.Usage
   fullName: Phx.Inject.QualifierAttribute.Usage
   nameWithType: QualifierAttribute.Usage
 - uid: Phx.Inject.SpecificationAttribute
   name: SpecificationAttribute
-  href: src/Phx.Inject.Generator/bin/docs/Phx.Inject.SpecificationAttribute.html
+  href: Phx.Inject.SpecificationAttribute.html
   commentId: T:Phx.Inject.SpecificationAttribute
   fullName: Phx.Inject.SpecificationAttribute
   nameWithType: SpecificationAttribute

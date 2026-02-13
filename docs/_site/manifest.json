@@ -7,7 +7,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.AutoBuilderAttribute.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.AutoBuilderAttribute.html"
+          "relative_path": "Phx.Inject.AutoBuilderAttribute.html"
         }
       },
       "version": "",
@@ -21,7 +21,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.AutoFactoryAttribute.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.AutoFactoryAttribute.html"
+          "relative_path": "Phx.Inject.AutoFactoryAttribute.html"
         }
       },
       "version": "",
@@ -35,7 +35,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.BuilderAttribute.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.BuilderAttribute.html"
+          "relative_path": "Phx.Inject.BuilderAttribute.html"
         }
       },
       "version": "",
@@ -49,7 +49,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.BuilderReferenceAttribute.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.BuilderReferenceAttribute.html"
+          "relative_path": "Phx.Inject.BuilderReferenceAttribute.html"
         }
       },
       "version": "",
@@ -63,7 +63,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.ChildInjectorAttribute.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.ChildInjectorAttribute.html"
+          "relative_path": "Phx.Inject.ChildInjectorAttribute.html"
         }
       },
       "version": "",
@@ -77,7 +77,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.html"
+          "relative_path": "Phx.Inject.Common.Util.FunctionalExtensions.html"
         }
       },
       "version": "",
@@ -91,7 +91,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.html"
+          "relative_path": "Phx.Inject.Common.Util.IEnumerableExtensions.html"
         }
       },
       "version": "",
@@ -105,7 +105,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.html"
+          "relative_path": "Phx.Inject.Common.Util.html"
         }
       },
       "version": "",
@@ -119,7 +119,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.DependencyAttribute.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.DependencyAttribute.html"
+          "relative_path": "Phx.Inject.DependencyAttribute.html"
         }
       },
       "version": "",
@@ -133,7 +133,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.FabricationMode.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.FabricationMode.html"
+          "relative_path": "Phx.Inject.FabricationMode.html"
         }
       },
       "version": "",
@@ -147,7 +147,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Factory-1.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Factory-1.html"
+          "relative_path": "Phx.Inject.Factory-1.html"
         }
       },
       "version": "",
@@ -161,7 +161,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryAttribute.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryAttribute.html"
+          "relative_path": "Phx.Inject.FactoryAttribute.html"
         }
       },
       "version": "",
@@ -175,7 +175,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryReferenceAttribute.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryReferenceAttribute.html"
+          "relative_path": "Phx.Inject.FactoryReferenceAttribute.html"
         }
       },
       "version": "",
@@ -189,7 +189,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html"
+          "relative_path": "Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html"
         }
       },
       "version": "",
@@ -203,7 +203,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html"
+          "relative_path": "Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html"
         }
       },
       "version": "",
@@ -217,7 +217,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.html"
+          "relative_path": "Phx.Inject.Generator.Incremental.Util.LocationExtensions.html"
         }
       },
       "version": "",
@@ -231,7 +231,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.html"
+          "relative_path": "Phx.Inject.Generator.Incremental.Util.html"
         }
       },
       "version": "",
@@ -245,7 +245,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectionUtil.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectionUtil.html"
+          "relative_path": "Phx.Inject.InjectionUtil.html"
         }
       },
       "version": "",
@@ -259,7 +259,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorAttribute.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorAttribute.html"
+          "relative_path": "Phx.Inject.InjectorAttribute.html"
         }
       },
       "version": "",
@@ -273,7 +273,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorDependencyAttribute.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorDependencyAttribute.html"
+          "relative_path": "Phx.Inject.InjectorDependencyAttribute.html"
         }
       },
       "version": "",
@@ -287,7 +287,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.LabelAttribute.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.LabelAttribute.html"
+          "relative_path": "Phx.Inject.LabelAttribute.html"
         }
       },
       "version": "",
@@ -301,7 +301,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.html"
+          "relative_path": "Phx.Inject.LinkAttribute.html"
         }
       },
       "version": "",
@@ -315,7 +315,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.PartialAttribute.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.PartialAttribute.html"
+          "relative_path": "Phx.Inject.PartialAttribute.html"
         }
       },
       "version": "",
@@ -329,7 +329,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.PhxInjectAttribute.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.PhxInjectAttribute.html"
+          "relative_path": "Phx.Inject.PhxInjectAttribute.html"
         }
       },
       "version": "",
@@ -343,7 +343,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.QualifierAttribute.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.QualifierAttribute.html"
+          "relative_path": "Phx.Inject.QualifierAttribute.html"
         }
       },
       "version": "",
@@ -357,7 +357,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.SpecificationAttribute.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.SpecificationAttribute.html"
+          "relative_path": "Phx.Inject.SpecificationAttribute.html"
         }
       },
       "version": "",
@@ -371,7 +371,7 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.html"
+          "relative_path": "Phx.Inject.html"
         }
       },
       "version": "",
@@ -385,10 +385,10 @@
       "source_relative_path": "src/Phx.Inject.Generator/bin/docs/toc.yml",
       "output": {
         ".html": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/toc.html"
+          "relative_path": "toc.html"
         },
         ".json": {
-          "relative_path": "src/Phx.Inject.Generator/bin/docs/toc.json"
+          "relative_path": "toc.json"
         }
       },
       "version": ""
