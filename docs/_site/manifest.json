@@ -1,0 +1,402 @@
+{
+  "source_base_path": "D:/Dan/Source/GitHub/Workspaces/BlackFlag/PhxInject",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.AutoBuilderAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.AutoBuilderAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.AutoBuilderAttribute",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.AutoBuilderAttribute.yml\" sourcestartlinenumber=\"1\">Annotates a builder method that will be invoked to complete the construction of a given\ndependency.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.AutoFactoryAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.AutoFactoryAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.AutoFactoryAttribute",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.AutoFactoryAttribute.yml\" sourcestartlinenumber=\"1\">Annotates a type or constructor that will be invoked to construct a given dependency.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.BuilderAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.BuilderAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.BuilderAttribute",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.BuilderAttribute.yml\" sourcestartlinenumber=\"1\">Annotates a builder method that will be invoked to complete the construction of a given\ndependency.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.BuilderReferenceAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.BuilderReferenceAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.BuilderReferenceAttribute",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.BuilderReferenceAttribute.yml\" sourcestartlinenumber=\"1\">Annotates a field or property that references a builder method that will be invoked to complete\nthe construction of a given dependency.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.ChildInjectorAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.ChildInjectorAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.ChildInjectorAttribute",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.ChildInjectorAttribute.yml\" sourcestartlinenumber=\"1\">Annotates a method used to retrieve a child injector instance.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.Common.Util.FunctionalExtensions",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"1\">Extension methods for functional programming patterns inspired by Kotlin/Scala.</p>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"3\">PURPOSE:</p>\n<ul sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"4\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"4\">Enables functional transformation and side-effect patterns in C#</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"5\">Reduces temporary variables and improves code flow</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"6\">Makes complex transformations more readable through chaining</li>\n</ul>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"8\">WHY THIS EXISTS:\nC# has limited built-in support for functional patterns that are common in other languages.\nThese extensions bring three key patterns:</p>\n<ol sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"12\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"12\">Let: Transform a value inline (Kotlin's let, Scala's map)</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"13\">Also: Perform side effects while passing through a value (Kotlin's also, Scala's tap)</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"14\">Then: Terminate a chain with a side effect (Kotlin's also at end of chain)</li>\n</ol>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"16\">PATTERN COMPARISON:</p>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"18\">Traditional C#:\nvar temp = GetValue();\nvar transformed = Transform(temp);\nLog(transformed);\nDoSomething(transformed);\nreturn transformed;</p>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"25\">With functional extensions:\nreturn GetValue()\n.Let(Transform)\n.Also(Log)\n.Also(DoSomething);</p>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"31\">DESIGN DECISIONS:</p>\n<ol sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"33\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"33\"><p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"33\">Why &quot;Let&quot; instead of &quot;Map&quot; or &quot;Select&quot;?</p>\n<ul sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"34\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"34\">LINQ already has Select() for IEnumerable</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"35\">&quot;Let&quot; is Kotlin terminology, familiar to many developers</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"36\">Avoids confusion with LINQ operators</li>\n</ul>\n</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"38\"><p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"38\">Why both &quot;Also&quot; and &quot;Then&quot;?</p>\n<ul sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"39\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"39\">Also: Returns the value (chainable, for multiple side effects)</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"40\">Then: Returns void (terminal operation, signals end of chain)</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"41\">Different signatures prevent accidental misuse</li>\n</ul>\n</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"43\"><p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"43\">Why are these useful in generators?</p>\n<ul sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"44\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"44\">Generators involve multi-stage transformations (syntax → symbols → metadata → code)</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"45\">Each stage may need logging, validation, or diagnostics</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"46\">These patterns make transformation pipelines explicit and linear</li>\n</ul>\n</li>\n</ol>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"48\">USAGE EXAMPLES:</p>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"50\">Transformation chain:\nvar metadata = symbol\n.Let(ExtractInfo)\n.Let(ValidateInfo)\n.Also(info =&gt; Log($&quot;Processing {info.Name}&quot;))\n.Let(CreateMetadata);</p>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"57\">Builder pattern enhancement:\nreturn new StringBuilder()\n.Also(sb =&gt; sb.AppendLine(&quot;// Generated code&quot;))\n.Also(sb =&gt; sb.AppendLine($&quot;class {className}&quot;))\n.Also(sb =&gt; AppendMembers(sb, members))\n.ToString();</p>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"64\">Side effects without breaking flow:\nvar result = CalculateValue()\n.Also(val =&gt; Debug.Assert(val &gt; 0, &quot;Expected positive&quot;))\n.Also(val =&gt; metrics.Record(val))\n.Let(val =&gt; val * 2);</p>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"70\">PERFORMANCE CONSIDERATIONS:</p>\n<ul sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"71\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"71\">Zero overhead: Calls inline to the provided function/action</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"72\">No allocations beyond what the lambda captures</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"73\">JIT can inline these for optimal performance</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.FunctionalExtensions.yml\" sourcestartlinenumber=\"74\">Equivalent performance to writing the code manually</li>\n</ul>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.Common.Util.IEnumerableExtensions",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"1\">Extension methods for working with <xref href=\"System.Collections.Generic.IEnumerable%601\" data-throw-if-not-resolved=\"false\"></xref> collections.</p>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"3\">PURPOSE:</p>\n<ul sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"4\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"4\">Provides collection manipulation utilities for common generator patterns</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"5\">Simplifies conditional collection building</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"6\">Supports immutable collection transformations</li>\n</ul>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"8\">WHY THIS EXISTS:\nSource generators frequently work with collections that need to be:</p>\n<ol sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"10\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"10\">Built conditionally (add items only if they exist/are valid)</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"11\">Converted between mutable and immutable forms</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"12\">Grouped or transformed while maintaining immutability</li>\n</ol>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"14\">These extensions support functional-style collection building that avoids\nmutations and null-checking boilerplate.</p>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"17\">COMMON PATTERNS SUPPORTED:</p>\n<ol sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"19\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"19\"><p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"19\">Conditional collection building:\nvar items = baseItems\n.AppendIfNotNull(optionalItem1)\n.AppendIfNotNull(optionalItem2);</p>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"24\">Without this, you'd need:\nvar items = baseItems.ToList();\nif (optionalItem1 != null) items.Add(optionalItem1);\nif (optionalItem2 != null) items.Add(optionalItem2);</p>\n</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"29\"><p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"29\">Multi-map construction:\nDictionary&lt;string, List&lt;Type&gt;&gt; mutable = BuildMap();\nIReadOnlyDictionary&lt;string, IReadOnlyList&lt;Type&gt;&gt; immutable =\nmutable.ToImmutableMultiMap();</p>\n</li>\n</ol>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"34\">DESIGN DECISIONS:</p>\n<ol sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"36\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"36\"><p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"36\">Why AppendIfNotNull instead of Where(x =&gt; x != null)?</p>\n<ul sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"37\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"37\">More explicit intent (optional single item vs filtering a collection)</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"38\">Chainable for building collections incrementally</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"39\">Works naturally with nullable reference types</li>\n</ul>\n</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"41\"><p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"41\">Why ToImmutableMultiMap?</p>\n<ul sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"42\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"42\">Generators build dictionaries of lists during analysis</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"43\">Need to convert to immutable forms for caching/threading</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"44\">Common pattern deserves a dedicated method</li>\n</ul>\n</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"46\"><p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"46\">Why the commented-out CreateTypeMap?</p>\n<ul sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"47\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"47\">Shows the pattern this file was evolving toward</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"48\">Left for reference during refactoring</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"49\">May be uncommented when error handling is standardized</li>\n</ul>\n</li>\n</ol>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"51\">PERFORMANCE CONSIDERATIONS:</p>\n<ul sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"52\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"52\">AppendIfNotNull is lazy (doesn't allocate if null)</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"53\">ToImmutableMultiMap creates new immutable structures (one-time cost at stage boundaries)</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.IEnumerableExtensions.yml\" sourcestartlinenumber=\"54\">For large collections, consider evaluating once with .ToList() before multiple iterations</li>\n</ul>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Common.Util.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.Common.Util",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.DependencyAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.DependencyAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.DependencyAttribute",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.DependencyAttribute.yml\" sourcestartlinenumber=\"1\">Defines an dependency that is required by an injector interface.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.FabricationMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.FabricationMode.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.FabricationMode",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.FabricationMode.yml\" sourcestartlinenumber=\"1\">Enumerates the modes of fabrication that can be used by a factory method.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Factory-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Factory-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.Factory<T>",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Factory-1.yml\" sourcestartlinenumber=\"1\">A type that can be used to inject a dependency on the factory method for a class instead of the\nclass itself.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.FactoryAttribute",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryAttribute.yml\" sourcestartlinenumber=\"1\">Annotates a factory method that will be invoked to construct a given dependency.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryReferenceAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryReferenceAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.FactoryReferenceAttribute",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.FactoryReferenceAttribute.yml\" sourcestartlinenumber=\"1\">Annotates a field or property that references a factory method that will be invoked to\nconstruct a given dependency.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.Generator.Incremental.Util.GeneratorIgnored<T>",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnored-1.yml\" sourcestartlinenumber=\"1\">Type wrapper that excludes a value from incremental generator equality comparisons,\npreventing unnecessary regeneration when the wrapped value changes.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.yml\" sourcestartlinenumber=\"1\">Extension methods for wrapping values in <xref href=\"Phx.Inject.Generator.Incremental.Util.GeneratorIgnoredExtensions.GeneratorIgnored%60%601(%60%600)\" data-throw-if-not-resolved=\"false\"></xref> instances.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.Generator.Incremental.Util.LocationExtensions",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml\" sourcestartlinenumber=\"1\">Extension methods for Roslyn <xref href=\"Microsoft.CodeAnalysis.Location\" data-throw-if-not-resolved=\"false\"></xref> objects to support incremental generator patterns.</p>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml\" sourcestartlinenumber=\"3\">PURPOSE:</p>\n<ul sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml\" sourcestartlinenumber=\"4\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml\" sourcestartlinenumber=\"4\">Provides null-safe operations for locations throughout the generator pipeline</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml\" sourcestartlinenumber=\"5\">Integrates Location instances with the incremental generator's caching system via GeneratorIgnored</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml\" sourcestartlinenumber=\"6\">Ensures diagnostic messages have valid locations even when source information is unavailable</li>\n</ul>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml\" sourcestartlinenumber=\"8\">WHY THIS EXISTS:\nRoslyn's Location can be null in various scenarios (generated code, compiler-synthesized members, metadata).\nIn incremental generators, proper location handling is critical for:</p>\n<ol sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml\" sourcestartlinenumber=\"11\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml\" sourcestartlinenumber=\"11\">Accurate diagnostic reporting that points users to the exact source of issues</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml\" sourcestartlinenumber=\"12\">Correct caching behavior - locations affect equality comparisons but shouldn't trigger regeneration</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml\" sourcestartlinenumber=\"13\">Safe downstream code that doesn't need constant null checks</li>\n</ol>\n<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml\" sourcestartlinenumber=\"15\">INCREMENTAL GENERATOR INTEGRATION:\nThe GeneratorIgnored wrapper tells the incremental generator that Location changes should NOT\ntrigger regeneration. This is essential because:</p>\n<ul sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml\" sourcestartlinenumber=\"18\">\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml\" sourcestartlinenumber=\"18\">Location changes (file moves, line number shifts) don't affect semantic meaning</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml\" sourcestartlinenumber=\"19\">Without this, any code reformatting would invalidate the entire cache</li>\n<li sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.LocationExtensions.yml\" sourcestartlinenumber=\"20\">Diagnostics still get accurate locations, but they don't participate in equality checks</li>\n</ul>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.Generator.Incremental.Util.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.Generator.Incremental.Util",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectionUtil.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectionUtil.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.InjectionUtil",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.InjectorAttribute",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorAttribute.yml\" sourcestartlinenumber=\"1\">Annotates an injector interface as the entry point to a DAG.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorDependencyAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorDependencyAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.InjectorDependencyAttribute",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.InjectorDependencyAttribute.yml\" sourcestartlinenumber=\"1\">Annotates an interface as an injector dependency used to pass values from a parent to a\nchild injector.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.LabelAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.LabelAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.LabelAttribute",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.LabelAttribute.yml\" sourcestartlinenumber=\"1\">Annotates a factory method or dependency with a unique label used to discriminate them from\nother dependencies with the same type.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.LinkAttribute",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.LinkAttribute.yml\" sourcestartlinenumber=\"1\">Models a link between one dependency key and another.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.PartialAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.PartialAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.PartialAttribute",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.PartialAttribute.yml\" sourcestartlinenumber=\"1\">Annotates a factory method as a partial factory. This can be used on a factory that returns a\nList, Set, or Dictionary to indicate that multiple factories with the same type and qualifiers\nshould be combined into a single dependency.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.PhxInjectAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.PhxInjectAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.PhxInjectAttribute",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.QualifierAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.QualifierAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.QualifierAttribute",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.QualifierAttribute.yml\" sourcestartlinenumber=\"1\">Annotates an attribute as a qualifier that can be applied to a factory method or dependency as\na unique label used to discriminate them from other dependencies with the same type.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.SpecificationAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.SpecificationAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject.SpecificationAttribute",
+      "Summary": "<p sourcefile=\"src/Phx.Inject.Generator/bin/docs/Phx.Inject.SpecificationAttribute.yml\" sourcestartlinenumber=\"1\">Annotates a specification class that contains factory methods and links used to construct a\nDAG.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/Phx.Inject.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Phx.Inject",
+      "Summary": null
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "src/Phx.Inject.Generator/bin/docs/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/toc.html"
+        },
+        ".json": {
+          "relative_path": "src/Phx.Inject.Generator/bin/docs/toc.json"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
