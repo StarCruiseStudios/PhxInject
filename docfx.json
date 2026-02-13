@@ -1,0 +1,39 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "src/Phx.Inject.Generator/**.csproj"
+          ]
+        }
+      ],
+      "dest": "Documentation/API",
+      "properties": {
+        "TargetFramework": "netstandard2.0"
+      }
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "Documentation/API/**.yml",
+          "Documentation/API/**.md"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "Documentation/images/**"
+        ]
+      }
+    ],
+    "dest": "Documentation/API/_site",
+    "globalMetadata": {
+      "_appTitle": "Phx.Inject.Generator API Documentation",
+      "_appFooter": "Copyright (c) 2022-2024 Star Cruise Studios LLC. All rights reserved."
+    }
+  }
+}
