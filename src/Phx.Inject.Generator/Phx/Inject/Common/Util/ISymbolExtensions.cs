@@ -36,7 +36,7 @@ namespace Phx.Inject.Common.Util;
 /// ROSLYN INTEGRATION:
 /// 
 /// ISymbol.ToString() behavior:
-/// - For types: Produces fully-qualified names like "System.Collections.Generic.List<T>"
+/// - For types: Produces fully-qualified names like "System.Collections.Generic.List&lt;T&gt;"
 /// - For members: Includes declaring type like "MyClass.MyMethod()"
 /// - For error types: May return special markers or compiler-internal names
 /// 
@@ -46,7 +46,7 @@ namespace Phx.Inject.Common.Util;
 /// 
 /// 1. Type name extraction:
 ///    var typeName = typeSymbol.GetFullyQualifiedName();
-///    // "System.Collections.Generic.List<System.String>"
+///    // "System.Collections.Generic.List&lt;System.String&gt;"
 /// 
 /// 2. Base name without generics:
 ///    var baseName = typeSymbol.GetFullyQualifiedBaseName();
