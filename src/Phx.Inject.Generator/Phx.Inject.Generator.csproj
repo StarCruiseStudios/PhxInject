@@ -48,6 +48,5 @@
         </PropertyGroup>
         <Exec Command="dotnet tool restore" WorkingDirectory="$(MSBuildProjectDirectory)/../.." />
         <Exec Command="dotnet docfx metadata $(DocFxConfigPath)" WorkingDirectory="$(MSBuildProjectDirectory)/../.." />
-        <Exec Command="dotnet docfx build $(DocFxConfigPath)" WorkingDirectory="$(MSBuildProjectDirectory)/../.." />
     </Target>
 </Project>
