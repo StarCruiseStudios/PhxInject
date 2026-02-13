@@ -16,14 +16,14 @@ namespace Phx.Inject;
 public sealed class Factory<T> {
     private readonly Func<T> factory;
 
-    /// <summary> Initializes a new instance of the <see cref="Factory"/> class. </summary>
+    /// <summary> Initializes a new instance of the <see cref="Factory{T}"/> class. </summary>
     /// <param name="factory"> The factory method used to construct a new instance of the dependency class. </param>
     public Factory(Func<T> factory) {
         this.factory = factory;
     }
 
     /// <summary> Creates a new instance of the dependency. </summary>
-    /// <returns> A new instance of type <see cref="T"/>. </returns>
+    /// <returns> A new instance of type <typeparamref name="T"/>. </returns>
     public T Create() {
         return factory();
     }

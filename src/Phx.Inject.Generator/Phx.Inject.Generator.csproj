@@ -44,9 +44,10 @@
     <!-- Generate API documentation using docfx -->
     <Target Name="GenerateApiDocumentation" AfterTargets="Build">
         <PropertyGroup>
-            <DocFxConfigPath>$(MSBuildProjectDirectory)/../../docfx.json</DocFxConfigPath>
+            <DocFxConfigPath>$(MSBuildProjectDirectory)/../../Documentation/docfx.json</DocFxConfigPath>
         </PropertyGroup>
         <Exec Command="dotnet tool restore" WorkingDirectory="$(MSBuildProjectDirectory)/../.." />
         <Exec Command="dotnet docfx metadata $(DocFxConfigPath)" WorkingDirectory="$(MSBuildProjectDirectory)/../.." />
+        <Exec Command="dotnet docfx build $(DocFxConfigPath)" WorkingDirectory="$(MSBuildProjectDirectory)/../.." />
     </Target>
 </Project>

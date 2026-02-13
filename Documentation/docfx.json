@@ -1,0 +1,60 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "src/Phx.Inject.Generator/**.csproj",
+          ],
+          "src": "../"
+        }
+      ],
+      "dest": "../src/Phx.Inject.Generator/bin/docs",
+      "filter": "filterConfig.yml",
+      "properties": {
+        "TargetFramework": "netstandard2.0"
+      },
+      "namespaceLayout": "nested",
+      "includePrivateMembers": true,
+      "enumSortOrder": "declaringOrder"
+    }
+  ],
+  "build": {
+    "template": [ "default", "modern", "templates/material" ],
+    "content": [
+      {
+        "files": [
+          "**/*.yml",
+          "**/*.md"
+        ],
+        "src": "../src/Phx.Inject.Generator/bin/docs",
+        "dest": "Phx.Inject.Generator",
+        "exclude": [
+          "filterConfig.yml"
+        ]
+      },
+      {
+        "files": [
+          "**/*.md",
+          "toc.yml"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "PhxLib.png"
+        ],
+        "src": "",
+        "dest": "resources"
+      }
+    ],
+    "dest": "../docs/_site",
+    "globalMetadata": {
+      "_appTitle": "Phx.Inject API Documentation",
+      "_appFooter": "Copyright (c) 2022-2026 Star Cruise Studios LLC. All rights reserved.",
+      "_appLogoPath": "resources/PhxLib.png",
+      "_enableSearch": true,
+    },
+  }
+}

@@ -65,7 +65,7 @@ namespace Phx.Inject.Common.Util;
 /// 
 /// 2. Why GetFullyQualifiedBaseName?
 ///    - Sometimes you need to identify a generic type without its arguments
-///    - Example: Check if a type is List<T> regardless of T
+///    - Example: Check if a type is List&lt;T&gt; regardless of T
 ///    - ContainingNamespace + Name gives you "System.Collections.Generic.List"
 /// 
 /// 3. Why FirstOrDefault for location?
