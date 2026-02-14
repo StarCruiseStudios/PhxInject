@@ -131,13 +131,13 @@ Phx.Inject validates at design time (compilation), not runtime. This is a core d
 ```csharp
 // Good: No runtime validation
 [AttributeUsage(AttributeTargets.Method)]
-public class FactoryAttribute : Attribute { 
+public sealed class FactoryAttribute : Attribute { 
     public FabricationMode FabricationMode { get; set; } = FabricationMode.Recurrent;
 }
 
 // Avoid: Runtime validation in attribute
 [AttributeUsage(AttributeTargets.Method)]
-public class FactoryAttribute : Attribute {
+public sealed class FactoryAttribute : Attribute {
     private string _name;
     
     public string Name {

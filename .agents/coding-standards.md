@@ -7,7 +7,7 @@ Standards for writing C# code in this repository. These apply to all projects ex
 1. **Clarity First**: Code should be obviously correct to a reader familiar with C#
 2. **Consistency**: Follow patterns established in the file/project
 3. **No Clever Code**: Future maintainers, not just you, must understand the code
-4. **Prefer var**: Use `var` for local variables when type is clear from context (with exceptions noted below)
+4. **Use var Appropriately**: Use `var` for local variables when type is clear from context
 5. **Performance Awareness**: Generator code is performance-critical; be conscious of allocations
 
 ## File Organization
