@@ -260,7 +260,7 @@ Public API must be thoroughly documented:
 ### Phx.Inject.Generator (Source Generator)
 
 Document critical pipeline components:
-- Public and internal analyzer/linker/generator classes
+- Public and internal analyzer/generator classes
 - Diagnostic descriptor types
 - Important methods that determine behavior
 - Public extension methods
@@ -270,22 +270,12 @@ Skip documentation for:
 - Trivial properties
 - One-off utility methods
 
-### Test Projects
-
-Document test helpers and builders:
-- Test data builders and fixtures
-- Helper methods with non-obvious purpose
-- Test patterns worth replicating
-
 ## Decision Tree: Should I Document This?
 
 ```
 Is this public API?
 ├─ Yes → ALWAYS document, thoroughly
 └─ No
-├─ Is this in a test project?
-│  ├─ Yes → Document if it's a reusable helper/builder
-│  └─ No → Continue
 ├─ Is it critical pipeline functionality?
 │  ├─ Yes → Document the architectural role
 │  └─ No → Continue

@@ -62,7 +62,7 @@ A specification is a container for all dependency definitions:
 This allows:
 - Grouping related dependencies
 - Reusing specifications across multiple injectors
-- Replacing specifications for testing
+- Modular specification design
 
 ### 2. Factory/Builder Pattern
 
@@ -140,7 +140,6 @@ Testing strategy is not yet defined. See [Testing Standards](testing.md) for cur
 The repository currently contains legacy implementations:
 
 - `Phx.Inject.Generator.Legacy` and `Phx.Inject.Legacy`: Reference implementations using older Roslyn APIs
-- Parallel test projects: `Phx.Inject.Tests.Legacy` and `Phx.Inject.Generator.Tests.Legacy`
 
 **Status**: These versions are included for reference while the generator is updated to use incremental source generators. They will eventually be deleted. Agents can refer to them to understand expected behavior, but they can otherwise be ignored. Focus work on the current (non-Legacy) versions.
 
