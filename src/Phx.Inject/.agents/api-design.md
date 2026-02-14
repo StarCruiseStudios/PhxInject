@@ -261,25 +261,29 @@ public sealed class OldFactoryAttribute : Attribute { }
 
 ## Sealing Attributes
 
-Always seal attributes unless there's a strong reason otherwise:
+**Current Implementation**: PhxInject attributes are not sealed to allow extensibility if needed.
+
+Best practice is to seal attributes unless extensibility is specifically required:
 
 ```csharp
-// Good: Sealed attributes
+// Best practice: Sealed attributes
+[AttributeUsage(AttributeTargets.Method)]
+public sealed class FactoryAttribute : Attribute { }
+
+// Current PhxInject implementation: Unsealed for extensibility
 [AttributeUsage(AttributeTargets.Method)]
 public class FactoryAttribute : Attribute { }
-
-// Avoid: Extensible attributes (unless absolutely necessary)
-[AttributeUsage(AttributeTargets.Method)]
-public class BaseFactoryAttribute : Attribute { } // Unsealed - why?
 ```
 
-Sealed attributes:
+Benefits of sealed attributes:
 - Prevent accidental subclassing
 - Protect API contract
 - Enable compiler optimizations
 - Match framework convention
 
-**Note**: The actual PhxInject attributes are not sealed. This is an implementation decision to allow extensibility if needed in the future.
+When to leave unsealed:
+- Extensibility is a planned feature
+- Framework design requires inheritance
 
 ## Validation Checklist
 
