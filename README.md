@@ -113,12 +113,12 @@ Verify.That(myClass.Value.IsEqualTo(10));
 Verify.That(myBuiltClass.Value.IsEqualTo(10));
 ```
 
-See the [Documentation](Documentation/Index.md) for more details.
+See the [Documentation](https://starcruisestudios.github.io/PhxInject/) for more details.
 
 ---
 
 <div align="center">
-Copyright (c) 2022 Star Cruise Studios LLC. All rights reserved.<br/>
+Copyright (c) 2022-2026 Star Cruise Studios LLC. All rights reserved.<br/>
 Licensed under the Apache License, Version 2.0.<br/>
 See http://www.apache.org/licenses/LICENSE-2.0 for full license information.<br/>
 </div>
