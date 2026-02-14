@@ -72,8 +72,8 @@ All analysis stages use `IResult<T>` to encapsulate values and diagnostics:
 // Pipeline model types use EquatableList (has structural equality for caching)
 public record SpecificationAnalysisResult : IEquatable<SpecificationAnalysisResult> {
     public required string TypeName { get; init; }
-    public required EquatableList<FactoryMetadata> Factories { get; init; }
-    public required EquatableList<BuilderMetadata> Builders { get; init; }
+    public required EquatableList<SpecFactoryMethodMetadata> FactoryMethods { get; init; }
+    public required EquatableList<SpecBuilderMethodMetadata> BuilderMethods { get; init; }
 }
 
 // Results carry diagnostics alongside data
@@ -86,8 +86,8 @@ public static IResult<SpecificationAnalysisResult> Analyze(
         var builders = ExtractBuilders(specification);
         return new SpecificationAnalysisResult {
             TypeName = specification.Name,
-            Factories = new EquatableList<FactoryMetadata>(factories),
-            Builders = new EquatableList<BuilderMetadata>(builders)
+            FactoryMethods = new EquatableList<SpecFactoryMethodMetadata>(factories),
+            BuilderMethods = new EquatableList<SpecBuilderMethodMetadata>(builders)
         };
     });
 }

@@ -41,16 +41,15 @@ Example metadata:
 public record SpecificationMetadata(
     string Name,
     INamedTypeSymbol Symbol,
-    EquatableList<MethodMetadata> Methods,
+    EquatableList<SpecFactoryMethodMetadata> FactoryMethods,
     EquatableList<AttributeMetadata> Attributes
 );
 
-public record MethodMetadata(
+public record SpecFactoryMethodMetadata(
     string Name,
     IMethodSymbol Symbol,
     ITypeSymbol ReturnType,
-    EquatableList<ParameterMetadata> Parameters,
-    EquatableList<AttributeMetadata> Attributes
+    EquatableList<ParameterMetadata> Parameters
 );
 
 public record ParameterMetadata(

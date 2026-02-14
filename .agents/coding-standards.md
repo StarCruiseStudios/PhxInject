@@ -149,24 +149,26 @@ For API surfaces and cached data:
 ```csharp
 // Phx.Inject.Generator commonly uses:
 using System.Collections.Immutable;
+using Phx.Inject.Generator.Incremental.Util;
 
+// For general data structures (not pipeline models):
 public record AnalysisResult(
-    ImmutableArray<MethodSymbol> Factories,
+    string TypeName,
     ImmutableDictionary<string, TypeMetadata> TypeIndex
 );
 
 // Avoid: mutable lists in public APIs
-public List<MethodSymbol> Factories { get; } // Not this
+public List<string> Names { get; } // Not this
 ```
 
 **Exception for Pipeline Model Types**: Standard `System.Collections.Immutable` types lack structural equality and are unsuitable for pipeline model types used with Roslyn's incremental generators. Use the `EquatableList<T>` type defined in this project instead.
 
 ```csharp
 // WRONG: Do not use ImmutableArray in pipeline models
-public record PipelineData(ImmutableArray<FactoryMetadata> Factories); // ✗
+public record PipelineData(ImmutableArray<SpecFactoryMethodMetadata> Factories); // ✗
 
 // CORRECT: Use EquatableList for pipeline models
-public record PipelineData(EquatableList<FactoryMetadata> Factories); // ✓
+public record PipelineData(EquatableList<SpecFactoryMethodMetadata> Factories); // ✓
 ```
 
 ### LINQ Usage

@@ -27,10 +27,12 @@ Structure generators following this pattern:
 [Generator]
 public class MyAnalyzer : IIncrementalGenerator {
     public void Initialize(IncrementalGeneratorInitializationContext context) {
-        // Define what to analyze
-        var syntaxProvider = context.SyntaxProvider.CreateSyntax
-            Predicate(...) // Filter: quick syntactic check
-            .Select((syntax, _) => Transform(syntax)); // Transform to semantic model
+        // Define what to analyze using ForAttributeWithMetadataName
+        var syntaxProvider = context.SyntaxProvider
+            .ForAttributeWithMetadataName(
+                "Phx.Inject.SpecificationAttribute",
+                predicate: (node, _) => true, // Filter: quick syntactic check
+                transform: (ctx, _) => Transform(ctx)); // Transform to model
         
         // Transform: analysis stage
         var analyzed = syntaxProvider
