@@ -8,7 +8,12 @@
 
 #region
 
+using Microsoft.CodeAnalysis;
+using Phx.Inject.Generator.Incremental.Diagnostics;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
+using Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
+using Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline.Injector;
 
 #endregion
 
@@ -19,6 +24,9 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline;
 /// </summary>
 /// <param name="MetadataPipelineOutput">
 ///     The Stage 1 metadata that serves as input to Stage 2 transformations.
+/// </param>
+/// <param name="InjectorModelPipelineSegment">
+///     Pipeline segment that produces injector implementation models.
 /// </param>
 /// <remarks>
 ///     <para>Current State - Pass-Through Architecture:</para>
@@ -55,7 +63,8 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline;
 ///     </list>
 /// </remarks>
 internal record CorePipelineOutput(
-    MetadataPipelineOutput MetadataPipelineOutput
+    MetadataPipelineOutput MetadataPipelineOutput,
+    IncrementalValuesProvider<InjectorModel> InjectorModelPipelineSegment
 );
 
 /// <summary>
@@ -127,7 +136,9 @@ internal record CorePipelineOutput(
 ///     a natural insertion point for these features without refactoring the architecture.
 ///     </para>
 /// </remarks>
-internal class CorePipeline {
+internal class CorePipeline(
+    InjectorPipeline injectorPipeline
+) {
     /// <summary>
     ///     Gets the singleton pipeline instance.
     /// </summary>
@@ -136,6 +147,7 @@ internal class CorePipeline {
     ///     Future versions may accept configuration through the constructor.
     /// </remarks>
     public static readonly CorePipeline Instance = new(
+        InjectorPipeline.Instance
     );
     
     /// <summary>
@@ -164,7 +176,17 @@ internal class CorePipeline {
     ///     </para>
     /// </remarks>
     public CorePipelineOutput Process(MetadataPipelineOutput metadataPipeline) {
-        return new CorePipelineOutput(metadataPipeline);
+        var injectorInterfaceMetadata = metadataPipeline.InjectorInterfacePipelineSegment
+            .Select((result, _) => result.OrNull(new DiagnosticsRecorder()))
+            .Where(metadata => metadata is not null)
+            .Select((metadata, _) => metadata!);
+        var injectorModelPipelineSegment =
+            injectorPipeline.Select(injectorInterfaceMetadata);
+
+        return new CorePipelineOutput(
+            metadataPipeline,
+            injectorModelPipelineSegment
+        );
     }
 }
 

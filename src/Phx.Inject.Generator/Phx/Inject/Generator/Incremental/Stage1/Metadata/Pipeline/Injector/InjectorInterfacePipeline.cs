@@ -9,12 +9,9 @@
 #region
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
-using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
-using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 using Phx.Inject.Generator.Incremental.Util;
 
@@ -27,11 +24,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Injector;
 /// </summary>
 internal class InjectorInterfacePipeline(
     ICodeElementValidator elementValidator,
-    IAttributeTransformer<InjectorAttributeMetadata> injectorAttributeTransformer,
-    ITransformer<IMethodSymbol, InjectorProviderMetadata> injectorProviderTransformer,
-    ITransformer<IMethodSymbol, InjectorActivatorMetadata> injectorActivatorTransformer,
-    ITransformer<IMethodSymbol, InjectorChildProviderMetadata> injectorChildProviderTransformer,
-    IAttributeTransformer<DependencyAttributeMetadata> dependencyAttributeTransformer
+    ITransformer<ITypeSymbol, InjectorInterfaceMetadata> injectorInterfaceTransformer
 ) : ISyntaxValuesPipeline<InjectorInterfaceMetadata> {
     /// <summary>
     ///     Gets the singleton instance.
@@ -40,11 +33,7 @@ internal class InjectorInterfacePipeline(
         new InterfaceElementValidator(
             CodeElementAccessibility.PublicOrInternal
         ),
-        InjectorAttributeTransformer.Instance,
-        InjectorProviderTransformer.Instance,
-        InjectorActivatorTransformer.Instance,
-        InjectorChildProviderTransformer.Instance,
-        DependencyAttributeTransformer.Instance);
+        InjectorInterfaceTransformer.Instance);
 
     /// <inheritdoc />
     public IncrementalValuesProvider<IResult<InjectorInterfaceMetadata>> Select(
@@ -54,43 +43,9 @@ internal class InjectorInterfacePipeline(
             InjectorAttributeMetadata.AttributeClassName,
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => DiagnosticsRecorder.Capture(diagnostics => {
-                var targetSymbol = (ITypeSymbol)context.TargetSymbol;
-                var injectorAttributeMetadata = injectorAttributeTransformer
-                    .Transform(targetSymbol)
+                return injectorInterfaceTransformer
+                    .Transform((ITypeSymbol)context.TargetSymbol)
                     .OrThrow(diagnostics);
-
-                var injectorInterfaceType = targetSymbol.ToTypeModel();
-                var providers = targetSymbol.GetMembers()
-                    .OfType<IMethodSymbol>()
-                    .Where(injectorProviderTransformer.CanTransform)
-                    .Select(injectorProviderTransformer.Transform)
-                    .SelectOrThrow(diagnostics)
-                    .ToEquatableList();
-                var activators = targetSymbol.GetMembers()
-                    .OfType<IMethodSymbol>()
-                    .Where(injectorActivatorTransformer.CanTransform)
-                    .Select(injectorActivatorTransformer.Transform)
-                    .SelectOrThrow(diagnostics)
-                    .ToEquatableList();
-                var childProviders = targetSymbol.GetMembers()
-                    .OfType<IMethodSymbol>()
-                    .Where(injectorChildProviderTransformer.CanTransform)
-                    .Select(injectorChildProviderTransformer.Transform)
-                    .SelectOrThrow(diagnostics)
-                    .ToEquatableList();
-                var dependencyAttributeMetadata = dependencyAttributeTransformer
-                    .TransformOrNull(targetSymbol)?
-                    .OrThrow(diagnostics);
-                
-                return new InjectorInterfaceMetadata(
-                    injectorInterfaceType,
-                    providers,
-                    activators,
-                    childProviders,
-                    injectorAttributeMetadata,
-                    dependencyAttributeMetadata,
-                    targetSymbol.GetLocationOrDefault().GeneratorIgnored()
-                );
             }));
     }
 }
