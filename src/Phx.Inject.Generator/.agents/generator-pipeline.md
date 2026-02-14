@@ -1,6 +1,6 @@
 # Generator Pipeline Architecture and Patterns
 
-Detailed guide to the two-stage generator pipeline. Reference this when implementing new analysis rules, metadata extraction, or code generation features.
+Detailed guide to the five-stage generator pipeline. Reference this when implementing new analysis rules, metadata extraction, domain models, linking strategies, or code generation features.
 
 ## Pipeline Overview
 
