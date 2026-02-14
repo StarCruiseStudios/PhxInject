@@ -79,33 +79,7 @@ Attributes are immutable once released in a major version. Plan carefully.
 
 ## Testing Strategy
 
-### Unit Tests
-
-Phx.Inject is primarily attribute types, which do not require unit tests—attributes are declarative markers with no executable logic.
-
-However, any **utility classes designed to be referenced by generator code** should include comprehensive unit tests. These utilities serve as shared contracts between user code and the generator, so correctness is critical.
-
-Examples of utility classes that should be tested:
-- Helper methods used by generated code
-- Domain model types that the generator depends on
-- Validation or transformation utilities
-
-Focus tests on:
-- Edge cases and invalid inputs
-- Contract guarantees the generator relies on
-- Backwards compatibility with different compiler versions
-
-### Integration Tests
-
-Integration testing strategy to be determined. To be completed in a future iteration.
-
-### Generator Compatibility
-
-Before releasing changes:
-
-1. Ensure Phx.Inject.Generator understands the change
-2. Run Phx.Inject.Generator.Tests
-3. Verify no compilation errors
+Testing strategy is not yet defined. See [Testing Standards](../../.agents/testing.md) for current status.
 
 ## Code Organization
 
@@ -132,13 +106,11 @@ Before completing work on Phx.Inject:
 
 - [ ] All public types have comprehensive XML documentation
 - [ ] Code examples included in attribute documentation where helpful
-- [ ] Tests verify the attribute behavior
 - [ ] Generator project updated if attribute contract changed
 - [ ] Phx.Inject.Generator compiles successfully
 - [ ] No breaking changes to existing public surface (unless major version)
 - [ ] New attributes documented in README.md if user-facing
 - [ ] Comments focus on "why" and user guidance, not code behavior
-- [ ] Phx.Inject.Tests pass
 
 ## Communication with Generator
 
@@ -156,24 +128,12 @@ Example: Adding a new optional parameter to an attribute:
 [AttributeUsage(AttributeTargets.Method)]
 public sealed class FactoryAttribute : Attribute {
     /// <summary>
-    /// Specifies the lifetime of instances created by this factory.
+    /// Specifies the fabrication mode for this factory.
     /// </summary>
-    public LifetimeMode Lifetime { get; init; } = LifetimeMode.Transient;
+    public FabricationMode FabricationMode { get; set; } = FabricationMode.Recurrent;
 }
 
-// 2. Update Generator to understand new parameter
-private LifetimeMode ExtractLifetime(IMethodSymbol method) {
-    var attr = method.GetAttribute("Factory");
-    var lifetimeArg = attr?.GetNamedArgument("Lifetime");
-    return lifetimeArg != null 
-        ? ParseLifetimeMode(lifetimeArg)
-        : LifetimeMode.Transient;
-}
+// 2. Update Generator to understand new parameter (see Generator project docs)
 
-// 3. Add tests in Generator.Tests
-[Test]
-public void Generator_HandlesNewLifetimeParameter()
-{
-    // Test with and without the parameter
-}
+// 3. Add tests if testing strategy is defined
 ```

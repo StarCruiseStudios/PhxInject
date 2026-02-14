@@ -56,23 +56,17 @@ context.SyntaxProvider.CreateSyntaxProvider(
 
 ## Generator Pipeline
 
-The generator processes user code through five sequential stages. See [Generator Pipeline Architecture](generator-pipeline.md) for detailed patterns.
+The generator processes user code through two sequential stages. See [Generator Pipeline Architecture](generator-pipeline.md) for detailed patterns.
 
-**Stage 1: Metadata** - Create an AST-derived model of injection-related types (specifications, injectors, factories, builders) found in user code. This metadata mirrors the syntactic structure.
+**Stage 1: Metadata Extraction** - Extract metadata from user code by parsing specifications, injectors, factories, and builders. This stage creates metadata models that mirror the syntactic structure found in user code.
 
-**Stage 2: Core** - Transform the metadata model into core domain models representing the business concepts of dependency injection. These capture semantic meaning without implementation logic.
-
-**Stage 3: Linking** - Build the dependency graph by linking core models together: match injector methods to factories/builders, resolve dependencies recursively, detect cycles and conflicts.
-
-**Stage 4: Code Generation** - Process the linked dependency graph and generate a template model describing what code will be generated (classes, methods, parameters, calls).
-
-**Stage 5: Rendering** - Transform the template model into actual C# code and write `.generated.cs` files.
+**Stage 2: Code Generation and Rendering** - Transform metadata models into generated C# code. This stage maps metadata to output templates and renders them as `.generated.cs` files.
 
 ## Key Architectural Patterns
 
 ### Result Types and Diagnostic Recording
 
-All analysis and linking stages use `IResult<T>` to encapsulate values and diagnostics:
+All analysis stages use `IResult<T>` to encapsulate values and diagnostics:
 
 ```csharp
 // Pipeline model types use EquatableList (has structural equality for caching)
@@ -101,9 +95,9 @@ public static IResult<SpecificationAnalysisResult> Analyze(
 
 **Why**:
 - `EquatableList<T>` supports structural equality (required for incremental caching)
-- Standard `ImmutableArray` lacks structural equality and is unsuitable for pipeline models
+- Standard `ImmutableArray` lacks structural equality
 - `IResult<T>` encapsulates both success values and error diagnostics
-- `DiagnosticsRecorder.Capture` automatically handles exceptions and wraps them as diagnostic errors
+- `DiagnosticsRecorder.Capture` automatically handles exceptions
 
 ### Diagnostic-First Error Handling
 
@@ -116,9 +110,9 @@ public IResult<LinkingResult> LinkDependencies(
     IDiagnosticsRecorder diagnostics) {
     var linked = new List<LinkedDependency>();
     
-    foreach (var factory in spec.Factories.GetValue(diagnostics)) {
+    foreach (var factory in spec.Factories) {
         if (!CanResolveFactory(factory)) {
-            // Report diagnostic for this error, but continue processing other factories
+            // Report diagnostic for this error, but continue
             diagnostics.Add(DiagnosticInfo.UnresolvableDependency(
                 factory.Name, 
                 factory.Location));
@@ -127,9 +121,7 @@ public IResult<LinkingResult> LinkDependencies(
         linked.Add(LinkFactory(factory));
     }
     
-    return diagnostics.HasErrors
-        ? Result.Error<LinkingResult>(diagnostics.GetDiagnostics())
-        : Result.Ok(new LinkingResult(new EquatableList<LinkedDependency>(linked)));
+    return Result.Ok(new LinkingResult(new EquatableList<LinkedDependency>(linked)));
 }
 
 // Lower-layer functions may throw for internal bugs (not user errors):
@@ -137,7 +129,7 @@ private string ExtractName(INamedTypeSymbol? symbol) {
     if (symbol is null) {
         // Internal bug: symbol shouldn't be null here
         throw new InvalidOperationException(
-            "Symbol should not be null at this point in the pipeline");
+            "Symbol should not be null at this point");
     }
     return symbol.Name;
 }
@@ -182,27 +174,30 @@ foreach (var method in specification.GetMembers().OfType<IMethodSymbol>()) {
 Phx/
   Inject/
     Generator/
-      Analysis/
-        SpecificationAnalyzer.cs
-        MethodExtractor.cs
-        AttributeAnalyzer.cs
-      Linking/
-        DependencyLinker.cs
-        DependencyMatcher.cs
-        DependencyCycleDetector.cs
-      CodeGeneration/
-        InjectorCodeGenerator.cs
-        MethodBodyGenerator.cs
-        CodeFormatter.cs
+      Incremental/
+        Stage1/                          # Metadata extraction
+          Pipeline/
+            Attributes/                  # Attribute transformers
+            Specification/               # Specification metadata
+            Injector/                    # Injector metadata
+            Auto/                        # Auto-dependency metadata
+          Model/
+            Attributes/                  # Attribute metadata classes
+        Stage2/                          # Code generation
+          Core/
+            Pipeline/
+              SpecContainer/             # Specification container mappers
+              Injector/                  # Injector mappers
+            Model/                       # Generated output models
+        Util/
+          EquatableList.cs               # Custom collection with value equality
+        Diagnostics/
+          Result.cs                      # IResult interface
+          DiagnosticsRecorder.cs         # Diagnostic collection
+          DiagnosticInfo.cs              # Diagnostic definitions
       Extensions/
-        RoslynExtensions.cs      # Symbol analysis helpers
-        StringExtensions.cs       # Code generation helpers
-      Diagnostics/
-        DiagnosticDescriptors.cs # All diagnostic definitions
-        DiagnosticsCollector.cs  # Diagnostic reporting
-      PhxInjectSourceGenerator.cs # Main entrypoint
-System/
-  (* Mirrored from Phx.Inject for public types *)
+        RoslynExtensions.cs              # Symbol analysis helpers
+      PhxInjectSourceGenerator.cs        # Main entrypoint
 ```
 
 ## Multi-Version Support
@@ -220,91 +215,7 @@ Refer to [Architecture Guide](../../.agents/architecture.md) for additional cont
 
 ## Testing Strategy
 
-### Unit Tests (Analysis and Linking)
-
-Test individual components in isolation:
-
-```csharp
-[TestFixture]
-public class SpecificationAnalyzerTests
-{
-    [Test]
-    public void AnalyzeSpecification_WithValidFactories_ExtractsAll()
-    {
-        var spec = CreateMockSpecification(
-            methods: [
-                CreateFactoryMethod("int", "GetInt"),
-                CreateFactoryMethod("string", "GetString")
-            ]);
-        
-        var result = _analyzer.Analyze(spec);
-        
-        Assert.That(result.Factories).HasCount(2);
-        Assert.That(result.DiagnosticErrors).IsEmpty();
-    }
-}
-```
-
-### Integration Tests (Full Pipeline)
-
-Test specification → injector → generated code:
-
-```csharp
-[TestFixture]
-public class GeneratorIntegrationTests
-{
-    [Test]
-    public void FullPipeline_WithValidSpecAndInjector_GeneratesWorkingCode()
-    {
-        var specSource = """
-            [Specification]
-            public static class MySpec {
-                [Factory]
-                public int GetInt() => 42;
-            }
-        """;
-        
-        var injectorSource = """
-            [Injector(typeof(MySpec))]
-            public interface IMyInjector {
-                int GetInt();
-            }
-        """;
-        
-        var generated = GenerateCode(specSource, injectorSource);
-        var compiled = Compile(generated);
-        
-        // Verify generated code is valid and works
-        dynamic injector = CreateInstance(compiled);
-        int result = injector.GetInt();
-        
-        Assert.That(result).IsEqualTo(42);
-    }
-}
-```
-
-### Snapshot Tests
-
-Verify generated code format and structure:
-
-```csharp
-[TestFixture]
-public class CodeGenerationSnapshotTests
-{
-    [Test]
-    public void GenerateInjector_ProducesConsistentOutput()
-    {
-        var spec = /* ... */;
-        var injector = /* ... */;
-        
-        var generated = _generator.Generate(injector, spec);
-        
-        Verify(generated)
-            .IgnoreLineNumbers()
-            .ScrubMember(x => x.Name.Contains("CompilationTime"));
-    }
-}
-```
+Testing strategy is not yet defined. See [Testing Standards](../../.agents/testing.md) for current status.
 
 ## Validation Checklist
 
@@ -313,18 +224,14 @@ Before completing generator changes:
 - [ ] Incremental provider caching used where possible
 - [ ] Predicates return early; expensive analysis only on filtered candidates
 - [ ] No runtime exceptions; errors reported as diagnostics via `IDiagnosticsRecorder`
-- [ ] `IResult<T>` used throughout pipeline for encapsulating values and diagnostics
+- [ ] `IResult<T>` used for encapsulating values and diagnostics
 - [ ] Pipeline models use `EquatableList<T>` for structural equality (not `ImmutableArray`)
 - [ ] `DiagnosticsRecorder.Capture` used for exception-safe execution
-- [ ] Unit tests verify individual components
-- [ ] Integration tests verify full pipeline
-- [ ] Generated code snapshot tests verify format
-- [ ] No compiler warnings in generated code
 - [ ] Performance: large specifications generate quickly (< 500ms)
 - [ ] Generated code is readable and formatted consistently
 - [ ] Diagnostics are clear and actionable
-- [ ] Current version tests pass (`Phx.Inject.Generator.Tests`)
-- [ ] Documentation updated for new analysis/linking rules
+- [ ] Documentation updated for new analysis rules
+- [ ] No compiler warnings in generated code
 
 ## References
 

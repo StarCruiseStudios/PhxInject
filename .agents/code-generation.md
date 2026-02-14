@@ -155,7 +155,7 @@ public class GeneratedInjector : IMyInjector
 
 ### 4. Method Generation
 
-### Simple Factories
+**Simple Factories**
 
 ```csharp
 // For static factory with no parameters
@@ -169,7 +169,7 @@ public MyType GetMyType()
 }
 ```
 
-### Builders
+**Builders**
 
 ```csharp
 public void Build(MyType target)
@@ -179,7 +179,7 @@ public void Build(MyType target)
 }
 ```
 
-### Chaining Dependencies
+**Chaining Dependencies**
 
 ```csharp
 // If A depends on B depends on C:
@@ -188,15 +188,6 @@ public A GetA()
     var c = GetC();  // Leaf dependency
     var b = GetB(c); // Intermediate
     return GetA(b);  // Root
-}
-
-// But cache if used multiple times:
-public A GetA()
-{
-    var c = GetC();
-    var b1 = GetB(c);
-    var b2 = GetB(c); // Reuse c, but don't duplicate GetB
-    return GetA(b1, b2);
 }
 ```
 
@@ -259,7 +250,9 @@ public MyType GetMyType()
 For generating method bodies, use StringBuilder with proper indentation:
 
 ```csharp
-private static string GenerateMethodBody(MethodInfo method, IEnumerable<Dependency> dependencies)
+private static string GenerateMethodBody(
+    MethodInfo method, 
+    IEnumerable<Dependency> dependencies)
 {
     var sb = new StringBuilder();
     
@@ -270,7 +263,8 @@ private static string GenerateMethodBody(MethodInfo method, IEnumerable<Dependen
     }
     
     // Generate return statement
-    sb.AppendLine($"    return {method.SpecificationClassName}.{method.MethodName}({string.Join(", ", dependencies.Select(d => d.VariableName))});");
+    var args = string.Join(", ", dependencies.Select(d => d.VariableName));
+    sb.AppendLine($"    return {method.SpecificationClassName}.{method.MethodName}({args});");
     
     return sb.ToString();
 }
@@ -278,73 +272,7 @@ private static string GenerateMethodBody(MethodInfo method, IEnumerable<Dependen
 
 ## Testing Generated Code
 
-### 1. Snapshot Tests
-
-Verify generated code structure:
-
-```csharp
-[Test]
-public void GenerateInjector_ProducesExpectedCode()
-{
-    // Arrange
-    var spec = /* specification source code */;
-    
-    // Act
-    var generated = GenerateCode(spec);
-    
-    // Assert
-    Verify(generated) // Uses Verify.Tests library
-        .IgnoreMembers(m => m.Name.Contains("LineNumber")) // Ignore volatile info
-        .ScrubMember(m => m.Timestamp); // Remove timestamps
-}
-```
-
-### 2. Execution Tests
-
-Verify generated code actually works:
-
-```csharp
-[Test]
-public void GeneratedInjector_ResolvesDependencies()
-{
-    // Compile generated code
-    var assembly = Compile(generatorOutput);
-    
-    // Load and execute
-    dynamic injector = assembly.CreateInstance("GeneratedInjector");
-    var result = injector.GetMyType();
-    
-    // Verify
-    Assert.That(result).IsNotNull;
-    Assert.That(result).IsInstanceOf<MyType>();
-}
-```
-
-### 3. Diagnostic Tests
-
-Verify error reporting:
-
-```csharp
-[Test]
-public void GenerateInjector_ReportsUnresolvableDependency()
-{
-    // Arrange
-    var spec = """
-        [Specification]
-        public class BadSpec {
-            [Factory]
-            public MyType Create(UnregisteredDependency dep) => ...
-        }
-    """;
-    
-    // Act
-    var diagnostics = Generate(spec).Diagnostics;
-    
-    // Assert
-    Assert.That(diagnostics)
-        .Contains(d => d.Descriptor == UnresolvableDependencyDescriptor);
-}
-```
+Testing strategy is not yet defined. See [Testing Standards](../testing.md) for current status.
 
 ## Validation Checklist
 
