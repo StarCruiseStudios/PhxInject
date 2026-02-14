@@ -144,7 +144,7 @@ internal enum SpecInstantiationMode {
 
 When documenting components, reference their role in the system:
 
-**For Generator Components**: Reference the appropriate pipeline stage (Metadata Extraction or Code Generation). See [Architecture Guide](architecture.md) and [Generator Pipeline](../src/Phx.Inject.Generator/.agents/generator-pipeline.md) for pipeline details.
+**For Generator Components**: Reference the appropriate pipeline stage (Metadata, Core, Linking, Code Generation, Rendering). See [Architecture Guide](architecture.md) and [Generator Pipeline](../src/Phx.Inject.Generator/.agents/generator-pipeline.md) for pipeline details.
 
 **For Public API Components (Phx.Inject)**: Reference where in the user experience this type fits. See [Documentation/index.md](../Documentation/index.md) for user-facing examples.
 
@@ -163,9 +163,7 @@ When documenting components, reference their role in the system:
 
 ## Pipeline Context
 
-When documenting Generator components, reference the appropriate stage in the pipeline:
-- **Stage 1**: Metadata extraction from user code
-- **Stage 2**: Code generation and rendering
+When documenting Generator components, reference the appropriate stage in the pipeline.
 
 Refer to [Architecture Guide](architecture.md) and [Generator Pipeline](../src/Phx.Inject.Generator/.agents/generator-pipeline.md) for detailed pipeline descriptions.
 

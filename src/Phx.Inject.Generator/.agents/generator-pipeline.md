@@ -4,20 +4,34 @@ Detailed guide to the two-stage generator pipeline. Reference this when implemen
 
 ## Pipeline Overview
 
-The generator processes user code through two sequential transformation stages:
+The generator processes user code through five sequential transformation stages:
 
 ```
 User Code (Compilation)
-  ↓ [Stage 1: Metadata Extraction]
-  ├─ Parse specifications, injectors, factories, builders, attributes
-  ├─ Extract metadata from syntax and semantic models
-  ├─ Create metadata models mirroring code structure
-  └─ Validate and collect diagnostics
-  ↓ [Stage 2: Code Generation and Rendering]
-  ├─ Map metadata to output templates
-  ├─ Generate C# code
-  ├─ Apply formatting
-  └─ Write .generated.cs files
+↓ [Stage 1: Metadata]
+  ├─ Parse user code for [Specification] and [Injector] types
+  ├─ Extract syntactic metadata (method signatures, parameters, attributes)
+  └─ Metadata model mirrors code structure
+  ↓ [Stage 2: Core]
+  ├─ Transform metadata into domain models
+  ├─ Create Specification, Injector, Factory, Builder, Dependency domain objects
+  ├─ Capture semantic meaning without linking or validation logic
+  └─ Core models are self-contained and reusable
+  ↓ [Stage 3: Linking]
+  ├─ Build complete dependency graph
+  ├─ Match injector methods to factories/builders
+  ├─ Resolve parameter dependencies recursively
+  ├─ Detect cycles, conflicts, missing dependencies
+  └─ Produce fully-linked dependency graph
+  ↓ [Stage 4: Code Generation]
+  ├─ Process linked dependency graph
+  ├─ Produce template model describing code structure
+  ├─ Template mirrors what generated code will look like
+  └─ Templates are independent of rendering
+  ↓ [Stage 5: Rendering]
+  ├─ Transform template model to C# code
+  ├─ Write files, apply formatting
+  └─ Output `.g.cs` files
 ```
 
 ## Stage 1: Metadata Extraction
@@ -116,19 +130,15 @@ All generated code must follow [Code Generation Practices](../../.agents/code-ge
 - Use readable formatting
 - No runtime validation (all validation done at generation time)
 
-### Key Points
-
-- **Direct transformation**: Metadata → Code
-- **No intermediate models**: Code generation happens directly from metadata
-- **Formatting**: Apply consistent formatting to generated code
-- **Diagnostics**: Report generation issues as they occur
-
 ## Validation Checklist
 
 When implementing pipeline stages:
 
 - **Stage 1**: Metadata uses syntax-level predicates; EquatableList for all collections
-- **Stage 2**: Generated code follows standards; diagnostics are clear
+- **Stage 2**: Core models are domain-focused, immutable, self-contained
+- **Stage 3**: Linking collects all errors before stopping; cycles detected
+- **Stage 4**: Templates describe code structure; no string building
+- **Stage 5**: Rendering is simple transformation; all logic in Stage 4; Generated code follows standards; diagnostics are clear
 - **Cross-stage**: Each stage is independent; outputs consumable by next stage
 - **Performance**: Large specifications generate quickly (< 500ms)
 - **Diagnostics**: All errors reported to users with actionable messages

@@ -31,7 +31,7 @@ Roslyn source generator that produces injection code at compile time:
 - Symbol analysis and metadata extraction
 - Diagnostic reporting
 
-**Key file**: [generator-pipeline.md](../src/Phx.Inject.Generator/.agents/generator-pipeline.md) - Detailed two-stage pipeline description
+**Key file**: [generator-pipeline.md](../src/Phx.Inject.Generator/.agents/generator-pipeline.md) - Detailed five-stage pipeline description
 
 ## Quick Navigation
 
@@ -50,3 +50,4 @@ Roslyn source generator that produces injection code at compile time:
 3. **Read project instructions**: Refer to project-specific AGENTS.md files
 4. **Follow standards**: Apply relevant standards from above
 5. **Implement with validation**: Use the validation checklists in each guide
+6. **Keep agent instructions updated**: When you modify architecture, design patterns, examples, or conventions, update the relevant agent instruction files to reflect those changes. This ensures the instructions remain a source of truth for future agents and developers.

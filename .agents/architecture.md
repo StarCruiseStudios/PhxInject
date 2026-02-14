@@ -43,11 +43,21 @@ PhxInject consists of three interconnected parts:
 
 ### The Generator Pipeline
 
-Phx.Inject.Generator processes user code through a two-stage pipeline:
+Phx.Inject.Generator processes user code through five stages (stage 3-5 not yet implemented):
 
 **Stage 1: Metadata Extraction** - Extract syntactic metadata from user code (specifications, injectors, factories, builders, attributes). This metadata model mirrors the constructs defined in the user code using Roslyn syntax and semantic models.
 
-**Stage 2: Code Generation and Rendering** - Transform metadata into generated C# code. This stage maps metadata models to output templates and renders them as `.generated.cs` files.
+**Stage 2: Core** - Transform the metadata model into core domain models representing the business concepts of dependency injection (e.g., `Specification`, `Injector`, `Factory`, `Builder`, `Dependency`). These domain models capture the semantic meaning defined in the metadata model without implementation logic.
+
+**Stage 3: Linking** - Build the dependency graph by linking core models together. This stage:
+- Matches injector methods to specification factories/builders
+- Resolves parameter dependencies recursively  
+- Detects cycles and conflicts
+- Produces complete dependency graphs
+
+**Stage 4: Code Generation** - Process the linked dependency graph and generate a template model describing the structure of code to be generated. This mirrors the semantic model the generated code will look like without yet rendering it or assuming rendered code implementation structure.
+
+**Stage 5: Rendering** - Transform the template model into actual C# code and write `.generated.cs` files.
 
 ## Key Design Patterns
 
@@ -94,17 +104,20 @@ Errors are reported as diagnostics:
 
 ## Component Relationships
 
-The generator processes user code through two sequential stages:
+The generator processes user code through five sequential stages:
 
 ```
 User Code (Specification + Injector attributes)
-    ↓ [Stage 1: Metadata Extraction]
-    ├─ Parse syntax and extract semantic metadata
-    ├─ Create metadata models for specifications, injectors, factories, builders
-    ↓ [Stage 2: Code Generation and Rendering]
-    ├─ Map metadata to output templates
-    ├─ Generate C# code
-    └─ Output .generated.cs files
+    ↓ [Stage 1: Metadata]
+    ├─ Extract syntactic metadata
+    ↓ [Stage 2: Core]
+    ├─ Transform to domain models
+    ↓ [Stage 3: Linking]
+    ├─ Build dependency graph
+    ↓ [Stage 4: Code Generation]
+    ├─ Generate template model
+    ↓ [Stage 5: Rendering]
+    └─ Output C# code
 ```
 
 (See [Generator Pipeline Architecture](../src/Phx.Inject.Generator/.agents/generator-pipeline.md) for detailed description of each stage.)

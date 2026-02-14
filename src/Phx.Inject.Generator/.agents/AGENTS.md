@@ -56,11 +56,17 @@ context.SyntaxProvider.CreateSyntaxProvider(
 
 ## Generator Pipeline
 
-The generator processes user code through two sequential stages. See [Generator Pipeline Architecture](generator-pipeline.md) for detailed patterns.
+The generator processes user code through five sequential stages. See [Generator Pipeline Architecture](generator-pipeline.md) for detailed patterns.
 
 **Stage 1: Metadata Extraction** - Extract metadata from user code by parsing specifications, injectors, factories, and builders. This stage creates metadata models that mirror the syntactic structure found in user code.
 
-**Stage 2: Code Generation and Rendering** - Transform metadata models into generated C# code. This stage maps metadata to output templates and renders them as `.generated.cs` files.
+**Stage 2: Core** - Transform the metadata model into core domain models representing the business concepts of dependency injection. These capture semantic meaning without implementation logic.
+
+**Stage 3: Linking** - Build the dependency graph by linking core models together: match injector methods to factories/builders, resolve dependencies recursively, detect cycles and conflicts.
+
+**Stage 4: Code Generation** - Process the linked dependency graph and generate a template model describing what code will be generated (classes, methods, parameters, calls).
+
+**Stage 5: Rendering** - Transform the template model into actual C# code and write `.generated.cs` files.
 
 ## Key Architectural Patterns
 
