@@ -70,14 +70,14 @@ public sealed class FactoryAttribute : Attribute {
 }
 ```
 
-## Extensibility vs. Stability
+### Extensibility vs. Stability
 
-### Conservative API Surface
+**Conservative API Surface**
 
 - Only expose what users need directly
-- Keep implementation details private
+- Keep implementation details internal
 - Don't prematurely expose for future features that don't exist yet
-- One surface is easier to maintain than multiple
+- Simpler surface is easier to maintain
 
 ## Naming Conventions
 
@@ -107,11 +107,8 @@ public sealed class FactoryAttribute : Attribute {
 
 ```csharp
 public sealed class FactoryAttribute : Attribute {
-    /// <summary>Optional name to distinguish from other factories.</summary>
-    public string? Name { get; init; } // Clear
-    
-    // public string? n { get; init; }        // Avoid abbreviation
-    // public string? FactoryName { get; init; } // Redundant with class name
+    /// <summary>Specifies the fabrication mode for this factory.</summary>
+    public FabricationMode FabricationMode { get; set; } = FabricationMode.Recurrent;
 }
 ```
 
@@ -134,7 +131,9 @@ Phx.Inject validates at design time (compilation), not runtime. This is a core d
 ```csharp
 // Good: No runtime validation
 [AttributeUsage(AttributeTargets.Method)]
-public sealed class FactoryAttribute : Attribute { }
+public sealed class FactoryAttribute : Attribute { 
+    public FabricationMode FabricationMode { get; set; } = FabricationMode.Recurrent;
+}
 
 // Avoid: Runtime validation in attribute
 [AttributeUsage(AttributeTargets.Method)]
@@ -162,17 +161,19 @@ The generator validates, not the attribute.
 Attributes should work sensibly with minimal configuration:
 
 ```csharp
-[AttributeUsage(AttributeTargets.Class)]
-public sealed class SpecificationAttribute : Attribute {
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
+public class SpecificationAttribute : Attribute {
     // No parameters required - works with just [Specification]
 }
 
-[AttributeUsage(AttributeTargets.Class)]
-public sealed class InjectorAttribute : Attribute {
+[AttributeUsage(AttributeTargets.Interface)]
+public class InjectorAttribute : Attribute {
     /// <summary>Specification types to use for dependency resolution.</summary>
-    public Type[] Specifications { get; init; } = [];
+    public IEnumerable<Type> Specifications { get; }
     
-    // Works with [Injector] or [Injector] with custom specifications
+    public InjectorAttribute(params Type[] specifications) {
+        Specifications = specifications;
+    }
 }
 ```
 
@@ -180,12 +181,12 @@ public sealed class InjectorAttribute : Attribute {
 
 ```csharp
 // Good: Optional when it enhances but isn't required
-public sealed class FactoryAttribute : Attribute {
-    public string? Name { get; init; } // Optional enhancement
+public class FactoryAttribute : Attribute {
+    public FabricationMode FabricationMode { get; set; } = FabricationMode.Recurrent;
 }
 
 // Avoid: Optional when it changes fundamental behavior
-public sealed class SpecificationAttribute : Attribute {
+public class SpecificationAttribute : Attribute {
     public bool Enabled { get; init; } = true; // Why optional? Confusing.
 }
 ```
@@ -229,18 +230,18 @@ Adding is safe; removing or changing is breaking:
 
 ```csharp
 // Safe: Add new property with default
-public sealed class FactoryAttribute : Attribute {
-    public int Version { get; init; } = 1; // New, safe default
+public class FactoryAttribute : Attribute {
+    public FabricationMode FabricationMode { get; set; } = FabricationMode.Recurrent;
 }
 
 // Breaking: Remove or change meaning
-public sealed class FactoryAttribute : Attribute {
-    // Removed Version property - breaks existing code
+public class FactoryAttribute : Attribute {
+    // Removed FabricationMode property - breaks existing code
 }
 
 // Breaking: Change default
-public sealed class FactoryAttribute : Attribute {
-    public int Version { get; init; } = 2; // Changed default - breaks code expecting 1
+public class FactoryAttribute : Attribute {
+    public FabricationMode FabricationMode { get; set; } = FabricationMode.Scoped; // Changed default
 }
 ```
 
@@ -260,23 +261,29 @@ public sealed class OldFactoryAttribute : Attribute { }
 
 ## Sealing Attributes
 
-Always seal attributes unless there's a strong reason otherwise:
+**Current Implementation**: PhxInject attributes are not sealed to allow extensibility if needed.
+
+Best practice is to seal attributes unless extensibility is specifically required:
 
 ```csharp
-// Good: Sealed attributes
+// Best practice: Sealed attributes
 [AttributeUsage(AttributeTargets.Method)]
 public sealed class FactoryAttribute : Attribute { }
 
-// Avoid: Extensible attributes (unless absolutely necessary)
+// Current PhxInject implementation: Unsealed for extensibility
 [AttributeUsage(AttributeTargets.Method)]
-public class FactoryAttribute : Attribute { } // Unsealed - why?
+public class FactoryAttribute : Attribute { }
 ```
 
-Sealed attributes:
+Benefits of sealed attributes:
 - Prevent accidental subclassing
 - Protect API contract
 - Enable compiler optimizations
 - Match framework convention
+
+When to leave unsealed:
+- Extensibility is a planned feature
+- Framework design requires inheritance
 
 ## Validation Checklist
 
@@ -285,10 +292,8 @@ Before adding new public types/attributes:
 - [ ] Single, clear responsibility
 - [ ] Name is clear and unambiguous
 - [ ] Documented with examples
-- [ ] Sealed (if attribute class)
 - [ ] Backwards compatible (doesn't break existing code)
 - [ ] No runtime validation; design-time only
 - [ ] Generator projects updated to understand new type
-- [ ] Tests verify generator handling
 - [ ] Behavior matches documentation exactly
 - [ ] Defaults are sensible and safe

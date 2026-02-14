@@ -9,7 +9,7 @@ This project uses code generation and AI assistants for development tasks. Follo
 - **[Architecture Guide](architecture.md)** - System design, component relationships, and design patterns (start here for context)
 - **[Coding Standards](coding-standards.md)** - C# code style, conventions, and quality guidelines
 - **[Code Generation Practices](code-generation.md)** - Standards for source generators and generated code
-- **[Testing Standards](testing.md)** - Unit test practices, test organization, and validation patterns
+- **[Testing Standards](testing.md)** - Testing strategy (to be defined)
 - **[Documentation Standards](documentation.md)** - XML documentation and code comment guidelines
 
 ## Project-Specific Instructions

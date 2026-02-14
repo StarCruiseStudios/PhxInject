@@ -43,9 +43,9 @@ PhxInject consists of three interconnected parts:
 
 ### The Generator Pipeline
 
-Phx.Inject.Generator processes user code through five stages:
+Phx.Inject.Generator processes user code through five stages (stage 3-5 not yet implemented):
 
-**Stage 1: Metadata** - Create a model of injection-related types found in user code (specifications, injectors, factories, builders). This metadata model mirrors the constructs defined in the user code to facilitate processing without having to work with raw reflection types.
+**Stage 1: Metadata Extraction** - Extract syntactic metadata from user code (specifications, injectors, factories, builders, attributes). This metadata model mirrors the constructs defined in the user code using Roslyn syntax and semantic models.
 
 **Stage 2: Core** - Transform the metadata model into core domain models representing the business concepts of dependency injection (e.g., `Specification`, `Injector`, `Factory`, `Builder`, `Dependency`). These domain models capture the semantic meaning defined in the metadata model without implementation logic.
 
@@ -72,7 +72,7 @@ A specification is a container for all dependency definitions:
 This allows:
 - Grouping related dependencies
 - Reusing specifications across multiple injectors
-- Replacing specifications for testing
+- Modular specification design
 
 ### 2. Factory/Builder Pattern
 
@@ -146,18 +146,13 @@ Each typically requires changes in both Phx.Inject and Generator projects.
 
 ## Testing Strategy
 
-**To be detailed in [Testing Standards](testing.md). For now, understand that:**
-
-- Tests validate the generator pipeline at multiple levels
-- Both the code generation logic and generated code are tested
-- Tests ensure correctness across variations of user specifications
+Testing strategy is not yet defined. See [Testing Standards](testing.md) for current status.
 
 ### Legacy Versions
 
 The repository currently contains legacy implementations:
 
 - `Phx.Inject.Generator.Legacy` and `Phx.Inject.Legacy`: Reference implementations using older Roslyn APIs
-- Parallel test projects: `Phx.Inject.Tests.Legacy` and `Phx.Inject.Generator.Tests.Legacy`
 
 **Status**: These versions are included for reference while the generator is updated to use incremental source generators. They will eventually be deleted. Agents can refer to them to understand expected behavior, but they can otherwise be ignored. Focus work on the current (non-Legacy) versions.
 

@@ -7,7 +7,7 @@ Standards for writing C# code in this repository. These apply to all projects ex
 1. **Clarity First**: Code should be obviously correct to a reader familiar with C#
 2. **Consistency**: Follow patterns established in the file/project
 3. **No Clever Code**: Future maintainers, not just you, must understand the code
-4. **Explicit Over Implicit**: Use implicit types and names rather than explicit (with exceptions noted below)
+4. **Use var Appropriately**: Use `var` for local variables when type is clear from context
 5. **Performance Awareness**: Generator code is performance-critical; be conscious of allocations
 
 ## File Organization
@@ -119,11 +119,11 @@ Use `var` when:
 - Type is obvious from assignment: `var result = GetAnalysisResult()`
 - Return type is complex: `var services = _specification.GetServices()`
 - In LINQ where clarity is better
+- Type is explicitly stated on the right side: `var list = new List<string>()`
 
-Use explicit types **only** when:
-- Type is non-obvious: `MyType data = GetData();` (not `var data = GetData();`)
-- Future maintainer might not be familiar with return type
-- Numeric conversions: `long value = 100;` (not `var value = 100L;`)
+Use explicit types when:
+- Numeric literals need specific types: `long value = 100;` (not `var value = 100;`)
+- Type is non-obvious and aids readability: `INamedTypeSymbol symbol = ...`
 
 ## Null Handling
 
@@ -149,24 +149,26 @@ For API surfaces and cached data:
 ```csharp
 // Phx.Inject.Generator commonly uses:
 using System.Collections.Immutable;
+using Phx.Inject.Generator.Incremental.Util;
 
+// For general data structures (not pipeline models):
 public record AnalysisResult(
-    ImmutableArray<MethodSymbol> Factories,
+    string TypeName,
     ImmutableDictionary<string, TypeMetadata> TypeIndex
 );
 
 // Avoid: mutable lists in public APIs
-public List<MethodSymbol> Factories { get; } // Not this
+public List<string> Names { get; } // Not this
 ```
 
-**Exception for Pipeline Model Types**: Standard `System.Collections.Immutable` types lack structural equality and are unsuitable for pipeline model types. Use the `EquatableList<T>` type defined in this project instead. This applies to all pipeline models **without exception**.
+**Exception for Pipeline Model Types**: Standard `System.Collections.Immutable` types lack structural equality and are unsuitable for pipeline model types used with Roslyn's incremental generators. Use the `EquatableList<T>` type defined in this project instead.
 
 ```csharp
 // WRONG: Do not use ImmutableArray in pipeline models
-public record PipelineData(ImmutableArray<FactoryMetadata> Factories); // ✗
+public record PipelineData(ImmutableArray<SpecFactoryMethodMetadata> Factories); // ✗
 
 // CORRECT: Use EquatableList for pipeline models
-public record PipelineData(EquatableList<FactoryMetadata> Factories); // ✓
+public record PipelineData(EquatableList<SpecFactoryMethodMetadata> Factories); // ✓
 ```
 
 ### LINQ Usage
@@ -254,31 +256,23 @@ if (!TryParseConfig(input)) {
 
 ### Result Types for Validation
 
-For expected validation failures, use the existing `IResult` interface:
+For expected validation failures, use the existing `IResult<T>` interface:
 
 ```csharp
-// Good: Use DiagnosticRecorder.Capture pattern with IResult interface
-public IResult Analyze(InputData input) {
-    // Capture is a static method that creates a recorder and invokes the lambda
-    // Pass the diagnostics recorder to any functions that might produce IResult values
+// Good: Use DiagnosticsRecorder.Capture pattern with IResult interface
+public IResult<AnalysisData> Analyze(InputData input) {
+    // Capture creates a recorder and invokes the lambda
+    // Pass the diagnostics recorder to functions that produce diagnostics
     return DiagnosticsRecorder.Capture(diagnostics => {
         var data = PerformAnalysis(input);
-        // Call GetValue on any IResult to extract the value and record diagnostics
-        var validated = ValidateData(data, diagnostics);
+        // Call GetValue on IResult to extract value and record diagnostics
+        var validated = ValidateData(data).GetValue(diagnostics);
         return validated;
     });
 }
 
 // Avoid: custom result type definitions
-// Do not do this:
-public record AnalysisResult {
-    public required EquatableList<DiagnosticData> Diagnostics { get; init; }
-    public AnalysisData? Data { get; init; }
-    
-    public bool IsSuccess => Diagnostics.All(d => !d.IsError);
-}
-
-// Use the existing IResult types defined in the codebase instead
+// The IResult<T> interface is already defined in the codebase
 ```
 
 ## Properties
@@ -340,7 +334,7 @@ public ValueTask<ISymbol?> ResolveSymbolAsync(string name) {
 }
 ```
 
-## Comments and Comments
+## Comments and Documentation
 
 1. **Don't explain obvious code**: `x = x + 1; // Increment x` is noise
 2. **Explain intent and non-obvious behavior**:

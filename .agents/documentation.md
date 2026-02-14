@@ -140,45 +140,13 @@ internal enum SpecInstantiationMode {
 - Use `<see cref="..." />` or `<seealso cref="..." />` for type references
 - Use `<inheritdoc />` when a member's documentation is inherited from an interface or base class
 
-###Architectural Context
+### Architectural Context
 
 When documenting components, reference their role in the system:
 
-### For Generator Components
+**For Generator Components**: Reference the appropriate pipeline stage (Metadata, Core, Linking, Code Generation, Rendering). See [Architecture Guide](architecture.md) and [Generator Pipeline](../src/Phx.Inject.Generator/.agents/generator-pipeline.md) for pipeline details.
 
-Reference the appropriate pipeline stage (Metadata, Core, Linking, Code Generation, Rendering). See [Architecture Guide](architecture.md) and [Generator Pipeline](../src/Phx.Inject.Generator/.agents/generator-pipeline.md) for:
-
-- Pipeline stages and their responsibilities
-- How types and components interact
-- Architectural patterns used in the project
-
-### For Public API Components (Phx.Inject)
-
-Reference where in the user experience this type fits:
-
-```csharp
-/// <summary>
-/// Marks a method as a dependency factory in a specification.
-/// </summary>
-/// <remarks>
-/// <para>
-/// Applied to methods in classes marked with <see cref="SpecificationAttribute" />.
-/// When the injector needs to resolve a dependency of the factory's return type,
-/// this method is invoked with its parameters resolved from other factories/builders.
-/// </para>
-/// <para>
-/// Example:
-/// <code>
-/// [Specification]
-/// public static class MySpec {
-///     [Factory]
-///     public MyService Create(int config) => new MyService(config);
-/// }
-/// </code>
-/// </para>
-/// </remarks>
-public class FactoryAttribute { ... }
-```
+**For Public API Components (Phx.Inject)**: Reference where in the user experience this type fits. See [Documentation/index.md](../Documentation/index.md) for user-facing examples.
 
 ### Code References
 
@@ -195,12 +163,9 @@ public class FactoryAttribute { ... }
 
 ## Pipeline Context
 
-When documenting Generator components, reference the appropriate stage in the pipeline. Refer to the README files in the Documentation directory for detailed descriptions of:
+When documenting Generator components, reference the appropriate stage in the pipeline.
 
-- The overall framework design
-- Pipeline stages and their responsibilities
-- How types and components interact
-- Architectural patterns used in the project
+Refer to [Architecture Guide](architecture.md) and [Generator Pipeline](../src/Phx.Inject.Generator/.agents/generator-pipeline.md) for detailed pipeline descriptions.
 
 ## Validation Checklist
 
@@ -223,17 +188,17 @@ Before completing documentation:
 
 ```csharp
 /// <summary>
-/// Analyzes specification types and extracts metadata for code generation.
+/// Extracts metadata from specification types for code generation.
 /// </summary>
 /// <remarks>
 /// <para>
-/// This analyzer is responsible for traversing the AST of specification types
-/// and building an in-memory representation suitable for the code generation pipeline.
-/// It handles both attribute-based and convention-based specifications.
+/// This analyzer traverses specification types and builds metadata models
+/// suitable for the code generation pipeline. It handles both attribute-based
+/// and convention-based specifications.
 /// </para>
 /// <para>
-/// Operates as part of the metadata collection stage, before pipeline generation begins.
-/// The results are cached and reused across multiple generator invocations.
+/// Operates as part of Stage 1 (metadata extraction). Results are cached
+/// and reused across multiple generator invocations.
 /// </para>
 /// </remarks>
 public class SpecificationAnalyzer { ... }
@@ -293,7 +258,7 @@ Public API must be thoroughly documented:
 ### Phx.Inject.Generator (Source Generator)
 
 Document critical pipeline components:
-- Public and internal analyzer/linker/generator classes
+- Public and internal analyzer/generator classes
 - Diagnostic descriptor types
 - Important methods that determine behavior
 - Public extension methods
@@ -303,22 +268,12 @@ Skip documentation for:
 - Trivial properties
 - One-off utility methods
 
-### Test Projects
-
-Document test helpers and builders:
-- Test data builders and fixtures
-- Helper methods with non-obvious purpose
-- Test patterns worth replicating
-
 ## Decision Tree: Should I Document This?
 
 ```
 Is this public API?
 ├─ Yes → ALWAYS document, thoroughly
 └─ No
-├─ Is this in a test project?
-│  ├─ Yes → Document if it's a reusable helper/builder
-│  └─ No → Continue
 ├─ Is it critical pipeline functionality?
 │  ├─ Yes → Document the architectural role
 │  └─ No → Continue
