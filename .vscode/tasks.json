@@ -1,0 +1,67 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "docs: build",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "tool",
+        "restore"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "docs: build plugin",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "./Documentation/plugins/PhxInject-DocFx-Plugin/PhxInject.DocFx.Plugins.csproj",
+        "-c",
+        "Release"
+      ],
+      "problemMatcher": [
+        "$msCompile"
+      ]
+    },
+    {
+      "label": "docs: metadata",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "docfx",
+        "metadata",
+        "./Documentation/docfx.json"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "docs: site",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "docfx",
+        "build",
+        "./Documentation/docfx.json"
+      ],
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "docs: build",
+        "docs: build plugin"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "docs: full build",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "docs: build plugin",
+        "docs: metadata",
+        "docs: build",
+        "docs: site"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}

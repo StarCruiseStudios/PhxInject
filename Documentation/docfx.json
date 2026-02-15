@@ -20,7 +20,7 @@
     }
   ],
   "build": {
-    "template": [ "default", "modern", "templates/material" ],
+    "template": [ "default", "modern", "templates/material", "plugins/PhxInject-DocFx-Plugin/bin/Release" ],
     "content": [
       {
         "files": [
@@ -43,7 +43,8 @@
     "resource": [
       {
         "files": [
-          "PhxLib.png"
+          "PhxLib.png",
+          "PhxLib.ico"
         ],
         "src": "",
         "dest": "resources"
@@ -54,6 +55,7 @@
       "_appTitle": "Phx.Inject API Documentation",
       "_appFooter": "Copyright (c) 2022-2026 Star Cruise Studios LLC. All rights reserved.",
       "_appLogoPath": "resources/PhxLib.png",
+      "_appFaviconPath": "resources/PhxLib.ico",
       "_enableSearch": true,
     },
   }
