@@ -21,7 +21,7 @@ namespace Phx.Inject.Generator.Incremental.Diagnostics;
 /// <param name="Type"> The type of diagnostic. </param>
 /// <param name="Message"> The diagnostic message. </param>
 /// <param name="Location"> The source code location where the diagnostic occurred. </param>
-internal record DiagnosticInfo(
+internal sealed record DiagnosticInfo(
     DiagnosticType Type,
     string Message,
     LocationInfo? Location

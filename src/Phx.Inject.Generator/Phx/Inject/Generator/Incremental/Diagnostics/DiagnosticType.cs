@@ -32,7 +32,7 @@ namespace Phx.Inject.Generator.Incremental.Diagnostics;
 ///     without exposing individual fields.
 ///     </para>
 /// </remarks>
-internal class DiagnosticType {
+internal sealed class DiagnosticType {
     private const string InjectionCategory = "Injection";
     private const string IdPrefix = "PHXINJECT";
     
@@ -108,7 +108,7 @@ internal class DiagnosticType {
     }
     
     /// <inheritdoc cref="IEquatable{T}.Equals(T)"/>
-    public virtual bool Equals(DiagnosticType? other) {
+    public bool Equals(DiagnosticType? other) {
         return other is not null && Id == other.Id;
     }
 
