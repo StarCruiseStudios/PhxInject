@@ -75,16 +75,19 @@ public class ResultTests : LoggingTestClass {
             new DiagnosticInfo(DiagnosticType.InternalError, "Error", null)));
         var recorder = Given("A diagnostics recorder", () => new TestDiagnosticsRecorder());
         
-        var exception = When("Getting value from error", () => {
+        InvalidOperationException? thrownException = null;
+        
+        When("Getting value from error", () => {
             try {
                 result.GetValue(recorder);
-                return null;
             } catch (InvalidOperationException ex) {
-                return ex;
+                thrownException = ex;
             }
         });
         
-        Then("Exception is thrown", () => Verify.That(exception.IsNotNull()));
+        Then("Exception is thrown", () => Verify.That(thrownException.IsNotNull()));
+        Then("Exception has appropriate message", () => 
+            Verify.That(thrownException!.Message.Length.IsGreaterThan(0)));
     }
     
     [Test]
@@ -131,16 +134,19 @@ public class ResultTests : LoggingTestClass {
     public void MapError_OnOkResult_ThrowsException() {
         var result = Given("An ok result", () => Result.Ok(42));
         
-        var exception = When("Mapping error on ok result", () => {
+        InvalidOperationException? thrownException = null;
+        
+        When("Mapping error on ok result", () => {
             try {
                 result.MapError<string>();
-                return null;
             } catch (InvalidOperationException ex) {
-                return ex;
+                thrownException = ex;
             }
         });
         
-        Then("Exception is thrown", () => Verify.That(exception.IsNotNull()));
+        Then("Exception is thrown", () => Verify.That(thrownException.IsNotNull()));
+        Then("Exception has appropriate message", () => 
+            Verify.That(thrownException!.Message.Length.IsGreaterThan(0)));
     }
     
     [Test]
