@@ -95,15 +95,6 @@ internal sealed class MetadataPipeline(
     ///     <c>SelectDiagnostics</c> extracts errors from <c>Result</c> wrappers. Merge combines
     ///     diagnostic streams in binary tree (O(log n) depth vs O(n) linear).
     /// </remarks>
-    ///     </para>
-    ///     
-    ///     <para>Why Not Parallel Execution?</para>
-    ///     <para>
-    ///     While this method executes segments sequentially, the actual work (predicate/transform)
-    ///     happens lazily during later pipeline stages. This is registration, not execution.
-    ///     Roslyn controls the parallel execution internally.
-    ///     </para>
-    /// </remarks>
     public MetadataPipelineOutput Process(IncrementalGeneratorInitializationContext generatorInitializationContext) {
         var phxInjectSettingsPipelineSegment =
             phxInjectSettingsPipeline.Select(generatorInitializationContext.SyntaxProvider);
@@ -165,10 +156,6 @@ internal static class IncrementalGeneratorInitializationContextExtensions {
     /// <returns>
     ///     MetadataPipelineOutput containing extracted metadata and diagnostics.
     /// </returns>
-    /// <remarks>
-    ///     Enables pipeline-first syntax: context.Process(pipeline) instead of pipeline.Process(context).
-    ///     This reads more naturally in fluent chains and follows Roslyn's extension method conventions.
-    /// </remarks>
     public static MetadataPipelineOutput Process(this IncrementalGeneratorInitializationContext context, MetadataPipeline pipeline) {
         return pipeline.Process(context);
     }
@@ -180,45 +167,9 @@ internal static class IncrementalGeneratorInitializationContextExtensions {
     /// <param name="context">The generator context for registering outputs.</param>
     /// <returns>The unmodified pipeline output for chaining.</returns>
     /// <remarks>
-    ///     <para>Purpose:</para>
-    ///     <para>
-    ///     This method exists solely for generator debugging. It generates synthetic C# files showing
-    ///     what metadata was extracted from each declaration. These files appear in IDE tooling,
-    ///     allowing developers to inspect the metadata pipeline without debugging.
-    ///     </para>
-    ///     
-    ///     <para>WARNING - Performance Impact:</para>
-    ///     <para>
-    ///     Calling this method registers dozens of source output callbacks, each of which executes
-    ///     for every matching declaration. This significantly increases generation overhead and IDE
-    ///     latency. Should NEVER be enabled in production/release builds.
-    ///     </para>
-    ///     
-    ///     <para>When to Use:</para>
-    ///     <list type="bullet">
-    ///         <item>
-    ///             <description>Debugging metadata extraction logic during development</description>
-    ///         </item>
-    ///         <item>
-    ///             <description>Validating attribute transformers are capturing correct information</description>
-    ///         </item>
-    ///         <item>
-    ///             <description>Understanding why generated code is incorrect</description>
-    ///         </item>
-    ///     </list>
-    ///     
-    ///     <para>What Gets Generated:</para>
-    ///     <para>
-    ///     For each injector, spec, factory, etc., generates a .cs file in the Metadata namespace
-    ///     with comments showing extracted providers, activators, factory methods, parameters, etc.
-    ///     These files don't compile to useful code - they're structured comments for inspection.
-    ///     </para>
-    ///     
-    ///     <para>Alternative Debugging Approaches:</para>
-    ///     <para>
-    ///     For production debugging, prefer attaching a debugger to the generator process or adding
-    ///     targeted diagnostics. This method is too heavy-weight for anything but deep investigation.
-    ///     </para>
+    ///     Generates synthetic C# files showing extracted metadata for debugging. Significant performance
+    ///     impact - NEVER enable in production builds. Use for debugging metadata extraction logic,
+    ///     validating attribute transformers, or understanding incorrect generated code.
     /// </remarks>
     public static MetadataPipelineOutput Print(this MetadataPipelineOutput output, IncrementalGeneratorInitializationContext context) {
         PhxInjectSettingsPipeline.Instance.Print(context, output.PhxInjectSettingsPipelineSegment);
