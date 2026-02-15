@@ -29,38 +29,20 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline;
 ///     Pipeline segment that produces injector implementation models.
 /// </param>
 /// <remarks>
-///     <para>Current State - Pass-Through Architecture:</para>
-///     <para>
-///     Currently, CorePipeline is a structural placeholder that passes Stage 1 output through
-///     unchanged. The actual implementation code generation happens in the rendering stage, not
-///     in this pipeline. This design allows for future expansion where Stage 2 could perform
-///     additional transformations (dependency graph analysis, optimization passes, etc.) before
-///     final code generation.
-///     </para>
-///     
-///     <para>Future Enhancement Opportunities:</para>
-///     <list type="bullet">
-///         <item>
-///             <description>
-///             Dependency graph construction and cycle detection
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Cross-specification validation (ensure all dependencies can be satisfied)
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Optimization passes (dead code elimination, inline candidates)
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Code generation IR (intermediate representation before string rendering)
-///             </description>
-///         </item>
-///     </list>
+/// ## Current State - Pass-Through Architecture
+///
+/// Currently, CorePipeline is a structural placeholder that passes Stage 1 output through
+/// unchanged. The actual implementation code generation happens in the rendering stage, not
+/// in this pipeline. This design allows for future expansion where Stage 2 could perform
+/// additional transformations (dependency graph analysis, optimization passes, etc.) before
+/// final code generation.
+///
+/// ## Future Enhancement Opportunities
+///
+/// - Dependency graph construction and cycle detection
+/// - Cross-specification validation (ensure all dependencies can be satisfied)
+/// - Optimization passes (dead code elimination, inline candidates)
+/// - Code generation IR (intermediate representation before string rendering)
 /// </remarks>
 internal record CorePipelineOutput(
     MetadataPipelineOutput MetadataPipelineOutput,
@@ -71,70 +53,39 @@ internal record CorePipelineOutput(
 ///     Stage 2 pipeline responsible for transforming validated metadata into implementation models.
 /// </summary>
 /// <remarks>
-///     <para>Architectural Position - Two-Stage Design:</para>
-///     <para>
-///     CorePipeline is Stage 2 of the generator's two-stage architecture:
-///     </para>
-///     <list type="number">
-///         <item>
-///             <term>Stage 1 (MetadataPipeline):</term>
-///             <description>
-///             Extracts and validates metadata from source syntax. Focuses on "what exists" in user code.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Stage 2 (CorePipeline):</term>
-///             <description>
-///             Transforms metadata into implementation models. Focuses on "what to generate."
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Why Separate Stages?</para>
-///     <list type="bullet">
-///         <item>
-///             <term>Incremental Compilation Optimization:</term>
-///             <description>
-///             Changes to implementation strategy (how code is generated) don't invalidate metadata
-///             extraction. Only syntax changes trigger Stage 1 re-execution.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Clear Separation of Concerns:</term>
-///             <description>
-///             Stage 1 deals with Roslyn symbols and syntax. Stage 2 deals with domain models and
-///             code generation strategy. No mixing of concerns.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Testability:</term>
-///             <description>
-///             Can test metadata extraction and code generation independently with different strategies.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Error Isolation:</term>
-///             <description>
-///             All validation errors caught in Stage 1 prevent Stage 2 from attempting to generate
-///             invalid code. No defensive programming needed in generators.
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Current Implementation - Structural Placeholder:</para>
-///     <para>
-///     Currently, this class is a pass-through that returns metadata unchanged. The actual
-///     transformation to implementation models happens during source output registration, not
-///     in this pipeline. This design anticipates future needs without adding complexity now.
-///     </para>
-///     
-///     <para>Future Direction:</para>
-///     <para>
-///     As the generator evolves, Stage 2 could perform whole-program analysis that requires
-///     seeing all metadata at once (e.g., building a dependency graph across all specs, detecting
-///     circular dependencies, optimizing away unnecessary factories). The two-stage split provides
-///     a natural insertion point for these features without refactoring the architecture.
-///     </para>
+/// ## Architectural Position - Two-Stage Design
+///
+/// CorePipeline is Stage 2 of the generator's two-stage architecture:
+///
+/// 1. **Stage 1 (MetadataPipeline)**: Extracts and validates metadata from source syntax. 
+///    Focuses on "what exists" in user code.
+/// 2. **Stage 2 (CorePipeline)**: Transforms metadata into implementation models. 
+///    Focuses on "what to generate."
+///
+/// ## Why Separate Stages?
+///
+/// - **Incremental Compilation Optimization**: Changes to implementation strategy (how code 
+///   is generated) don't invalidate metadata extraction. Only syntax changes trigger Stage 1 
+///   re-execution.
+/// - **Clear Separation of Concerns**: Stage 1 deals with Roslyn symbols and syntax. Stage 2 
+///   deals with domain models and code generation strategy. No mixing of concerns.
+/// - **Testability**: Can test metadata extraction and code generation independently with 
+///   different strategies.
+/// - **Error Isolation**: All validation errors caught in Stage 1 prevent Stage 2 from 
+///   attempting to generate invalid code. No defensive programming needed in generators.
+///
+/// ## Current Implementation - Structural Placeholder
+///
+/// Currently, this class is a pass-through that returns metadata unchanged. The actual
+/// transformation to implementation models happens during source output registration, not
+/// in this pipeline. This design anticipates future needs without adding complexity now.
+///
+/// ## Future Direction
+///
+/// As the generator evolves, Stage 2 could perform whole-program analysis that requires
+/// seeing all metadata at once (e.g., building a dependency graph across all specs, detecting
+/// circular dependencies, optimizing away unnecessary factories). The two-stage split provides
+/// a natural insertion point for these features without refactoring the architecture.
 /// </remarks>
 internal sealed class CorePipeline(
     InjectorPipeline injectorPipeline
@@ -161,19 +112,17 @@ internal sealed class CorePipeline(
     ///     Currently, this is just the input metadata wrapped unchanged.
     /// </returns>
     /// <remarks>
-    ///     <para>Current Behavior - Pass-Through:</para>
-    ///     <para>
-    ///     Simply wraps the input in CorePipelineOutput without transformation. This maintains
-    ///     the two-stage architecture boundary while deferring actual transformation logic to
-    ///     the source output phase.
-    ///     </para>
-    ///     
-    ///     <para>Why Not Do Transformation Here?</para>
-    ///     <para>
-    ///     Current transformation is 1:1 (each metadata element maps directly to generated code).
-    ///     When we need M:N transformations or whole-program analysis, this method becomes the
-    ///     natural place to implement that logic.
-    ///     </para>
+    /// ## Current Behavior - Pass-Through
+    ///
+    /// Simply wraps the input in CorePipelineOutput without transformation. This maintains
+    /// the two-stage architecture boundary while deferring actual transformation logic to
+    /// the source output phase.
+    ///
+    /// ## Why Not Do Transformation Here?
+    ///
+    /// Current transformation is 1:1 (each metadata element maps directly to generated code).
+    /// When we need M:N transformations or whole-program analysis, this method becomes the
+    /// natural place to implement that logic.
     /// </remarks>
     public CorePipelineOutput Process(MetadataPipelineOutput metadataPipeline) {
         var injectorInterfaceMetadata = metadataPipeline.InjectorInterfacePipelineSegment
