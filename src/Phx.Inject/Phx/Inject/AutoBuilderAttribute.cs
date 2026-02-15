@@ -13,21 +13,14 @@ namespace Phx.Inject;
 ///     of a given dependency.
 /// </summary>
 /// <remarks>
-/// Auto-builders enable the generator to automatically identify and invoke builder methods
-/// based on method signatures, without requiring explicit <see cref="BuilderAttribute"/> annotations.
+/// Auto-builders enable automatic identification and invocation of builder methods based on
+/// method signatures, without requiring explicit <see cref="BuilderAttribute"/> annotations.
 ///
 /// ## Difference from BuilderAttribute
 ///
 /// - <see cref="BuilderAttribute"/> requires explicit builder method annotation in specifications
-/// - <see cref="AutoBuilderAttribute"/> allows the generator to infer builder logic from
+/// - <see cref="AutoBuilderAttribute"/> allows automatic inference of builder logic from
 ///   method naming conventions and signatures
-///
-/// ## Usage
-///
-/// The generator identifies auto-builder methods by analyzing:
-/// - Method return type (void or the configured type)
-/// - First parameter matches the type being built
-/// - Additional parameters are resolved dependencies
 /// </remarks>
 /// <seealso cref="BuilderAttribute"/>
 [AttributeUsage(AttributeTargets.Method, Inherited = false)]

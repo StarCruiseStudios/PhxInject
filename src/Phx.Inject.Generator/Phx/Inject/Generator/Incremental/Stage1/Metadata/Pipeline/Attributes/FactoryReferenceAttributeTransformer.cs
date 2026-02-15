@@ -23,29 +23,9 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms FactoryReference attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     Extracts optional <c>FabricationMode</c> for parameters receiving factory delegates instead
-///     of resolved instances (enables lazy initialization, multiple creation, caller-controlled
-///     timing). Tries named argument first, then constructor argument filtered by
-///     <c>FabricationModeClassName</c> type for version resilience across signature changes.
-///     
-///     ## FabricationMode Interpretation - Default vs Explicit
-///
-///     - **Default (0 or unspecified)**: Use the referenced factory's natural fabrication mode. If CreateUserService is scoped,
-///       factory reference respects that scoping.
-///     - **Recurrent**: Force new instance on every delegate invocation, even if factory is scoped.
-///       Generated: () => CreateNewUserService()
-///     - **Scoped**: Cache first instance, return same on subsequent delegate calls.
-///       Generated: Lazy initialization with scope-local cache.
-///     - **Container/ContainerScoped**: Container-level caching for child injector scenarios.
-///     
-///     ## Validation Constraints - Enforced by Later Stages
-///
-///     Transformer doesn't validate reference semantics. Later validation ensures:
-///
-///     - Parameter type is Func&lt;T&gt; or compatible delegate matching factory return type
-///     - Referenced factory actually exists and is accessible
-///     - FabricationMode is compatible with factory's declaration (can't force Constructor mode
-///       on StaticMethod factory)
+///     Extracts the optional <see cref="FabricationMode"/> for parameters receiving factory delegates
+///     instead of resolved instances. This enables lazy initialization, multiple instance creation,
+///     and caller-controlled instantiation timing.
 /// </remarks>
 internal sealed class FactoryReferenceAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
