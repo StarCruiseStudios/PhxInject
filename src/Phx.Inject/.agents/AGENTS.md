@@ -79,7 +79,47 @@ Attributes are immutable once released in a major version. Plan carefully.
 
 ## Testing Strategy
 
-Testing strategy is not yet defined. See [Testing Standards](../../.agents/testing.md) for current status.
+All tests in **Phx.Inject.Tests** use **Phx.Test** for test orchestration and **PhxValidation** for assertions. Tests focus on **runtime behavior** of the library and generated injectors.
+
+### Quick Start
+
+```csharp
+public class MyFeatureTests : LoggingTestClass
+{
+    [Injector(typeof(MyTestSpecification))]  // Generated interface implementation
+    public interface IMyTestInjector
+    {
+        MyType GetInstance();
+    }
+
+    [Test]
+    public void MethodName_Scenario_ExpectedOutcome()
+    {
+        var injector = Given("A test injector",
+            () => new MyTestInjector());
+
+        var result = When("Getting instance",
+            () => injector.GetInstance());
+
+        Then("Result is correct",
+            () => Verify.That(result.IsType<MyType>()));
+    }
+}
+```
+
+### Test Organization
+
+- Test classes: `{Feature}Tests.cs` inherit from `LoggingTestClass`
+- Test specifications: Lightweight specs in `Data/` folder with `[Specification]` attribute
+- Assertions: Use `Verify.That()` fluent methods (`.IsEqualTo()`, `.IsType<>()`, etc.)
+- Naming: `MethodName_Scenario_ExpectedOutcome`
+
+### See Also
+
+- [Testing Quick Reference](../../.github/instructions/testing-phxinject.instructions.md) - Comprehensive patterns and examples
+- [Architecture Guide](../../.github/instructions/architecture.instructions.md) - System design and pipeline
+- [Phx.Test Documentation](https://github.com/StarCruiseStudios/PhxTest)
+- [Phx.Validation Documentation](https://github.com/StarCruiseStudios/PhxValidation)
 
 ## Code Organization
 

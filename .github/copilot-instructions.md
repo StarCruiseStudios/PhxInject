@@ -19,6 +19,7 @@ All instruction files follow the `.github/instructions/*.instructions.md` naming
 ### Development Practices
 
 - **[testing.instructions.md](instructions/testing.instructions.md)** - Unit testing, integration testing, snapshot testing for generated code, diagnostic validation, and minimum coverage requirements
+- **[testing-phxinject.instructions.md](instructions/testing-phxinject.instructions.md)** - PhxInject-specific testing patterns using Phx.Test orchestration and PhxValidation assertions
 - **[code-review.instructions.md](instructions/code-review.instructions.md)** - Code review checklist, priority system, and review standards
 - **[performance.instructions.md](instructions/performance.instructions.md)** - Performance optimization patterns for source generators and generated code
 - **[security.instructions.md](instructions/security.instructions.md)** - Security guidelines for source generators and dependency injection frameworks

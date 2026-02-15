@@ -221,7 +221,68 @@ Refer to [Architecture Guide](../../.agents/architecture.md) for additional cont
 
 ## Testing Strategy
 
-Testing strategy is not yet defined. See [Testing Standards](../../.agents/testing.md) for current status.
+All tests in **Phx.Inject.Generator.Tests** use **Phx.Test** for test orchestration, **PhxValidation** for assertions, and **Microsoft.CodeAnalysis.Testing** for compilation. Tests focus on the **source generator's compile-time behavior** and code generation correctness.
+
+### Quick Start
+
+```csharp
+public class MyGeneratorTests : LoggingTestClass
+{
+    [Test]
+    public void GeneratorTest_Scenario_ProducesCorrectCode()
+    {
+        var source = @"
+            using Phx.Inject;
+            
+            [Specification]
+            public class TestSpec
+            {
+                [Factory]
+                public int GetInt() => 42;
+            }
+        ";
+
+        var compilation = Given("Source code",
+            () => TestCompiler.CompileText(
+                source,
+                ReferenceAssemblies.Net.Net90,
+                new IncrementalSourceGenerator()));
+
+        var diagnostics = When("Running generator",
+            () => compilation.GetDiagnostics());
+
+        Then("No errors",
+            () => Verify.That(diagnostics
+                .Where(d => d.Severity == DiagnosticSeverity.Error)
+                .Count().IsEqualTo(0)));
+    }
+}
+```
+
+### Key Tools
+
+- **TestCompiler** - Compile source code with generators during tests
+- **ReferenceAssemblies** - Target different .NET frameworks (test all supported versions)
+- **compilation.GetDiagnostics()** - Verify error reporting and diagnostics
+- **compilation.GlobalNamespace** - Inspect generated type symbols
+
+### Test Pipeline Stages
+
+Test each stage of the five-stage generator pipeline independently when possible:
+1. **Metadata Extraction** - Tests extracting factories/builders from specifications
+2. **Core Analysis** - Tests semantic analysis and validation
+3. **Linking** - Tests dependency resolution and cycle detection
+4. **Code Generation** - Tests template generation
+5. **Rendering** - Tests final C# code output
+
+### See Also
+
+- [Testing Quick Reference](../../.github/instructions/testing-phxinject.instructions.md) - Comprehensive patterns and examples
+- [Code Generation Standards](../../.github/instructions/code-generation.instructions.md) - Generator architecture
+- [Architecture Guide](../../.github/instructions/architecture.instructions.md) - Five-stage pipeline details
+- [Phx.Test Documentation](https://github.com/StarCruiseStudios/PhxTest)
+- [Phx.Validation Documentation](https://github.com/StarCruiseStudios/PhxValidation)
+- [Microsoft.CodeAnalysis.Testing](https://github.com/dotnet/roslyn-sdk)
 
 ## Validation Checklist
 
