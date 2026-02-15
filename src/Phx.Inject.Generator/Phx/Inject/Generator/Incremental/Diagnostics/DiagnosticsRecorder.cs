@@ -62,28 +62,42 @@ internal sealed class DiagnosticsRecorder : IDiagnosticsRecorder {
     /// <returns>
     ///     <list type="bullet">
     ///         <item>Ok result: Function completed successfully, may include warnings</item>
-    ///         <item>Error result: Function threw <c>GeneratorException</c> or returned error diagnostics</item>
+    ///         <item>Error result: Function threw <c>GeneratorException</c> or an unexpected exception</item>
     ///     </list>
     /// </returns>
     /// <remarks>
-    ///     <para>Exception Handling:</para>
+    ///     <para>Exception Handling Strategy:</para>
     ///     <list type="bullet">
     ///         <item>
-    ///             GeneratorException: Expected exception carrying diagnostics.
-    ///             Captured and returned as Error result with those diagnostics.
+    ///             <term>GeneratorException:</term>
+    ///             <description>
+    ///             Expected exception carrying validation diagnostics. Captured and returned
+    ///             as Error result with those diagnostics.
+    ///             </description>
     ///         </item>
     ///         <item>
-    ///             Other exceptions: Unexpected (generator bugs). Caught and returned
-    ///             as Error result, preventing compilation crash. However, this indicates
-    ///             a generator implementation error that should be fixed.
+    ///             <term>Other exceptions:</term>
+    ///             <description>
+    ///             Unexpected generator bugs. Caught and converted to error diagnostics with
+    ///             <see cref="DiagnosticType.InternalError"/>. This ensures the actual error
+    ///             appears as a compilation error visible to the user instead of being hidden
+    ///             in Roslyn's generic exception handling. The exception message is preserved.
+    ///             </description>
     ///         </item>
     ///     </list>
     ///     
+    ///     <para>Why Catch All Exceptions?</para>
+    ///     <para>
+    ///     If we let unexpected exceptions propagate to Roslyn's top-level exception handler,
+    ///     they get converted to opaque compiler errors that hide the actual problem. By catching
+    ///     them here and converting to diagnostics, the real error (null reference, index out of bounds,
+    ///     etc.) appears clearly as a compilation error the user can investigate.
+    ///     </para>
+    ///     
     ///     <para>Usage Pattern:</para>
     ///     <para>
-    ///     Wrap complex transformation logic in <c>Capture</c> to ensure exceptions don't
-    ///     escape and crash the compiler. The recorder is local to this execution and
-    ///     automatically aggregates all diagnostics before returning.
+    ///     Wrap complex transformation logic in <c>Capture</c> to ensure all exceptions,
+    ///     expected and unexpected, are converted to user-visible compilation errors.
     ///     </para>
     ///     
     ///     <example>
@@ -110,7 +124,9 @@ internal sealed class DiagnosticsRecorder : IDiagnosticsRecorder {
         } catch (GeneratorException ex) {
             recorder.Add(ex.DiagnosticInfos);
             return Result.Error<T>(recorder.diagnostics.ToEquatableList());
-        } catch {
+        } catch (Exception ex) {
+            var errorMessage = $"Generator bug: {ex.GetType().Name}: {ex.Message}";
+            recorder.Add(new DiagnosticInfo(DiagnosticType.InternalError, errorMessage, null));
             return Result.Error<T>(recorder.diagnostics.ToEquatableList());
         }
     }

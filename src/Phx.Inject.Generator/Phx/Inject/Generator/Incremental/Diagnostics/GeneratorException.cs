@@ -8,6 +8,7 @@
 
 #region
 
+using System.Text;
 using Phx.Inject.Generator.Incremental.Util;
 
 #endregion
@@ -61,7 +62,15 @@ internal sealed class GeneratorException : Exception {
         return diagnosticInfos.Count switch {
             0 => "A fatal generator error occurred.",
             1 => diagnosticInfos[0].Message,
-            _ => $"Multiple fatal generator errors occurred ({diagnosticInfos.Count} total)."
+            _ => BuildMultiErrorMessage(diagnosticInfos)
         };
+    }
+
+    private static string BuildMultiErrorMessage(EquatableList<DiagnosticInfo> diagnostics) {
+        var sb = new StringBuilder($"Multiple fatal generator errors ({diagnostics.Count} total):\n");
+        foreach (var diag in diagnostics) {
+            sb.AppendLine($"  [{diag.Type.Id}] {diag.Message}");
+        }
+        return sb.ToString();
     }
 }

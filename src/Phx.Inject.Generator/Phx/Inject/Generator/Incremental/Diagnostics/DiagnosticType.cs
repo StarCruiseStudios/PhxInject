@@ -17,30 +17,58 @@ namespace Phx.Inject.Generator.Incremental.Diagnostics;
 /// <summary>
 ///     Defines the type and metadata for a diagnostic that can be reported during code generation.
 /// </summary>
+/// <remarks>
+///     <para>Immutable Singleton Pattern:</para>
+///     <para>
+///     All DiagnosticType instances are defined as static readonly fields with private constructors.
+///     This ensures each diagnostic type exists exactly once in memory and cannot be modified,
+///     making them safe for use in incremental compilation caching and concurrent scenarios.
+///     </para>
+///     
+///     <para>Registry for Discovery:</para>
+///     <para>
+///     The <see cref="All"/> collection provides access to all diagnostic types for tooling that
+///     needs to enumerate, validate, or document all diagnostics. This enables extensibility
+///     without exposing individual fields.
+///     </para>
+/// </remarks>
 internal class DiagnosticType {
     private const string InjectionCategory = "Injection";
-    private const string PhxInjectIdPrefix = "PHXINJECT";
+    private const string IdPrefix = "PHXINJECT";
     
     /// <summary> Debug information diagnostic. </summary>
     public static readonly DiagnosticType DebugMessage = new(
-        PhxInjectIdPrefix + "9000",
+        IdPrefix + "9000",
         "Debug",
         InjectionCategory,
         DiagnosticSeverity.Info);
     
     /// <summary> Diagnostic for unexpected errors during generation. </summary>
     public static readonly DiagnosticType UnexpectedError = new(
-        PhxInjectIdPrefix + "0001",
+        IdPrefix + "0001",
         "An unexpected error occurred.",
         InjectionCategory,
         DiagnosticSeverity.Error);
 
     /// <summary> Diagnostic for internal generator errors. </summary>
     public static readonly DiagnosticType InternalError = new(
-        PhxInjectIdPrefix + "0002",
+        IdPrefix + "0002",
         "An internal error occurred while generating injection.",
         InjectionCategory,
         DiagnosticSeverity.Error);
+    
+    /// <summary>
+    ///     Collection of all defined diagnostic types for enumeration and discovery.
+    /// </summary>
+    /// <remarks>
+    ///     Use this to iterate over all diagnostics for validation, documentation generation,
+    ///     or tooling that needs comprehensive diagnostic information.
+    /// </remarks>
+    public static IReadOnlyList<DiagnosticType> All { get; } = new[] {
+        DebugMessage,
+        UnexpectedError,
+        InternalError
+    };
     
     /// <summary> The unique diagnostic identifier. </summary>
     public string Id { get; }
