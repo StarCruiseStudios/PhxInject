@@ -33,10 +33,9 @@ public class ResultTests : LoggingTestClass {
     public void Ok_WithValueAndDiagnostics_CreatesOkResultWithDiagnostics() {
         var value = Given("A value", () => "test");
         var diagnostic = Given("A diagnostic", () => new DiagnosticInfo(
-            DiagnosticType.Warning,
-            "TEST001",
+            DiagnosticType.DebugMessage,
             "Test warning",
-            LocationInfo.None
+            null
         ));
         
         var result = When("Creating ok result with diagnostics", 
@@ -49,10 +48,9 @@ public class ResultTests : LoggingTestClass {
     [Test]
     public void Error_WithDiagnostic_CreatesErrorResult() {
         var diagnostic = Given("An error diagnostic", () => new DiagnosticInfo(
-            DiagnosticType.Error,
-            "ERR001",
+            DiagnosticType.InternalError,
             "Test error",
-            LocationInfo.None
+            null
         ));
         
         var result = When("Creating error result", () => Result.Error<int>(diagnostic));
@@ -74,7 +72,7 @@ public class ResultTests : LoggingTestClass {
     [Test]
     public void GetValue_OnErrorResult_ThrowsException() {
         var result = Given("An error result", () => Result.Error<int>(
-            new DiagnosticInfo(DiagnosticType.Error, "ERR001", "Error", LocationInfo.None)));
+            new DiagnosticInfo(DiagnosticType.InternalError, "Error", null)));
         var recorder = Given("A diagnostics recorder", () => new TestDiagnosticsRecorder());
         
         var exception = When("Getting value from error", () => {
@@ -107,7 +105,7 @@ public class ResultTests : LoggingTestClass {
     [Test]
     public void Map_OnErrorResult_PreservesError() {
         var diagnostic = Given("An error diagnostic", () => new DiagnosticInfo(
-            DiagnosticType.Error, "ERR001", "Error", LocationInfo.None));
+            DiagnosticType.InternalError, "Error", null));
         var result = Given("An error result", () => Result.Error<int>(diagnostic));
         
         var mapped = When("Mapping error result", 
@@ -120,7 +118,7 @@ public class ResultTests : LoggingTestClass {
     [Test]
     public void MapError_OnErrorResult_ChangesType() {
         var diagnostic = Given("An error diagnostic", () => new DiagnosticInfo(
-            DiagnosticType.Error, "ERR001", "Error", LocationInfo.None));
+            DiagnosticType.InternalError, "Error", null));
         var result = Given("An error result of int", () => Result.Error<int>(diagnostic));
         
         var mapped = When("Mapping to string type", () => result.MapError<string>());
@@ -159,7 +157,7 @@ public class ResultTests : LoggingTestClass {
     [Test]
     public void OrNull_OnErrorResult_ReturnsNull() {
         var result = Given("An error result", () => Result.Error<string>(
-            new DiagnosticInfo(DiagnosticType.Error, "ERR001", "Error", LocationInfo.None)));
+            new DiagnosticInfo(DiagnosticType.InternalError, "Error", null)));
         var recorder = Given("A diagnostics recorder", () => new TestDiagnosticsRecorder());
         
         var value = When("Getting value or null", () => result.OrNull(recorder));
@@ -170,7 +168,7 @@ public class ResultTests : LoggingTestClass {
     [Test]
     public void OrElse_OnErrorResult_ReturnsDefault() {
         var result = Given("An error result", () => Result.Error<int>(
-            new DiagnosticInfo(DiagnosticType.Error, "ERR001", "Error", LocationInfo.None)));
+            new DiagnosticInfo(DiagnosticType.InternalError, "Error", null)));
         var recorder = Given("A diagnostics recorder", () => new TestDiagnosticsRecorder());
         
         var value = When("Getting value or else", () => result.OrElse(recorder, () => 99));
@@ -191,7 +189,7 @@ public class ResultTests : LoggingTestClass {
     [Test]
     public void TryGetValue_OnErrorResult_ReturnsFalse() {
         var result = Given("An error result", () => Result.Error<int>(
-            new DiagnosticInfo(DiagnosticType.Error, "ERR001", "Error", LocationInfo.None)));
+            new DiagnosticInfo(DiagnosticType.InternalError, "Error", null)));
         var recorder = Given("A diagnostics recorder", () => new TestDiagnosticsRecorder());
         
         var success = When("Trying to get value", () => result.TryGetValue(recorder, out var value));
