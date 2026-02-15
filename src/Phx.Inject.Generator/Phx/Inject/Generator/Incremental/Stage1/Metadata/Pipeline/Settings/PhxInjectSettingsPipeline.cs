@@ -8,13 +8,14 @@
 
 #region
 
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common.Util;
 using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Settings;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
+using Phx.Inject.Generator.Incremental.Util;
 
 #endregion
 
@@ -25,14 +26,16 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Settings;
 /// </summary>
 internal sealed class PhxInjectSettingsPipeline(
     ICodeElementValidator elementValidator,
-    IAttributeTransformer<PhxInjectAttributeMetadata> phxInjectAttributeTransformer
+    IAttributeTransformer<PhxInjectAttributeMetadata> phxInjectAttributeTransformer,
+    ITransformer<ImmutableArray<IResult<PhxInjectAttributeMetadata>>, PhxInjectSettingsMetadata> settingsTransformer
 ) : ISyntaxValuePipeline<PhxInjectSettingsMetadata> {
     /// <summary>
     /// Gets the singleton instance.
     /// </summary>
     public static readonly PhxInjectSettingsPipeline Instance = new(
         NoopCodeElementValidator.Instance,
-        PhxInjectAttributeTransformer.Instance);
+        PhxInjectAttributeTransformer.Instance,
+        PhxInjectSettingsTransformer.Instance);
 
     /// <inheritdoc />
     public IncrementalValueProvider<IResult<PhxInjectSettingsMetadata>> Select(
@@ -42,26 +45,7 @@ internal sealed class PhxInjectSettingsPipeline(
             PhxInjectAttributeMetadata.AttributeClassName,
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => phxInjectAttributeTransformer.Transform(context.TargetSymbol))
-            .Select((attributeMetadata, _) => DiagnosticsRecorder.Capture(diagnostics => {
-                    return new PhxInjectSettingsMetadata(attributeMetadata.OrThrow(diagnostics));
-            }))
             .Collect()
-            .Select((settings, _) => DiagnosticsRecorder.Capture<PhxInjectSettingsMetadata>(diagnostics => {
-                return settings.Length switch {
-                    0 => new PhxInjectSettingsMetadata(null),
-                    1 => settings[0].OrThrow(diagnostics),
-                    _ => settings.Also(s => {
-                        foreach (var result in s) {
-                            if (result.TryGetValue(diagnostics, out var setting)) {
-                                diagnostics.Add(new DiagnosticInfo(
-                                    DiagnosticType.UnexpectedError,
-                                    "Only one PhxInject settings attribute can be defined per assembly.",
-                                    setting.Location.Value)
-                                );
-                            }
-                        }
-                    })[0].GetValue(diagnostics)
-                };
-            }));
+            .Select((attributes, _) => settingsTransformer.Transform(attributes));
     }
 }
