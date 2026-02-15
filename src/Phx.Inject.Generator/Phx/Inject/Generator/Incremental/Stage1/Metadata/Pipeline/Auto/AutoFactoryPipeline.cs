@@ -9,14 +9,10 @@
 #region
 
 using Microsoft.CodeAnalysis;
-using Phx.Inject.Common.Util;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Auto;
-using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
-using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
-using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Types;
-using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 using Phx.Inject.Generator.Incremental.Util;
 
 #endregion
@@ -24,17 +20,14 @@ using Phx.Inject.Generator.Incremental.Util;
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Auto;
 
 /// <summary>
-/// Pipeline for processing AutoFactory attributes into metadata.
+///     Pipeline for processing AutoFactory attributes into metadata.
 /// </summary>
 internal sealed class AutoFactoryPipeline(
     ICodeElementValidator elementValidator,
-    ICodeElementValidator constructorValidator,
-    IAttributeTransformer<AutoFactoryAttributeMetadata> autoFactoryAttributeTransformer,
-    ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer,
-    ITransformer<IPropertySymbol, AutoFactoryRequiredPropertyMetadata> autoFactoryRequiredPropertyTransformer
+    ITransformer<ITypeSymbol, AutoFactoryMetadata> autoFactoryTransformer
 ) : ISyntaxValuesPipeline<AutoFactoryMetadata> {
     /// <summary>
-    /// Gets the singleton instance.
+    ///     Gets the singleton instance.
     /// </summary>
     public static readonly AutoFactoryPipeline Instance = new(
         new ClassElementValidator(
@@ -42,14 +35,8 @@ internal sealed class AutoFactoryPipeline(
             isStatic: false,
             isAbstract: false
         ),
-        new MethodElementValidator(
-            CodeElementAccessibility.PublicOrInternal,
-            MethodKindFilter.Constructor
-        ),
-        AutoFactoryAttributeTransformer.Instance,
-        QualifierTransformer.Instance,
-        AutoFactoryRequiredPropertyTransformer.Instance);
-    
+        AutoFactoryTransformer.Instance);
+
     /// <inheritdoc />
     public IncrementalValuesProvider<IResult<AutoFactoryMetadata>> Select(
         SyntaxValueProvider syntaxProvider
@@ -58,45 +45,9 @@ internal sealed class AutoFactoryPipeline(
             AutoFactoryAttributeMetadata.AttributeClassName,
             (syntaxNode, _) => elementValidator.IsValidSyntax(syntaxNode),
             (context, _) => DiagnosticsRecorder.Capture(diagnostics => {
-                var targetSymbol = (ITypeSymbol)context.TargetSymbol;
-                var autoFactoryAttributeMetadata = autoFactoryAttributeTransformer
-                    .Transform(targetSymbol)
+                return autoFactoryTransformer
+                    .Transform((ITypeSymbol)context.TargetSymbol)
                     .OrThrow(diagnostics);
-
-                var autoFactoryType = targetSymbol.ToQualifiedTypeModel(NoQualifierMetadata.Instance);
-                
-                // Extract constructor parameters
-                var constructors = targetSymbol.GetMembers()
-                    .OfType<IMethodSymbol>()
-                    .Where(constructorValidator.IsValidSymbol)
-                    .ToList();
-
-                var parameters = EquatableList<QualifiedTypeMetadata>.Empty;
-                if (constructors.Count == 1) {
-                    var constructor = constructors[0];
-                    parameters = constructor.Parameters
-                        .Select(param => {
-                            var paramQualifier = qualifierTransformer.Transform(param).OrThrow(diagnostics);
-                            return param.Type.ToQualifiedTypeModel(paramQualifier);
-                        })
-                        .ToEquatableList();
-                }
-                
-                // Extract required properties
-                var requiredProperties = targetSymbol.GetMembers()
-                    .OfType<IPropertySymbol>()
-                    .Where(autoFactoryRequiredPropertyTransformer.CanTransform)
-                    .Select(autoFactoryRequiredPropertyTransformer.Transform)
-                    .SelectOrThrow(diagnostics)
-                    .ToEquatableList();
-
-                return new AutoFactoryMetadata(
-                    autoFactoryType,
-                    parameters,
-                    requiredProperties,
-                    autoFactoryAttributeMetadata,
-                    targetSymbol.GetLocationOrDefault().GeneratorIgnored()
-                );
             }));
     }
 }
