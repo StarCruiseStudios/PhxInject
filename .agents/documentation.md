@@ -1,272 +1,314 @@
-# Code Documentation Standards for PhxInject
+# C# Documentation Standards for PhxInject
 
-This document defines standards for XML documentation comments across all PhxInject projects. Follow these guidelines to ensure consistent, professional-quality documentation suitable for staff-engineer review.
+This guide establishes standards for XML documentation comments in the PhxInject projects. All public API and critical internal functionality must be documented following these guidelines.
 
-## Overview
+## Core Principles
 
-Documentation should be written as if you are a staff engineer documenting code for other senior engineers in a mature production codebase. Focus on explaining intent and design decisions, not restating what the code literally does.
+### When to Document
 
-## When to Document
+**Always document:**
+- All public types, members, and methods (part of external API contract)
 
-### Public Surface (Always)
+**Document internal members when:**
+- They implement critical functionality in the five-stage pipeline
+- They have non-obvious behavior or important invariants
+- They have architectural significance within system design
+- They have important threading, performance, or side-effect implications
+- They are called from multiple places where understanding their contract matters
 
-Document all public types, members, and free methods. These are part of the contract with external code.
-
-### Internal Surface (When Important)
-
-For internal types and members (`internal`, `private`), document those that:
-- Implement critical functionality in the pipeline
-- Have non-obvious behavior or important invariants
-- Have architectural significance within system design
-- Have important threading, performance, or side-effect implications
-- Are called from multiple places and understanding their contract matters
-
-### Skip Documentation When
-
+**Skip documentation when:**
 - Code is trivially obvious (self-documenting)
 - Member is immediately deprecated
 - It's a simple getter/setter with no special semantics
+- Comments would merely restate what the declaration already conveys
 
-## What to Include
+### What to Avoid
 
-Every doc comment should address relevant points from this list:
+- **Low-value comments**: Comments that describe what code literally does without adding insight
+- **Redundant comments**: Remove if information is trivially derived from the declaration
+- **Implementation details**: Don't document "how" unless it affects usage
+- **HTML formatting tags**: Use only C# XML doc comment tags (`<c>`, `<see>`, `<paramref>`, etc.)
+    - **Never use** `<para>`, `<list type="bullet">`, or other HTML-style formatting
+    - **Use markdown instead**: bullet points with `-`, section headers with `##`, blank lines for paragraphs
 
-### For Types (Classes, Interfaces, Records, Enums)
+## XML Documentation Tags
 
-- **Why this type exists**: The problem it solves or role it plays
-- **Architectural role**: Position in the pipeline or system design
+### For All Members
+
+| Tag | Purpose | Example |
+|-----|---------|---------|
+| `<summary>` | Brief, one-sentence description using present-tense, third-person verb | `Gets the current state of the injector.` |
+| `<remarks>` | Additional information, implementation details, usage notes, architectural context | Detailed explanation in multiple paragraphs |
+| `<c>` | Inline code snippets (keywords, types, identifiers) | `<c>null</c>`, `<c>true</c>`, `<c>[Factory]</c>` |
+| `<see cref="..." />` | Inline reference to types/members (in sentences) | `See <see cref="InjectorBuilder"/> for configuration.` |
+| `<seealso cref="..." />` | Standalone "See Also" section references | Listed at end of documentation |
+| `<see langword="..." />` | Language-specific keywords | `<see langword="true" />`, `<see langword="null" />` |
+| `<inheritdoc/>` | Inherit documentation from base classes/interfaces | Use when member semantics are identical |
+
+### For Methods
+
+| Tag | Purpose | Format |
+|-----|---------|--------|
+| `<param>` | Parameter description | Noun phrase starting with article; specific wording by type |
+| `<paramref>` | Reference parameter name in text | `where <paramref name="factory"/> defines...` |
+| `<typeparam>` | Generic type parameter description | Noun phrase describing constraint |
+| `<typeparamref>` | Reference to type parameter | `The type <typeparamref name="T"/>...` |
+| `<returns>` | What method returns | Noun phrase starting with article |
+| `<exception cref="...">` | Exceptions thrown directly by this member | Only document exceptions users will encounter |
+
+**Parameter Wording by Type:**
+
+- **Boolean**: `<see langword="true" /> to [action]; otherwise, <see langword="false" />.`
+- **Flag Enum**: `A bitwise combination of the enumeration values that specifies...`
+- **Non-Flag Enum**: `One of the enumeration values that specifies...`
+- **Out Parameter**: `When this method returns, contains [description]. This parameter is treated as uninitialized.`
+
+**Boolean Returns:**
+
+- `<see langword="true" /> if [condition]; otherwise, <see langword="false" />.`
+
+### For Properties
+
+**`<summary>` format:**
+
+- Read-write property: `Gets or sets [description].`
+- Read-only property: `Gets [description].`
+- Boolean property: `Gets [or sets] a value that indicates whether [condition].`
+
+**`<value>` tag for property values:**
+
+- Description as noun phrase (don't specify data type)
+- For Boolean with default: `<see langword="true" /> if [condition]; otherwise, <see langword="false" />. The default is [value].`
+- Always include default value if applicable: `The default is <see langword="false" />.`
+
+### For Constructors
+
+**`<summary>` format:**
+
+- `Initializes a new instance of the [class/struct name].`
+
+### For Types (Classes, Interfaces, Records)
+
+**`<summary>`:** Brief description of the type's purpose
+
+**`<remarks>`:** Include all relevant context:
+
+- **Why the type exists**: Problem it solves or role it plays
+- **Architectural role**: Position in the pipeline (Metadata, Core, Linking, Code Generation, Rendering)
 - **Key invariants**: Important constraints on state or behavior
-- **Usage context**: When this type should and should NOT be used
-- **Threading model**: If applicable, describe thread safety guarantees
-- **Performance characteristics**: If important or non-obvious
+- **Usage context**: When to use/not use this type
+- **Threading model**: Thread-safety guarantees if applicable
+- **Performance characteristics**: Important performance implications if non-obvious
 
-### For Methods and Properties
-
-- **Intent**: Why this member exists and what problem it solves
-- **Parameter semantics**: What each parameter means and constraints on valid values
-- **Return value meaning**: What the return value represents
-- **Behavioral guarantees**: What the method promises (e.g., "never returns null", "idempotent")
-- **Side effects**: Non-obvious side effects or state changes
-- **Exceptions**: Important exceptions and when they occur
-- **Important invariants**: Conditions that must hold before/after execution
-- **Architectural context**: Relationship to pipeline stages or broader system design
+**Example structure for remarks:**
+```xml
+/// <remarks>
+/// This analyzer is the first stage of the five-stage pipeline. It examines 
+/// source code for injection attributes and extracts metadata used by 
+/// subsequent stages (Core, Linking, Code Generation, and Rendering).
+///
+/// ## Key Invariants
+///
+/// - Never throws exceptions from <see cref="Execute"/> method
+/// - All diagnostics reported via <see cref="ReportDiagnostic"/>
+/// - Thread-safe across multiple compilation units
+///
+/// ## Usage
+///
+/// This analyzer is automatically invoked by the source generator. 
+/// For testing, use <see cref="AnalyzerTestHarness"/>.
+/// </remarks>
+```
 
 ### For Enum Values
 
-- Document each enum value with a `<summary>` on the value itself
-- Do NOT redundantly document the enum type itself if it's just explaining what the values mean
-- Explain the semantic meaning and implications of each value
-
-### For Constants and Fields
-
-- Only document if the purpose or valid values are non-obvious
-- Remove comments that merely restate the constant name in different words
-
-## What to Avoid
-
-- **Low-value comments**: Comments that describe what the code literally does without adding insight
-- **Redundant comments**: Remove comments if the information is trivially derived from the declaration
-- **Implementation details**: Don't document the "how" unless it affects usage
-- **HTML formatting tags**: Use only C# XML doc comment tags (`<c>`, `<see>`, `<paramref>`, etc.)
-
-### Example of Redundant Documentation to Remove
-
-```csharp
-/// <summary> The primitive type name for string. </summary>
-public const string StringPrimitiveTypeName = "string";
-```
-
-This comment is redundant and should be removed.
-
-### Example of Redundant Enum Documentation to Avoid
-
-```csharp
-/// <summary>
-///     Specifies how a specification is instantiated.
-/// </summary>
-/// <remarks>
-///     <para>
-///     Controls the lifetime and ownership of the specification instance:
-///     - Static: Specification has only static members, no instance needed
-///     - Instantiated: Injector creates new specification instance per request
-///     - Dependency: Specification instance provided externally (e.g., from parent injector)
-///     </para>
-///     <para>
-///     This determines whether the generated container wraps a specification field/property
-///     or simply forwards calls to static methods.
-///     </para>
-/// </remarks>
-internal enum SpecInstantiationMode {
-    /// <summary> The specification is static. </summary>
-    Static = 0,
-    /// <summary> The specification is instantiated by the injector. </summary>
-    Instantiated = 1,
-    /// <summary> The specification is provided by a dependency injector. </summary>
-    Dependency = 2
-}
-```
-
-Instead, document only the enum values with meaningful descriptions, not the enum type itself:
+**Document each enum value with `<summary>`:**
 
 ```csharp
 internal enum SpecInstantiationMode {
     /// <summary>
-    /// Specification has only static members; no instance creation needed.
+    /// The specification has only static members; no instance creation needed.
     /// </summary>
     Static = 0,
 
     /// <summary>
-    /// Injector creates a new specification instance per request.
+    /// The injector creates a new specification instance per request.
     /// </summary>
     Instantiated = 1,
-
-    /// <summary>
-    /// Specification instance is provided externally by a parent injector.
-    /// </summary>
-    Dependency = 2
 }
 ```
 
-## Style and Formatting
+**Do NOT document the enum type itself** if you're only explaining what the values mean. The value-level summaries are sufficient.
 
-### XML Tag Usage
+## Markdown Formatting in Remarks
 
-- Use `<summary>` for brief one-line descriptions
-- Use `<remarks>` for detailed explanation when needed
-- Use `<param>` and `<returns>` for parameters and return values
-- Use `<exception>` for important exceptions
-- Use `<c>` for inline code references: `<c>null</c>`, `<c>true</c>`
-- Use `<paramref name="..." />` to reference parameters in text
-- Use `<see cref="..." />` or `<seealso cref="..." />` for type references
-- Use `<inheritdoc />` when a member's documentation is inherited from an interface or base class
+Use markdown formatting within `<remarks>` tags for readability:
 
-### Architectural Context
+- **Section headers**: `## Section Name` (reduces visual clutter compared to bold text)
+- **Bullet lists**: Use `-` for unordered lists
+- **Bold text**: `**term**` for emphasis within sentences
+- **Code inline**: `<c>identifier</c>` for code references
+- **Paragraphs**: Separate with blank lines (no `<para>` tags)
 
-When documenting components, reference their role in the system:
+**Example with markdown formatting:**
 
-**For Generator Components**: Reference the appropriate pipeline stage (Metadata, Core, Linking, Code Generation, Rendering). See [Architecture Guide](architecture.md) and [Generator Pipeline](../src/Phx.Inject.Generator/.agents/generator-pipeline.md) for pipeline details.
-
-**For Public API Components (Phx.Inject)**: Reference where in the user experience this type fits. See [Documentation/index.md](../Documentation/index.md) for user-facing examples.
-
-### Code References
-
-- Always use `cref` attribute when referencing types, methods, properties, or other code elements
-- Example: `<see cref="IInjector" />` or `<see cref="Pipeline.Execute(ISpecification)" />`
-
-### Formatting Guidelines
-
-- Keep summaries concise (one or two sentences when possible)
-- Use `<remarks>` for extended documentation
-- Use `<para>` tags for paragraph separation in remarks
-- Use `<list>` or `<listheader>` for structured information when appropriate
-- Use a dash/bullet style for lists within remarks: `- Item description`
-
-## Pipeline Context
-
-When documenting Generator components, reference the appropriate stage in the pipeline.
-
-Refer to [Architecture Guide](architecture.md) and [Generator Pipeline](../src/Phx.Inject.Generator/.agents/generator-pipeline.md) for detailed pipeline descriptions.
-
-## Validation Checklist
-
-Before completing documentation:
-
-- [ ] All public and internal types have doc comments
-- [ ] All public and internal members of documented types have doc comments
-- [ ] No redundant comments remain
-- [ ] All code references use `<see cref="..." />`, `<typeparamref name="..." />`, or `<paramref name="..." />`, `<c>...</c>`, etc as appropriate
-- [ ] No HTML tags used for formatting (only XML doc tags)
-- [ ] Enum values are documented, not the enum type (when applicable)
-- [ ] Architectural role and usage context are clear
-- [ ] Non-obvious parameter semantics are explained
-- [ ] Important behavioral guarantees are stated
-- [ ] Comments focus on intent, not implementation details
-
-## Examples of Good Documentation
-
-### Type Documentation
-
-```csharp
-/// <summary>
-/// Extracts metadata from specification types for code generation.
-/// </summary>
+```xml
 /// <remarks>
-/// <para>
-/// This analyzer traverses specification types and builds metadata models
-/// suitable for the code generation pipeline. It handles both attribute-based
-/// and convention-based specifications.
-/// </para>
-/// <para>
-/// Operates as part of Stage 1 (metadata extraction). Results are cached
-/// and reused across multiple generator invocations.
-/// </para>
+/// Extracts optional <c>FabricationMode</c> for parameters receiving auto-generated factory
+/// delegates. Generator analyzes target type constructor/dependencies and creates factory
+/// on-demand without explicit <c>[Factory]</c> method.
+///
+/// ## FabricationMode Options
+///
+/// - **Transient**: Each factory call creates a new instance. No storage needed.
+/// - **Scoped**: First factory call creates instance, subsequent calls return cached instance.
+/// - **Container/ContainerScoped**: Container-hierarchy scoping for child injectors.
+///
+/// ## Validation Constraints
+///
+/// - Parameter type is <c>Func&lt;T&gt;</c> or compatible delegate type
+/// - Target type T has accessible constructor or static factory method
+/// - All transitive dependencies for T can be resolved from injector
 /// </remarks>
-public class SpecificationAnalyzer { ... }
 ```
 
-### Method Documentation
+## Common Documentation Patterns
+
+### Method with Boolean Parameter
 
 ```csharp
 /// <summary>
-/// Registers a dependency with the container using the specified factory.
+/// Configures whether the injector validates specifications at build time.
 /// </summary>
-/// <param name="key">The unique identifier for this dependency. Must not be null.</param>
-/// <param name="factory">A factory function that creates instances. Must not be null.</param>
-/// <exception cref="ArgumentNullException">Thrown if <paramref name="key" /> or <paramref name="factory" /> is null.</exception>
-/// <exception cref="InvalidOperationException">Thrown if <paramref name="key" /> is already registered.</exception>
-/// <remarks>
-/// Factory functions are called once per resolution request. For singleton behavior, use
-/// <see cref="RegisterSingleton(string, Func{IResolver, object})" /> instead.
-/// </remarks>
-public void Register(string key, Func<IResolver, object> factory) { ... }
+/// <param name="validate">
+/// <see langword="true" /> to validate specifications during build; 
+/// otherwise, <see langword="false" /> to skip validation.
+/// </param>
+public void ConfigureValidation(bool validate) { }
 ```
 
-### Enum Documentation
+### Property with Default Value
 
 ```csharp
 /// <summary>
-/// Determines the scope and lifetime of a dependency instance within the container.
+/// Gets or sets a value that indicates whether this specification is scoped.
 /// </summary>
-public enum DependencyScope {
+/// <value>
+/// <see langword="true" /> if the specification is scoped to a single request; 
+/// otherwise, <see langword="false" /> if it's a singleton.
+/// The default is <see langword="false" />.
+/// </value>
+public bool IsScoped { get; set; }
+```
+
+### Enum Type (Values Documented Only)
+
+```csharp
+internal enum FabricationMode {
     /// <summary>
-    /// A new instance is created each time the dependency is resolved.
+    /// Each factory call creates a new instance.
     /// </summary>
     Transient = 0,
 
     /// <summary>
-    /// A single instance is created and reused for all resolutions within the same container.
+    /// First factory call creates instance; subsequent calls return cached instance within scope.
     /// </summary>
-    Singleton = 1,
+    Scoped = 1,
 
     /// <summary>
-    /// A new instance is created per resolved object graph (appropriate for web request handling).
+    /// Container-hierarchy scoping for child injectors.
     /// </summary>
-    Scoped = 2
+    ContainerScoped = 2,
 }
 ```
 
-## Documentation Depth by Project
+### Type with Architectural Context
+
+```csharp
+/// <summary>
+/// Analyzes C# source code during the metadata stage of code generation.
+/// </summary>
+/// <remarks>
+/// This analyzer is the first stage of the five-stage pipeline. It examines 
+/// source code for injection attributes and extracts metadata used by 
+/// subsequent stages (Core, Linking, Code Generation, and Rendering).
+///
+/// ## Key Invariants
+///
+/// - Never throws exceptions from <see cref="Execute"/> method
+/// - All diagnostics reported via <see cref="ReportDiagnostic"/>
+/// - Thread-safe across multiple compilation units
+///
+/// ## Usage
+///
+/// This analyzer is automatically invoked by the source generator. 
+/// For testing, use <see cref="AnalyzerTestHarness"/>.
+/// </remarks>
+internal class MetadataAnalyzer { }
+```
+
+## Pipeline Context for Phx.Inject.Generator
+
+When documenting components in **Phx.Inject.Generator**, reference the five-stage pipeline:
+
+1. **Metadata Stage** - Examine and extract metadata from source code
+2. **Core Stage** - Build core models from extracted metadata
+3. **Linking Stage** - Link models together and resolve references
+4. **Code Generation Stage** - Generate C# code from linked models
+5. **Rendering Stage** - Output generated code to files
+
+Include the relevant pipeline stage in the type's `<remarks>` section when the component is part of a specific stage.
+
+## Project-Specific Guidelines
 
 ### Phx.Inject (Core Library)
 
 Public API must be thoroughly documented:
-- Every public type (attribute, interface, exception)
-- Every public method/property
+- Every public type, method, and property
 - Design intent and user guidance
-- Realistic code examples in remarks
+- Realistic examples in remarks when non-obvious
+- All exceptions thrown directly
+
+**Skip documentation for:**
+- Simple auto-generated properties
+- Trivial getter/setter patterns
 
 ### Phx.Inject.Generator (Source Generator)
 
 Document critical pipeline components:
-- Public and internal analyzer/generator classes
-- Diagnostic descriptor types
-- Important methods that determine behavior
+- All public API
+- Internal analyzer/generator classes that users need to understand
 - Public extension methods
+- Diagnostic descriptor types
+- Methods that significantly affect behavior
 
-Skip documentation for:
-- Private helpers
-- Trivial properties
-- One-off utility methods
+**Skip documentation for:**
+- Private helper methods
+- Trivial internal utilities
+- One-off utility methods with obvious purpose
+
+## Validation Checklist
+
+Before considering documentation complete:
+
+- [ ] All public types have documentation
+- [ ] All public methods/properties have documentation
+- [ ] All critical internal members have documentation
+- [ ] No redundant comments (comments that merely restate code)
+- [ ] No low-value comments (comments without insight)
+- [ ] All code references use proper tags:
+    - `<see cref="..."/>` for types/members
+    - `<paramref name="..."/>` for parameters
+    - `<c>...</c>` for inline code and keywords
+    - `<see langword="..."/>` for language keywords
+- [ ] No HTML formatting tags (`<para>`, `<list>`, `<item>`, `<term>`, `<description>`)
+- [ ] Use markdown formatting instead (headers with `##`, lists with `-`, blank lines)
+- [ ] Enum values documented; enum type not documented (if only explaining values)
+- [ ] Architectural role and usage context are clear
+- [ ] Parameter semantics explained (especially non-obvious ones)
+- [ ] Important behavioral guarantees stated (e.g., "never returns null", "idempotent")
+- [ ] Side effects documented if non-obvious
+- [ ] Comments focus on intent ("why") not implementation ("how")
 
 ## Decision Tree: Should I Document This?
 
@@ -274,22 +316,55 @@ Skip documentation for:
 Is this public API?
 ├─ Yes → ALWAYS document, thoroughly
 └─ No
-├─ Is it critical pipeline functionality?
-│  ├─ Yes → Document the architectural role
-│  └─ No → Continue
-├─ Would another engineer wonder "why"? (not "what")
-│  ├─ Yes → Document
-│  └─ No → Skip
+    ├─ Is it critical pipeline functionality?
+    │  ├─ Yes → Document the architectural role
+    │  └─ No → Continue
+    ├─ Would another engineer wonder "why"? (not "what")
+    │  ├─ Yes → Document the reason
+    │  └─ No → Skip
 ```
 
-## Quick Rules
+## Common Mistakes to Avoid
 
-1. **Public = Document**: No exceptions. Future developers and external code depend on understanding your API.
-2. **Staff-Engineer Quality**: Imagine this is shipping in a production library. Would you be proud of the docs?
-3. **Focus on Why**: Explain design decisions, constraints, and context. The "what" is obvious from the code.
-4. **Consistency Matters**: Read similar components in the codebase and match their documentation style.
-5. **When Unsure**: Document it. Better over-documented than cryptic.
+| Mistake | ❌ Bad | ✅ Good |
+|---------|--------|--------|
+| Redundant constant docs | `/// <summary> The string type name. </summary> public const string StringType = "string";` | Remove the comment entirely |
+| Enum type + values | Document both enum type and values (redundant) | Document values only with `<summary>` tags |
+| HTML formatting | `<para>` tags, `<list type="bullet">`, `<item>`, `<description>` | Markdown: `##`, `-`, blank lines |
+| Missing code references | `Parameter x is of type Foo.` | Parameter <paramref name="x"/> is of type <see cref="Foo"/>. |
+| Implementation focus | `/// <summary> Sets the internal cache field. </summary>` | `/// <summary> Invalidates cached data. </summary>` (focuses on effect) |
+| Missing default values | `/// <value> Sets the timeout period. </value>` | `/// <value> Sets the timeout period. The default is 5000 milliseconds. </value>` |
 
-## Questions?
+## InheritDoc Usage
 
-When in doubt about whether to document something or how, ask: _Would a senior engineer reading this code wonder why this decision was made, or what constraints apply
+Use `<inheritdoc/>` when:
+- Implementing an interface method with identical semantics
+- Overriding a virtual method with no behavior change
+- Implementing explicit interface members where meaning doesn't change
+
+Do NOT use `<inheritdoc/>` when:
+- Behavior is significantly different from base/interface
+- Adding important context specific to this implementation
+- The inherited documentation is incomplete for your context
+
+Example:
+```csharp
+public interface IFactory {
+    /// <summary>
+    /// Creates a new instance of the target type.
+    /// </summary>
+    /// <returns>A new instance.</returns>
+    object Create();
+}
+
+public class ConcreteFactory : IFactory {
+    /// <inheritdoc />
+    public object Create() => new TargetType();
+}
+```
+
+## Related Files
+
+- [architecture.instructions.md](architecture.instructions.md) - System design and pipeline documentation
+- [coding-standards.instructions.md](coding-standards.instructions.md) - C# code formatting and naming
+- [code-generation.instructions.md](code-generation.instructions.md) - Source generator implementation patterns
