@@ -9,19 +9,11 @@
 namespace Phx.Inject;
 
 /// <summary>
-///     Provides utility methods for combining collections in generated injector code.
+///     Provides utility methods for combining collections.
 /// </summary>
 /// <remarks>
-/// These methods are used by generated injector implementations to combine multiple
-/// collection instances from different specifications or builders. They ensure that
-/// combined sets and maps maintain uniqueness constraints and throw exceptions if
-/// duplicate values or keys are detected.
-///
-/// ## Usage Context
-///
-/// These methods are typically invoked by generated code when an injector method
-/// returns a collection type and multiple specifications provide values for that
-/// collection. The generator emits calls to these methods to safely combine the results.
+/// These methods combine multiple collection instances while maintaining uniqueness constraints
+/// for sets and maps. Exceptions are thrown if duplicate values or keys are detected.
 /// </remarks>
 public static class InjectionUtil {
     /// <summary>

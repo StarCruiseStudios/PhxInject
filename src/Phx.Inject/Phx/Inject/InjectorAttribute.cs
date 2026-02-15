@@ -8,7 +8,7 @@
 
 namespace Phx.Inject;
 
-/// <summary> Annotates an injector interface as the entry point to a DAG. </summary>
+/// <summary> Annotates an injector interface as the entry point to a dependency graph. </summary>
 /// <remarks>
 /// This attribute marks an interface that will have a concrete injector implementation
 /// generated at compile time. The injector provides access to all factories and builders
@@ -24,9 +24,6 @@ namespace Phx.Inject;
 ///     MyService GetService();
 /// }
 /// </code>
-///
-/// The generator will create a concrete class (by default named "GeneratedMyInjector")
-/// that implements this interface.
 /// </remarks>
 /// <seealso cref="SpecificationAttribute"/>
 /// <seealso cref="DependencyAttribute"/>
@@ -34,9 +31,9 @@ namespace Phx.Inject;
 public class InjectorAttribute : Attribute {
     /// <summary> The name to use for the generated injector class. </summary>
     /// <remarks>
-    ///     This value may be null if no custom class name is specified. If no custom name is specified a
-    ///     default value of "GeneratedXyz" will be used, where Xyz is the annotated interface's name with
-    ///     the leading "I" removed, if there is one.
+    ///     This value may be <see langword="null" /> if no custom class name is specified. If no 
+    ///     custom name is specified, a default value of "GeneratedXyz" will be used, where Xyz is 
+    ///     the annotated interface's name with the leading "I" removed, if present.
     /// </remarks>
     public string? GeneratedClassName { get; set; } = null;
 

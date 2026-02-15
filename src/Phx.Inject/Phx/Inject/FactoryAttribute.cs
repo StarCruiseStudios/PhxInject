@@ -18,18 +18,12 @@ namespace Phx.Inject;
 ///
 /// ## FabricationMode Behavior
 ///
-/// The <see cref="FabricationMode"/> property controls how the generator handles multiple
-/// invocations of the same factory:
+/// The <see cref="FabricationMode"/> property controls how instances are created across
+/// multiple invocations of the same factory:
 ///
-/// - **Recurrent**: Each invocation creates a new instance (no caching)
-/// - **Scoped**: First invocation creates and caches instance for the request scope
-/// - **Singleton**: First invocation creates and caches instance for the injector lifetime
-///
-/// ## Performance Implications
-///
-/// - Recurrent factories have minimal overhead but create more object allocations
-/// - Scoped and Singleton factories add caching logic but reduce allocations for repeated requests
-/// - Choose based on the dependency's intended lifecycle and mutability
+/// - **Recurrent**: Each invocation creates a new instance
+/// - **Scoped**: Returns the same instance within a request scope
+/// - **Singleton**: Returns the same instance for the injector's lifetime
 /// </remarks>
 /// <seealso cref="AutoFactoryAttribute"/>
 /// <seealso cref="FabricationMode"/>

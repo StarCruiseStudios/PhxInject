@@ -9,12 +9,12 @@
 namespace Phx.Inject;
 
 /// <summary>
-///     Configures global code generation settings for the PhxInject source generator.
+///     Configures global settings for the PhxInject source generator.
 /// </summary>
 /// <remarks>
-/// This attribute is applied to a class in the consuming project to configure how the
-/// PhxInject source generator produces code. It controls formatting, file naming, and
-/// nullability settings for all generated injector implementations.
+/// This attribute is applied to a class in the consuming project to configure code generation
+/// settings. It controls formatting, file naming, and nullability settings for all generated
+/// injector implementations in the assembly.
 ///
 /// ## Usage
 ///
@@ -34,7 +34,7 @@ namespace Phx.Inject;
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public class PhxInjectAttribute : Attribute {
     /// <summary>
-    ///     The default number of spaces used for indentation in generated code.
+    ///     The default number of spaces used for indentation.
     /// </summary>
     public const int DefaultTabSize = 4;
 
@@ -44,12 +44,12 @@ public class PhxInjectAttribute : Attribute {
     public const string DefaultGeneratedFileExtension = "generated.cs";
 
     /// <summary>
-    ///     The default setting for nullable reference type annotations in generated code.
+    ///     The default setting for nullable reference type annotations.
     /// </summary>
     public const bool DefaultNullableEnabled = true;
 
     /// <summary>
-    ///     Gets or sets the number of spaces used for indentation in generated code.
+    ///     Gets or sets the number of spaces used for indentation.
     /// </summary>
     /// <value>
     ///     The number of spaces per indentation level. The default is <c>4</c>.
@@ -67,12 +67,11 @@ public class PhxInjectAttribute : Attribute {
 
     /// <summary>
     ///     Gets or sets a value that indicates whether nullable reference type annotations 
-    ///     are included in generated code.
+    ///     are included.
     /// </summary>
     /// <value>
-    ///     <see langword="true" /> if generated code includes nullable annotations 
-    ///     (<c>#nullable enable</c>); otherwise, <see langword="false" />.
-    ///     The default is <see langword="true" />.
+    ///     <see langword="true" /> if nullable annotations are included (<c>#nullable enable</c>); 
+    ///     otherwise, <see langword="false" />. The default is <see langword="true" />.
     /// </value>
     public bool NullableEnabled { get; set; } = DefaultNullableEnabled;
 }
