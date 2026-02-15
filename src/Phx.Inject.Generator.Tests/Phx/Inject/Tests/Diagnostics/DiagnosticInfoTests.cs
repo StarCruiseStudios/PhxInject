@@ -34,8 +34,8 @@ public class DiagnosticInfoTests : LoggingTestClass {
         var diagnosticInfo = When("Creating diagnostic info", 
             () => new DiagnosticInfo(type, message, location));
         
-        Then("Type is set", () => Verify.That(diagnosticInfo.Type.Id.IsEqualTo(type.Id)));
-        Then("Message is set", () => Verify.That(diagnosticInfo.Message.IsEqualTo(message)));
+        Then("Type is set", type.Id, expected => Verify.That(diagnosticInfo.Type.Id.IsEqualTo(expected)));
+        Then("Message is set", message, expected => Verify.That(diagnosticInfo.Message.IsEqualTo(expected)));
         Then("Location is set", () => Verify.That((diagnosticInfo.Location == location).IsTrue()));
     }
     
@@ -47,8 +47,8 @@ public class DiagnosticInfoTests : LoggingTestClass {
         var diagnosticInfo = When("Creating diagnostic info with null location", 
             () => new DiagnosticInfo(type, message, null));
         
-        Then("Type is set", () => Verify.That(diagnosticInfo.Type.Id.IsEqualTo(type.Id)));
-        Then("Message is set", () => Verify.That(diagnosticInfo.Message.IsEqualTo(message)));
+        Then("Type is set", type.Id, expected => Verify.That(diagnosticInfo.Type.Id.IsEqualTo(expected)));
+        Then("Message is set", message, expected => Verify.That(diagnosticInfo.Message.IsEqualTo(expected)));
         Then("Location is null", () => Verify.That(diagnosticInfo.Location.IsNull()));
     }
     
