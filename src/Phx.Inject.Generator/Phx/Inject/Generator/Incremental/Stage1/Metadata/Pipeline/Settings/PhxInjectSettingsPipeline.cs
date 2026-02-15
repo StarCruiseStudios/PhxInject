@@ -16,6 +16,7 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Settings;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 using Phx.Inject.Generator.Incremental.Util;
+using static Phx.Inject.Common.Util.StringBuilderUtil;
 
 #endregion
 
@@ -47,5 +48,28 @@ internal sealed class PhxInjectSettingsPipeline(
             (context, _) => phxInjectAttributeTransformer.Transform(context.TargetSymbol))
             .Collect()
             .Select((attributes, _) => settingsTransformer.Transform(attributes));
+    }
+
+    /// <summary>
+    ///     DEBUG ONLY: Prints PhxInject settings metadata to a diagnostic source file.
+    /// </summary>
+    /// <param name="context">The generator context for registering outputs.</param>
+    /// <param name="segment">The settings pipeline segment.</param>
+    public void Print(
+        IncrementalGeneratorInitializationContext context,
+        IncrementalValueProvider<IResult<PhxInjectSettingsMetadata>> segment
+    ) {
+        context.RegisterSourceOutput(segment,
+            (sourceProductionContext, settings) => {
+                var source = BuildString(b => {
+                    b.AppendLine($"namespace Phx.Inject.Generator.Incremental.Metadata;");
+                    b.AppendLine();
+                    b.AppendLine($"/// <remarks>");
+                    b.AppendLine($"///     Phx.Inject.Generator: Using settings: {settings}");
+                    b.AppendLine($"/// </remarks>");
+                    b.AppendLine($"class GeneratorSettings{{ }}");
+                });
+                sourceProductionContext.AddSource($"Metadata\\GeneratorSettings.cs", source);
+            });
     }
 }

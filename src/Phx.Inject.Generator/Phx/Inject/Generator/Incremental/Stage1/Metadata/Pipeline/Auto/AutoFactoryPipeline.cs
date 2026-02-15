@@ -14,6 +14,7 @@ using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Auto;
 using Phx.Inject.Generator.Incremental.Util;
+using static Phx.Inject.Common.Util.StringBuilderUtil;
 
 #endregion
 
@@ -45,5 +46,35 @@ internal sealed class AutoFactoryPipeline(
                     .Transform((ITypeSymbol)context.TargetSymbol)
                     .OrThrow(diagnostics);
             }));
+    }
+
+    /// <summary>
+    ///     DEBUG ONLY: Prints auto factory metadata to diagnostic source files.
+    /// </summary>
+    /// <param name="context">The generator context for registering outputs.</param>
+    /// <param name="segment">The auto factory pipeline segment.</param>
+    public void Print(
+        IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<IResult<AutoFactoryMetadata>> segment
+    ) {
+        context.RegisterSourceOutput(segment,
+            (sourceProductionContext, autoFactory) => {
+                var diagnostics = new DiagnosticsRecorder();
+                var autoFactoryValue = autoFactory.GetValue(diagnostics);
+                var source = BuildString(b => {
+                    b.AppendLine($"namespace Phx.Inject.Generator.Incremental.Metadata;");
+                    b.AppendLine();
+                    b.AppendLine($"class Generated{autoFactoryValue.AutoFactoryType.TypeMetadata.BaseTypeName} {{");
+                    b.Append("  // Constructor(");
+                    b.Append(string.Join(", ", autoFactoryValue.Parameters));
+                    b.AppendLine(")");
+                    foreach (var requiredProperty in autoFactoryValue.RequiredProperties) {
+                        b.AppendLine($"  // RequiredProperty: {requiredProperty.RequiredPropertyType} {requiredProperty.RequiredPropertyName}");
+                    }
+                    b.AppendLine("}");
+                });
+                sourceProductionContext.AddSource($"Metadata\\Generated{autoFactoryValue.AutoFactoryType.TypeMetadata.NamespacedBaseTypeName}.cs",
+                    source);
+            });
     }
 }

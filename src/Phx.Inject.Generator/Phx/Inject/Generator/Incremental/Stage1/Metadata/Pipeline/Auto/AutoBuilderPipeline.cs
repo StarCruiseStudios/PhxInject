@@ -14,6 +14,7 @@ using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Auto;
 using Phx.Inject.Generator.Incremental.Util;
+using static Phx.Inject.Common.Util.StringBuilderUtil;
 
 #endregion
 
@@ -48,5 +49,32 @@ internal sealed class AutoBuilderPipeline(
                     .Transform((IMethodSymbol)context.TargetSymbol)
                     .OrThrow(diagnostics);
             }));
+    }
+
+    /// <summary>
+    ///     DEBUG ONLY: Prints auto builder metadata to diagnostic source files.
+    /// </summary>
+    /// <param name="context">The generator context for registering outputs.</param>
+    /// <param name="segment">The auto builder pipeline segment.</param>
+    public void Print(
+        IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<IResult<AutoBuilderMetadata>> segment
+    ) {
+        context.RegisterSourceOutput(segment,
+            (sourceProductionContext, autoBuilder) => {
+                var diagnostics = new DiagnosticsRecorder();
+                var autoBuilderValue = autoBuilder.GetValue(diagnostics);
+                var source = BuildString(b => {
+                    b.AppendLine($"namespace Phx.Inject.Generator.Incremental.Metadata;");
+                    b.AppendLine();
+                    b.AppendLine($"class Generated{autoBuilderValue.BuiltType.TypeMetadata.BaseTypeName}{autoBuilderValue.AutoBuilderMethodName} {{");
+                    b.Append($"  // BuilderMethod: {autoBuilderValue.BuiltType} {autoBuilderValue.AutoBuilderMethodName}(");
+                    b.Append(string.Join(", ", autoBuilderValue.Parameters));
+                    b.AppendLine(")");
+                    b.AppendLine("}");
+                });
+                sourceProductionContext.AddSource($"Metadata\\Generated{autoBuilderValue.BuiltType.TypeMetadata.NamespacedBaseTypeName}{autoBuilderValue.AutoBuilderMethodName}.cs",
+                    source);
+            });
     }
 }

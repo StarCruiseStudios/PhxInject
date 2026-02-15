@@ -18,6 +18,7 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 using Phx.Inject.Generator.Incremental.Util;
+using static Phx.Inject.Common.Util.StringBuilderUtil;
 
 #endregion
 
@@ -80,5 +81,37 @@ internal sealed class InjectorDependencyPipeline(
                     targetSymbol.GetLocationOrDefault().GeneratorIgnored()
                 );
             }));
+    }
+
+    /// <summary>
+    ///     DEBUG ONLY: Prints injector dependency interface metadata to diagnostic source files.
+    /// </summary>
+    /// <param name="context">The generator context for registering outputs.</param>
+    /// <param name="segment">The injector dependency pipeline segment.</param>
+    public void Print(
+        IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<IResult<InjectorDependencyInterfaceMetadata>> segment
+    ) {
+        context.RegisterSourceOutput(segment,
+            (sourceProductionContext, injectorDependency) => {
+                var diagnostics = new DiagnosticsRecorder();
+                var injectorDepValue = injectorDependency.GetValue(diagnostics);
+                var source = BuildString(b => {
+                    b.AppendLine($"namespace Phx.Inject.Generator.Incremental.Metadata;");
+                    b.AppendLine();
+                    b.AppendLine($"class Generated{injectorDepValue.InjectorDependencyInterfaceType.BaseTypeName} {{");
+                    foreach (var factoryMethod in injectorDepValue.FactoryMethods) {
+                        b.Append($"  // FactoryMethod: {factoryMethod.FactoryReturnType} {factoryMethod.FactoryMethodName}(");
+                        b.Append(string.Join(", ", factoryMethod.Parameters));
+                        b.AppendLine(")");
+                    }
+                    foreach (var factoryProperty in injectorDepValue.FactoryProperties) {
+                        b.AppendLine($"  // FactoryProperty: {factoryProperty.FactoryReturnType} {factoryProperty.FactoryPropertyName}");
+                    }
+                    b.AppendLine("}");
+                });
+                sourceProductionContext.AddSource($"Metadata\\Generated{injectorDepValue.InjectorDependencyInterfaceType.NamespacedBaseTypeName}.cs",
+                    source);
+            });
     }
 }

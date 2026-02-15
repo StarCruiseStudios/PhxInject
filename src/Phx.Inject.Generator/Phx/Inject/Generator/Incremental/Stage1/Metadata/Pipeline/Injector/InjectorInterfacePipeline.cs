@@ -14,6 +14,7 @@ using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 using Phx.Inject.Generator.Incremental.Util;
+using static Phx.Inject.Common.Util.StringBuilderUtil;
 
 #endregion
 
@@ -45,5 +46,47 @@ internal sealed class InjectorInterfacePipeline(
                     .Transform((ITypeSymbol)context.TargetSymbol)
                     .OrThrow(diagnostics);
             }));
+    }
+
+    /// <summary>
+    ///     DEBUG ONLY: Prints injector interface metadata to diagnostic source files.
+    /// </summary>
+    /// <param name="context">The generator context for registering outputs.</param>
+    /// <param name="segment">The injector interface pipeline segment.</param>
+    public void Print(
+        IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<IResult<InjectorInterfaceMetadata>> segment
+    ) {
+        context.RegisterSourceOutput(segment,
+            (sourceProductionContext, injector) => {
+                var diagnostics = new DiagnosticsRecorder();
+                var injectorValue = injector.GetValue(diagnostics);
+                var source = BuildString(b => {
+                    b.AppendLine($"namespace Phx.Inject.Generator.Incremental.Metadata;");
+                    b.AppendLine();
+                    b.AppendLine($"class Generated{injectorValue.InjectorInterfaceType.BaseTypeName} {{");
+                    foreach (var provider in injectorValue.Providers) {
+                        b.AppendLine(
+                            $"  // Provider: {provider.ProvidedType} {provider.ProviderMethodName}");
+                    }
+
+                    foreach (var activator in injectorValue.Activators) {
+                        b.AppendLine(
+                            $"  // Activator: {activator.ActivatedType} {activator.ActivatorMethodName}");
+                    }
+
+                    foreach (var childProvider in injectorValue.ChildProviders) {
+                        b.Append(
+                            $"  // ChildProvider: {childProvider.ChildInjectorType} {childProvider.ChildProviderMethodName}(");
+                        b.Append(string.Join(", ", childProvider.Parameters));
+                        b.AppendLine(")");
+                    }
+
+                    b.AppendLine("}");
+                });
+                sourceProductionContext.AddSource(
+                    $"Metadata\\Generated{injectorValue.InjectorInterfaceType.NamespacedBaseTypeName}.cs",
+                    source);
+            });
     }
 }

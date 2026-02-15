@@ -14,6 +14,7 @@ using Phx.Inject.Generator.Incremental.Diagnostics;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 using Phx.Inject.Generator.Incremental.Util;
+using static Phx.Inject.Common.Util.StringBuilderUtil;
 
 #endregion
 
@@ -45,5 +46,55 @@ internal sealed class SpecClassPipeline(
                     .Transform((ITypeSymbol)context.TargetSymbol)
                     .OrThrow(diagnostics);
             }));
+    }
+
+    /// <summary>
+    ///     DEBUG ONLY: Prints spec class metadata to diagnostic source files.
+    /// </summary>
+    /// <param name="context">The generator context for registering outputs.</param>
+    /// <param name="segment">The spec class pipeline segment.</param>
+    public void Print(
+        IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<IResult<SpecClassMetadata>> segment
+    ) {
+        context.RegisterSourceOutput(segment,
+            (sourceProductionContext, specClass) => {
+                var diagnostics = new DiagnosticsRecorder();
+                var specClassValue = specClass.GetValue(diagnostics);
+                var source = BuildString(b => {
+                    b.AppendLine($"namespace Phx.Inject.Generator.Incremental.Metadata;");
+                    b.AppendLine();
+                    b.AppendLine($"class Generated{specClassValue.SpecType.BaseTypeName} {{");
+                    foreach (var factoryMethod in specClassValue.FactoryMethods) {
+                        b.Append($"  // FactoryMethod: {factoryMethod.FactoryReturnType} {factoryMethod.FactoryMethodName}(");
+                        b.Append(string.Join(", ", factoryMethod.Parameters));
+                        b.AppendLine(")");
+                    }
+                    foreach (var factoryProperty in specClassValue.FactoryProperties) {
+                        b.AppendLine($"  // FactoryProperty: {factoryProperty.FactoryReturnType} {factoryProperty.FactoryPropertyName}");
+                    }
+                    foreach (var factoryReference in specClassValue.FactoryReferences) {
+                        b.Append($"  // FactoryReference: {factoryReference.FactoryReturnType} {factoryReference.FactoryReferenceName}(");
+                        b.Append(string.Join(", ", factoryReference.Parameters));
+                        b.AppendLine(")");
+                    }
+                    foreach (var builderMethod in specClassValue.BuilderMethods) {
+                        b.Append($"  // BuilderMethod: {builderMethod.BuiltType} {builderMethod.BuilderMethodName}(");
+                        b.Append(string.Join(", ", builderMethod.Parameters));
+                        b.AppendLine(")");
+                    }
+                    foreach (var builderReference in specClassValue.BuilderReferences) {
+                        b.Append($"  // BuilderReference: {builderReference.BuiltType} {builderReference.BuilderReferenceName}(");
+                        b.Append(string.Join(", ", builderReference.Parameters));
+                        b.AppendLine(")");
+                    }
+                    foreach (var link in specClassValue.Links) {
+                        b.AppendLine($"  // Link: [{link.InputLabel ?? link.InputQualifier?.ToString() ?? ""}]{link.Input} -> [{link.OutputLabel ?? link.OutputQualifier?.ToString() ?? ""}]{link.Output}");
+                    }
+                    b.AppendLine("}");
+                });
+                sourceProductionContext.AddSource($"Metadata\\Generated{specClassValue.SpecType.NamespacedBaseTypeName}.cs",
+                    source);
+            });
     }
 }
