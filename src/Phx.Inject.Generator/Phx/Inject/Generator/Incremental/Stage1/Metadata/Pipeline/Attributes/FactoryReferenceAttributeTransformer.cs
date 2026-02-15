@@ -23,16 +23,9 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms FactoryReference attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     Extracts the optional <c>FabricationMode</c> for parameters receiving factory delegates
+///     Extracts the optional <see cref="FabricationMode"/> for parameters receiving factory delegates
 ///     instead of resolved instances. This enables lazy initialization, multiple instance creation,
 ///     and caller-controlled instantiation timing.
-///
-///     ## FabricationMode Values
-///
-///     - **Default (0 or unspecified)**: Uses the referenced factory's natural fabrication mode.
-///     - **Recurrent**: Creates a new instance on every delegate invocation.
-///     - **Scoped**: Returns the same instance on subsequent delegate calls within a scope.
-///     - **Container/ContainerScoped**: Uses container-level caching for child injector scenarios.
 /// </remarks>
 internal sealed class FactoryReferenceAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer

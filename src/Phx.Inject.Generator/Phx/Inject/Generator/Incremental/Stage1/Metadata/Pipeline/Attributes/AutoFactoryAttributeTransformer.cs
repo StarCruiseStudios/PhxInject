@@ -23,16 +23,10 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms AutoFactory attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     Extracts the optional <c>FabricationMode</c> for parameters receiving auto-generated factory
+///     Extracts the optional <see cref="FabricationMode"/> for parameters receiving auto-generated factory
 ///     delegates. The generator creates factory methods automatically without requiring explicit
 ///     <c>[Factory]</c> method declarations. This is the inverse of <c>[FactoryReference]</c>, which
 ///     references explicit factory methods.
-///
-///     ## FabricationMode Options
-///
-///     - **Transient**: Each factory call creates a new instance.
-///     - **Scoped**: Returns the same instance on subsequent calls within a scope.
-///     - **Container/ContainerScoped**: Uses container-hierarchy scoping for child injectors.
 /// </remarks>
 internal sealed class AutoFactoryAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
