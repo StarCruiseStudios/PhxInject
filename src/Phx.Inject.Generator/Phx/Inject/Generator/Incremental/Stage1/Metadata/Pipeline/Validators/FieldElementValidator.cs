@@ -65,10 +65,6 @@ internal sealed class FieldElementValidator(
     private readonly IReadOnlyList<IAttributeChecker> prohibitedAttributes = prohibitedAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 
     /// <inheritdoc />
-    /// <remarks>
-    ///     Executes checks in order from fastest to slowest: type check, attributes, accessibility,
-    ///     then static and readonly modifiers. This ordering maximizes short-circuit efficiency.
-    /// </remarks>
     public bool IsValidSymbol([NotNullWhen(true)] ISymbol? symbol) {
         if (symbol is not IFieldSymbol fieldSymbol) {
             return false;

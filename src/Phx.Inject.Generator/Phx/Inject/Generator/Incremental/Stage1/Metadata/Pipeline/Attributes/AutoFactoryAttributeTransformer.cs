@@ -23,97 +23,10 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms AutoFactory attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     Extracts optional <c>FabricationMode</c> for parameters receiving auto-generated factory
-///     delegates. Generator analyzes target type constructor/dependencies and creates factory
-///     on-demand without explicit <c>[Factory]</c> method. Tries named argument first, then
-///     constructor argument filtered by type for signature resilience. Inverse of
-///     <c>[FactoryReference]</c> (references explicit factory methods).
-/// </remarks>
-///             </description>
-///         </item>
-///         <item>
-///             <term>Scoped:</term>
-///             <description>
-///             First factory call creates instance, subsequent calls return cached instance within scope.
-///             Generated: Field storage + lazy initialization check.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Container/ContainerScoped:</term>
-///             <description>
-///             Container-hierarchy scoping for child injectors (see ChildInjector docs).
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Validation Constraints - Enforced by Later Stages:</para>
-///     <para>
-///     Transformer doesn't validate auto-factory generation feasibility. Later validation ensures:
-///     </para>
-///     <list type="bullet">
-///         <item>
-///             <description>
-///             Parameter type is Func&lt;T&gt; or compatible delegate type
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Target type T has accessible constructor or static factory method
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             All transitive dependencies for T can be resolved from injector
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             FabricationMode is appropriate for target type (e.g., Constructor mode requires concrete class)
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             [AutoFactory] isn't combined with [FactoryReference] or [BuilderReference] on same parameter
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             No circular auto-factory chains (A auto-creates B, B auto-creates A)
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Common Errors Prevented:</para>
-///     <list type="bullet">
-///         <item>
-///             <term>Target type has no accessible constructor:</term>
-///             <description>
-///             Attempting [AutoFactory] for interface without explicit FabricationMode fails.
-///             Validator requires either concrete class or StaticMethod mode specification.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Missing transitive dependencies:</term>
-///             <description>
-///             Auto-factory for type requiring IDatabase when no IDatabase factory exists.
-///             Validator walks entire dependency graph to ensure all required factories exist.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Circular auto-factory chain:</term>
-///             <description>
-///             TypeA has [AutoFactory] parameter for TypeB, TypeB has [AutoFactory] for TypeA.
-///             Validator detects cycles preventing infinite recursion.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Wrong delegate signature:</term>
-///             <description>
-///             Using Func&lt;IUserService&gt; when generator can only create concrete UserServiceImpl.
-///             Validator ensures delegate return type matches what generator can construct.
-///             </description>
-///         </item>
-///     </list>
+///     Extracts the optional <see cref="FabricationMode"/> for parameters receiving auto-generated factory
+///     delegates. The generator creates factory methods automatically without requiring explicit
+///     <c>[Factory]</c> method declarations. This is the inverse of <c>[FactoryReference]</c>, which
+///     references explicit factory methods.
 /// </remarks>
 internal sealed class AutoFactoryAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer

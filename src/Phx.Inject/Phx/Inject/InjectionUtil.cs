@@ -8,11 +8,37 @@
 
 namespace Phx.Inject;
 
+/// <summary>
+///     Provides utility methods for combining collections.
+/// </summary>
+/// <remarks>
+/// These methods combine multiple collection instances while maintaining uniqueness constraints
+/// for sets and maps. Exceptions are thrown if duplicate values or keys are detected.
+/// </remarks>
 public static class InjectionUtil {
+    /// <summary>
+    ///     Combines multiple read-only lists into a single list.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the lists.</typeparam>
+    /// <param name="lists">The read-only lists to combine.</param>
+    /// <returns>
+    ///     A read-only list containing all elements from all input lists in order.
+    /// </returns>
     public static IReadOnlyList<T> Combine<T>(params IReadOnlyList<T>[] lists) {
         return lists.SelectMany(list => list).ToList();
     }
 
+    /// <summary>
+    ///     Combines multiple sets into a single set, ensuring no duplicate values.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the sets.</typeparam>
+    /// <param name="sets">The sets to combine.</param>
+    /// <returns>
+    ///     A set containing all unique elements from all input sets.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when duplicate values are found across different input sets.
+    /// </exception>
     public static ISet<T> Combine<T>(params ISet<T>[] sets) {
         return sets.Aggregate(new HashSet<T>(),
             (acc, set) => {
@@ -26,6 +52,17 @@ public static class InjectionUtil {
             });
     }
 
+    /// <summary>
+    ///     Combines multiple enumerable sequences into a single set, ensuring no duplicate values.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the sequences.</typeparam>
+    /// <param name="sets">The enumerable sequences to combine.</param>
+    /// <returns>
+    ///     A set containing all unique elements from all input sequences.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when duplicate values are found across different input sequences.
+    /// </exception>
     public static ISet<T> CombineReadOnlySet<T>(params IEnumerable<T>[] sets) {
         return sets.Aggregate(new HashSet<T>(),
             (acc, set) => {
@@ -42,6 +79,18 @@ public static class InjectionUtil {
             });
     }
 
+    /// <summary>
+    ///     Combines multiple read-only dictionaries into a single dictionary, ensuring no duplicate keys.
+    /// </summary>
+    /// <typeparam name="K">The type of keys in the dictionaries.</typeparam>
+    /// <typeparam name="V">The type of values in the dictionaries.</typeparam>
+    /// <param name="dicts">The read-only dictionaries to combine.</param>
+    /// <returns>
+    ///     A read-only dictionary containing all key-value pairs from all input dictionaries.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when duplicate keys are found across different input dictionaries.
+    /// </exception>
     public static IReadOnlyDictionary<K, V> Combine<K, V>(params IReadOnlyDictionary<K, V>[] dicts) {
         var combinedDictionary = new Dictionary<K, V>();
         foreach (var dict in dicts) {

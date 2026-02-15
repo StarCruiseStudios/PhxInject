@@ -45,10 +45,6 @@ internal sealed class InterfaceElementValidator(
     private readonly IReadOnlyList<IAttributeChecker> requiredAttributes = requiredAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 
     /// <inheritdoc />
-    /// <remarks>
-    ///     Executes checks in order from fastest to slowest: type check first, then attributes,
-    ///     then accessibility. This ordering maximizes short-circuit efficiency.
-    /// </remarks>
     public bool IsValidSymbol([NotNullWhen(true)] ISymbol? symbol) {
         if (symbol is not ITypeSymbol typeSymbol) {
             return false;

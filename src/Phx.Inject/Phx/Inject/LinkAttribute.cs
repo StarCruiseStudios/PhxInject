@@ -9,6 +9,30 @@
 namespace Phx.Inject;
 
 /// <summary> Models a link between one dependency key and another. </summary>
+/// <remarks>
+/// Link attributes establish connections in a directed acyclic graph (DAG) of dependencies.
+/// They allow one specification to expose dependencies from another specification under a
+/// different type or qualifier.
+///
+/// ## Mutual Exclusivity Constraints
+///
+/// For both input and output:
+/// - Either a <see cref="LabelAttribute"/> (string-based) or <see cref="QualifierAttribute"/> 
+///   (type-based) qualifier may be specified, but not both
+/// - If neither is specified, the dependency is matched by type alone
+///
+/// ## Example
+///
+/// <code>
+/// [Link(typeof(IService), typeof(IMyService))]
+/// [Specification]
+/// public class MySpec { }
+/// </code>
+///
+/// This links IService from a dependency to IMyService exposed by this specification.
+/// </remarks>
+/// <seealso cref="LabelAttribute"/>
+/// <seealso cref="QualifierAttribute"/>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, Inherited = false, AllowMultiple = true)]
 public class LinkAttribute : Attribute {
     /// <summary> The dependency key for the type consumed by the link. </summary>

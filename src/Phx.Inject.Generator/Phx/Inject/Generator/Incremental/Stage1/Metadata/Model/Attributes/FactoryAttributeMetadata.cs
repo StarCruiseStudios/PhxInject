@@ -21,10 +21,8 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 /// <param name="FabricationMode">Specifies the lifetime behavior of instances created by this factory.</param>
 /// <param name="AttributeMetadata">The common attribute metadata shared by all attributes.</param>
 /// <remarks>
-///     <para>
 ///     FabricationMode determines generated code structure: Scoped generates caching fields,
 ///     Recurrent generates direct invocation.
-///     </para>
 /// </remarks>
 internal record FactoryAttributeMetadata(
     FabricationMode FabricationMode,

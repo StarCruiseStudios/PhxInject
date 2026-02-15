@@ -135,11 +135,6 @@ internal sealed class MethodElementValidator(
     private readonly IReadOnlyList<IAttributeChecker> prohibitedAttributes = prohibitedAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 
     /// <inheritdoc />
-    /// <remarks>
-    ///     Executes checks ordered by cost: type check first (cheapest), then attributes, accessibility,
-    ///     method kind, return type, parameter count, and finally modifiers. This ordering maximizes
-    ///     short-circuit efficiency on invalid candidates.
-    /// </remarks>
     public bool IsValidSymbol([NotNullWhen(true)] ISymbol? symbol) {
         if (symbol is not IMethodSymbol methodSymbol) {
             return false;

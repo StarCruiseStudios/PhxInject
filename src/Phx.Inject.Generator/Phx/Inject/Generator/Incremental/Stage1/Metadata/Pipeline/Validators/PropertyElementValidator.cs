@@ -77,10 +77,6 @@ internal sealed class PropertyElementValidator(
     private readonly IReadOnlyList<IAttributeChecker> prohibitedAttributes = prohibitedAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 
     /// <inheritdoc />
-    /// <remarks>
-    ///     Executes checks in order from fastest to slowest: type check, attributes, accessibility,
-    ///     then modifier and accessor checks. This ordering maximizes short-circuit efficiency.
-    /// </remarks>
     public bool IsValidSymbol([NotNullWhen(true)] ISymbol? symbol) {
         if (symbol is not IPropertySymbol propertySymbol) {
             return false;
