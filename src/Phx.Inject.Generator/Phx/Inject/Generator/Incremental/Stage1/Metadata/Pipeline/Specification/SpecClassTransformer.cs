@@ -40,10 +40,7 @@ internal sealed class SpecClassTransformer(
     ///     Gets the singleton instance.
     /// </summary>
     public static readonly SpecClassTransformer Instance = new(
-        new ClassElementValidator(
-            CodeElementAccessibility.PublicOrInternal,
-            isStatic: true
-        ),
+        ClassElementValidator.PublicStaticClass,
         SpecificationAttributeTransformer.Instance,
         SpecFactoryMethodTransformer.Instance,
         SpecFactoryPropertyTransformer.Instance,

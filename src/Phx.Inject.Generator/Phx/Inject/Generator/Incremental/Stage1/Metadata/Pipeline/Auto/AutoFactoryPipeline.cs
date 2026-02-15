@@ -30,11 +30,7 @@ internal sealed class AutoFactoryPipeline(
     ///     Gets the singleton instance.
     /// </summary>
     public static readonly AutoFactoryPipeline Instance = new(
-        new ClassElementValidator(
-            CodeElementAccessibility.PublicOrInternal,
-            isStatic: false,
-            isAbstract: false
-        ),
+        ClassElementValidator.PublicInstanceClass,
         AutoFactoryTransformer.Instance);
 
     /// <inheritdoc />

@@ -34,14 +34,7 @@ internal sealed class InjectorActivatorTransformer(
     ///     Gets the singleton instance.
     /// </summary>
     public static readonly InjectorActivatorTransformer Instance = new(
-        new MethodElementValidator(
-            CodeElementAccessibility.PublicOrInternal,
-            isStatic: false,
-            minParameterCount: 1,
-            maxParameterCount: 1,
-            returnsVoid: true,
-            requiredAttributes: ImmutableList.Create(ChildInjectorAttributeTransformer.Instance)
-        ),
+        MethodElementValidator.InjectorActivatorMethod,
         QualifierTransformer.Instance
     );
 

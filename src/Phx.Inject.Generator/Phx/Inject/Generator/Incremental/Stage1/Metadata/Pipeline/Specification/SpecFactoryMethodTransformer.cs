@@ -36,12 +36,7 @@ internal sealed class SpecFactoryMethodTransformer(
     /// Gets the singleton instance.
     /// </summary>
     public static readonly SpecFactoryMethodTransformer Instance = new(
-        new MethodElementValidator(
-            CodeElementAccessibility.PublicOrInternal,
-            returnsVoid: false,
-            requiredAttributes: ImmutableList.Create<IAttributeChecker>(FactoryAttributeTransformer.Instance),
-            prohibitedAttributes: ImmutableList.Create<IAttributeChecker>(BuilderAttributeTransformer.Instance)
-        ),
+        MethodElementValidator.SpecificationFactoryMethod,
         QualifierTransformer.Instance,
         FactoryAttributeTransformer.Instance,
         PartialAttributeTransformer.Instance

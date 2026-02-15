@@ -30,9 +30,7 @@ internal sealed class InjectorInterfacePipeline(
     ///     Gets the singleton instance.
     /// </summary>
     public static readonly InjectorInterfacePipeline Instance = new(
-        new InterfaceElementValidator(
-            CodeElementAccessibility.PublicOrInternal
-        ),
+        InjectorInterfaceMetadata.ElementValidator,
         InjectorInterfaceTransformer.Instance);
 
     /// <inheritdoc />

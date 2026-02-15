@@ -89,7 +89,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     <para>Validation Rules - InterfaceElementValidator:</para>
 ///     <para>
 ///     The injected validator is configured as:
-///     `new InterfaceElementValidator(requiredAccessibility: CodeElementAccessibility.PublicOrInternal)`
+///     `InterfaceElementValidator.PublicInterface`
 ///     </para>
 ///     <para>This enforces:</para>
 ///     <list type="bullet">
@@ -158,9 +158,7 @@ internal sealed class DependencyAttributeTransformer(
     /// </summary>
     public static DependencyAttributeTransformer Instance { get; } = new(
         AttributeMetadataTransformer.Instance,
-        new InterfaceElementValidator(
-            requiredAccessibility: CodeElementAccessibility.PublicOrInternal
-        )
+        DependencyAttributeMetadata.ElementValidator
     );
 
     /// <inheritdoc />

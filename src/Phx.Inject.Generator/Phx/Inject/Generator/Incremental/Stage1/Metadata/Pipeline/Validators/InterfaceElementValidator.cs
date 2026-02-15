@@ -120,6 +120,12 @@ internal sealed class InterfaceElementValidator(
     CodeElementAccessibility requiredAccessibility = CodeElementAccessibility.Any,
     IReadOnlyList<IAttributeChecker>? requiredAttributes = null
 ) : ICodeElementValidator {
+    /// <summary>
+    ///     Validates public or internal interfaces (typical injector interface).
+    /// </summary>
+    public static readonly InterfaceElementValidator PublicInterface = new(
+        requiredAccessibility: CodeElementAccessibility.PublicOrInternal);
+
     private readonly IReadOnlyList<IAttributeChecker> requiredAttributes = requiredAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 
     /// <inheritdoc />

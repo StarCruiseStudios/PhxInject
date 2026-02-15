@@ -36,9 +36,7 @@ internal sealed class InjectorDependencyPipeline(
     /// Gets the singleton instance.
     /// </summary>
     public static readonly InjectorDependencyPipeline Instance = new(
-        new InterfaceElementValidator(
-            CodeElementAccessibility.PublicOrInternal
-        ),
+        InjectorDependencyInterfaceMetadata.ElementValidator,
         InjectorDependencyAttributeTransformer.Instance,
         SpecFactoryMethodTransformer.Instance,
         SpecFactoryPropertyTransformer.Instance);

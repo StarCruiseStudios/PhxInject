@@ -10,6 +10,7 @@
 
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 using Phx.Inject.Generator.Incremental.Util;
 
 #endregion
@@ -47,4 +48,10 @@ internal record SpecInterfaceMetadata(
     EquatableList<LinkAttributeMetadata> Links,
     SpecificationAttributeMetadata SpecAttributeMetadata,
     GeneratorIgnored<LocationInfo?> Location
-) : ISourceCodeElement { }
+) : ISourceCodeElement {
+    /// <summary>
+    ///     Gets the validator that defines the structural requirements for specification interface types.
+    /// </summary>
+    public static readonly ICodeElementValidator ElementValidator =
+        InterfaceElementValidator.PublicInterface;
+}

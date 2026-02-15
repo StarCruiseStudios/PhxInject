@@ -34,13 +34,7 @@ internal sealed class InjectorProviderTransformer(
     ///     Gets the singleton instance.
     /// </summary>
     public static readonly InjectorProviderTransformer Instance = new(
-        new MethodElementValidator(
-            CodeElementAccessibility.PublicOrInternal,
-            isStatic: false,
-            maxParameterCount: 0,
-            returnsVoid: false,
-            prohibitedAttributes: ImmutableList.Create(ChildInjectorAttributeTransformer.Instance)
-        ),
+        MethodElementValidator.InjectorProviderMethod,
         QualifierTransformer.Instance
     );
 

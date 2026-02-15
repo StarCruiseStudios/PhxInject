@@ -38,9 +38,7 @@ internal sealed class InjectorInterfaceTransformer(
     ///     Gets the singleton instance.
     /// </summary>
     public static readonly InjectorInterfaceTransformer Instance = new(
-        new InterfaceElementValidator(
-            CodeElementAccessibility.PublicOrInternal
-        ),
+        InjectorInterfaceMetadata.ElementValidator,
         InjectorAttributeTransformer.Instance,
         InjectorProviderTransformer.Instance,
         InjectorActivatorTransformer.Instance,

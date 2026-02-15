@@ -10,6 +10,7 @@
 
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 using Phx.Inject.Generator.Incremental.Util;
 
 #endregion
@@ -40,4 +41,10 @@ internal record InjectorDependencyInterfaceMetadata(
     EquatableList<SpecFactoryPropertyMetadata> FactoryProperties,
     InjectorDependencyAttributeMetadata InjectorDependencyAttributeMetadata,
     GeneratorIgnored<LocationInfo?> Location
-) : ISourceCodeElement { }
+) : ISourceCodeElement {
+    /// <summary>
+    ///     Gets the validator that defines the structural requirements for injector dependency interface types.
+    /// </summary>
+    public static readonly ICodeElementValidator ElementValidator =
+        InterfaceElementValidator.PublicInterface;
+}

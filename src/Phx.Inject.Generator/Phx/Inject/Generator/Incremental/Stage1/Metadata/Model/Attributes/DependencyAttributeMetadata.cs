@@ -9,6 +9,7 @@
 #region
 
 using Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Types;
+using Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 using Phx.Inject.Generator.Incremental.Util;
 
 #endregion
@@ -30,6 +31,12 @@ internal record DependencyAttributeMetadata(
     AttributeMetadata AttributeMetadata
 ) : IAttributeElement {
     public const string AttributeClassName = $"{PhxInject.NamespaceName}.{nameof(DependencyAttribute)}";
+    
+    /// <summary>
+    ///     Gets the validator that defines the structural requirements for dependency interface types.
+    /// </summary>
+    public static readonly ICodeElementValidator ElementValidator =
+        InterfaceElementValidator.PublicInterface;
     
     public GeneratorIgnored<LocationInfo?> Location { get; } = AttributeMetadata.Location;
 }

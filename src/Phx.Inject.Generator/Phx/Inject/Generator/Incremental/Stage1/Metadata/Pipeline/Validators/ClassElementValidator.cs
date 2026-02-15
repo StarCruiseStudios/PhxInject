@@ -111,6 +111,20 @@ internal sealed class ClassElementValidator(
     bool? isAbstract = null,
     IReadOnlyList<IAttributeChecker>? requiredAttributes = null
 ) : ICodeElementValidator {
+    /// <summary>
+    ///     Validates public or internal static classes (typical specification class).
+    /// </summary>
+    public static readonly ClassElementValidator PublicStaticClass = new(
+        requiredAccessibility: CodeElementAccessibility.PublicOrInternal,
+        isStatic: true);
+    
+    /// <summary>
+    ///     Validates public or internal non-static classes (typical auto-factory target class).
+    /// </summary>
+    public static readonly ClassElementValidator PublicInstanceClass = new(
+        requiredAccessibility: CodeElementAccessibility.PublicOrInternal,
+        isStatic: false);
+
     private readonly IReadOnlyList<IAttributeChecker> requiredAttributes = requiredAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 
     /// <inheritdoc />

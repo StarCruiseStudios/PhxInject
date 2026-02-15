@@ -37,11 +37,7 @@ internal sealed class AutoFactoryTransformer(
     ///     Gets the singleton instance.
     /// </summary>
     public static readonly AutoFactoryTransformer Instance = new(
-        new ClassElementValidator(
-            CodeElementAccessibility.PublicOrInternal,
-            isStatic: false,
-            isAbstract: false
-        ),
+        ClassElementValidator.PublicInstanceClass,
         new MethodElementValidator(
             CodeElementAccessibility.PublicOrInternal,
             MethodKindFilter.Constructor

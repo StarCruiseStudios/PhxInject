@@ -166,6 +166,19 @@ internal sealed class FieldElementValidator(
     IReadOnlyList<IAttributeChecker>? requiredAttributes = null,
     IReadOnlyList<IAttributeChecker>? prohibitedAttributes = null
 ) : ICodeElementValidator {
+    /// <summary>
+    ///     Validates public or internal fields (typical specification reference field).
+    /// </summary>
+    public static readonly FieldElementValidator PublicField = new(
+        requiredAccessibility: CodeElementAccessibility.PublicOrInternal);
+    
+    /// <summary>
+    ///     Validates public or internal static fields (typical specification static reference field).
+    /// </summary>
+    public static readonly FieldElementValidator PublicStaticField = new(
+        requiredAccessibility: CodeElementAccessibility.PublicOrInternal,
+        isStatic: true);
+
     private readonly IReadOnlyList<IAttributeChecker> requiredAttributes = requiredAttributes ?? ImmutableList<IAttributeChecker>.Empty;
     private readonly IReadOnlyList<IAttributeChecker> prohibitedAttributes = prohibitedAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 

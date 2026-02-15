@@ -40,9 +40,7 @@ internal sealed class SpecInterfaceTransformer(
     ///     Gets the singleton instance.
     /// </summary>
     public static readonly SpecInterfaceTransformer Instance = new(
-        new InterfaceElementValidator(
-            CodeElementAccessibility.PublicOrInternal
-        ),
+        SpecInterfaceMetadata.ElementValidator,
         SpecificationAttributeTransformer.Instance,
         SpecFactoryMethodTransformer.Instance,
         SpecFactoryPropertyTransformer.Instance,

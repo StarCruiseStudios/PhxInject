@@ -30,9 +30,7 @@ internal sealed class SpecInterfacePipeline(
     ///     Gets the singleton instance.
     /// </summary>
     public static readonly SpecInterfacePipeline Instance = new(
-        new InterfaceElementValidator(
-            CodeElementAccessibility.PublicOrInternal
-        ),
+        SpecInterfaceMetadata.ElementValidator,
         SpecInterfaceTransformer.Instance);
 
     /// <inheritdoc />

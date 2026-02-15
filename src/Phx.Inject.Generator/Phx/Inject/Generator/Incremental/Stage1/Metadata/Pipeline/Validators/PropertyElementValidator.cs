@@ -170,6 +170,25 @@ internal sealed class PropertyElementValidator(
     IReadOnlyList<IAttributeChecker>? requiredAttributes = null,
     IReadOnlyList<IAttributeChecker>? prohibitedAttributes = null
 ) : ICodeElementValidator {
+    /// <summary>
+    ///     Validates public/internal instance properties with getter
+    ///     (typical auto-factory required property or specification factory property).
+    /// </summary>
+    public static readonly PropertyElementValidator PublicInstancePropertyWithGetter = new(
+        requiredAccessibility: CodeElementAccessibility.PublicOrInternal,
+        isStatic: false,
+        hasGetter: true);
+    
+    /// <summary>
+    ///     Validates public/internal instance properties with getter but no setter
+    ///     (typical specification factory property - read-only).
+    /// </summary>
+    public static readonly PropertyElementValidator PublicReadOnlyProperty = new(
+        requiredAccessibility: CodeElementAccessibility.PublicOrInternal,
+        isStatic: false,
+        hasGetter: true,
+        hasSetter: false);
+
     private readonly IReadOnlyList<IAttributeChecker> requiredAttributes = requiredAttributes ?? ImmutableList<IAttributeChecker>.Empty;
     private readonly IReadOnlyList<IAttributeChecker> prohibitedAttributes = prohibitedAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 

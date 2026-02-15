@@ -140,6 +140,88 @@ internal sealed class MethodElementValidator(
     IReadOnlyList<IAttributeChecker>? requiredAttributes = null,
     IReadOnlyList<IAttributeChecker>? prohibitedAttributes = null
 ) : ICodeElementValidator {
+    /// <summary>
+    ///     Validates public/internal instance methods with no parameters that return non-void
+    ///     (typical injector provider method).
+    /// </summary>
+    public static readonly MethodElementValidator InjectorProviderMethod = new(
+        requiredAccessibility: CodeElementAccessibility.PublicOrInternal,
+        isStatic: false,
+        maxParameterCount: 0,
+        returnsVoid: false,
+        prohibitedAttributes: ImmutableList.Create(ChildInjectorAttributeTransformer.Instance));
+    
+    /// <summary>
+    ///     Validates public/internal instance methods with exactly one parameter that return void
+    ///     and have the ChildInjector attribute (typical injector activator method).
+    /// </summary>
+    public static readonly MethodElementValidator InjectorActivatorMethod = new(
+        requiredAccessibility: CodeElementAccessibility.PublicOrInternal,
+        isStatic: false,
+        minParameterCount: 1,
+        maxParameterCount: 1,
+        returnsVoid: true,
+        requiredAttributes: ImmutableList.Create(ChildInjectorAttributeTransformer.Instance));
+    
+    /// <summary>
+    ///     Validates public/internal instance methods with no parameters that return non-void
+    ///     and have the ChildInjector attribute (typical injector child provider method).
+    /// </summary>
+    public static readonly MethodElementValidator InjectorChildProviderMethod = new(
+        requiredAccessibility: CodeElementAccessibility.PublicOrInternal,
+        isStatic: false,
+        maxParameterCount: 0,
+        returnsVoid: false,
+        requiredAttributes: ImmutableList.Create(ChildInjectorAttributeTransformer.Instance));
+    
+    /// <summary>
+    ///     Validates public/internal methods that return non-void with Factory attribute
+    ///     (typical specification factory method).
+    /// </summary>
+    public static readonly MethodElementValidator SpecificationFactoryMethod = new(
+        requiredAccessibility: CodeElementAccessibility.PublicOrInternal,
+        returnsVoid: false,
+        requiredAttributes: ImmutableList.Create<IAttributeChecker>(FactoryAttributeTransformer.Instance),
+        prohibitedAttributes: ImmutableList.Create<IAttributeChecker>(BuilderAttributeTransformer.Instance));
+    
+    /// <summary>
+    ///     Validates public/internal static methods that return void with Builder attribute
+    ///     (typical specification builder method).
+    /// </summary>
+    public static readonly MethodElementValidator SpecificationBuilderMethod = new(
+        requiredAccessibility: CodeElementAccessibility.PublicOrInternal,
+        isStatic: true,
+        returnsVoid: true,
+        requiredAttributes: ImmutableList.Create<IAttributeChecker>(BuilderAttributeTransformer.Instance),
+        prohibitedAttributes: ImmutableList.Create<IAttributeChecker>(FactoryAttributeTransformer.Instance));
+    
+    /// <summary>
+    ///     Validates public/internal static methods that return non-void with AutoBuilder attribute
+    ///     (typical auto-builder method).
+    /// </summary>
+    public static readonly MethodElementValidator AutoBuilderMethod = new(
+        requiredAccessibility: CodeElementAccessibility.PublicOrInternal,
+        isStatic: true,
+        returnsVoid: false,
+        requiredAttributes: ImmutableList.Create<IAttributeChecker>(AutoBuilderAttributeTransformer.Instance));
+    
+    /// <summary>
+    ///     Validates public/internal instance methods that return non-void
+    ///     (typical auto-factory constructor or factory method).
+    /// </summary>
+    public static readonly MethodElementValidator AutoFactoryMethod = new(
+        requiredAccessibility: CodeElementAccessibility.PublicOrInternal,
+        isStatic: false,
+        returnsVoid: false);
+    
+    /// <summary>
+    ///     Validates public/internal abstract instance methods in pipelines.
+    /// </summary>
+    public static readonly MethodElementValidator AbstractPipelineMethod = new(
+        requiredAccessibility: CodeElementAccessibility.PublicOrInternal,
+        isStatic: false,
+        isAbstract: true);
+
     private readonly IReadOnlyList<IAttributeChecker> requiredAttributes = requiredAttributes ?? ImmutableList<IAttributeChecker>.Empty;
     private readonly IReadOnlyList<IAttributeChecker> prohibitedAttributes = prohibitedAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 
