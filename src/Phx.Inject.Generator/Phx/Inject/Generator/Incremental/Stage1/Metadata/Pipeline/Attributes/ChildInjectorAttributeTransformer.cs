@@ -20,39 +20,8 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms ChildInjector attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     Marker attribute identifying child injector specifications that inherit parent dependencies.
-///     Generated child implementations accept parent injector in constructor and walk dependency
-///     chain (child → parent → grandparent). Parent-child relationship determined by factory method
-///     return types. Mutually exclusive with <c>[Injector]</c> (root injectors have no parent).
-/// </remarks>
-///         <item>
-///             <term>Missing parent factory:</term>
-///             <description>
-///             Child injector without any parent factory method is orphaned. Validator ensures
-///             every child has exactly one parent factory.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Multiple parents:</term>
-///             <description>
-///             Child injector returned by multiple factories is ambiguous (which parent owns it?).
-///             Validator requires single parent factory.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Circular hierarchy:</term>
-///             <description>
-///             Parent creates child, child creates original parent causes infinite recursion.
-///             Validator detects cycles in injector hierarchy.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Using both [Injector] and [ChildInjector]:</term>
-///             <description>
-///             Mutually exclusive attributes. Specification is either root or child, not both.
-///             </description>
-///         </item>
-///     </list>
+///     Identifies child injector specifications that inherit dependencies from a parent injector.
+///     Child injectors are mutually exclusive with <c>[Injector]</c> (root injectors have no parent).
 /// </remarks>
 internal sealed class ChildInjectorAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer

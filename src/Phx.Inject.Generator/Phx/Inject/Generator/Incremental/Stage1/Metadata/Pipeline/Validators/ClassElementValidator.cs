@@ -61,10 +61,6 @@ internal sealed class ClassElementValidator(
     private readonly IReadOnlyList<IAttributeChecker> requiredAttributes = requiredAttributes ?? ImmutableList<IAttributeChecker>.Empty;
 
     /// <inheritdoc />
-    /// <remarks>
-    ///     Executes checks in order from fastest to slowest to maximize short-circuit efficiency:
-    ///     type check, attribute checks, accessibility, then modifier flags.
-    /// </remarks>
     public bool IsValidSymbol([NotNullWhen(true)] ISymbol? symbol) {
         if (symbol is not ITypeSymbol typeSymbol) {
             return false;
