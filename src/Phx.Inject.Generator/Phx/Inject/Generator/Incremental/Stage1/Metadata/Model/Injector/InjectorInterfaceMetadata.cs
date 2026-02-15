@@ -29,15 +29,12 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Injector;
 /// <param name="DependencyAttributeMetadata">Optional [Dependency] attribute. If present, this is a child injector.</param>
 /// <param name="Location">The source location of the interface definition.</param>
 /// <remarks>
-///     <para>
 ///     Injector interfaces define the API for accessing dependencies. The generator creates
 ///     concrete classes implementing these interfaces. Three method types: Providers (return instances),
 ///     Activators (initialize objects), ChildProviders (create scoped sub-containers).
-///     </para>
-///     <para>
+///
 ///     If <see cref="DependencyAttributeMetadata"/> is present, this is a child injector receiving
 ///     a parent injector reference in its constructor, enabling hierarchical scopes.
-///     </para>
 /// </remarks>
 internal record InjectorInterfaceMetadata(
     TypeMetadata InjectorInterfaceType,

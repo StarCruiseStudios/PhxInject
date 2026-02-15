@@ -22,47 +22,41 @@ namespace Phx.Inject.Generator.Incremental.Util;
 /// <typeparam name="T">The type of elements. Must implement value equality correctly.</typeparam>
 /// <param name="items">Source sequence to populate the list. Copied immediately to ensure immutability.</param>
 /// <remarks>
-///     <para>Design Rationale:</para>
-///     <para>
+///     ## Design Rationale
+///
 ///     Roslyn's incremental generators rely on value equality to cache pipeline results. Standard
 ///     .NET collections use reference equality, causing unnecessary recompilation when logically
 ///     identical lists are reconstructed. This type provides structural equality while maintaining
 ///     immutability guarantees required by incremental generators.
-///     </para>
 ///     
-///     <para>Performance Characteristics:</para>
-///     <list type="bullet">
-///         <item>Construction: O(n) - copies all elements into an <see cref="ImmutableList{T}"/></item>
-///         <item>Equality: O(n) worst case - short-circuits on count mismatch or first difference</item>
-///         <item>GetHashCode: O(n) - computed once and cached by value types/records</item>
-///         <item>Indexing: O(log n) - uses ImmutableList's tree structure</item>
-///     </list>
+///     ## Performance Characteristics
+///
+///     - Construction: O(n) - copies all elements into an <see cref="ImmutableList{T}"/>
+///     - Equality: O(n) worst case - short-circuits on count mismatch or first difference
+///     - GetHashCode: O(n) - computed once and cached by value types/records
+///     - Indexing: O(log n) - uses ImmutableList's tree structure
 ///     
-///     <para>Immutability Contract:</para>
-///     <para>
+///     ## Immutability Contract
+///
 ///     Once constructed, the list contents never change. This is essential for incremental generators
 ///     where cached results must remain stable. Modifications require creating a new instance.
-///     </para>
 ///     
-///     <para>Equality Semantics:</para>
-///     <para>
+///     ## Equality Semantics
+///
 ///     Two lists are equal if they contain the same elements in the same order, using
 ///     <see cref="EqualityComparer{T}.Default"/> for element comparison. Type <c>T</c> must implement
 ///     proper value equality or the incremental cache will behave incorrectly.
-///     </para>
 ///     
-///     <para>Thread Safety:</para>
-///     <para>
+///     ## Thread Safety
+///
 ///     Immutable and thread-safe for reads. Multiple threads can safely enumerate or index
 ///     the same instance concurrently.
-///     </para>
 ///     
-///     <para>Usage Pattern:</para>
-///     <para>
+///     ## Usage Pattern
+///
 ///     Used extensively in metadata records to represent collections of types, parameters,
 ///     attributes, etc. The value-equality enables Roslyn to recognize when a collection hasn't
 ///     changed semantically, avoiding unnecessary downstream pipeline re-execution.
-///     </para>
 /// </remarks>
 internal sealed class EquatableList<T>(IEnumerable<T> items) : IEquatable<EquatableList<T>>, IReadOnlyList<T> {
     /// <summary>

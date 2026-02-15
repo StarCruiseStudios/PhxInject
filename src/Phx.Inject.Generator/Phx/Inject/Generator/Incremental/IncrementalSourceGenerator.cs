@@ -45,45 +45,31 @@ internal static class PhxInject {
 ///     Stage 2 pipeline that transforms metadata into executable injection implementations.
 /// </param>
 /// <remarks>
-///     <para>Design Philosophy:</para>
-///     <para>
+///     ## Design Philosophy
+///
 ///     This generator moves dependency resolution from runtime to compile-time, eliminating
 ///     reflection overhead and detecting configuration errors during build. Unlike traditional
 ///     DI containers, this approach produces AOT-friendly, debuggable code with zero runtime cost.
-///     </para>
 ///     
-///     <para>Two-Stage Architecture:</para>
-///     <list type="number">
-///         <item>
-///             <term>Stage 1 (Metadata):</term>
-///             <description>
-///             Parses source code to extract DI specifications (factories, builders, injectors).
-///             Produces immutable metadata records that leverage Roslyn's incremental compilation
-///             model to minimize recomputation when unrelated code changes.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Stage 2 (Core):</term>
-///             <description>
-///             Transforms validated metadata into concrete C# code that implements the dependency
-///             graph. Generated code is statically typed, fully inlinable, and produces no
-///             allocations beyond the injected objects themselves.
-///             </description>
-///         </item>
-///     </list>
+///     ## Two-Stage Architecture
+///
+///     1. **Stage 1 (Metadata)**: Parses source code to extract DI specifications (factories, builders, injectors).
+///        Produces immutable metadata records that leverage Roslyn's incremental compilation
+///        model to minimize recomputation when unrelated code changes.
+///     2. **Stage 2 (Core)**: Transforms validated metadata into concrete C# code that implements the dependency
+///        graph. Generated code is statically typed, fully inlinable, and produces no
+///        allocations beyond the injected objects themselves.
 ///     
-///     <para>Incremental Generation:</para>
-///     <para>
+///     ## Incremental Generation
+///
 ///     Designed to work efficiently with Roslyn's incremental generator model. Each pipeline
 ///     stage produces cacheable, value-comparable results. When a file changes, only affected
 ///     pipelines re-execute, dramatically improving IDE responsiveness in large solutions.
-///     </para>
 ///     
-///     <para>Thread Safety:</para>
-///     <para>
+///     ## Thread Safety
+///
 ///     Generator instances may be shared across builds. All state is immutable or thread-local.
 ///     Pipelines are singleton instances that can safely process multiple syntax trees concurrently.
-///     </para>
 ///     
 ///     <seealso href="https://github.com/dotnet/roslyn/blob/main/docs/features/incremental-generators.md"/>
 /// </remarks>
@@ -112,24 +98,19 @@ internal sealed class IncrementalSourceGenerator(
     ///     The Roslyn context providing access to syntax providers and output registration.
     /// </param>
     /// <remarks>
-    ///     <para>
     ///     This method defines the entire incremental pipeline graph. Roslyn caches intermediate
     ///     results between builds, only re-executing nodes when their inputs change. This is
     ///     critical for maintaining fast incremental compilation in large projects.
-    ///     </para>
     ///     
-    ///     <para>Pipeline Flow:</para>
-    ///     <list type="number">
-    ///         <item>Process metadata from syntax trees (Stage 1)</item>
-    ///         <item>Emit debug representations of parsed metadata (if enabled)</item>
-    ///         <item>Transform metadata into code generation models (Stage 2)</item>
-    ///         <item>Register diagnostic output to surface errors to the IDE/compiler</item>
-    ///     </list>
-    ///     
-    ///     <para>
+    ///     ## Pipeline Flow
+    ///
+    ///     1. Process metadata from syntax trees (Stage 1)
+    ///     2. Emit debug representations of parsed metadata (if enabled)
+    ///     3. Transform metadata into code generation models (Stage 2)
+    ///     4. Register diagnostic output to surface errors to the IDE/compiler
+    ///
     ///     Diagnostics are emitted as a separate output stream to ensure errors appear
     ///     even if code generation fails partway through.
-    ///     </para>
     /// </remarks>
     public void Initialize(IncrementalGeneratorInitializationContext generatorInitializationContext) {
         var output = generatorInitializationContext

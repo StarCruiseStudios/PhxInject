@@ -19,41 +19,36 @@ namespace Phx.Inject.Generator.Incremental.Util;
 ///     The value to wrap. Its changes will not trigger incremental regeneration.
 /// </param>
 /// <remarks>
-///     <para>Purpose:</para>
-///     <para>
+///     ## Purpose
+///
 ///     Roslyn's incremental generators use value equality on model objects to determine if
 ///     regeneration is needed. However, some data (like source file locations) is essential
 ///     for diagnostics but irrelevant for code generation decisions. Wrapping such values
 ///     prevents spurious regeneration when, for example, code is reformatted without changing
 ///     semantics.
-///     </para>
 ///     
-///     <para>Equality Semantics:</para>
-///     <para>
+///     ## Equality Semantics
+///
 ///     Two <c>GeneratorIgnored&lt;T&gt;</c> instances are always considered equal regardless
 ///     of their wrapped values, as long as they wrap the same type <c>T</c>. This intentionally
 ///     violates normal equality contracts but is correct in the context of incremental
 ///     compilation where we want to signal "this data doesn't affect output."
-///     </para>
 ///     
-///     <para>Usage Pattern:</para>
-///     <para>
+///     ## Usage Pattern
+///
 ///     Primarily used for <see cref="LocationInfo"/> fields in metadata records. Location
 ///     data is needed to report diagnostics at the correct source positions but shouldn't
 ///     trigger recompilation if a type definition is moved within a file.
-///     </para>
 ///     
-///     <para>Performance:</para>
-///     <para>
+///     ## Performance
+///
 ///     Minimal overhead - just a single object allocation and type-based hash code.
 ///     Avoids expensive deep comparisons of location data during incremental compilation checks.
-///     </para>
 ///     
-///     <para>When NOT to use:</para>
-///     <para>
+///     ## When NOT to use
+///
 ///     Do not wrap semantic data that affects code generation. If changing the value should
 ///     trigger regeneration, do not use this wrapper.
-///     </para>
 /// </remarks>
 internal class GeneratorIgnored<T>(T value) {
     /// <summary>
