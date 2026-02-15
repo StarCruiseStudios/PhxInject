@@ -26,7 +26,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specificatio
 /// <summary>
 /// Pipeline for processing Specification class declarations into metadata.
 /// </summary>
-internal class SpecClassPipeline(
+internal sealed class SpecClassPipeline(
     ICodeElementValidator elementValidator,
     IAttributeTransformer<SpecificationAttributeMetadata> specificationAttributeTransformer,
     ITransformer<IMethodSymbol, SpecFactoryMethodMetadata> specFactoryMethodTransformer,

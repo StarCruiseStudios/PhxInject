@@ -53,8 +53,8 @@ public class MyType { ... }
 ### Members
 
 - **Public fields/properties**: PascalCase (MyProperty, CurrentValue)
-- **Private fields**: _camelCase (_internalState, _cache)
-- **Constants**: SCREAMING_SNAKE_CASE (PIPELINE_VERSION, DEFAULT_TIMEOUT)
+- **Private fields**: camelCase (internalState, cache)
+- **Constants**: PascalCase (PipelineVersion, DefaultTimeout)
 - **Local variables**: camelCase (myLocal, result)
 - **Parameters**: camelCase (targetType, configuration)
 - **Methods**: PascalCase (AnalyzeSpecification, GetDependencies)
@@ -66,6 +66,16 @@ public class MyType { ... }
 - If multiple related types, use grouping folder
 
 ## Type Declarations
+
+### Visibility
+
+**Source Generator Projects** (Phx.Inject.Generator, Phx.Inject.Generator.Legacy):
+- All types MUST be `internal` - source generators should not expose public APIs
+- Only the generated code (output) is public to consuming projects
+
+**Library Projects** (Phx.Inject, Phx.Inject.Legacy):
+- Use appropriate visibility based on API design
+- Default to `internal` unless type is part of public API
 
 ### Classes
 

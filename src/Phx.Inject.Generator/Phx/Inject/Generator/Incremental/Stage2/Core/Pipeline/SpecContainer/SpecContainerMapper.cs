@@ -61,7 +61,7 @@ internal static class SpecContainerMapper {
 /// <summary>
 ///     Instance mapper for transforming specification metadata into spec container models.
 /// </summary>
-internal class SpecContainerMapperInstance {
+internal sealed class SpecContainerMapperInstance {
     /// <summary>
     ///     Maps specification class metadata to a spec container model.
     /// </summary>

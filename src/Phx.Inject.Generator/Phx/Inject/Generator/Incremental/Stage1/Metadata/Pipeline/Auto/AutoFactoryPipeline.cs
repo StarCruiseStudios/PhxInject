@@ -26,7 +26,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Auto;
 /// <summary>
 /// Pipeline for processing AutoFactory attributes into metadata.
 /// </summary>
-internal class AutoFactoryPipeline(
+internal sealed class AutoFactoryPipeline(
     ICodeElementValidator elementValidator,
     ICodeElementValidator constructorValidator,
     IAttributeTransformer<AutoFactoryAttributeMetadata> autoFactoryAttributeTransformer,

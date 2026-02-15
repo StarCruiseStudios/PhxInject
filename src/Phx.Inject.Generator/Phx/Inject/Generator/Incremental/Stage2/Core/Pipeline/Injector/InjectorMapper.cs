@@ -20,7 +20,7 @@ namespace Phx.Inject.Generator.Incremental.Stage2.Core.Pipeline.Injector;
 /// <summary>
 ///     Mapper for transforming injector interface metadata into injector models.
 /// </summary>
-internal class InjectorMapper {
+internal sealed class InjectorMapper {
     /// <summary> Gets the singleton instance of the injector mapper. </summary>
     public static readonly InjectorMapper Instance = new();
 

@@ -77,15 +77,6 @@ internal record SpecContainerFactoryModel(
 /// <summary>
 ///     Specifies the type of specification factory member.
 /// </summary>
-/// <remarks>
-///     <para>
-///     Determines how the container invokes the specification member to create instances:
-///     - Method: Calls a user-defined factory method
-///     - Property: Reads a user-defined factory property (lazy initialization pattern)
-///     - Reference: Delegates to another container's factory (cross-spec dependencies)
-///     - Constructor: Directly invokes type constructor (AutoFactory generates this)
-///     </para>
-/// </remarks>
 internal enum SpecFactoryMemberType {
     Method,
     Property,

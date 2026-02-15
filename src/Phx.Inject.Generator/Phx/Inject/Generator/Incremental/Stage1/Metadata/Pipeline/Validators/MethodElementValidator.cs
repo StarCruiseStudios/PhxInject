@@ -129,7 +129,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     varieties to accept. Most DI patterns want only ordinary methods, excluding accessors/operators.
 ///     </para>
 /// </remarks>
-internal class MethodElementValidator(
+internal sealed class MethodElementValidator(
     CodeElementAccessibility requiredAccessibility = CodeElementAccessibility.Any,
     MethodKindFilter methodKind = MethodKindFilter.Any,
     bool? returnsVoid = null,

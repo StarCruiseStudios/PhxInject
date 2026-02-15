@@ -95,7 +95,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     compatible addition of optional constructor parameters defaulting to current behavior.
 ///     </para>
 /// </remarks>
-internal class BuilderAttributeTransformer(
+internal sealed class BuilderAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
 ) : IAttributeTransformer<BuilderAttributeMetadata> {
     /// <summary>

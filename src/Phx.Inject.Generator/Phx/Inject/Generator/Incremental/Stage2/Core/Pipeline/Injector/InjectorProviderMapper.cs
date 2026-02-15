@@ -35,7 +35,7 @@ internal static class InjectorProviderMapper {
 /// <summary>
 ///     Instance mapper for transforming injector provider metadata into provider models.
 /// </summary>
-internal class InjectorProviderMapperInstance {
+internal sealed class InjectorProviderMapperInstance {
     /// <summary>
     ///     Maps injector provider metadata to a provider model.
     /// </summary>

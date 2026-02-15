@@ -46,7 +46,7 @@ internal static class SpecContainerBuilderMapper {
 /// <summary>
 ///     Instance mapper for transforming specification builder metadata into spec container builder models.
 /// </summary>
-internal class SpecContainerBuilderMapperInstance {
+internal sealed class SpecContainerBuilderMapperInstance {
     private static SpecContainerFactoryInvocationModel PlaceholderArgument(QualifiedTypeMetadata parameterType) {
         return new SpecContainerFactoryInvocationModel(
             EquatableList<SpecContainerFactorySingleInvocationModel>.Empty,

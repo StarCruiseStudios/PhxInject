@@ -26,7 +26,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specificatio
 /// <summary>
 /// Transforms specification factory methods into metadata.
 /// </summary>
-internal class SpecFactoryMethodTransformer(
+internal sealed class SpecFactoryMethodTransformer(
     ICodeElementValidator elementValidator,
     ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer,
     FactoryAttributeTransformer factoryAttributeTransformer,

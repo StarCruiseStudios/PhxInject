@@ -17,7 +17,7 @@ namespace Phx.Inject.Generator.Incremental.Diagnostics;
 /// <summary>
 ///     Exception thrown during code generation that contains diagnostic information.
 /// </summary>
-internal class GeneratorException : Exception {
+internal sealed class GeneratorException : Exception {
     /// <summary> The diagnostics associated with this exception. </summary>
     public EquatableList<DiagnosticInfo> DiagnosticInfos { get; }
 

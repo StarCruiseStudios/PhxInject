@@ -166,7 +166,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 /// </remarks>
-internal class PartialAttributeTransformer(
+internal sealed class PartialAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
 ) : IAttributeTransformer<PartialAttributeMetadata> {
     /// <summary>

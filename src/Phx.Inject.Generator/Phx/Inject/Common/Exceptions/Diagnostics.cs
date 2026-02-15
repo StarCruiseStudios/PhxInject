@@ -19,10 +19,7 @@ namespace Phx.Inject.Common.Exceptions;
 ///     Contains diagnostic data definitions for all errors, warnings, and info messages produced by the generator.
 /// </summary>
 internal static class Diagnostics {
-    /// <summary> The diagnostic category for all injection-related diagnostics. </summary>
     private const string InjectionCategory = "Injection";
-    
-    /// <summary> The prefix used for all Phx.Inject diagnostic IDs. </summary>
     private const string PhxInjectIdPrefix = "PHXINJECT";
 
     /// <summary> Debug information diagnostic. </summary>

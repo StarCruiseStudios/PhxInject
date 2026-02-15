@@ -128,7 +128,7 @@ internal record MetadataPipelineOutput(
 ///     transform phase extremely targeted.
 ///     </para>
 /// </remarks>
-internal class MetadataPipeline(
+internal sealed class MetadataPipeline(
     ISyntaxValuePipeline<PhxInjectSettingsMetadata> phxInjectSettingsPipeline,
     ISyntaxValuesPipeline<InjectorInterfaceMetadata> injectorPipeline,
     ISyntaxValuesPipeline<InjectorDependencyInterfaceMetadata> injectorDependencyPipeline,

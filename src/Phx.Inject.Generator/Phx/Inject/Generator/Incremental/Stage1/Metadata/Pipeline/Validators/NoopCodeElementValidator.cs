@@ -82,7 +82,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     - Noop validator: "Accept everything, filter nothing"
 ///     </para>
 /// </remarks>
-internal class NoopCodeElementValidator : ICodeElementValidator {
+internal sealed class NoopCodeElementValidator : ICodeElementValidator {
     /// <summary>
     ///     Singleton instance - use this instead of constructing new instances.
     /// </summary>

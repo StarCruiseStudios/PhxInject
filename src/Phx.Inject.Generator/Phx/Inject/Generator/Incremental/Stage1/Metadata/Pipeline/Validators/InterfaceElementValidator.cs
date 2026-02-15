@@ -116,7 +116,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///         </item>
 ///     </list>
 /// </remarks>
-internal class InterfaceElementValidator(
+internal sealed class InterfaceElementValidator(
     CodeElementAccessibility requiredAccessibility = CodeElementAccessibility.Any,
     IReadOnlyList<IAttributeChecker>? requiredAttributes = null
 ) : ICodeElementValidator {

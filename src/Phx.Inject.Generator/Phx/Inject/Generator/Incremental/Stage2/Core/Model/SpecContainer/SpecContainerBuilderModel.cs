@@ -75,18 +75,6 @@ internal record SpecContainerBuilderModel(
 /// <summary>
 ///     Specifies the type of specification builder member.
 /// </summary>
-/// <remarks>
-///     <para>
-///     Determines how the container invokes the specification member to create builders:
-///     - Method: Calls a user-defined builder factory method
-///     - Reference: Delegates to another container's builder (cross-spec builders)
-///     - Direct: Directly constructs the builder instance (uncommon, usually wrapped)
-///     </para>
-///     <para>
-///     Note: Unlike SpecFactoryMemberType, there's no Constructor option because builders
-///     are interfaces (IBuilder&lt;T&gt;) that can't be directly constructed.
-///     </para>
-/// </remarks>
 internal enum SpecBuilderMemberType {
     Method,
     Reference,

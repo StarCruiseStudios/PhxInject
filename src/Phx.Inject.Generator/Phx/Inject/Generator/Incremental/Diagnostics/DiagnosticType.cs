@@ -18,10 +18,7 @@ namespace Phx.Inject.Generator.Incremental.Diagnostics;
 ///     Defines the type and metadata for a diagnostic that can be reported during code generation.
 /// </summary>
 internal class DiagnosticType {
-    /// <summary> The diagnostic category for all injection-related diagnostics. </summary>
     private const string InjectionCategory = "Injection";
-    
-    /// <summary> The prefix used for all Phx.Inject diagnostic IDs. </summary>
     private const string PhxInjectIdPrefix = "PHXINJECT";
     
     /// <summary> Debug information diagnostic. </summary>

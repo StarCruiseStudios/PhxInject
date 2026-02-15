@@ -119,7 +119,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     accepting more false positives (filtered by symbol validation) rather than false negatives.
 ///     </para>
 /// </remarks>
-internal class AggregateElementValidator(
+internal sealed class AggregateElementValidator(
     IReadOnlyList<ICodeElementValidator> validators
 ) : ICodeElementValidator {
     /// <inheritdoc />

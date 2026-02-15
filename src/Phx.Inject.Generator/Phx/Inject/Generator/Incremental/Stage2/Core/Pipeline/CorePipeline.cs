@@ -136,7 +136,7 @@ internal record CorePipelineOutput(
 ///     a natural insertion point for these features without refactoring the architecture.
 ///     </para>
 /// </remarks>
-internal class CorePipeline(
+internal sealed class CorePipeline(
     InjectorPipeline injectorPipeline
 ) {
     /// <summary>

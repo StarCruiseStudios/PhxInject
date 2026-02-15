@@ -52,7 +52,7 @@ internal record PhxInjectSettingsMetadata(
     ) { }
 
     /// <summary> Interface for providers that transform PhxInjectAttributeMetadata into settings. </summary>
-    public interface IValuesProvider {
+    internal interface IValuesProvider {
         /// <summary> Transforms attribute metadata into settings metadata. </summary>
         /// <param name="context"> The PhxInjectAttributeMetadata to transform. </param>
         /// <param name="cancellationToken"> The cancellation token. </param>
@@ -61,7 +61,7 @@ internal record PhxInjectSettingsMetadata(
     }
 
     /// <summary> Default implementation of IValuesProvider for transforming settings. </summary>
-    public class ValuesProvider : IValuesProvider {
+    internal sealed class ValuesProvider : IValuesProvider {
         /// <summary> Gets the singleton instance of the ValuesProvider. </summary>
         public static readonly ValuesProvider Instance = new();
 

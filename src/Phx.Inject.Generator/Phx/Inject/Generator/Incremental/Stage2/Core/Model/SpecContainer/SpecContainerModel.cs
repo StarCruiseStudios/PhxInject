@@ -63,18 +63,6 @@ internal record SpecContainerModel(
 /// <summary>
 ///     Specifies how a specification is instantiated.
 /// </summary>
-/// <remarks>
-///     <para>
-///     Controls the lifetime and ownership of the specification instance:
-///     - Static: Specification has only static members, no instance needed
-///     - Instantiated: Injector creates new specification instance per request
-///     - Dependency: Specification instance provided externally (e.g., from parent injector)
-///     </para>
-///     <para>
-///     This determines whether the generated container wraps a specification field/property
-///     or simply forwards calls to static methods.
-///     </para>
-/// </remarks>
 internal enum SpecInstantiationMode {
     Static = 0,
     Instantiated = 1,

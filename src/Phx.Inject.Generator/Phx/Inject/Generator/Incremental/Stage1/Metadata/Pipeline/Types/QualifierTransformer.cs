@@ -22,7 +22,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Types;
 /// <summary>
 ///     Transforms symbol qualifier attributes into qualifier metadata.
 /// </summary>
-internal class QualifierTransformer(
+internal sealed class QualifierTransformer(
     IAttributeTransformer<LabelAttributeMetadata> labelAttributeTransformer,
     IAttributeTransformer<QualifierAttributeMetadata> qualifierAttributeTransformer
 ) : ITransformer<ISymbol, IQualifierMetadata> {

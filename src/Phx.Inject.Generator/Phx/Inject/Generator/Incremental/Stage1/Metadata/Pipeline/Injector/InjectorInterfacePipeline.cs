@@ -22,7 +22,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Injector;
 /// <summary>
 ///     Pipeline for processing Injector interface declarations into metadata.
 /// </summary>
-internal class InjectorInterfacePipeline(
+internal sealed class InjectorInterfacePipeline(
     ICodeElementValidator elementValidator,
     ITransformer<ITypeSymbol, InjectorInterfaceMetadata> injectorInterfaceTransformer
 ) : ISyntaxValuesPipeline<InjectorInterfaceMetadata> {

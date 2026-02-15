@@ -88,7 +88,7 @@ internal static class PhxInject {
 ///     <seealso href="https://github.com/dotnet/roslyn/blob/main/docs/features/incremental-generators.md"/>
 /// </remarks>
 [Generator(LanguageNames.CSharp)]
-internal class IncrementalSourceGenerator(
+internal sealed class IncrementalSourceGenerator(
     MetadataPipeline metadataPipeline,
     CorePipeline corePipeline
 ) : IIncrementalGenerator {

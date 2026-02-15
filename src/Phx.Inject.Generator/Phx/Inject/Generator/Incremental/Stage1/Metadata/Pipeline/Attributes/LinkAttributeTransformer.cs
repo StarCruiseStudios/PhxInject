@@ -202,7 +202,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 /// </remarks>
-internal class LinkAttributeTransformer(
+internal sealed class LinkAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
 ) : IAttributeListTransformer<LinkAttributeMetadata> {
     /// <summary>

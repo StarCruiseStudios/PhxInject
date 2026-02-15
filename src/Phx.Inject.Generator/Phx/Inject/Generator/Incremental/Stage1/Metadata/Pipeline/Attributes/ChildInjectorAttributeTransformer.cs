@@ -178,7 +178,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         </item>
 ///     </list>
 /// </remarks>
-internal class ChildInjectorAttributeTransformer(
+internal sealed class ChildInjectorAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
 ) : IAttributeTransformer<ChildInjectorAttributeMetadata> {
     /// <summary>

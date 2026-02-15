@@ -26,7 +26,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Injector;
 /// <summary>
 ///     Transforms injector provider methods into metadata.
 /// </summary>
-internal class InjectorProviderTransformer(
+internal sealed class InjectorProviderTransformer(
     ICodeElementValidator elementValidator,
     ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer
 ) : ITransformer<IMethodSymbol, InjectorProviderMetadata> {

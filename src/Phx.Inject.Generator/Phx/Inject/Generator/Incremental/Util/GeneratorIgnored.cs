@@ -55,7 +55,7 @@ namespace Phx.Inject.Generator.Incremental.Util;
 ///     trigger regeneration, do not use this wrapper.
 ///     </para>
 /// </remarks>
-public class GeneratorIgnored<T>(T value) {
+internal class GeneratorIgnored<T>(T value) {
     /// <summary>
     ///     Gets the wrapped value.
     /// </summary>
@@ -88,7 +88,7 @@ public class GeneratorIgnored<T>(T value) {
 ///     Provides convenient fluent syntax for creating ignored wrappers, typically used
 ///     when constructing metadata records from Roslyn symbols.
 /// </remarks>
-public static class GeneratorIgnoredExtensions {
+internal static class GeneratorIgnoredExtensions {
     /// <summary>
     ///     Wraps a value so it won't affect incremental generator equality comparisons.
     /// </summary>

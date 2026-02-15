@@ -19,7 +19,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 /// <summary>
 ///     Transforms InjectorDependency attribute data into metadata.
 /// </summary>
-internal class InjectorDependencyAttributeTransformer(
+internal sealed class InjectorDependencyAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
 ) : IAttributeTransformer<InjectorDependencyAttributeMetadata> {
     /// <summary>

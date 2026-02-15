@@ -35,7 +35,7 @@ internal static class InjectorChildFactoryMapper {
 /// <summary>
 ///     Instance mapper for transforming injector child provider metadata into child factory models.
 /// </summary>
-internal class InjectorChildFactoryMapperInstance {
+internal sealed class InjectorChildFactoryMapperInstance {
     /// <summary>
     ///     Maps injector child provider metadata to a child factory model.
     /// </summary>

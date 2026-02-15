@@ -105,7 +105,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     pure and reusable across different diagnostic strategies.
 ///     </para>
 /// </remarks>
-internal class ClassElementValidator(
+internal sealed class ClassElementValidator(
     CodeElementAccessibility requiredAccessibility = CodeElementAccessibility.Any,
     bool? isStatic = null,
     bool? isAbstract = null,

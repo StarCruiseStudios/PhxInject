@@ -149,7 +149,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     adding cost.
 ///     </para>
 /// </remarks>
-internal class DependencyAttributeTransformer(
+internal sealed class DependencyAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer,
     ICodeElementValidator dependencyTypeValidator
 ) : IAttributeTransformer<DependencyAttributeMetadata> {

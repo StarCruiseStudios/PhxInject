@@ -27,7 +27,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Specificatio
 /// <summary>
 /// Transforms specification builder references into metadata.
 /// </summary>
-internal class SpecBuilderReferenceTransformer(
+internal sealed class SpecBuilderReferenceTransformer(
     ICodeElementValidator elementValidator,
     ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer,
     IAttributeTransformer<BuilderReferenceAttributeMetadata> builderReferenceAttributeTransformer

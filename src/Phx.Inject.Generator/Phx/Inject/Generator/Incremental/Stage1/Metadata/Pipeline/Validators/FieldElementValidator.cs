@@ -159,7 +159,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     all field declarations at syntax phase and rely on symbol validation for authoritative checks.
 ///     </para>
 /// </remarks>
-internal class FieldElementValidator(
+internal sealed class FieldElementValidator(
     CodeElementAccessibility requiredAccessibility = CodeElementAccessibility.Any,
     bool? isStatic = null,
     bool? isReadonly = null,

@@ -188,7 +188,7 @@ internal interface IAttributeMetadataTransformer {
 ///     references when the symbol count is small, which is the common case.
 ///     </para>
 /// </remarks>
-internal class AttributeMetadataTransformer : IAttributeMetadataTransformer {
+internal sealed class AttributeMetadataTransformer : IAttributeMetadataTransformer {
     /// <summary>
     ///     Gets the singleton instance.
     /// </summary>

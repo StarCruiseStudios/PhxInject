@@ -73,7 +73,7 @@ internal static class SpecContainerFactoryMapper {
 /// <summary>
 ///     Instance mapper for transforming specification factory metadata into spec container factory models.
 /// </summary>
-internal class SpecContainerFactoryMapperInstance {
+internal sealed class SpecContainerFactoryMapperInstance {
     private static SpecContainerFactoryInvocationModel PlaceholderArgument(
         QualifiedTypeMetadata parameterType
     ) {

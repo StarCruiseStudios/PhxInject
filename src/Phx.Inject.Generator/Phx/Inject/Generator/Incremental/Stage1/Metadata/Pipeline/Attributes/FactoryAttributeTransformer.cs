@@ -128,7 +128,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     integer comparison - negligible cost in equality checks.
 ///     </para>
 /// </remarks>
-internal class FactoryAttributeTransformer(
+internal sealed class FactoryAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
 ) : IAttributeTransformer<FactoryAttributeMetadata> {
     /// <summary>

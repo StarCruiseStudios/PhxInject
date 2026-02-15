@@ -24,7 +24,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Auto;
 /// <summary>
 /// Transforms required properties for auto factories into metadata.
 /// </summary>
-internal class AutoFactoryRequiredPropertyTransformer(
+internal sealed class AutoFactoryRequiredPropertyTransformer(
     ICodeElementValidator elementValidator,
     ICodeElementValidator setterElementValidator,
     ITransformer<ISymbol, IQualifierMetadata> qualifierTransformer

@@ -161,7 +161,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     false-positive rate at syntax phase in exchange for correctness and maintainability.
 ///     </para>
 /// </remarks>
-internal class PropertyElementValidator(
+internal sealed class PropertyElementValidator(
     CodeElementAccessibility requiredAccessibility = CodeElementAccessibility.Any,
     bool? isStatic = null,
     bool? hasGetter = null,

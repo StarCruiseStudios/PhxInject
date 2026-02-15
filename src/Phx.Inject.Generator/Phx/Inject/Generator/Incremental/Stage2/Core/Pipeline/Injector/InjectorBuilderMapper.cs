@@ -35,7 +35,7 @@ internal static class InjectorBuilderMapper {
 /// <summary>
 ///     Instance mapper for transforming injector activator metadata into builder models.
 /// </summary>
-internal class InjectorBuilderMapperInstance {
+internal sealed class InjectorBuilderMapperInstance {
     /// <summary>
     ///     Maps injector activator metadata to an injector builder model.
     /// </summary>

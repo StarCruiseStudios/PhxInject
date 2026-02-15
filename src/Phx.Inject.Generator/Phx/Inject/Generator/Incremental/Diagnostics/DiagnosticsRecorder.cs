@@ -34,7 +34,7 @@ namespace Phx.Inject.Generator.Incremental.Diagnostics;
 ///     This provides graceful degradation - other files still compile even if one has issues.
 ///     </para>
 /// </remarks>
-internal class DiagnosticsRecorder : IDiagnosticsRecorder {
+internal sealed class DiagnosticsRecorder : IDiagnosticsRecorder {
     /// <summary>
     ///     Internal collection of accumulated diagnostics. Growable to handle any number of errors.
     /// </summary>

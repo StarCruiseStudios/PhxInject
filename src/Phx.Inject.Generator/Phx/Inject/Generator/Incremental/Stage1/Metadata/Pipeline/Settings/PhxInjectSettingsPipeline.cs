@@ -23,7 +23,7 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Settings;
 /// <summary>
 /// Pipeline for processing PhxInject settings from assembly attributes.
 /// </summary>
-internal class PhxInjectSettingsPipeline(
+internal sealed class PhxInjectSettingsPipeline(
     ICodeElementValidator elementValidator,
     IAttributeTransformer<PhxInjectAttributeMetadata> phxInjectAttributeTransformer
 ) : ISyntaxValuePipeline<PhxInjectSettingsMetadata> {
