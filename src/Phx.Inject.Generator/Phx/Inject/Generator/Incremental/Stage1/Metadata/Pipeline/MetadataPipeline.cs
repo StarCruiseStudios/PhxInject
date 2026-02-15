@@ -30,21 +30,9 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 ///     Aggregated output from all Stage 1 metadata extraction pipeline segments.
 /// </summary>
 /// <remarks>
-///     <para>Purpose:</para>
-///     <para>
-///     Collects the results of parallel metadata extraction pipelines into a single data structure
-///     for consumption by Stage 2 (core pipeline). Each segment processes a different category of
-///     DI declarations (injectors, specs, auto-factories, etc.) independently, leveraging Roslyn's
-///     incremental compilation infrastructure for optimal performance.
-///     </para>
-///     
-///     <para>Incremental Compilation Benefits:</para>
-///     <para>
-///     By separating extraction into independent pipeline segments, changes to one file only
-///     reprocess the affected segments. For example, modifying a specification class doesn't
-///     re-extract injector metadata from unchanged files. The DiagnosticsPipelineSegment aggregates
-///     all diagnostics for batch reporting after extraction completes.
-///     </para>
+///     Collects parallel metadata extraction results for Stage 2 consumption. Independent segments
+///     process different DI declaration types (injectors, specs, auto-factories). Incremental
+///     compilation benefit: changes to one file only reprocess affected segments.
 /// </remarks>
 internal record MetadataPipelineOutput(
     IncrementalValueProvider<IResult<PhxInjectSettingsMetadata>> PhxInjectSettingsPipelineSegment,
@@ -61,72 +49,10 @@ internal record MetadataPipelineOutput(
 ///     Stage 1 orchestration layer that coordinates parallel extraction of DI metadata from source code.
 /// </summary>
 /// <remarks>
-///     <para>Architectural Role - Two-Stage Processing:</para>
-///     <para>
-///     MetadataPipeline is the first of two major pipeline stages in the generator architecture.
-///     Stage 1 (this class) extracts structural metadata from source syntax, while Stage 2 (CorePipeline)
-///     transforms that metadata into executable implementation code. This separation enables:
-///     </para>
-///     <list type="number">
-///         <item>
-///             <description>
-///             Incremental caching at metadata level - syntax changes don't invalidate code generation
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Parallel extraction of independent declaration types (injectors, specs, factories)
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Centralized validation and error reporting before attempting code generation
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Pipeline Segment Independence:</para>
-///     <para>
-///     Each segment processes a specific attribute-marked declaration type independently:
-///     </para>
-///     <list type="bullet">
-///         <item>
-///             <term>PhxInjectSettingsPipeline:</term>
-///             <description>Singleton assembly-level configuration</description>
-///         </item>
-///         <item>
-///             <term>InjectorInterfacePipeline:</term>
-///             <description>@Injector interface declarations that define DI containers</description>
-///         </item>
-///         <item>
-///             <term>InjectorDependencyPipeline:</term>
-///             <description>@InjectorDependency interfaces consumed by child injectors</description>
-///         </item>
-///         <item>
-///             <term>SpecClassPipeline/SpecInterfacePipeline:</term>
-///             <description>@Specification types that define factory/builder methods</description>
-///         </item>
-///         <item>
-///             <term>AutoFactoryPipeline/AutoBuilderPipeline:</term>
-///             <description>@AutoFactory/@AutoBuilder types for automatic code generation</description>
-///         </item>
-///     </list>
-///     
-///     <para>Diagnostic Aggregation Strategy:</para>
-///     <para>
-///     Instead of reporting errors during extraction, each segment accumulates diagnostics in
-///     Result&lt;T&gt; wrappers. The Process method merges all diagnostics into a single stream
-///     for batch reporting after all segments complete. This prevents error avalanches where one
-///     malformed declaration causes cascade failures in dependent segments.
-///     </para>
-///     
-///     <para>Performance Characteristics:</para>
-///     <para>
-///     Leverages Roslyn's parallel processing via IncrementalValuesProvider. Each segment's
-///     predicate filter executes on syntax nodes in parallel, with transformations cached between
-///     compilations. Typically only 1-5% of syntax nodes pass predicate filters, making the
-///     transform phase extremely targeted.
-///     </para>
+///     Two-stage architecture: Stage 1 extracts structural metadata from syntax; Stage 2 transforms
+///     to code. Separation enables incremental caching, parallel extraction, centralized validation.
+///     Independent segments process different attributes (injectors, specs, factories) in parallel.
+///     Diagnostics accumulated in <c>Result</c> wrappers, merged for batch reporting after completion.
 /// </remarks>
 internal sealed class MetadataPipeline(
     ISyntaxValuePipeline<PhxInjectSettingsMetadata> phxInjectSettingsPipeline,
@@ -141,8 +67,7 @@ internal sealed class MetadataPipeline(
     ///     Gets the singleton pipeline instance configured with production pipeline segments.
     /// </summary>
     /// <remarks>
-    ///     Uses singleton pattern since pipeline configuration is static. All segments are themselves
-    ///     singletons, making this a lightweight structural aggregator rather than a stateful service.
+    ///     Singleton pattern (static configuration). Lightweight structural aggregator.
     /// </remarks>
     public static readonly MetadataPipeline Instance = new(
         PhxInjectSettingsPipeline.Instance,
@@ -165,40 +90,11 @@ internal sealed class MetadataPipeline(
     ///     and a merged diagnostic stream for error reporting.
     /// </returns>
     /// <remarks>
-    ///     <para>Execution Flow:</para>
-    ///     <list type="number">
-    ///         <item>
-    ///             <description>
-    ///             Each segment's Select method registers with SyntaxProvider (predicate + transform)
-    ///             </description>
-    ///         </item>
-    ///         <item>
-    ///             <description>
-    ///             Roslyn executes predicates in parallel across all syntax nodes
-    ///             </description>
-    ///         </item>
-    ///         <item>
-    ///             <description>
-    ///             Transforms execute for nodes that pass predicate, with incremental caching
-    ///             </description>
-    ///         </item>
-    ///         <item>
-    ///             <description>
-    ///             SelectDiagnostics extracts error/warning info from Result wrappers
-    ///             </description>
-    ///         </item>
-    ///         <item>
-    ///             <description>
-    ///             Merge combines diagnostic streams into single aggregated output
-    ///             </description>
-    ///         </item>
-    ///     </list>
-    ///     
-    ///     <para>Diagnostic Merging Tree:</para>
-    ///     <para>
-    ///     Diagnostics are merged in a binary tree structure to balance merge operations and
-    ///     avoid long linear chains that could create performance bottlenecks or stack depth issues.
-    ///     The tree structure ensures O(log n) merge depth instead of O(n).
+    ///     Each segment registers with <c>SyntaxProvider</c> (predicate + transform). Roslyn executes
+    ///     predicates in parallel across syntax nodes, then transforms on passing nodes with caching.
+    ///     <c>SelectDiagnostics</c> extracts errors from <c>Result</c> wrappers. Merge combines
+    ///     diagnostic streams in binary tree (O(log n) depth vs O(n) linear).
+    /// </remarks>
     ///     </para>
     ///     
     ///     <para>Why Not Parallel Execution?</para>

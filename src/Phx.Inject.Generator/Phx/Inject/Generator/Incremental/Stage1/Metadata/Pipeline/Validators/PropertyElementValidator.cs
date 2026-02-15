@@ -21,134 +21,18 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 /// <summary>
 ///     Validates that a property symbol meets specified structural and semantic requirements.
 /// </summary>
-/// <param name="requiredAccessibility">
-///     Required accessibility level (Any, PublicOrInternal, etc.). Defaults to Any.
-/// </param>
-/// <param name="isStatic">
-///     If non-null, specifies whether property must be static (true) or instance (false).
-/// </param>
-/// <param name="hasGetter">
-///     If non-null, specifies whether property must have a getter (true) or not (false).
-/// </param>
-/// <param name="hasSetter">
-///     If non-null, specifies whether property must have a setter (true) or not (false).
-/// </param>
-/// <param name="isRequired">
-///     If non-null, specifies whether property must have the 'required' modifier (C# 11+).
-/// </param>
-/// <param name="requiredAttributes">
-///     Attributes that must all be present. Null/empty means no attribute requirements.
-/// </param>
-/// <param name="prohibitedAttributes">
-///     Attributes that must not be present. Null/empty means no prohibited attributes.
-/// </param>
+/// <param name="requiredAccessibility">Required accessibility level. Defaults to Any.</param>
+/// <param name="isStatic">If non-null, specifies whether property must be static.</param>
+/// <param name="hasGetter">If non-null, specifies whether property must have a getter.</param>
+/// <param name="hasSetter">If non-null, specifies whether property must have a setter.</param>
+/// <param name="isRequired">If non-null, specifies whether property must have the 'required' modifier (C# 11+).</param>
+/// <param name="requiredAttributes">Attributes that must all be present.</param>
+/// <param name="prohibitedAttributes">Attributes that must not be present.</param>
 /// <remarks>
-///     <para>Design Purpose - Property Injection Patterns:</para>
-///     <para>
-///     Property validators enable validation of setter injection and property-based configuration patterns.
-///     Key DI patterns supported:
-///     </para>
-///     <list type="bullet">
-///         <item>
-///             <term>Property Injection:</term>
-///             <description>
-///             Public settable properties marked with @Inject. Allows optional dependencies and post-construction
-///             initialization. Requires setter accessibility validation.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Configuration Properties:</term>
-///             <description>
-///             Read-only properties on specification objects that expose configuration values.
-///             Requires getter presence, may prohibit setters for immutability.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Required Properties (C# 11):</term>
-///             <description>
-///             Properties marked 'required' ensure object initialization completeness. Validation ensures
-///             generated code satisfies required property constraints.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Static Context Properties:</term>
-///             <description>
-///             Static properties on specification classes providing global constants or ambient context.
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>WHY These Constraints Exist:</para>
-///     <list type="bullet">
-///         <item>
-///             <term>Setter requirement:</term>
-///             <description>
-///             Property injection requires a setter to actually inject the dependency. Getter-only
-///             properties cannot be injected after construction. Enforcing this prevents confusing
-///             situations where @Inject on a read-only property silently does nothing.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Getter requirement:</term>
-///             <description>
-///             Configuration properties that will be read by generated code must have getters.
-///             Write-only properties cannot provide dependency information to the generator.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Static constraint:</term>
-///             <description>
-///             Instance properties imply state, static properties imply configuration. Specification
-///             patterns often require static-only members to ensure statelessness and avoid accidental
-///             instance dependencies.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Required modifier check:</term>
-///             <description>
-///             C# 11 'required' properties must be initialized during object construction. Generated
-///             code must honor this contract or produce compiler errors. Validation ensures the generator
-///             can satisfy required property constraints.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Accessibility validation:</term>
-///             <description>
-///             Generated code must be able to access the property's setter/getter. Private properties
-///             cannot be injected or read from external generated code. Catching this early provides
-///             clear diagnostics rather than obscure compiler errors.
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>What Malformed Code Gets Caught:</para>
-///     <list type="bullet">
-///         <item>
-///             <description>
-///             @Inject attributes on read-only properties (cannot inject without setter)
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Configuration properties without getters (cannot read configuration)
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Instance properties on specification classes (violates statelessness)
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Private properties marked for injection (inaccessible to generated code)
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Syntax vs Symbol Validation Gap:</para>
-///     <para>
-///     Syntax validation cannot determine getter/setter presence or accessibility from PropertyDeclarationSyntax
-///     without analyzing the accessor list in detail. Rather than duplicate complex parsing logic, we defer
+///     Validates property injection patterns and configuration properties. Setter requirement ensures
+///     injection is possible, getter requirement ensures configuration is readable. Static constraint
+///     prevents hidden state. Required modifier handling ensures generated code honors C# 11 contracts.
+/// </remarks>
 ///     all property-specific validation to the symbol phase. Syntax phase only confirms it's a property
 ///     declaration. This trades some syntax-level filtering for simpler, more maintainable code.
 ///     </para>

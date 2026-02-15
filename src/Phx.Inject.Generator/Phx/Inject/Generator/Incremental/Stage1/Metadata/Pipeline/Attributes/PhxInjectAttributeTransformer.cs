@@ -20,6 +20,11 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 /// <summary>
 ///     Transforms PhxInject attribute data into metadata.
 /// </summary>
+/// <remarks>
+///     Extracts code generation configuration from assembly-level <c>[PhxInject]</c> attribute. Named
+///     arguments provide <c>TabSize</c> (indentation width), <c>GeneratedFileExtension</c> (output file
+///     suffix), and <c>NullableEnabled</c> (nullable context for generated code).
+/// </remarks>
 internal sealed class PhxInjectAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
 ) : IAttributeTransformer<PhxInjectAttributeMetadata> {

@@ -24,58 +24,11 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 ///     and structurally comparable (IEquatable&lt;T&gt;) for incremental compilation caching.
 /// </typeparam>
 /// <remarks>
-///     <para>Collection Pattern for Multiple Declarations:</para>
-///     <para>
-///     Use ISyntaxValuesPipeline (plural) when multiple instances of the metadata type can coexist
-///     in a compilation, such as:
-///     </para>
-///     <list type="bullet">
-///         <item>
-///             <description>
-///             Multiple injectors - each @Injector interface becomes one InjectorInterfaceMetadata
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Multiple specifications - each @Specification class/interface is independent
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Multiple factories, builders, auto-generation targets, etc.
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>vs. ISyntaxValuePipeline (Singular):</para>
-///     <para>
-///     For singleton metadata like assembly settings, use ISyntaxValuePipeline which produces
-///     IncrementalValueProvider (single value). This plural version produces IncrementalValuesProvider
-///     (stream of values), one per matching declaration.
-///     </para>
-///     
-///     <para>Result Wrapping Per Element:</para>
-///     <para>
-///     Each element in the stream is wrapped in IResult&lt;T&gt;, allowing individual declarations
-///     to fail independently. If extracting metadata for InjectorA succeeds but InjectorB has errors,
-///     the stream contains Success(InjectorA) and Failure(diagnostics_for_B). Processing continues
-///     for remaining elements.
-///     </para>
-///     
-///     <para>Parallel Processing:</para>
-///     <para>
-///     Roslyn processes each element in the stream independently and potentially in parallel.
-///     Predicate and transform must be thread-safe. The order of elements in the stream is undefined
-///     (do not rely on source file order or declaration order).
-///     </para>
-///     
-///     <para>Incremental Update Granularity:</para>
-///     <para>
-///     When a single declaration changes, only that element's transform re-executes. Other elements
-///     remain cached. This fine-grained caching is why ISyntaxValuesPipeline is preferred over
-///     ISyntaxValuePipeline.Collect() for collections - the latter would invalidate the entire
-///     collection on any single change.
-///     </para>
+///     Collection pattern for multiple instances per compilation (e.g., multiple injectors/specs).
+///     Returns <c>IResult&lt;T&gt;</c> per element (independent failure). Produces
+///     <c>IncrementalValuesProvider</c> (stream). For singleton metadata use
+///     <c>ISyntaxValuePipeline</c>. Parallel processing per element, thread-safe required. Granular
+///     caching: only changed declarations re-execute. Order undefined (don't rely on source order).
 /// </remarks>
 internal interface ISyntaxValuesPipeline<T> where T : ISourceCodeElement, IEquatable<T> {
     /// <summary>
@@ -89,39 +42,9 @@ internal interface ISyntaxValuesPipeline<T> where T : ISourceCodeElement, IEquat
     ///     one per matching declaration. Each Result contains either extracted metadata or diagnostics.
     /// </returns>
     /// <remarks>
-    ///     <para>Two-Phase Processing Per Element:</para>
-    ///     <para>
-    ///     Implementation typically calls syntaxProvider.CreateSyntaxProvider with:
-    ///     </para>
-    ///     <list type="number">
-    ///         <item>
-    ///             <term>Predicate:</term>
-    ///             <description>
-    ///             Fast syntax-only filter executed on every syntax node in parallel.
-    ///             Returns true for nodes that might be relevant (e.g., classes with certain modifiers).
-    ///             </description>
-    ///         </item>
-    ///         <item>
-    ///             <term>Transform:</term>
-    ///             <description>
-    ///             Semantic extraction executed only for nodes passing predicate.
-    ///             Has full semantic model access for type resolution, attribute checking, etc.
-    ///             </description>
-    ///         </item>
-    ///     </list>
-    ///     
-    ///     <para>Caching and Invalidation:</para>
-    ///     <para>
-    ///     Each element in the stream is cached independently. Editing fileA.cs only invalidates
-    ///     cache entries for declarations in fileA.cs. Declarations in fileB.cs remain cached.
-    ///     This granular caching is essential for IDE responsiveness in large codebases.
-    ///     </para>
-    ///     
-    ///     <para>Empty Stream Handling:</para>
-    ///     <para>
-    ///     If no declarations match the predicate, the stream is empty (not null, not a single
-    ///     Result.Failure). Downstream consumers must handle empty streams appropriately.
-    ///     </para>
+    ///     Calls <c>syntaxProvider.CreateSyntaxProvider</c> with predicate (fast syntax filter on all
+    ///     nodes in parallel) and transform (semantic extraction on passing nodes only). Each element
+    ///     cached independently (edit fileA doesn't invalidate fileB). Empty stream if no matches.
     /// </remarks>
     IncrementalValuesProvider<IResult<T>> Select(SyntaxValueProvider syntaxProvider);
 }

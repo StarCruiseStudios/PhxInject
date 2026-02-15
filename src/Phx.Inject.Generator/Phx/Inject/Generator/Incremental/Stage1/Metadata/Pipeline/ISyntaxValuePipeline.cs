@@ -24,50 +24,11 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline;
 ///     and structurally comparable (IEquatable&lt;T&gt;) for incremental compilation caching.
 /// </typeparam>
 /// <remarks>
-///     <para>Singleton vs Collection Pattern:</para>
-///     <para>
-///     Use ISyntaxValuePipeline (singular) when exactly one instance of the metadata type should
-///     exist per compilation, such as:
-///     </para>
-///     <list type="bullet">
-///         <item>
-///             <description>
-///             Assembly-level settings (PhxInjectSettingsMetadata) - configuration is global
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Compilation-wide aggregations or summaries
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Any metadata where multiple declarations would be an error
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>vs. ISyntaxValuesPipeline (Plural):</para>
-///     <para>
-///     Most DI declarations are plural - multiple injectors, specs, factories, etc. Use
-///     ISyntaxValuesPipeline for those cases. This singular version produces IncrementalValueProvider
-///     (single value) while plural produces IncrementalValuesProvider (stream of values).
-///     </para>
-///     
-///     <para>Result Wrapping:</para>
-///     <para>
-///     Returns IResult&lt;T&gt; rather than T directly to enable error handling without exceptions.
-///     If metadata extraction fails (malformed syntax, validation errors), the Result contains
-///     diagnostics instead of a value. This allows the pipeline to continue processing other
-///     segments even when one fails.
-///     </para>
-///     
-///     <para>Incremental Compilation Contract:</para>
-///     <para>
-///     The IncrementalValueProvider returned is lazy - Select registers a computation but doesn't
-///     execute it. Roslyn's incremental engine decides when to execute based on cache validity.
-///     T must be immutable and implement structural equality to serve as an effective cache key.
-///     </para>
+///     Singleton pattern for exactly one metadata instance per compilation (e.g., assembly settings).
+///     Returns <c>IResult&lt;T&gt;</c> for error handling without exceptions. Produces
+///     <c>IncrementalValueProvider</c> (single value). For multiple instances use
+///     <c>ISyntaxValuesPipeline</c> (plural). Implements two-phase: predicate filters syntax,
+///     transform extracts semantics with full model access.
 /// </remarks>
 internal interface ISyntaxValuePipeline<T> where T : ISourceCodeElement, IEquatable<T> {
     /// <summary>
@@ -81,35 +42,9 @@ internal interface ISyntaxValuePipeline<T> where T : ISourceCodeElement, IEquata
     ///     pipeline executes. The Result contains either the extracted metadata or diagnostics.
     /// </returns>
     /// <remarks>
-    ///     <para>Two-Phase Processing:</para>
-    ///     <para>
-    ///     Implementation typically calls syntaxProvider.CreateSyntaxProvider with:
-    ///     </para>
-    ///     <list type="number">
-    ///         <item>
-    ///             <term>Predicate:</term>
-    ///             <description>
-    ///             Fast syntax-only filter (does this node look like it might be relevant?)
-    ///             </description>
-    ///         </item>
-    ///         <item>
-    ///             <term>Transform:</term>
-    ///             <description>
-    ///             Semantic extraction (given this relevant node, extract full metadata)
-    ///             </description>
-    ///         </item>
-    ///     </list>
-    ///     <para>
-    ///     After creating the provider, typically applies .Collect() or .Select() to aggregate
-    ///     into a single value (e.g., take first match, or error if multiple found).
-    ///     </para>
-    ///     
-    ///     <para>Caching Behavior:</para>
-    ///     <para>
-    ///     Roslyn caches both predicate and transform results. If a syntax node is unchanged and
-    ///     the semantic model is unchanged, neither phase re-executes. If syntax changes but
-    ///     semantic result is equal (by T.Equals), downstream stages don't re-execute.
-    ///     </para>
+    ///     Calls <c>syntaxProvider.CreateSyntaxProvider</c> with predicate (fast syntax filter) and
+    ///     transform (semantic extraction). Applies <c>.Collect()</c> or <c>.Select()</c> to
+    ///     aggregate into single value. Roslyn caches both phases; unchanged results skip downstream.
     /// </remarks>
     IncrementalValueProvider<IResult<T>> Select(SyntaxValueProvider syntaxProvider);
 }

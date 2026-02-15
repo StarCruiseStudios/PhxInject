@@ -23,132 +23,12 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms AutoFactory attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     <para>Purpose - Auto-Generated Factory Injection:</para>
-///     <para>
-///     [AutoFactory] marks parameters that should receive an automatically-created factory for producing
-///     the specified type. Instead of injecting an instance directly or requiring manual factory method
-///     declaration, generator creates a factory on-demand. The transformer extracts optional FabricationMode
-///     controlling how the auto-generated factory creates instances.
-///     </para>
-///     
-///     <para>User Code Pattern - Implicit Factory Generation:</para>
-///     <code>
-///     [Specification]
-///     public interface IServices {
-///         // No explicit factory method needed!
-///         [Factory]
-///         IProcessor CreateProcessor(
-///             [AutoFactory] Func&lt;IUserService&gt; userServiceFactory);
-///         
-///         // Generator auto-creates factory for IUserService
-///         // even though no [Factory] IUserService method exists
-///     }
-///     </code>
-///     <para>
-///     Generator analyzes IUserService, determines how to construct it (constructor, dependencies, etc.),
-///     and creates a factory delegate automatically. User doesn't need to write explicit factory method.
-///     </para>
-///     
-///     <para>User Code Pattern - FabricationMode Configuration:</para>
-///     <code>
-///     [Specification]
-///     public interface IServices {
-///         [Factory]
-///         ICache CreateCache(
-///             [AutoFactory(FabricationMode.Scoped)]
-///             Func&lt;IUserService&gt; userServiceFactory);
-///     }
-///     </code>
-///     <para>
-///     FabricationMode controls auto-factory behavior: Recurrent creates new instance per call,
-///     Scoped caches first instance, Container/ContainerScoped handle child injector scoping.
-///     </para>
-///     
-///     <para>FabricationMode Extraction - Identical to FactoryReference:</para>
-///     <para>
-///     Extraction logic mirrors FactoryReferenceAttributeTransformer:
-///     </para>
-///     <list type="number">
-///         <item>
-///             <term>Named Argument (Primary):</term>
-///             <description>
-///             `GetNamedArgument&lt;FabricationMode?&gt;(nameof(AutoFactoryAttribute.FabricationMode))`
-///             extracts property-style argument. Returns null if unspecified.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Constructor Argument (Fallback):</term>
-///             <description>
-///             `GetConstructorArgument&lt;FabricationMode&gt;(argument => argument.Type!.GetFullyQualifiedName() == FabricationModeClassName, default)`
-///             finds enum by type checking. Returns default(0) if not found.
-///             </description>
-///         </item>
-///     </list>
-///     <para>
-///     Type-based filtering ensures resilience across attribute signature changes (see FactoryReference docs).
-///     </para>
-///     
-///     <para>Why AutoFactory Needs Special Handling - On-Demand Factory Creation:</para>
-///     <para>
-///     AutoFactory requires special generation because:
-///     </para>
-///     <list type="bullet">
-///         <item>
-///             <description>
-///             No explicit factory method exists in specification (unlike [FactoryReference])
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Generator must analyze target type's constructor and dependencies automatically
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Generated factory delegate captures all transitive dependencies from injector
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             FabricationMode affects generated closure (scoped requires field storage, recurrent doesn't)
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>AutoFactory vs FactoryReference - When To Use Each:</para>
-///     <list type="bullet">
-///         <item>
-///             <term>FactoryReference:</term>
-///             <description>
-///             References an explicitly-declared factory method. Use when you want to control factory
-///             implementation, add custom logic, or expose factory to external callers.
-///             Example: [Factory] IUser CreateUser() { /* custom logic */ }
-///             </description>
-///         </item>
-///         <item>
-///             <term>AutoFactory:</term>
-///             <description>
-///             Generator creates factory automatically. Use when factory is purely dependency wiring
-///             with no custom logic. Reduces boilerplate for simple construction scenarios.
-///             Example: Just need Func&lt;IUser&gt; without explicit method.
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>FabricationMode Interpretation - Explicit Control:</para>
-///     <list type="bullet">
-///         <item>
-///             <term>Default (0 or unspecified):</term>
-///             <description>
-///             Generator analyzes target type to determine mode. Sealed concrete classes default to
-///             Constructor mode, interfaces/abstracts require explicit mode specification or error.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Recurrent:</term>
-///             <description>
-///             Each factory call creates new instance. Generated: () => new TargetType(deps...)
-///             No caching, maximum flexibility.
+///     Extracts optional <c>FabricationMode</c> for parameters receiving auto-generated factory
+///     delegates. Generator analyzes target type constructor/dependencies and creates factory
+///     on-demand without explicit <c>[Factory]</c> method. Tries named argument first, then
+///     constructor argument filtered by type for signature resilience. Inverse of
+///     <c>[FactoryReference]</c> (references explicit factory methods).
+/// </remarks>
 ///             </description>
 ///         </item>
 ///         <item>
@@ -231,13 +111,6 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///             <description>
 ///             Using Func&lt;IUserService&gt; when generator can only create concrete UserServiceImpl.
 ///             Validator ensures delegate return type matches what generator can construct.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Mixing factory attributes:</term>
-///             <description>
-///             Using both [AutoFactory] and [FactoryReference] on same parameter is ambiguous
-///             (auto-create or reference existing?). Validator requires single factory strategy.
 ///             </description>
 ///         </item>
 ///     </list>

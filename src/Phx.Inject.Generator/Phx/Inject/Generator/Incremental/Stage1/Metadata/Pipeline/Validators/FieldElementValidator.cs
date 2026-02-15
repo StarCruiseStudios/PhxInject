@@ -21,134 +21,16 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 /// <summary>
 ///     Validates that a field symbol meets specified structural and semantic requirements.
 /// </summary>
-/// <param name="requiredAccessibility">
-///     Required accessibility level (Any, PublicOrInternal, etc.). Defaults to Any.
-/// </param>
-/// <param name="isStatic">
-///     If non-null, specifies whether field must be static (true) or instance (false).
-/// </param>
-/// <param name="isReadonly">
-///     If non-null, specifies whether field must be readonly (true) or mutable (false).
-/// </param>
-/// <param name="requiredAttributes">
-///     Attributes that must all be present. Null/empty means no attribute requirements.
-/// </param>
-/// <param name="prohibitedAttributes">
-///     Attributes that must not be present. Null/empty means no prohibited attributes.
-/// </param>
+/// <param name="requiredAccessibility">Required accessibility level. Defaults to Any.</param>
+/// <param name="isStatic">If non-null, specifies whether field must be static.</param>
+/// <param name="isReadonly">If non-null, specifies whether field must be readonly.</param>
+/// <param name="requiredAttributes">Attributes that must all be present.</param>
+/// <param name="prohibitedAttributes">Attributes that must not be present.</param>
 /// <remarks>
-///     <para>Design Purpose - Field Injection and State Management:</para>
-///     <para>
-///     Field validators enable validation of field injection patterns and stateful injector implementations.
-///     Key DI patterns supported:
-///     </para>
-///     <list type="bullet">
-///         <item>
-///             <term>Field Injection:</term>
-///             <description>
-///             Private or protected fields marked with @Inject, initialized after construction.
-///             Controversial in modern DI (constructor injection preferred) but supported for legacy
-///             code and framework compatibility.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Injector State Fields:</term>
-///             <description>
-///             Generated injector implementations maintain internal state (cached singletons, lazy instances)
-///             in private readonly fields. Validation ensures these follow immutability patterns.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Specification Constants:</term>
-///             <description>
-///             Static readonly fields on specification classes providing compile-time constants or
-///             default configurations that factories can reference.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Anti-pattern Detection:</term>
-///             <description>
-///             Non-readonly instance fields on specification classes violate statelessness assumptions.
-///             Validation catches this design mistake early.
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>WHY These Constraints Exist:</para>
-///     <list type="bullet">
-///         <item>
-///             <term>Readonly enforcement:</term>
-///             <description>
-///             Readonly fields ensure thread-safety and immutability. In DI contexts, mutable fields
-///             introduce hidden state that's not visible in dependency graphs, making behavior
-///             unpredictable. Enforcing readonly catches accidental mutation bugs.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Static constraint:</term>
-///             <description>
-///             Specification classes should be stateless static containers. Instance fields imply
-///             hidden state that violates this design principle. Enforcing static-only prevents
-///             accidental conversion of stateless specifications into stateful objects.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Accessibility validation:</term>
-///             <description>
-///             Field injection requires generator to access the field. Public fields on injector
-///             implementations expose internal state, violating encapsulation. Private fields on
-///             specification classes may be constants the generator needs to read. Accessibility
-///             validation ensures generated code can perform its role without exposing internals.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Attribute-based discrimination:</term>
-///             <description>
-///             Not all fields in a class are injection targets. @Inject attribute (required) or
-///             @Ignore attribute (prohibited) let users control which fields participate in DI,
-///             preventing accidental injection of unrelated fields.
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>What Malformed Code Gets Caught:</para>
-///     <list type="bullet">
-///         <item>
-///             <description>
-///             Mutable instance fields on specification classes (violates statelessness)
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             @Inject on private fields in sealed classes (generator cannot access via reflection)
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Public mutable fields on generated injectors (breaks encapsulation)
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Conflicting attributes (both @Inject and @Ignore simultaneously)
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Field Injection Controversy:</para>
-///     <para>
-///     Field injection is considered an anti-pattern in modern DI frameworks (constructor injection
-///     strongly preferred for testability and immutability). However, this validator exists to support
-///     legacy codebases, framework compatibility (some frameworks require field injection), and
-///     pragmatic scenarios where constructor bloat becomes problematic. Users should prefer constructor
-///     or property injection when possible.
-///     </para>
-///     
-///     <para>Syntax vs Symbol Validation Gap:</para>
-///     <para>
-///     Field declarations can declare multiple variables in one statement (int x, y, z;). Syntax
-///     validation only sees the FieldDeclarationSyntax, not individual field symbols. All modifier
-///     validation defers to symbol phase where each field has a distinct IFieldSymbol. This is
+///     Validates field injection patterns and injector state management. Readonly enforcement ensures
+///     immutability for thread-safety. Static constraints on specifications prevent hidden state.
+///     Accessibility validation ensures generated code can access fields without exposing internals.
+/// </remarks>
 ///     why syntax validation is minimal - the syntax/symbol mapping is not 1:1.
 ///     </para>
 ///     

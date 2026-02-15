@@ -21,113 +21,22 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 /// <summary>
 ///     Validates that a method symbol meets specified structural and semantic requirements.
 /// </summary>
-/// <param name="requiredAccessibility">
-///     Required accessibility level (Any, PublicOrInternal, etc.). Defaults to Any.
-/// </param>
-/// <param name="methodKind">
-///     Filter for method kind (ordinary method, property accessor, constructor, etc.). Defaults to Any.
-/// </param>
-/// <param name="returnsVoid">
-///     If non-null, specifies whether method must return void (true) or non-void (false).
-/// </param>
-/// <param name="minParameterCount">
-///     Minimum number of parameters required. Null means no minimum.
-/// </param>
-/// <param name="maxParameterCount">
-///     Maximum number of parameters allowed. Null means no maximum.
-/// </param>
-/// <param name="isStatic">
-///     If non-null, specifies whether method must be static (true) or instance (false).
-/// </param>
+/// <param name="requiredAccessibility">Required accessibility level. Defaults to Any.</param>
+/// <param name="methodKind">Filter for method kind (ordinary, accessor, etc.). Defaults to Any.</param>
+/// <param name="returnsVoid">If non-null, specifies whether method must return void.</param>
+/// <param name="minParameterCount">Minimum number of parameters required. Null means no minimum.</param>
+/// <param name="maxParameterCount">Maximum number of parameters allowed. Null means no maximum.</param>
+/// <param name="isStatic">If non-null, specifies whether method must be static.</param>
 /// <param name="isAbstract">
-///     If non-null, specifies whether method must be abstract (true) or concrete (false).
-///     Note: Interface methods are considered abstract even without explicit modifier.
+///     If non-null, specifies whether method must be abstract.
+///     Interface methods are considered abstract even without explicit modifier.
 /// </param>
-/// <param name="requiredAttributes">
-///     Attributes that must all be present. Null/empty means no attribute requirements.
-/// </param>
-/// <param name="prohibitedAttributes">
-///     Attributes that must not be present. Null/empty means no prohibited attributes.
-/// </param>
+/// <param name="requiredAttributes">Attributes that must all be present.</param>
+/// <param name="prohibitedAttributes">Attributes that must not be present.</param>
 /// <remarks>
-///     <para>Design Purpose - Factory and Provider Validation:</para>
-///     <para>
-///     Method validators enforce DI framework semantics on user-defined factory methods.
-///     Key patterns:
-///     </para>
-///     <list type="bullet">
-///         <item>
-///             <term>Factory Methods:</term>
-///             <description>
-///             Must be static, non-void return, have @Factory attribute. Parameters become dependencies.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Provider Methods:</term>
-///             <description>
-///             Must be abstract (injector interface), non-void return, may have parameters for runtime args.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Builder Methods:</term>
-///             <description>
-///             Similar to factories but may be instance methods, often with fluent parameter patterns.
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>WHY These Constraints Exist:</para>
-///     <list type="bullet">
-///         <item>
-///             <term>Static requirement for factories:</term>
-///             <description>
-///             Ensures factory has no hidden dependencies via instance state. All dependencies must be
-///             explicit parameters for graph analysis.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Non-void return:</term>
-///             <description>
-///             Factory/provider must produce a value. Void methods can't provide dependencies.
-///             Catches common mistake of void initialization methods marked with @Factory.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Abstract requirement for providers:</term>
-///             <description>
-///             Injector interface methods must be abstract so generator can provide implementation.
-///             Concrete methods would conflict with generated code.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Parameter count constraints:</term>
-///             <description>
-///             Some patterns have arity constraints (e.g., activators require parameters, simple providers
-///             may prohibit parameters). Clear errors when pattern misused.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Attribute prohibition:</term>
-///             <description>
-///             Prevents conflicting annotations (e.g., can't be both @Factory and @Builder simultaneously).
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Interface Method Special Case:</para>
-///     <para>
-///     Interface methods are implicitly abstract even without the 'abstract' keyword. Symbol validation
-///     handles this by checking both methodSymbol.IsAbstract and ContainingType.TypeKind == Interface.
-///     Syntax validation cannot detect containing type kind, so may produce false negatives (acceptable
-///     since symbol validation is authoritative).
-///     </para>
-///     
-///     <para>Method Kind Filtering:</para>
-///     <para>
-///     Roslyn's IMethodSymbol represents not just ordinary methods, but also property accessors,
-///     event handlers, operators, constructors, etc. MethodKindFilter allows selecting which
-///     varieties to accept. Most DI patterns want only ordinary methods, excluding accessors/operators.
-///     </para>
+///     Enforces DI framework semantics for factory methods (static, non-void), provider methods
+///     (abstract, non-void), and builder methods. Validates accessibility, parameter counts, and
+///     attribute presence to prevent malformed dependency configurations.
 /// </remarks>
 internal sealed class MethodElementValidator(
     CodeElementAccessibility requiredAccessibility = CodeElementAccessibility.Any,

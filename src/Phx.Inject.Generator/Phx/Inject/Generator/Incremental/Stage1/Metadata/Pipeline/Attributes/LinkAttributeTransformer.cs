@@ -21,134 +21,12 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///     Transforms Link attribute data into metadata.
 /// </summary>
 /// <remarks>
-///     <para>Purpose - Dependency Type Aliasing:</para>
-///     <para>
-///     [Link(typeof(TInput), typeof(TOutput))] creates type aliases that allow a dependency of one type
-///     to satisfy requests for another type. Links enable interface-to-implementation mapping,
-///     covariant/contravariant type substitution, and adapter patterns without manual factory methods.
-///     The transformer extracts both input and output types plus optional label/qualifier pairs.
-///     </para>
-///     
-///     <para>User Code Pattern - Type Aliases:</para>
-///     <code>
-///     [Link(typeof(UserService), typeof(IUserService))]
-///     [Link(typeof(IUserService), typeof(IService))]
-///     [Specification]
-///     public interface IServices {
-///         [Factory] UserService CreateUserService();
-///         
-///         // IUserService and IService are auto-satisfied via links
-///         void ProcessRequest(IService service);
-///     }
-///     </code>
-///     <para>
-///     When ProcessRequest requests IService, generator follows the link chain:
-///     IService ← IUserService ← UserService (factory exists), automatically wiring dependencies.
-///     </para>
-///     
-///     <para>User Code Pattern - Qualified Links:</para>
-///     <code>
-///     [Link(typeof(ReadOnlyCache), typeof(ICache),
-///           OutputLabel = "ReadOnly")]
-///     [Link(typeof(WritableCache), typeof(ICache),
-///           OutputLabel = "Writable")]
-///     [Specification]
-///     public interface ICaches {
-///         [Factory] ReadOnlyCache CreateReadOnlyCache();
-///         [Factory] WritableCache CreateWritableCache();
-///         
-///         void Process([Label("ReadOnly")] ICache readCache,
-///                      [Label("Writable")] ICache writeCache);
-///     }
-///     </code>
-///     <para>
-///     Qualified links allow multiple links with same output type but different qualifiers,
-///     enabling fine-grained dependency discrimination.
-///     </para>
-///     
-///     <para>IAttributeListTransformer - Multiple Links Required:</para>
-///     <para>
-///     LinkAttributeTransformer implements IAttributeListTransformer rather than IAttributeTransformer
-///     because:
-///     </para>
-///     <list type="bullet">
-///         <item>
-///             <description>
-///             Specifications commonly need multiple links (interface hierarchies, multiple implementations)
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Link chains require multiple link declarations (A→B, B→C, C→D)
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             AttributeUsage on LinkAttribute specifies AllowMultiple = true
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Constructor and Named Arguments - Dual Extraction Pattern:</para>
-///     <para>
-///     Link extraction handles both constructor and named arguments:
-///     </para>
-///     <list type="number">
-///         <item>
-///             <term>Constructor Arguments (Required):</term>
-///             <description>
-///             `GetConstructorArguments&lt;ITypeSymbol&gt;()` extracts input and output types (index 0 and 1).
-///             These are positional and always present per attribute signature.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Named Arguments (Optional):</term>
-///             <description>
-///             `GetNamedArgument&lt;T&gt;(propertyName)` extracts optional InputLabel, InputQualifier,
-///             OutputLabel, OutputQualifier. Named arguments support optional qualification without
-///             complicating constructor signature.
-///             </description>
-///         </item>
-///     </list>
-///     <para>
-///     All ITypeSymbol values are converted to TypeModel via `.ToTypeModel()` for caching stability.
-///     Nullable types (InputQualifier?, OutputQualifier?) correctly represent optional qualifier parameters.
-///     </para>
-///     
-///     <para>Why Links Need Special Handling - Graph Resolution:</para>
-///     <para>
-///     Links create a dependency graph that must be resolved transitively:
-///     </para>
-///     <list type="bullet">
-///         <item>
-///             <description>
-///             A→B, B→C link chain means requesting C can be satisfied by A factory
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Qualified links create parallel graphs (labeled A→B exists separately from unlabeled A→B)
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Circular links (A→B→A) must be detected to prevent infinite generation loops
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Link metadata must be efficiently comparable for incremental caching of entire graphs
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Validation Constraints - Enforced by Later Stages:</para>
-///     <para>
-///     Transformer doesn't validate link semantics. Later validation ensures:
-///     </para>
-///     <list type="bullet">
-///         <item>
-///             <description>
+///     Extracts type alias mappings from <c>[Link(typeof(TInput), typeof(TOutput))]</c> with optional
+///     label/qualifier pairs. Constructor arguments (index 0/1) provide input/output types, named
+///     arguments provide optional qualification. Implements <c>IAttributeListTransformer</c> for
+///     multiple links per specification (interface hierarchies, link chains). All <c>ITypeSymbol</c>
+///     values converted to <c>TypeModel</c> for cache stability.
+/// </remarks>
 ///             No circular link chains (A→B→C→A causes infinite recursion)
 ///             </description>
 ///         </item>
@@ -170,34 +48,6 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 ///         <item>
 ///             <description>
 ///             Qualified links have consistent qualifier usage (if factory is labeled, link input must be labeled)
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Common Errors Prevented:</para>
-///     <list type="bullet">
-///         <item>
-///             <term>Circular link chain:</term>
-///             <description>
-///             Validator detects A→B→C→A patterns that would cause infinite generation loops.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Incompatible type assignment:</term>
-///             <description>
-///             Linking string to IUserService is caught (string doesn't implement IUserService).
-///             </description>
-///         </item>
-///         <item>
-///             <term>Qualifier mismatch:</term>
-///             <description>
-///             Link with OutputLabel but factory is unlabeled causes ambiguity, flagged by validator.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Conflicting qualifiers:</term>
-///             <description>
-///             Setting both InputLabel and InputQualifier is ambiguous, rejected at validation.
 ///             </description>
 ///         </item>
 ///     </list>

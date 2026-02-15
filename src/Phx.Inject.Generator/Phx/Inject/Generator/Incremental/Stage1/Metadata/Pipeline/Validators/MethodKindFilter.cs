@@ -18,86 +18,10 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     Specifies method kind filters for validation in dependency injection contexts.
 /// </summary>
 /// <remarks>
-///     <para>Design Purpose - Distinguishing Method Varieties:</para>
-///     <para>
-///     Roslyn's IMethodSymbol represents many constructs beyond ordinary methods: property getters/setters,
-///     event add/remove handlers, operator overloads, constructors, finalizers, etc. In DI contexts,
-///     most patterns want only ordinary methods. This enum provides precise filtering.
-///     </para>
-///     
-///     <para>WHY This Filter Exists:</para>
-///     <para>
-///     Consider a user writing a specification class with factory methods. They mark methods with
-///     @Factory attributes. If validation accepts all IMethodSymbol instances, we'd incorrectly
-///     process property getters, operators, etc. as factory methods, producing nonsensical generated
-///     code. Method kind filtering prevents this category error.
-///     </para>
-///     
-///     <para>DI Patterns by Method Kind:</para>
-///     <list type="bullet">
-///         <item>
-///             <term>Ordinary Methods (MethodKind.Ordinary):</term>
-///             <description>
-///             Factory methods, provider methods, builder methods. The primary target for most DI
-///             validation. Clear intent and semantics.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Constructors (MethodKind.Constructor):</term>
-///             <description>
-///             Constructor injection pattern. Parameters become required dependencies. Validation
-///             ensures constructors are accessible and parameters can be satisfied by dependency graph.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Property Getters (MethodKind.PropertyGet):</term>
-///             <description>
-///             Rarely used directly in DI, but may appear in advanced scenarios like lazy property
-///             initialization or computed dependencies. Usually validated as properties, not methods.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Property Setters (MethodKind.PropertySet):</term>
-///             <description>
-///             Property injection targets. Validated as setters to enable post-construction injection.
-///             Usually validated as properties, not methods.
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>What Malformed Code Gets Caught:</para>
-///     <list type="bullet">
-///         <item>
-///             <description>
-///             @Factory attribute on property getters (user probably meant a method, got auto-property syntax)
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             @Inject attribute on event handlers (events are not dependency injection targets)
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Attempting to use operator overloads as factory methods (operators have fixed signatures, incompatible with DI)
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Why Not Just Check MethodKind.Ordinary Everywhere:</para>
-///     <para>
-///     Different DI patterns have different method kind requirements. Constructor injection specifically
-///     needs constructors. Some advanced patterns might want to intercept property access via getters.
-///     This enum provides flexibility while maintaining type safety. The 'Any' option allows validators
-///     to explicitly opt out of filtering when appropriate.
-///     </para>
-///     
-///     <para>Syntax vs Symbol Distinction:</para>
-///     <para>
-///     MethodKind is semantic information unavailable at syntax level. Syntax cannot distinguish
-///     a MethodDeclarationSyntax from a property getter's method body. This is why method kind
-///     filtering only happens in symbol validation, never syntax validation.
-///     </para>
+///     Filters <c>IMethodSymbol</c> instances by <c>MethodKind</c> to distinguish ordinary methods
+///     from property accessors, operators, constructors, etc. Most DI patterns target
+///     <c>MethodKind.Ordinary</c> (factory/provider methods). <c>Constructor</c> enables constructor
+///     injection validation. Method kind is semantic info unavailable at syntax level (symbol-only).
 /// </remarks>
 internal enum MethodKindFilter {
     /// <summary>

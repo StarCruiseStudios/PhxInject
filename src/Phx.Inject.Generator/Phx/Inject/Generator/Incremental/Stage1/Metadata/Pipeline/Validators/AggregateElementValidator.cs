@@ -23,82 +23,10 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     for symbols and false for syntax.
 /// </param>
 /// <remarks>
-///     <para>Design Purpose - Compositional Validation:</para>
-///     <para>
-///     Aggregate validators enable separation of concerns by combining orthogonal validation rules.
-///     Rather than a monolithic validator with complex branching logic, each constraint gets its
-///     own focused validator, then they're composed via aggregation.
-///     </para>
-///     
-///     <para>WHY Two Different Logical Operators (AND vs OR):</para>
-///     <para>
-///     The asymmetry between symbol validation (AND) and syntax validation (OR) reflects their
-///     different roles in the dual-phase validation pipeline:
-///     </para>
-///     <list type="bullet">
-///         <item>
-///             <term>Symbol Validation (AND logic):</term>
-///             <description>
-///             Symbol validation is authoritative - all constraints must be satisfied for the element
-///             to be valid. If you need a class to be: public, partial, have @Injector attribute,
-///             and implement IDisposable, then ALL conditions must be true. This is conjunction logic.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Syntax Validation (OR logic):</term>
-///             <description>
-///             Syntax validation is a conservative pre-filter. If ANY validator thinks the syntax
-///             MIGHT be valid, we proceed to symbol validation to get the authoritative answer.
-///             This prevents false negatives where we prematurely reject valid code due to incomplete
-///             syntax-level information.
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Example Scenario:</para>
-///     <para>
-///     Validating classes that are: (public OR internal) AND (partial OR abstract) AND (has @Injector).
-///     - Symbol phase: All three conditions evaluated with AND (all must be true)
-///     - Syntax phase: (has public/internal keyword) OR (has partial keyword) OR (has abstract keyword) OR (has any attribute)
-///     </para>
-///     <para>
-///     The OR in syntax is conservative - if we see ANY promising signal, proceed to symbol validation.
-///     </para>
-///     
-///     <para>Short-Circuit Evaluation:</para>
-///     <list type="bullet">
-///         <item>
-///             <description>
-///             Symbol validation short-circuits on first failing validator (AND logic stops at first false)
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Syntax validation short-circuits on first succeeding validator (OR logic stops at first true)
-///             </description>
-///         </item>
-///     </list>
-///     <para>
-///     This means validator ordering affects performance: for symbols, put fastest-failing first;
-///     for syntax, put most-likely-to-match first.
-///     </para>
-///     
-///     <para>Empty Collection Edge Case:</para>
-///     <para>
-///     An aggregate with zero validators is unusual but handled gracefully:
-///     - IsValidSymbol returns true (vacuous truth: all zero constraints are satisfied)
-///     - IsValidSyntax returns false (no validator said to proceed, so don't proceed)
-///     </para>
-///     <para>
-///     This is rarely useful in practice but maintains logical consistency with LINQ's .All() and .Any() semantics.
-///     </para>
-///     
-///     <para>Use Cases:</para>
-///     <list type="bullet">
-///         <item>
-///             <description>
-///             Combining accessibility + attribute + modifier constraints on classes
-///             </description>
+///     Symbol validation uses AND (all constraints must pass). Syntax validation uses OR (any validator
+///     passing means proceed to symbol phase). Short-circuits: symbol stops at first false, syntax stops
+///     at first true. Enables compositional validation separating orthogonal concerns.
+/// </remarks>
 ///         </item>
 ///         <item>
 ///             <description>

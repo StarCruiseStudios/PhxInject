@@ -19,6 +19,10 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 /// <summary>
 ///     Transforms InjectorDependency attribute data into metadata.
 /// </summary>
+/// <remarks>
+///     Marker attribute for generated use only. Applied by generator to injector constructor
+///     parameters representing external dependencies. Not intended for direct user application.
+/// </remarks>
 internal sealed class InjectorDependencyAttributeTransformer(
     IAttributeMetadataTransformer attributeMetadataTransformer
 ) : IAttributeTransformer<InjectorDependencyAttributeMetadata> {

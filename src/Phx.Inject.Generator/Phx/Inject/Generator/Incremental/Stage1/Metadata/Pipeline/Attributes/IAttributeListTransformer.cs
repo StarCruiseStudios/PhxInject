@@ -21,80 +21,10 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Attributes;
 /// </summary>
 /// <typeparam name="TAttributeMetadata">The type of attribute metadata to produce.</typeparam>
 /// <remarks>
-///     <para>Multi-Attribute Support Pattern:</para>
-///     <para>
-///     Handles attributes that can appear multiple times on a single symbol. C# allows repeatable
-///     attributes (marked with [AttributeUsage(AllowMultiple = true)]), which are common in DI
-///     scenarios:
-///     </para>
-///     <list type="bullet">
-///         <item>
-///             <description>
-///             Multiple [Qualifier] attributes defining different qualification dimensions
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Multiple [Link] attributes connecting to different dependency sources
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Multiple [Label] attributes for multi-dimensional categorization
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Why Not IResult Return Type:</para>
-///     <para>
-///     Unlike single-attribute transformers, list transformers return EquatableList directly without
-///     wrapping in IResult. Rationale:
-///     </para>
-///     <list type="bullet">
-///         <item>
-///             <description>
-///             List transformers handle absence by returning empty list (count == 0), making null
-///             semantically unnecessary
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             If any individual attribute transformation fails, the transformer can either skip that
-///             attribute (partial success) or throw (all-or-nothing), depending on semantics
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Simplifies pipeline code by avoiding nested Result unwrapping for collections
-///             </description>
-///         </item>
-///     </list>
-///     <para>
-///     In practice, most list transformers report individual transformation failures via diagnostics
-///     and continue processing remaining attributes, maximizing user feedback in one compilation.
-///     </para>
-///     
-///     <para>Equatable List - Incremental Caching:</para>
-///     <para>
-///     Returns EquatableList rather than IEnumerable or array to support incremental generator
-///     caching. EquatableList implements structural equality (contents and order matter), allowing
-///     Roslyn to detect when the attribute list hasn't changed and skip downstream transformation.
-///     Standard collections use reference equality, which breaks caching.
-///     </para>
-///     
-///     <para>Roslyn Attribute Ordering Guarantee:</para>
-///     <para>
-///     ISymbol.GetAttributes() returns attributes in source declaration order. This ordering is
-///     preserved through transformation, which matters for attributes where order is semantically
-///     significant (e.g., first [Qualifier] wins for conflict resolution).
-///     </para>
-///     
-///     <para>Performance - Batch Processing:</para>
-///     <para>
-///     List transformers process all matching attributes in a single pass over GetAttributes(),
-///     amortizing the enumeration cost. More efficient than calling single-attribute transformer
-///     repeatedly, especially when the attribute count is typically small (1-3).
-///     </para>
+///     Handles repeatable attributes (<c>[AttributeUsage(AllowMultiple = true)]</c>). Returns
+///     <c>EquatableList</c> directly (not <c>IResult</c>) - absence = empty list. Structural equality
+///     for incremental caching. Preserves source declaration order (semantically significant for some
+///     attributes). Batch processing more efficient than repeated single-attribute calls.
 /// </remarks>
 internal interface IAttributeListTransformer<TAttributeMetadata> : IAttributeChecker where TAttributeMetadata : IAttributeElement {
     /// <summary>
@@ -103,10 +33,7 @@ internal interface IAttributeListTransformer<TAttributeMetadata> : IAttributeChe
     /// <param name="targetSymbol">The symbol with the attributes.</param>
     /// <returns>An equatable list of attribute metadata.</returns>
     /// <remarks>
-    ///     <para>
-    ///     Returns empty list if no matching attributes found. Never returns null. List preserves
-    ///     attribute declaration order from source code.
-    ///     </para>
+    ///     Returns empty list if no matching attributes found. Never null. Preserves declaration order.
     /// </remarks>
     EquatableList<TAttributeMetadata> Transform(ISymbol targetSymbol);
 }

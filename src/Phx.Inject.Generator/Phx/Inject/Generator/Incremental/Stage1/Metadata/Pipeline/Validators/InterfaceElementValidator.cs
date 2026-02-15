@@ -25,96 +25,12 @@ namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Pipeline.Validators;
 ///     The accessibility level required for the interface. Defaults to Any (no accessibility constraint).
 /// </param>
 /// <param name="requiredAttributes">
-///     Collection of attribute checkers that must all pass. Null or empty means no attribute requirements.
+///     Attribute checkers that must all pass. Null or empty means no attribute requirements.
 /// </param>
 /// <remarks>
-///     <para>Design Purpose - Injector Interface Contracts:</para>
-///     <para>
-///     Interface validators enforce structural contracts for user-defined injector interfaces.
-///     Injector interfaces declare what dependencies an application needs to obtain, with abstract
-///     method signatures serving as the provider contract that the generator will implement.
-///     </para>
-///     
-///     <para>WHY Validate Interfaces for DI:</para>
-///     <list type="bullet">
-///         <item>
-///             <term>Separation of concerns:</term>
-///             <description>
-///             Interface-based injectors separate dependency declaration (interface) from implementation
-///             (generated code). This allows compile-time dependency graph validation without exposing
-///             implementation details.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Multiple implementations:</term>
-///             <description>
-///             Interfaces enable generating different implementations for test vs production, or
-///             different scoping strategies (singleton, scoped, transient) from the same interface.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Partial class alternative:</term>
-///             <description>
-///             Not all languages/contexts support partial classes. Interfaces provide a universal
-///             contract mechanism that works across assembly boundaries and language interop scenarios.
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Validation Rules - WHY These Constraints:</para>
-///     <list type="bullet">
-///         <item>
-///             <term>TypeKind == Interface:</term>
-///             <description>
-///             Only interfaces can have purely abstract contracts without implementation details.
-///             Classes with abstract methods still have constructors, fields, and implementation
-///             assumptions that complicate generation. Pure interfaces keep the contract clean.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Accessibility checks:</term>
-///             <description>
-///             Generated implementation must be accessible where the interface is used. Private nested
-///             interfaces cannot be implemented outside their declaring class, limiting their utility
-///             for DI. We catch this early to prevent confusing compiler errors about inaccessible types.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Attribute requirements:</term>
-///             <description>
-///             Attributes like @Injector signal intent and configuration to the generator. Requiring
-///             specific attributes prevents accidental generation on unrelated interfaces and provides
-///             metadata for generation strategy (scope, module composition, etc.).
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Syntax vs Symbol Validation Gap:</para>
-///     <para>
-///     Syntax validation can only check the 'interface' keyword and modifiers. It cannot verify
-///     attribute types (is it actually @Injector or just something named similarly?). Symbol validation
-///     performs the authoritative attribute check. Some nodes pass syntax but fail symbol validation -
-///     this is expected and acceptable for performance reasons.
-///     </para>
-///     
-///     <para>What Malformed Code Gets Caught:</para>
-///     <list type="bullet">
-///         <item>
-///             <description>
-///             Private nested interfaces that would produce inaccessible generated implementations
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Classes, structs, or delegates mistakenly marked with @Injector attribute
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Interfaces missing required configuration attributes for DI generation
-///             </description>
-///         </item>
-///     </list>
+///     Enforces structural contracts for user-defined injector interfaces. Interface-based injectors
+///     separate dependency declaration from implementation, enabling compile-time validation and
+///     multiple implementations. Catches inaccessible interfaces and misapplied attributes.
 /// </remarks>
 internal sealed class InterfaceElementValidator(
     CodeElementAccessibility requiredAccessibility = CodeElementAccessibility.Any,
