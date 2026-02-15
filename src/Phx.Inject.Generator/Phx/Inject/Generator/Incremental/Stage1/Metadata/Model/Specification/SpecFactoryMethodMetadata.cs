@@ -17,23 +17,18 @@ using Phx.Inject.Generator.Incremental.Util;
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Specification;
 
 /// <summary>
-///     Metadata representing an analyzed specification factory method.
-///     <para>
-///         Factory Methods: Create and return NEW instances of dependencies. Distinguished
-///         from Builders by non-void return type. Factories form the core of instance creation in the
-///         dependency graph.
-///     </para>
-///     <para>
-///         Parameters: Runtime dependencies injected when this factory is invoked.
-///         All parameters must be satisfiable by the dependency graph or provided externally.
-///     </para>
+///     Metadata for a factory method declared in a specification class.
 /// </summary>
-/// <param name="FactoryMethodName"> The name of the factory method. </param>
-/// <param name="FactoryReturnType"> The qualified type returned by the factory (must be non-void). </param>
-/// <param name="Parameters"> Runtime parameters required by the factory, resolved from the graph. </param>
-/// <param name="FactoryAttributeMetadata"> The [Factory] attribute metadata controlling fabrication mode. </param>
-/// <param name="PartialFactoryAttributeMetadata"> Optional [Partial] attribute for partial dependency satisfaction. </param>
-/// <param name="Location"> The source location of the method definition. </param>
+/// <param name="FactoryMethodName">The name of the factory method.</param>
+/// <param name="FactoryReturnType">The qualified type returned by the factory (must be non-void).</param>
+/// <param name="Parameters">Runtime parameters required by the factory, resolved from the graph.</param>
+/// <param name="FactoryAttributeMetadata">The [Factory] attribute metadata controlling fabrication mode.</param>
+/// <param name="PartialFactoryAttributeMetadata">Optional [Partial] attribute for partial dependency satisfaction.</param>
+/// <param name="Location">The source location of the method definition.</param>
+/// <remarks>
+///     Factory methods create and return new instances. Distinguished from builders by
+///     non-void return type. Parameters are runtime dependencies resolved from the graph.
+/// </remarks>
 internal record SpecFactoryMethodMetadata(
     string FactoryMethodName,
     QualifiedTypeMetadata FactoryReturnType,

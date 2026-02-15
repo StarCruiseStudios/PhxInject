@@ -15,79 +15,13 @@ using Phx.Inject.Generator.Incremental.Util;
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
 /// <summary>
-///     Metadata representing an analyzed [Builder] attribute that marks a method as a
-///     dependency initializer in the DI framework.
+///     Metadata for the user-declared <c>[Builder]</c> attribute.
+///     See <see cref="Phx.Inject.BuilderAttribute"/>.
 /// </summary>
-/// <param name="AttributeMetadata">
-///     The common attribute metadata (class name, target, locations) shared by all attributes.
-/// </param>
+/// <param name="AttributeMetadata">The common attribute metadata shared by all attributes.</param>
 /// <remarks>
-///     <para>Role in DI Framework:</para>
-///     <para>
-///     Represents a user-declared builder method that initializes an existing object by injecting
-///     dependencies into its properties or fields. Builders complement Factories by enabling
-///     property injection patterns rather than constructor injection. They are essential for
-///     initializing objects that cannot use constructor injection (e.g., objects created by
-///     third-party factories, or classes with complex initialization sequences).
-///     </para>
-///     
-///     <para>What User Declarations Represent:</para>
-///     <para>
-///     When users write "[Builder] static void Initialize(MyClass target, IDependency dep) { target.Dep = dep; }",
-///     this metadata captures that declaration. The method signature defines what type is being
-///     initialized (first parameter) and what dependencies are injected (remaining parameters).
-///     Builders must return void and accept the target instance as the first parameter.
-///     </para>
-///     
-///     <para>Why These Properties Were Chosen:</para>
-///     <para>
-///     Unlike FactoryAttributeMetadata which includes FabricationMode, builders have no lifetime
-///     semantics because they operate on existing instances. The builder's behavior is purely
-///     determined by its method signature. Therefore, only the base AttributeMetadata is needed
-///     for diagnostics and cache keying. The method signature analysis happens in BuilderModel,
-///     which extracts parameter types and validates the void return and target parameter.
-///     </para>
-///     
-///     <para>Code Generation Needs:</para>
-///     <para>
-///     Code generation requires knowing which methods are builders (vs factories) to generate
-///     appropriate invocation code. Builders generate void method calls in injector activator
-///     methods, while factories generate return-value assignments or field caching. The lack
-///     of additional properties reflects that the distinction is binary: either it's a builder
-///     (void, target-first) or it's not.
-///     </para>
-///     
-///     <para>Immutability Requirements:</para>
-///     <para>
-///     Contains only the immutable AttributeMetadata record, making this a stable cache key
-///     for incremental compilation. Changes to the builder method signature affect the
-///     BuilderModel (extracted in later stages) rather than this attribute metadata, correctly
-///     localizing cache invalidation to signature changes.
-///     </para>
-///     
-///     <para>Relationship to Other Models:</para>
-///     <list type="bullet">
-///         <item>
-///             <description>
-///             Used by BuilderModel which combines this metadata with method signature analysis
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Distinguished from FactoryAttributeMetadata by initialization vs creation semantics
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Related to SpecificationAttributeMetadata as builders are defined within specifications
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Used by InjectorModel to generate activator methods that call builders
-///             </description>
-///         </item>
-///     </list>
+///     Builders initialize existing objects via property/field injection. Must return void
+///     and accept the target instance as the first parameter.
 /// </remarks>
 internal record BuilderAttributeMetadata(
     AttributeMetadata AttributeMetadata

@@ -16,82 +16,14 @@ using static Phx.Inject.Generator.Incremental.PhxInject;
 namespace Phx.Inject.Generator.Incremental.Stage1.Metadata.Model.Attributes;
 
 /// <summary>
-///     Metadata representing an analyzed [Specification] attribute that marks a class or
-///     interface as a DI binding specification.
+///     Metadata for the user-declared <c>[Specification]</c> attribute.
+///     See <see cref="Phx.Inject.SpecificationAttribute"/>.
 /// </summary>
-/// <param name="AttributeMetadata">
-///     The common attribute metadata (class name, target, locations) shared by all attributes.
-/// </param>
+/// <param name="AttributeMetadata">The common attribute metadata shared by all attributes.</param>
 /// <remarks>
-///     <para>Role in DI Framework:</para>
-///     <para>
-///     Represents a user-declared specification class that defines the dependency graph
-///     configuration. Specifications are the core organizational unit of the DI framework,
-///     containing the factory methods, builder methods, link declarations, and factory
-///     references that collectively define how dependencies are constructed and wired together.
-///     They are the "recipe book" that injectors consult when resolving dependencies.
-///     </para>
-///     
-///     <para>What User Declarations Represent:</para>
-///     <para>
-///     When users write "[Specification] static class MySpec { ... }", this metadata captures
-///     that the class contains DI binding definitions. Specifications can be static classes
-///     (for stateless bindings) or interfaces (for modular, composable binding definitions).
-///     The specification becomes a dependency graph module that can be referenced by multiple
-///     injectors or composed with other specifications.
-///     </para>
-///     
-///     <para>Why These Properties Were Chosen:</para>
-///     <para>
-///     The [Specification] attribute itself has no parameters - it's purely a marker attribute.
-///     Therefore, only the base AttributeMetadata is needed. The actual specification content
-///     (factories, builders, etc.) is extracted by analyzing the class members, not the attribute.
-///     This separation keeps the attribute metadata simple while deferring complex structural
-///     analysis to SpecificationModel in later pipeline stages.
-///     </para>
-///     
-///     <para>Code Generation Needs:</para>
-///     <para>
-///     Code generation doesn't directly generate code from SpecificationAttributeMetadata itself.
-///     Instead, this metadata identifies which classes should be analyzed for their contained
-///     factory/builder methods. The specification serves as a namespace/container that groups
-///     related bindings, affecting how the generator organizes and references binding methods
-///     in the generated injector code.
-///     </para>
-///     
-///     <para>Immutability Requirements:</para>
-///     <para>
-///     Contains only the immutable AttributeMetadata record, making this a stable cache key.
-///     Changes to specification contents (adding/removing factories) affect the individual
-///     factory/builder metadata records rather than this marker attribute, enabling fine-grained
-///     incremental compilation: only the changed members invalidate their caches, not the entire
-///     specification.
-///     </para>
-///     
-///     <para>Relationship to Other Models:</para>
-///     <list type="bullet">
-///         <item>
-///             <description>
-///             Referenced by InjectorAttributeMetadata.Specifications to link injectors to their specs
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Used by SpecificationModel which aggregates all factories, builders, and links within
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Contains FactoryAttributeMetadata, BuilderAttributeMetadata, and LinkAttributeMetadata
-///             as child elements analyzed during later stages
-///             </description>
-///         </item>
-///         <item>
-///             <description>
-///             Specifications can reference other specifications for modular composition
-///             </description>
-///         </item>
-///     </list>
+///     Marks a class or interface as a DI binding specification containing factory methods,
+///     builder methods, and link declarations. Specifications are the "recipe book" that
+///     injectors consult when resolving dependencies.
 /// </remarks>
 internal record SpecificationAttributeMetadata(
     AttributeMetadata AttributeMetadata

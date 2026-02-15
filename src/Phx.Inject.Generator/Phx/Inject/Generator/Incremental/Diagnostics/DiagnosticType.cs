@@ -15,22 +15,11 @@ using Microsoft.CodeAnalysis;
 namespace Phx.Inject.Generator.Incremental.Diagnostics;
 
 /// <summary>
-///     Defines the type and metadata for a diagnostic that can be reported during code generation.
+///     Type and metadata for a diagnostic that can be reported during code generation.
 /// </summary>
 /// <remarks>
-///     <para>Immutable Singleton Pattern:</para>
-///     <para>
-///     All DiagnosticType instances are defined as static readonly fields with private constructors.
-///     This ensures each diagnostic type exists exactly once in memory and cannot be modified,
-///     making them safe for use in incremental compilation caching and concurrent scenarios.
-///     </para>
-///     
-///     <para>Registry for Discovery:</para>
-///     <para>
-///     The <see cref="All"/> collection provides access to all diagnostic types for tooling that
-///     needs to enumerate, validate, or document all diagnostics. This enables extensibility
-///     without exposing individual fields.
-///     </para>
+///     Singletons with private constructors, immutable and thread-safe. The <see cref="All"/> collection
+///     provides enumeration for tooling and validation.
 /// </remarks>
 internal sealed class DiagnosticType {
     private const string InjectionCategory = "Injection";
@@ -60,10 +49,6 @@ internal sealed class DiagnosticType {
     /// <summary>
     ///     Collection of all defined diagnostic types for enumeration and discovery.
     /// </summary>
-    /// <remarks>
-    ///     Use this to iterate over all diagnostics for validation, documentation generation,
-    ///     or tooling that needs comprehensive diagnostic information.
-    /// </remarks>
     public static IReadOnlyList<DiagnosticType> All { get; } = new[] {
         DebugMessage,
         UnexpectedError,
