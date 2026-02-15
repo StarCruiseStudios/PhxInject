@@ -11,6 +11,28 @@ namespace Phx.Inject;
 /// <summary>
 ///     Annotates a factory method that will be invoked to construct a given dependency.
 /// </summary>
+/// <remarks>
+/// Factory methods define how to create instances of dependencies. The method's return type
+/// determines what dependency type it provides, and its parameters specify the dependencies
+/// it requires.
+///
+/// ## FabricationMode Behavior
+///
+/// The <see cref="FabricationMode"/> property controls how the generator handles multiple
+/// invocations of the same factory:
+///
+/// - **Recurrent**: Each invocation creates a new instance (no caching)
+/// - **Scoped**: First invocation creates and caches instance for the request scope
+/// - **Singleton**: First invocation creates and caches instance for the injector lifetime
+///
+/// ## Performance Implications
+///
+/// - Recurrent factories have minimal overhead but create more object allocations
+/// - Scoped and Singleton factories add caching logic but reduce allocations for repeated requests
+/// - Choose based on the dependency's intended lifecycle and mutability
+/// </remarks>
+/// <seealso cref="AutoFactoryAttribute"/>
+/// <seealso cref="FabricationMode"/>
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property, Inherited = false)]
 public class FactoryAttribute : Attribute {
     /// <summary>

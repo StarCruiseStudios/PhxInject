@@ -9,6 +9,27 @@
 namespace Phx.Inject;
 
 /// <summary> Annotates an injector interface as the entry point to a DAG. </summary>
+/// <remarks>
+/// This attribute marks an interface that will have a concrete injector implementation
+/// generated at compile time. The injector provides access to all factories and builders
+/// defined in the specified specifications.
+///
+/// ## Usage
+///
+/// Apply this attribute to an interface to generate an injector:
+///
+/// <code>
+/// [Injector(typeof(MySpecification))]
+/// public interface IMyInjector {
+///     MyService GetService();
+/// }
+/// </code>
+///
+/// The generator will create a concrete class (by default named "GeneratedMyInjector")
+/// that implements this interface.
+/// </remarks>
+/// <seealso cref="SpecificationAttribute"/>
+/// <seealso cref="DependencyAttribute"/>
 [AttributeUsage(AttributeTargets.Interface)]
 public class InjectorAttribute : Attribute {
     /// <summary> The name to use for the generated injector class. </summary>
@@ -19,7 +40,11 @@ public class InjectorAttribute : Attribute {
     /// </remarks>
     public string? GeneratedClassName { get; set; } = null;
 
-    /// <summary> A collection of specification types used by this injector. </summary>
+    /// <summary> Gets a collection of specification types used by this injector. </summary>
+    /// <value>
+    ///     An enumerable of specification types. This collection defines which specifications
+    ///     provide factories and builders for this injector.
+    /// </value>
     public IEnumerable<Type> Specifications { get; }
 
     /// <summary> Initializes a new instance of the <see cref="InjectorAttribute"/> class. </summary>
