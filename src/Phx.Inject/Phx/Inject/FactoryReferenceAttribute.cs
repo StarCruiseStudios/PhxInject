@@ -20,10 +20,10 @@ public class FactoryReferenceAttribute : Attribute {
     /// </summary>
     public FabricationMode FabricationMode { get; set; } = FabricationMode.Recurrent;
 
-    /// <summary> Initializes a new instance of the <see cref="FactoryAttribute"/> class. </summary>
+    /// <summary> Initializes a new instance of the <see cref="FactoryReferenceAttribute"/> class. </summary>
     public FactoryReferenceAttribute() { }
     
-    /// <summary> Initializes a new instance of the <see cref="FactoryAttribute"/> class. </summary>
+    /// <summary> Initializes a new instance of the <see cref="FactoryReferenceAttribute"/> class. </summary>
     /// <param name="fabricationMode">
     ///     The <see cref="FabricationMode"/> used when invoking this factory method more than once.
     /// </param>
