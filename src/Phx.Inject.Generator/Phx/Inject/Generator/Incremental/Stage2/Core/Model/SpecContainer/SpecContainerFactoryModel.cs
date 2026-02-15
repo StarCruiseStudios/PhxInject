@@ -16,44 +16,19 @@ using Phx.Inject.Generator.Incremental.Util;
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 
 /// <summary>
-///     Model representing a factory method in a specification container.
+///     Code generation model for a factory method in a specification container.
 /// </summary>
+/// <param name="ReturnType">The return type of the factory method.</param>
+/// <param name="SpecContainerFactoryMethodName">The name of the generated factory method.</param>
+/// <param name="SpecFactoryMemberName">The name of the specification factory member.</param>
+/// <param name="SpecFactoryMemberType">The type of the specification factory member (Method, Property, Reference, Constructor).</param>
+/// <param name="FabricationMode">The fabrication mode for creating instances.</param>
+/// <param name="Arguments">The arguments to pass to the factory.</param>
+/// <param name="RequiredProperties">The required properties to set on the created instance.</param>
+/// <param name="Location">The source location where this factory is defined.</param>
 /// <remarks>
-///     <para>Factory Method Purpose:</para>
-///     <para>
-///     Represents a single factory method in the generated SpecContainer that creates instances
-///     of a specific type. Each factory method resolves its dependencies recursively by invoking
-///     other factories in the dependency graph, passing constructor arguments and setting required
-///     properties as specified by the [AutoFactory] or [Factory] pattern.
-///     </para>
-///     
-///     <para>Relationship to Stage 1 Metadata:</para>
-///     <para>
-///     Derived from Stage 1's SpecFactoryMethodMetadata, SpecFactoryPropertyMetadata, or
-///     SpecFactoryReferenceMetadata. Stage 2 transforms these into invocable factory methods:
-///     - Method: Calls user's factory method in the spec
-///     - Property: Reads user's factory property in the spec
-///     - Reference: Resolves dependency from another container
-///     - Constructor: Directly invokes type constructor (AutoFactory pattern)
-///     </para>
-///     
-///     <para>AutoFactory Required Properties Pattern:</para>
-///     <para>
-///     For [AutoFactory] patterns, the generator analyzes the target type's constructor and
-///     required properties. RequiredProperties contains initialization for properties marked
-///     as `required` in C# or annotated with initialization attributes, enabling object
-///     initializer syntax in generated code: `new T(args) { Prop = value }`.
-///     </para>
-///     
-///     <para>Generated Code Example:</para>
-///     <code>
-///     // From: [Factory] public IService CreateService(ILogger logger) { ... }
-///     // Generates in container:
-///     public IService CreateService() {
-///         var arg0 = spec.CreateLogger(); // Resolve dependency
-///         return spec.CreateService(arg0); // Invoke user's factory
-///     }
-///     </code>
+///     Represents a single factory method that creates instances by resolving dependencies
+///     recursively through the dependency graph and passing constructor arguments and required properties.
 /// </remarks>
 /// <param name="ReturnType"> The return type of the factory method. </param>
 /// <param name="SpecContainerFactoryMethodName"> The name of the generated factory method. </param>

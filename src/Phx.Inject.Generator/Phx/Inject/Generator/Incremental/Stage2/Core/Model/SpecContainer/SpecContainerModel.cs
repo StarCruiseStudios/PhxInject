@@ -16,34 +16,17 @@ using Phx.Inject.Generator.Incremental.Util;
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 
 /// <summary>
-///     Model representing a specification container for code generation.
+///     Code generation model for a specification container that aggregates factory and builder methods.
 /// </summary>
+/// <param name="SpecContainerType">The specification container implementation type.</param>
+/// <param name="SpecificationType">The specification type contained.</param>
+/// <param name="SpecInstantiationMode">How the specification is instantiated (Static, Instantiated, or Dependency).</param>
+/// <param name="FactoryMethodDefs">Factory method definitions in this container.</param>
+/// <param name="BuilderMethodDefs">Builder method definitions in this container.</param>
+/// <param name="Location">The source location where this container is defined.</param>
 /// <remarks>
-///     <para>WHY: Specification Container Pattern</para>
-///     <para>
-///     Consolidates all factory and builder methods from a specification (SpecClassMetadata or
-///     SpecInterfaceMetadata) into a single generated container class. This aggregation serves three purposes:
-///     1) Centralizes dependency resolution - one container manages all related factories
-///     2) Enables method reuse - factories can invoke other factories in the same container
-///     3) Simplifies Injector generation - Injector delegates to containers instead of duplicating factory logic
-///     </para>
-///     
-///     <para>Relationship to Stage 1 Metadata:</para>
-///     <para>
-///     Derived from Stage 1's SpecClassMetadata or SpecInterfaceMetadata which contain the user-authored
-///     specification definitions. Stage 2 transforms that metadata into this code generation model:
-///     - SpecClassMetadata.FactoryMethods/FactoryProperties/FactoryReferences → FactoryMethodDefs
-///     - SpecClassMetadata.BuilderMethods/BuilderReferences → BuilderMethodDefs
-///     - SpecClassMetadata.SpecAttributeMetadata determines SpecInstantiationMode
-///     </para>
-///     
-///     <para>Generated Code Structure:</para>
-///     <para>
-///     Produces a class like: `class MySpec_Container { public T CreateFoo() { ... } }`
-///     The container class wraps the user's specification instance (for non-static specs) or provides
-///     static methods (for static specs), routing each factory/builder call to the appropriate
-///     specification member while resolving dependencies from the dependency graph.
-///     </para>
+///     Consolidates all factory and builder methods from a specification into a single generated
+///     container class. The injector delegates to containers instead of duplicating factory logic.
 /// </remarks>
 /// <param name="SpecContainerType"> The specification container implementation type. </param>
 /// <param name="SpecificationType"> The specification type contained. </param>

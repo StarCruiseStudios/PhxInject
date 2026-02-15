@@ -15,41 +15,14 @@ using Phx.Inject.Generator.Incremental.Util;
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.SpecContainer;
 
 /// <summary>
-///     Model representing a required property for a factory method.
+///     Code generation model for a required property initialization in a factory method.
 /// </summary>
+/// <param name="PropertyName">The name of the property to set.</param>
+/// <param name="Value">The factory invocation that provides the property value.</param>
+/// <param name="Location">The source location where this property is defined.</param>
 /// <remarks>
-///     <para>AutoFactory Required Properties Pattern:</para>
-///     <para>
-///     Enables C# object initializer syntax for types with `required` properties or init-only
-///     properties. When [AutoFactory] analyzes a target type, it identifies properties that must
-///     be initialized at construction time and generates code to resolve their dependencies and
-///     set them during object creation.
-///     </para>
-///     
-///     <para>Dependency Resolution for Properties:</para>
-///     <para>
-///     The Value field contains a SpecContainerFactoryInvocationModel that resolves the property's
-///     dependency the same way constructor parameters are resolved - by recursively invoking
-///     factories in the dependency graph. This ensures consistency between constructor injection
-///     and property injection patterns.
-///     </para>
-///     
-///     <para>Generated Code Example:</para>
-///     <code>
-///     // For: required ILogger Logger { get; init; }
-///     // Generates in factory:
-///     return new Service(arg0, arg1) {
-///         Logger = this.CreateLogger(),  // Required property initialization
-///         Config = this.CreateConfig()   // Another required property
-///     };
-///     </code>
-///     
-///     <para>WHY Separate from Arguments:</para>
-///     <para>
-///     Properties are initialized after constructor execution, which matters for types with
-///     initialization order dependencies or validation logic in property setters. Separating
-///     Arguments from RequiredProperties preserves this semantic distinction in generated code.
-///     </para>
+///     Enables C# object initializer syntax for types with `required` properties. Properties are
+///     initialized after constructor execution, enabling proper initialization order.
 /// </remarks>
 /// <param name="PropertyName"> The name of the property to set. </param>
 /// <param name="Value"> The factory invocation that provides the property value. </param>

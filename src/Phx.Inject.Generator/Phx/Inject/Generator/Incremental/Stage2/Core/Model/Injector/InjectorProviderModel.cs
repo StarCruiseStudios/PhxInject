@@ -16,143 +16,19 @@ using Phx.Inject.Generator.Incremental.Util;
 namespace Phx.Inject.Generator.Incremental.Stage2.Core.Model.Injector;
 
 /// <summary>
-///     Stage 2 implementation model for generating provider methods in injector classes.
+///     Code generation model for a provider method in the injector class.
 /// </summary>
+/// <param name="ProvidedType">
+///     The qualified type returned by this provider, including any [Label] qualifiers.
+/// </param>
+/// <param name="ProviderMethodName">
+///     The method name from the user's interface (e.g., "GetPrimaryDatabase").
+/// </param>
+/// <param name="Location">The source location where this provider is defined.</param>
 /// <remarks>
-///     <para>Domain Model:</para>
-///     <para>
-///         InjectorProviderModel represents a single provider method that will be generated in the
-///         concrete injector class. It is the Stage 2 counterpart to 
-///         <see cref="Stage1.Metadata.Model.Injector.InjectorProviderMetadata"/>, enriched with
-///         resolution strategy information from specification analysis.
-///     </para>
-///     
-///     <para>Transformation from Metadata:</para>
-///     <para>
-///         InjectorProviderMapper transforms Stage 1 metadata into this model:
-///     </para>
-///     <list type="number">
-///         <item>Validates that ProvidedType matches a factory in the injector's specifications</item>
-///         <item>Resolves qualified type (including [Label] qualifiers) to specific factory method</item>
-///         <item>Determines which specification container owns the factory</item>
-///         <item>Preserves method name for interface implementation</item>
-///     </list>
-///     
-///     <para>Code Generation Pattern:</para>
-///     <para>
-///         Each InjectorProviderModel generates a method in the injector class that:
-///     </para>
-///     <list type="number">
-///         <item>Matches the user's interface method signature (name + return type)</item>
-///         <item>Delegates to the appropriate specification container's factory method</item>
-///         <item>Returns the constructed instance to the caller</item>
-///         <item>Benefits from singleton caching if the factory is scoped as singleton</item>
-///     </list>
-///     
-///     <para>Example Transformation:</para>
-///     <code>
-///         // User writes (Stage 1 Metadata):
-///         [Injector(typeof(DatabaseSpec))]
-///         interface IDatabaseInjector {
-///             [Label(DatabaseSpec.Primary)]
-///             IDatabase GetPrimaryDatabase();
-///         }
-///         
-///         // Analyzed as InjectorProviderMetadata:
-///         - ProviderMethodName: "GetPrimaryDatabase"
-///         - ProvidedType: QualifiedType(IDatabase, Label=Primary)
-///         
-///         // Mapped to InjectorProviderModel (this class):
-///         - ProvidedType: QualifiedType(IDatabase, Label=Primary)
-///         - ProviderMethodName: "GetPrimaryDatabase"
-///         
-///         // Generates (Stage 2 Output):
-///         public IDatabase GetPrimaryDatabase() {
-///             return this.databaseSpecContainer.Fac_L_Primary_IDatabase();
-///         }
-///     </code>
-///     
-///     <para>Qualified Type Resolution:</para>
-///     <para>
-///         The ProvidedType includes qualification metadata (labels) that directs the generator to
-///         the correct factory method. For example:
-///     </para>
-///     <list type="bullet">
-///         <item>Unqualified: IDatabase → Fac_L_None_IDatabase()</item>
-///         <item>Single label: [Label(Primary)] IDatabase → Fac_L_Primary_IDatabase()</item>
-///         <item>Multiple labels: [Label(Primary, ReadOnly)] IDatabase → Fac_L_Primary_ReadOnly_IDatabase()</item>
-///     </list>
-///     
-///     <para>Specification Container Delegation:</para>
-///     <para>
-///         The generated method delegates to a specification container field. The container is
-///         determined during Stage 2 transformation:
-///     </para>
-///     <list type="bullet">
-///         <item>
-///             <term>Local Construction:</term>
-///             <description>
-///                 If the factory is in a ConstructedSpecification, delegate to that container field.
-///                 Example: this.requestSpecContainer.Fac_L_None_IUserContext()
-///             </description>
-///         </item>
-///         <item>
-///             <term>Parent Delegation:</term>
-///             <description>
-///                 If the factory is in a parent specification, delegate through the parent dependency
-///                 interface. Example: this.parent.GetLogger() (which internally calls parent's container)
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Scope and Caching:</para>
-///     <para>
-///         Provider methods inherit the scope behavior defined by the underlying factory:
-///     </para>
-///     <list type="bullet">
-///         <item>
-///             <term>Singleton:</term>
-///             <description>
-///                 Container caches the first invocation result and returns the same instance on
-///                 subsequent calls. Cache is scoped to the container instance (injector lifetime).
-///             </description>
-///         </item>
-///         <item>
-///             <term>Transient:</term>
-///             <description>
-///                 Container creates a new instance on every invocation. No caching.
-///             </description>
-///         </item>
-///         <item>
-///             <term>Scoped (via child injectors):</term>
-///             <description>
-///                 Singleton within a child injector's lifetime but transient across different child
-///                 instances. Example: DB transaction is singleton per request but different per request.
-///             </description>
-///         </item>
-///     </list>
-///     
-///     <para>Thread Safety:</para>
-///     <para>
-///         Provider methods delegate to specification factories. If the factory is singleton-scoped,
-///         the container implements thread-safe caching (typically via lazy initialization or locks).
-///         If transient, each call is independent and thread-safe by nature.
-///     </para>
-///     
-///     <para>Relationship to Other Models:</para>
-///     <list type="bullet">
-///         <item>
-///             Contrast with <see cref="InjectorBuilderModel"/>: Providers return values, Builders
-///             initialize existing objects (void return)
-///         </item>
-///         <item>
-///             Contrast with <see cref="InjectorChildFactoryModel"/>: Providers return dependency
-///             instances, ChildFactories return child injector instances
-///         </item>
-///         <item>
-///             Used by: <see cref="InjectorModel.Providers"/> collection during code generation
-///         </item>
-///     </list>
+///     Stage 2 counterpart to <see cref="Stage1.Metadata.Model.Injector.InjectorProviderMetadata"/>,
+///     enriched with resolution strategy. Generates a method that delegates to a specification
+///     container's factory method, returning the constructed instance.
 /// </remarks>
 /// <param name="ProvidedType"> 
 ///     The qualified type returned by this provider, including any [Label] qualifiers. Used to resolve
