@@ -1,9 +1,13 @@
 ﻿references:
   - uid: Activator
     href: ~/index.md#activators
+  - uid: Factory
+    href: ~/index.md#factories
   - uid: Injector
     href: ~/index.md#injectors
   - uid: Provider
     href: ~/index.md#providers
   - uid: Specification
     href: ~/index.md#specifications
+  - uid: Qualifier
+    href: ~/index.md#qualifiers

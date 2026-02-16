@@ -8,10 +8,10 @@ the injection and linking at build time. This results in blazing fast injection
 at runtime, and quick identification of dependency issues at compile time.
 
 ## Injectors
-:::api-snippet Phx.Inject.InjectorAttribute.remarks[ApiDoc]
+:::api-snippet Phx.Inject.InjectorAttribute.remarks[ApiDoc:Injector]
 
 
-:::api-snippet Phx.Inject.InjectorAttribute.example[0]
+:::api-snippet Phx.Inject.InjectorAttribute.example[ApiDoc:Injector]
 
 ### Generated Injector Naming
 :::api-snippet Phx.Inject.InjectorAttribute.GeneratedClassName.remarks[ApiDoc]
@@ -20,32 +20,10 @@ at runtime, and quick identification of dependency issues at compile time.
 :::api-snippet Phx.Inject.InjectorAttribute.GeneratedClassName.example
 
 ### Providers
-:::api-snippet Phx.Inject.InjectorAttribute.remarks[ApiDoc][1]
+:::api-snippet Phx.Inject.InjectorAttribute.remarks[ApiDoc:Provider]
 
 
-:::api-snippet Phx.Inject.InjectorAttribute.example[1]
-
-
-```csharp
-[Injector(
-    typeof(TestSpecification)
-)]
-public interface ITestInjector {
-    /// Providers must always be parameterless and have a non void return type.
-    /// They can be named anything you want.
-    public int GetMyInt();
-    
-    /// Qualifiers can be used to differentiate between dependencies of the same
-    /// type.
-    [Label("MyLabel")]
-    public int GetOtherInt();
-    
-    /// Providers are linked based on the qualifiers AND return type. So 
-    /// qualifier attributes can be reused with different types.
-    [Label("MyLabel")]
-    public string GetString();
-}
-```
+:::api-snippet Phx.Inject.InjectorAttribute.example[ApiDoc:Provider]
 
 ### Activators
 Activators are methods that initialize a provided value using values from the

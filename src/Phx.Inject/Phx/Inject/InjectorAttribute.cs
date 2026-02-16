@@ -10,7 +10,7 @@ namespace Phx.Inject;
 
 /// <summary> Annotates an injector interface as the entry point to a dependency graph. </summary>
 /// <remarks>
-/// <!-- ApiDoc -->
+/// <!-- ApiDoc:Injector -->
 /// An [Injector] is the interface used to construct and access dependencies in
 /// the dependency graph. An injector will always be an interface annotated with
 /// the <see cref="InjectorAttribute"/> and will contain [Provider] and 
@@ -18,8 +18,17 @@ namespace Phx.Inject;
 /// dependency graph. Each [Injector] also has a list of [Specification] types
 /// that provide the framework with the dependencies used to construct the
 /// dependency graph.
+/// 
+/// <!-- ... -->
+/// 
+/// <!-- ApiDoc:Provider -->
+/// [Provider]s are parameterless methods that are defined on the [Injector]
+/// interface. They will be linked to a [Factory] in the [Injector]'s set of
+/// [Specification]s based on the return type and [Qualifier] attributes of the
+/// [Provider]s.
 /// </remarks>
 /// <example>
+/// <!-- ApiDoc:Injector -->
 /// <code>
 /// // An injector interface with a single specification.
 /// [Injector(typeof(MySpecification))]
@@ -28,14 +37,8 @@ namespace Phx.Inject;
 /// }
 /// </code>
 /// </example>
-/// <remarks>
-/// <!-- ApiDoc -->
-/// [Providers] are parameterless methods that are defined on the [Injector]
-/// interface. They will be linked to a [Factory] in the [Injector]'s set of
-/// [Specification]s based on the return type and [Qualifier] attributes of the
-/// [Providers].
-/// </remarks>
 /// <example>
+/// <!-- ApiDoc:Provider -->
 /// <code>
 /// [Injector(
 ///     typeof(TestSpecification)

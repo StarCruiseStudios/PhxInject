@@ -237,7 +237,7 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
         var content = field switch
         {
             "summary" => NormalizeXrefs(item.Summary).TrimEnd(),
-            "remarks" => NormalizeXrefs(item.Remarks).TrimEnd(),
+            "remarks" => RenderList(ApplyListIndexing(SplitRemarksIntoSections(item.Remarks), listIndex).Select(NormalizeXrefs)),
             "syntax" => RenderSyntax(item.SyntaxContent),
             "example" => RenderList(ApplyListIndexing(item.Example, listIndex).Select(NormalizeXrefs)),
             "seealso" => RenderList(ApplyListIndexing(item.SeeAlso, listIndex).Select(link => $"- <xref:{link}>")),
@@ -286,20 +286,102 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
         }
     }
 
-    private static string ExtractTaggedSection(string content, string tag)
+    private static IReadOnlyList<string> SplitRemarksIntoSections(string remarks)
     {
-        // Look for <!-- tag --> (with only the tag name inside) and extract the content after it
-        // until the next XML comment or end of content
-        var pattern = $@"<!--\s*{Regex.Escape(tag)}\s*-->(.*?)(?=<!--|$)";
-        var match = Regex.Match(content, pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
-        
-        if (match.Success)
+        if (string.IsNullOrWhiteSpace(remarks))
         {
-            return match.Groups[1].Value.Trim();
+            return [];
         }
 
-        // If not found, return empty
-        return string.Empty;
+        // Split remarks by section dividers (<!-- ... -->) to identify section boundaries
+        var sections = new List<string>();
+        var pattern = @"<!--\s*\.\.\.\s*-->";
+        var commentMatches = Regex.Matches(remarks, pattern);
+
+        if (commentMatches.Count == 0)
+        {
+            // No section dividers found, return the whole remarks as a single section
+            return [remarks.Trim()];
+        }
+
+        var lastIndex = 0;
+        foreach (Match match in commentMatches)
+        {
+            // Get content before this divider (if any)
+            if (match.Index > lastIndex)
+            {
+                var before = remarks[lastIndex..match.Index].Trim();
+                if (!string.IsNullOrWhiteSpace(before))
+                {
+                    sections.Add(before);
+                }
+            }
+
+            lastIndex = match.Index + match.Length;
+        }
+
+        // Add any remaining content after the last divider
+        if (lastIndex < remarks.Length)
+        {
+            var remaining = remarks[lastIndex..].Trim();
+            if (!string.IsNullOrWhiteSpace(remaining))
+            {
+                sections.Add(remaining);
+            }
+        }
+
+        return sections.Count == 0 ? [remarks.Trim()] : sections;
+    }
+    private static string ExtractTaggedSection(string content, string tag)
+    {
+        // Parse the tag to check for a label (e.g., "ApiDoc:Injector")
+        var (tagName, label) = ParseTagWithLabel(tag);
+        
+        // Look for <!-- tagName --> or <!-- tagName:label --> and extract content between them
+        // Pattern matches: <!-- ApiDoc --> or <!-- ApiDoc:Injector --> etc.
+        string pattern;
+        if (string.IsNullOrWhiteSpace(label))
+        {
+            // Match any ApiDoc tag regardless of label
+            pattern = $@"<!--\s*{Regex.Escape(tagName)}(?::[^-]*)?\s*-->(.*?)(?=<!--|$)";
+        }
+        else
+        {
+            // Match only ApiDoc tags with the specific label
+            pattern = $@"<!--\s*{Regex.Escape(tagName)}:{Regex.Escape(label)}\s*-->(.*?)(?=<!--|$)";
+        }
+
+        var regex = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        var matches = regex.Matches(content);
+        
+        if (matches.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        // Combine all matching sections
+        var sections = new List<string>();
+        foreach (Match match in matches)
+        {
+            var section = match.Groups[1].Value.Trim();
+            if (!string.IsNullOrWhiteSpace(section))
+            {
+                sections.Add(section);
+            }
+        }
+
+        return sections.Count == 0 ? string.Empty : string.Join(Environment.NewLine, sections);
+    }
+
+    private static (string TagName, string? Label) ParseTagWithLabel(string tag)
+    {
+        var colonIndex = tag.IndexOf(':');
+        if (colonIndex > 0 && colonIndex < tag.Length - 1)
+        {
+            return (tag[..colonIndex].Trim(), tag[(colonIndex + 1)..].Trim());
+        }
+
+        return (tag, null);
     }
 
     private static string RenderSyntax(string syntaxContent)
