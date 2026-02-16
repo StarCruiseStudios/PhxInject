@@ -10,6 +10,7 @@ namespace Phx.Inject;
 
 /// <summary> Annotates an injector interface as the entry point to a dependency graph. </summary>
 /// <remarks>
+/// <!-- ApiDoc -->
 /// An [Injector] is the interface used to construct and access dependencies in
 /// the dependency graph. An injector will always be an interface annotated with
 /// the <see cref="InjectorAttribute"/> and will contain [Provider] and 
@@ -18,6 +19,18 @@ namespace Phx.Inject;
 /// that provide the framework with the dependencies used to construct the
 /// dependency graph.
 /// </remarks>
+/// <example>
+/// This example shows how to define an [Injector] interface with a single
+/// [Specification]. The [Injector] interface will be used to access a
+/// dependency defined in the [Specification].
+/// 
+/// <code>
+/// [Injector(typeof(MySpecification))]
+/// public interface IMyInjector {
+///     MyService GetService();
+/// }
+/// </code>
+/// </example>
 /// <example>
 /// This example shows how to define an [Injector] interface with a single
 /// [Specification]. The [Injector] interface will be used to access a

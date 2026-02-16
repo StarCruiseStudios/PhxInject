@@ -22,6 +22,11 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
         "attributes"
     ];
 
+    private static readonly string[] SupportedTags =
+    [
+        "ApiDoc"
+    ];
+
     private static readonly Lazy<MetadataIndex> Metadata = new(LoadMetadataIndex);
 
     public string Name => nameof(ApiSnippetBuildStep);
@@ -82,7 +87,7 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
             var rawSpec = directive.Groups["spec"].Value.Trim();
             var parsedSpec = ParseSpec(rawSpec);
             var item = Metadata.Value.GetItem(parsedSpec.Uid);
-            var snippet = RenderSnippet(item, parsedSpec.Field);
+            var snippet = RenderSnippet(item, parsedSpec.Field, parsedSpec.Tag);
 
             if (!string.IsNullOrWhiteSpace(snippet))
             {
@@ -125,16 +130,35 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
             });
     }
 
-    private static (string Uid, string Field) ParseSpec(string spec)
+    private static (string Uid, string Field, string? Tag) ParseSpec(string spec)
     {
         var lastDot = spec.LastIndexOf('.');
         if (lastDot <= 0 || lastDot == spec.Length - 1)
         {
-            throw new InvalidOperationException($"Invalid api-snippet directive '{spec}'. Use <uid>.<field>.");
+            throw new InvalidOperationException($"Invalid api-snippet directive '{spec}'. Use <uid>.<field> or <uid>.<field>[tag].");
         }
 
         var uid = spec[..lastDot].Trim();
-        var field = spec[(lastDot + 1)..].Trim().ToLowerInvariant();
+        var fieldPart = spec[(lastDot + 1)..].Trim().ToLowerInvariant();
+
+        // Check for [tag] syntax: field[tag]
+        string field;
+        string? tag = null;
+        var bracketIndex = fieldPart.IndexOf('[');
+        
+        if (bracketIndex > 0)
+        {
+            field = fieldPart[..bracketIndex].Trim();
+            var closeBracket = fieldPart.IndexOf(']', bracketIndex);
+            if (closeBracket > bracketIndex + 1)
+            {
+                tag = fieldPart[(bracketIndex + 1)..closeBracket].Trim();
+            }
+        }
+        else
+        {
+            field = fieldPart;
+        }
 
         if (!SupportedFields.Contains(field, StringComparer.Ordinal))
         {
@@ -142,12 +166,12 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
                 $"Unsupported api-snippet field '{field}'. Supported fields: {string.Join(", ", SupportedFields)}.");
         }
 
-        return (uid, field);
+        return (uid, field, tag);
     }
 
-    private static string RenderSnippet(MetadataItem item, string field)
+    private static string RenderSnippet(MetadataItem item, string field, string? tag = null)
     {
-        return field switch
+        var content = field switch
         {
             "summary" => NormalizeXrefs(item.Summary).TrimEnd(),
             "remarks" => NormalizeXrefs(item.Remarks).TrimEnd(),
@@ -158,6 +182,30 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
             "attributes" => RenderList(item.Attributes.Select(link => $"- <xref:{link}>")),
             _ => throw new InvalidOperationException($"Unsupported field '{field}'.")
         };
+
+        // If a tag is specified, extract only the tagged section
+        if (!string.IsNullOrWhiteSpace(tag))
+        {
+            content = ExtractTaggedSection(content, tag);
+        }
+
+        return content;
+    }
+
+    private static string ExtractTaggedSection(string content, string tag)
+    {
+        // Look for <!-- tag --> (with only the tag name inside) and extract the content after it
+        // until the next XML comment or end of content
+        var pattern = $@"<!--\s*{Regex.Escape(tag)}\s*-->(.*?)(?=<!--|$)";
+        var match = Regex.Match(content, pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        
+        if (match.Success)
+        {
+            return match.Groups[1].Value.Trim();
+        }
+
+        // If not found, return empty
+        return string.Empty;
     }
 
     private static string RenderSyntax(string syntaxContent)
@@ -304,7 +352,7 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
                     GetScalarSequence(mapping, "example"),
                     GetMappedSequenceValues(mapping, "seealso", "linkId"),
                     GetScalarSequence(mapping, "inheritance"),
-                    GetMappedSequenceValues(mapping, "attributes", "type"));
+                    GetMappedSequenceValues(mapping, "attributes", "type")
             }
 
             throw new InvalidOperationException($"UID '{uid}' was not found in '{yamlPath}'.");

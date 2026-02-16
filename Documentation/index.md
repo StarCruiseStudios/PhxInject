@@ -7,11 +7,11 @@ specifications defined in your code and generate the source code that performs
 the injection and linking at build time. This results in blazing fast injection
 at runtime, and quick identification of dependency issues at compile time.
 
-[Injector](xref:Injector)
-
-
 ## Injectors
-:::api-snippet Phx.Inject.InjectorAttribute.remarks
+:::api-snippet Phx.Inject.InjectorAttribute.remarks[ApiDoc]
+
+
+:::api-snippet Phx.Inject.InjectorAttribute.example
 
 ### Generated Injector Naming
 By default, the generated injector will be named by prefixing the name of the
