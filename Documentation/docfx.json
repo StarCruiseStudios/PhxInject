@@ -50,6 +50,9 @@
         "dest": "resources"
       }
     ],
+    "xref": [
+      "links.xrefmap.yml"
+    ],
     "dest": "../docs/_site",
     "globalMetadata": {
       "_appTitle": "Phx.Inject API Documentation",

@@ -45,12 +45,16 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
             return;
         }
 
-        if (!markdown.Contains(":::api-snippet", StringComparison.Ordinal))
+        var rewritten = markdown;
+        
+        if (markdown.Contains(":::api-snippet", StringComparison.Ordinal))
         {
-            return;
+            rewritten = RewriteMarkdown(markdown, model.File);
         }
 
-        var rewritten = RewriteMarkdown(markdown, model.File);
+        // Convert [Identifier] links to [Identifier](xref:Identifier) references
+        rewritten = AutoLinkIdentifiers(rewritten);
+        
         content["conceptual"] = rewritten;
     }
 
@@ -108,6 +112,17 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
         }
 
         return string.Join(Environment.NewLine, output);
+    }
+
+    private static string AutoLinkIdentifiers(string markdown)
+    {
+        return IdentifierLinkRegex().Replace(
+            markdown,
+            match =>
+            {
+                var identifier = match.Groups["identifier"].Value;
+                return $"[{identifier}](xref:{identifier})";
+            });
     }
 
     private static (string Uid, string Field) ParseSpec(string spec)
@@ -218,6 +233,9 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
 
     [GeneratedRegex("<xref\\s+href=\"(?<uid>[^\"]+)\"[^>]*>(?<inner>.*?)</xref>", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex XrefRegex();
+
+    [GeneratedRegex("\\[(?<identifier>[A-Za-z_][A-Za-z0-9._]*)\\](?!\\()", RegexOptions.Compiled)]
+    private static partial Regex IdentifierLinkRegex();
 
     private sealed class MetadataIndex
     {

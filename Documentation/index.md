@@ -1,4 +1,4 @@
-﻿# Phx.Inject Documentation
+# Phx.Inject Documentation
 
 Compile time dependency injection for .NET.
 
@@ -7,13 +7,11 @@ specifications defined in your code and generate the source code that performs
 the injection and linking at build time. This results in blazing fast injection
 at runtime, and quick identification of dependency issues at compile time.
 
-## Phx.Inject Injectors
-The Injector is the interface used to construct and access dependencies in the
-dependency graph. An injector will always be an interface annotated with the
-`Injector` attribute and will contain methods and properties used by your
-application as access points into the dependency graph, as well as a list of
-specifications used to inform the framework how to construct the dependency
-graph.
+[Injector](xref:Injector)
+
+
+## Injectors
+:::api-snippet Phx.Inject.InjectorAttribute.remarks
 
 ### Generated Injector Naming
 By default, the generated injector will be named by prefixing the name of the
@@ -267,7 +265,7 @@ internal interface IParentInjector {
 }
 ```
 
-## Phx.Inject Specifications
+## Specifications
 Specifications are classes that contain Factories and Builders that define how
 dependencies should be linked and constructed. They define the nodes in the
 dependency graph and the information the framework uses to connect the nodes

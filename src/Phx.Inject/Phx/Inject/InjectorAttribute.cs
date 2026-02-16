@@ -10,23 +10,31 @@ namespace Phx.Inject;
 
 /// <summary> Annotates an injector interface as the entry point to a dependency graph. </summary>
 /// <remarks>
-/// This attribute marks an interface that will have a concrete injector implementation
-/// generated at compile time. The injector provides access to all factories and builders
-/// defined in the specified specifications.
-///
-/// ## Usage
-///
-/// Apply this attribute to an interface to generate an injector:
-///
+/// An [Injector] is the interface used to construct and access dependencies in
+/// the dependency graph. An injector will always be an interface annotated with
+/// the <see cref="InjectorAttribute"/> and will contain [Provider] and 
+/// [Activator] methods used by your application as access points into the  
+/// dependency graph. Each [Injector] also has a list of [Specification] types
+/// that provide the framework with the dependencies used to construct the
+/// dependency graph.
+/// </remarks>
+/// <example>
+/// This example shows how to define an [Injector] interface with a single
+/// [Specification]. The [Injector] interface will be used to access a
+/// dependency defined in the [Specification].
+/// 
 /// <code>
 /// [Injector(typeof(MySpecification))]
 /// public interface IMyInjector {
 ///     MyService GetService();
 /// }
 /// </code>
-/// </remarks>
-/// <seealso cref="SpecificationAttribute"/>
+/// </example>
+/// <seealso cref="ChildInjectorAttribute"/>
 /// <seealso cref="DependencyAttribute"/>
+/// <seealso cref="SpecificationAttribute"/>
+/// <seealso cref="LabelAttribute"/>
+/// <seealso cref="QualifierAttribute"/>
 [AttributeUsage(AttributeTargets.Interface)]
 public class InjectorAttribute : Attribute {
     /// <summary> The name to use for the generated injector class. </summary>

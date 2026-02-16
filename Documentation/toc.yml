@@ -2,9 +2,9 @@
 items:
 - name: Documentation
   items:
-  - href: index.html#phxinject-injectors
+  - uid: Injector
     name: Injectors
-  - href: index.html#phxinject-specifications
+  - uid: Specification
     name: Specifications
 - name: API Reference
   items:
