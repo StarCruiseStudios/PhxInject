@@ -131,7 +131,7 @@ public sealed partial class ApiSnippetReplacementBuildStep : IDocumentBuildStep
         // Find the bracket position to avoid parsing dots inside bracket notation
         var bracketPosition = spec.IndexOf('[');
         var searchRange = bracketPosition >= 0 ? spec[..bracketPosition] : spec;
-        
+
         var lastDot = searchRange.LastIndexOf('.');
         if (lastDot <= 0 || lastDot == searchRange.Length - 1)
         {
@@ -145,7 +145,7 @@ public sealed partial class ApiSnippetReplacementBuildStep : IDocumentBuildStep
         string? tag = null;
         ListIndexRange? listIndex = null;
         var fieldBracketIndex = remainder.IndexOf('[');
-        
+
         if (fieldBracketIndex > 0)
         {
             field = remainder[..fieldBracketIndex].Trim();
@@ -153,7 +153,7 @@ public sealed partial class ApiSnippetReplacementBuildStep : IDocumentBuildStep
             if (closeBracket > fieldBracketIndex + 1)
             {
                 var bracketed = remainder[(fieldBracketIndex + 1)..closeBracket].Trim();
-                
+
                 // Check if it's a list index/range (numeric or .. range syntax)
                 if (IsListIndexOrRange(bracketed))
                 {
@@ -262,7 +262,7 @@ public sealed partial class ApiSnippetReplacementBuildStep : IDocumentBuildStep
             // Up-to range access - clamp to available elements
             var count = range.End ?? list.Count;
             var actual = Math.Min(count, list.Count);
-            
+
             if (actual <= 0)
             {
                 return [];
@@ -318,12 +318,12 @@ public sealed partial class ApiSnippetReplacementBuildStep : IDocumentBuildStep
 
         return sections.Count == 0 ? [remarks.Trim()] : sections;
     }
-    
+
     private static string ExtractTaggedSection(string content, string tag)
     {
         // Parse the tag to check for a label (e.g., "ApiDoc:Injector")
         var (tagName, label) = ParseTagWithLabel(tag);
-        
+
         // Look for <!-- tagName --> or <!-- tagName:label --> and extract content between them
         // Pattern matches: <!-- ApiDoc --> or <!-- ApiDoc:Injector --> etc.
         string pattern;
@@ -340,7 +340,7 @@ public sealed partial class ApiSnippetReplacementBuildStep : IDocumentBuildStep
 
         var regex = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
         var matches = regex.Matches(content);
-        
+
         if (matches.Count == 0)
         {
             return string.Empty;

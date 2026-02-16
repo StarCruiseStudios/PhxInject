@@ -63,9 +63,9 @@ public sealed partial class IdentifierXrefBuildStep : IDocumentBuildStep
         // Temporarily replace code blocks to prevent link conversion inside them
         var codeBlocks = new List<string>();
         var placeholder = "<<<CODE_BLOCK_{0}>>>";
-        
+
         var result = markdown;
-        
+
         // Extract markdown ``` code blocks
         var markdownCodeRegex = new Regex(@"```[\s\S]*?```", RegexOptions.Compiled | RegexOptions.Singleline);
         var markdownMatches = markdownCodeRegex.Matches(markdown);
@@ -75,7 +75,7 @@ public sealed partial class IdentifierXrefBuildStep : IDocumentBuildStep
             var codeBlockPlaceholder = string.Format(placeholder, codeBlocks.Count - 1);
             result = result.Replace(match.Value, codeBlockPlaceholder, StringComparison.Ordinal);
         }
-        
+
         // Extract XML <code> blocks
         var xmlCodeRegex = new Regex(@"<code>.*?</code>", RegexOptions.Compiled | RegexOptions.Singleline);
         var xmlMatches = xmlCodeRegex.Matches(result);
@@ -85,7 +85,7 @@ public sealed partial class IdentifierXrefBuildStep : IDocumentBuildStep
             var codeBlockPlaceholder = string.Format(placeholder, codeBlocks.Count - 1);
             result = result.Replace(match.Value, codeBlockPlaceholder, StringComparison.Ordinal);
         }
-        
+
         // Process identifier links in the non-code content
         result = IdentifierLinkRegex().Replace(
             result,
@@ -95,7 +95,7 @@ public sealed partial class IdentifierXrefBuildStep : IDocumentBuildStep
                 var uid = "link." + identifier.ToLower().Replace(" ", ".");
                 return $"<xref href=\"{uid}?text={identifier}\" />";
             });
-        
+
         // Restore code blocks
         for (var i = 0; i < codeBlocks.Count; i++)
         {
@@ -103,7 +103,7 @@ public sealed partial class IdentifierXrefBuildStep : IDocumentBuildStep
             var codeBlock = codeBlocks[i];
             result = result.Replace(codeBlockPlaceholder, codeBlock, StringComparison.Ordinal);
         }
-        
+
         return result;
     }
 
