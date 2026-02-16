@@ -132,13 +132,63 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
 
     private static string AutoLinkIdentifiers(string markdown)
     {
-        return IdentifierLinkRegex().Replace(
-            markdown,
+        // Temporarily replace code blocks to prevent link conversion inside them
+        var codeBlocks = new List<string>();
+        var placeholder = "<<<CODE_BLOCK_{0}>>>";
+        
+        var result = markdown;
+        
+        // Extract markdown ``` code blocks
+        var markdownCodeRegex = new Regex(@"```[\s\S]*?```", RegexOptions.Compiled);
+        var markdownMatches = markdownCodeRegex.Matches(markdown);
+        foreach (Match match in markdownMatches)
+        {
+            codeBlocks.Add(match.Value);
+            var codeBlockPlaceholder = string.Format(placeholder, codeBlocks.Count - 1);
+            result = result.Replace(match.Value, codeBlockPlaceholder, StringComparison.Ordinal);
+        }
+        
+        // Extract XML <code> blocks
+        var xmlCodeRegex = new Regex(@"<code>(.*?)</code>", RegexOptions.Compiled | RegexOptions.Singleline);
+        var xmlMatches = xmlCodeRegex.Matches(result);
+        var offset = 0;
+        foreach (Match match in xmlMatches)
+        {
+            codeBlocks.Add(match.Groups[1].Value);
+            var codeBlockPlaceholder = string.Format(placeholder, codeBlocks.Count - 1);
+            result = result.Remove(match.Index - offset, match.Length);
+            result = result.Insert(match.Index - offset, codeBlockPlaceholder);
+            offset += match.Length - codeBlockPlaceholder.Length;
+        }
+        
+        // Process identifier links in the non-code content
+        result = IdentifierLinkRegex().Replace(
+            result,
             match =>
             {
                 var identifier = match.Groups["identifier"].Value;
                 return $"<xref href=\"{identifier}?text={identifier}\" />";
             });
+        
+        // Restore code blocks
+        for (var i = 0; i < codeBlocks.Count; i++)
+        {
+            var codeBlockPlaceholder = string.Format(placeholder, i);
+            var codeBlock = codeBlocks[i];
+            
+            // If it's a markdown code block (starts with ```), restore as-is
+            if (codeBlock.StartsWith("```", StringComparison.Ordinal))
+            {
+                result = result.Replace(codeBlockPlaceholder, codeBlock, StringComparison.Ordinal);
+            }
+            else
+            {
+                // Otherwise it's XML code block content, wrap it back
+                result = result.Replace(codeBlockPlaceholder, $"<code>{codeBlock}</code>", StringComparison.Ordinal);
+            }
+        }
+        
+        return result;
     }
 
     private static (string Uid, string Field, string? Tag, ListIndexRange? ListIndex) ParseSpec(string spec)
