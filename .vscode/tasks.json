@@ -2,9 +2,14 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "docs: build",
+      "label": "docfx: restore tool",
       "type": "shell",
       "command": "dotnet",
+      "options": {
+        "env": {
+          "BlueShellQuietMode": "true"
+        }
+      },
       "args": [
         "tool",
         "restore"
@@ -12,9 +17,14 @@
       "problemMatcher": []
     },
     {
-      "label": "docs: build plugin",
+      "label": "docfx: build plugin",
       "type": "shell",
       "command": "dotnet",
+      "options": {
+        "env": {
+          "BlueShellQuietMode": "true"
+        }
+      },
       "args": [
         "build",
         "./Documentation/plugins/PhxInject-DocFx-Plugin/PhxInject.DocFx.Plugins.csproj",
@@ -26,9 +36,14 @@
       ]
     },
     {
-      "label": "docs: metadata",
+      "label": "docfx: metadata",
       "type": "shell",
       "command": "dotnet",
+      "options": {
+        "env": {
+          "BlueShellQuietMode": "true"
+        }
+      },
       "args": [
         "docfx",
         "metadata",
@@ -37,9 +52,14 @@
       "problemMatcher": []
     },
     {
-      "label": "docs: site",
+      "label": "docfx: build",
       "type": "shell",
       "command": "dotnet",
+      "options": {
+        "env": {
+          "BlueShellQuietMode": "true"
+        }
+      },
       "args": [
         "docfx",
         "build",
@@ -47,19 +67,17 @@
       ],
       "dependsOrder": "sequence",
       "dependsOn": [
-        "docs: build",
-        "docs: build plugin"
+        "docfx: metadata"
       ],
       "problemMatcher": []
     },
     {
-      "label": "docs: full build",
+      "label": "docfx: full build",
       "dependsOrder": "sequence",
       "dependsOn": [
-        "docs: build plugin",
-        "docs: metadata",
-        "docs: build",
-        "docs: site"
+        "docfx: restore tool",
+        "docfx: build plugin",
+        "docfx: build"
       ],
       "problemMatcher": []
     }
