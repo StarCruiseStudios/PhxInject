@@ -9,42 +9,19 @@ at runtime, and quick identification of dependency issues at compile time.
 
 ## Injectors
 :::api-snippet Phx.Inject.InjectorAttribute.remarks[ApiDoc:Injector]
-
-
 :::api-snippet Phx.Inject.InjectorAttribute.example[ApiDoc:Injector]
 
 ### Generated Injector Naming
 :::api-snippet Phx.Inject.InjectorAttribute.GeneratedClassName.remarks[ApiDoc]
-
-
 :::api-snippet Phx.Inject.InjectorAttribute.GeneratedClassName.example
 
 ### Providers
 :::api-snippet Phx.Inject.InjectorAttribute.remarks[ApiDoc:Provider]
-
-
 :::api-snippet Phx.Inject.InjectorAttribute.example[ApiDoc:Provider]
 
 ### Activators
-Activators are methods that initialize a provided value using values from the
-dependency graph. They will be linked to a builder in the injector's set of
-specifications based on the type of the first parameter and the qualifier of the
-method.
-```csharp
-[Injector(
-    typeof(TestSpecification)
-)]
-public interface ITestInjector {
-    /// Activators must always return void and contain a single parameter of the
-    /// type that is to be injected.
-    public void Build(MyClass class);
-    
-    /// Qualifier attributes should be placed on the activator method, not on the
-    /// parameter.
-    [Label("MyLabel")]
-    public void BuildOther(MyClass class);
-}
-```
+:::api-snippet Phx.Inject.InjectorAttribute.remarks[ApiDoc:Activator]
+:::api-snippet Phx.Inject.InjectorAttribute.example[ApiDoc:Activator]
 
 ### Scope
 By default, all factories will construct a new instance each time they are

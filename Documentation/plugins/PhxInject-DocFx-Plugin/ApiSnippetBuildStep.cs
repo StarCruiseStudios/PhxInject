@@ -102,6 +102,7 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
             if (!string.IsNullOrWhiteSpace(snippet))
             {
                 output.AddRange(snippet.Split(["\r\n", "\n"], StringSplitOptions.None));
+                output.Add(string.Empty);
             }
 
             index++;
@@ -136,7 +137,7 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
             match =>
             {
                 var identifier = match.Groups["identifier"].Value;
-                return $"[{identifier}](xref:{identifier})";
+                return $"<xref href=\"{identifier}?text={identifier}\" />";
             });
     }
 

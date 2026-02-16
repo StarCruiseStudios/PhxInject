@@ -11,6 +11,7 @@ namespace Phx.Inject;
 /// <summary> Annotates an injector interface as the entry point to a dependency graph. </summary>
 /// <remarks>
 /// <!-- ApiDoc:Injector -->
+/// <para>
 /// An [Injector] is the interface used to construct and access dependencies in
 /// the dependency graph. An injector will always be an interface annotated with
 /// the <see cref="InjectorAttribute"/> and will contain [Provider] and 
@@ -18,14 +19,31 @@ namespace Phx.Inject;
 /// dependency graph. Each [Injector] also has a list of [Specification] types
 /// that provide the framework with the dependencies used to construct the
 /// dependency graph.
-/// 
+/// </para>
 /// <!-- ... -->
-/// 
 /// <!-- ApiDoc:Provider -->
+/// <para>
 /// [Provider]s are parameterless methods that are defined on the [Injector]
 /// interface. They will be linked to a [Factory] in the [Injector]'s set of
 /// [Specification]s based on the return type and [Qualifier] attributes of the
 /// [Provider]s.
+/// </para>
+/// <list type="bullet">
+/// <item>
+/// - [Provider]s must always be parameterless and have a non void return type.
+/// </item>
+/// <item>
+/// - [Provider]s can have any name.
+/// </item>
+/// </list>
+/// <!-- ... -->
+/// <!-- ApiDoc:Activator -->
+/// <para>
+/// [Activator]s are methods that initialize an object using values from the
+/// dependency graph. They will be linked to a [Builder] in the [Injector]'s set
+/// of [Specification]s based on the type of the first parameter and the
+/// [Qualifier] of the method.
+/// </para>
 /// </remarks>
 /// <example>
 /// <!-- ApiDoc:Injector -->
@@ -44,8 +62,7 @@ namespace Phx.Inject;
 ///     typeof(TestSpecification)
 /// )]
 /// public interface ITestInjector {
-///     /// Providers must always be parameterless and have a non void return
-///     /// type. They can have any name.
+///     // Providers are parameterless methods that return a dependency from the graph.
 ///     public int GetMyInt();
 ///     
 ///     /// Qualifiers can be used to differentiate between dependencies of the
@@ -53,10 +70,26 @@ namespace Phx.Inject;
 ///     [Label("MyLabel")]
 ///     public int GetOtherInt();
 ///     
-///     /// Providers are linked based on the qualifiers AND return type. So 
-///     /// qualifier attributes can be reused with different types.
+///     /// Providers are linked based on the qualifiers AND return type. 
+///     /// The same qualifier attributes can be reused with different types.
 ///     [Label("MyLabel")]
 ///     public string GetString();
+/// }
+/// </code>
+/// </example>
+/// <example>
+/// <!-- ApiDoc:Activator -->
+/// <code>
+/// [Injector(typeof(TestSpecification))]
+/// public interface ITestInjector {
+///     /// Activators must always return void and contain a single parameter of the
+///     /// type that is to be injected.
+///     public void Build(MyClass class);
+///     
+///     /// Qualifier attributes should be placed on the activator method, not on the
+///     /// parameter.
+///     [Label("MyLabel")]
+///     public void BuildOther(MyClass class);
 /// }
 /// </code>
 /// </example>
@@ -70,25 +103,30 @@ public class InjectorAttribute : Attribute {
     /// <summary> The name to use for the generated injector class. </summary>
     /// <remarks>
     /// <!-- ApiDoc -->
+    /// <para>
     /// By default, the generated [Injector] will be named by prefixing the name
     /// of the [Injector] interface with "Generated", after removing the "I"
     /// prefix if there is one.
+    /// </para>
+    /// <list type="bullet">
+    /// <item>
     /// - <c>ITestInjector</c> generates <c>GeneratedTestInjector</c>.
+    /// </item>
+    /// <item>
     /// - <c>ApplicationInjector</c> generates <c>GeneratedApplicationInjector</c>.
+    /// </item>
+    /// </list>
     ///
-    /// To explicitly define the generated injector name, use the optional
-    /// <see cref="GeneratedClassName"/> property.
-    ///
-    /// The generated injector will always use the same namespace as the
-    /// injector interface.
+    /// <para>
+    /// The generated [Injector] will always use the same namespace as the
+    /// [Injector] interface. To explicitly define the generated [Injector] name,
+    /// use the optional <see cref="GeneratedClassName"/> property.
+    /// </para> 
     /// </remarks>
     /// <example>
-    /// This example will generate an injector class named
-    /// <c>CustomInjector</c>.
-    /// 
     /// <code>
     /// [Injector(
-    ///     generatedClassName: "CustomInjector",
+    ///     generatedClassName: "CustomInjector", // Generated class will be named `CustomInjector`
     ///     typeof(TestSpecification))]
     /// public interface ITestInjector {
     ///     // ...

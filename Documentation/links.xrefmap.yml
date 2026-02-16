@@ -1,13 +1,22 @@
 ﻿references:
   - uid: Activator
+    name: Activator
     href: ~/index.md#activators
+  - uid: Builder
+    name: Builder
+    href: ~/index.md#builders
   - uid: Factory
+    name: Factory
     href: ~/index.md#factories
   - uid: Injector
+    name: Injector
     href: ~/index.md#injectors
   - uid: Provider
+    name: Provider
     href: ~/index.md#providers
   - uid: Specification
+    name: Specification
     href: ~/index.md#specifications
   - uid: Qualifier
+    name: Qualifier
     href: ~/index.md#qualifiers
