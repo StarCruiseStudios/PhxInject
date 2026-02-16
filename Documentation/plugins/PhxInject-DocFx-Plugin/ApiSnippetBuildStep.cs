@@ -139,7 +139,7 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
         var result = markdown;
         
         // Extract markdown ``` code blocks
-        var markdownCodeRegex = new Regex(@"```[\s\S]*?```", RegexOptions.Compiled);
+        var markdownCodeRegex = new Regex(@"```[\s\S]*?```", RegexOptions.Compiled | RegexOptions.Singleline);
         var markdownMatches = markdownCodeRegex.Matches(markdown);
         foreach (Match match in markdownMatches)
         {
@@ -149,16 +149,14 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
         }
         
         // Extract XML <code> blocks
-        var xmlCodeRegex = new Regex(@"<code>(.*?)</code>", RegexOptions.Compiled | RegexOptions.Singleline);
+        var xmlCodeRegex = new Regex(@"<code>.*?</code>", RegexOptions.Compiled | RegexOptions.Singleline);
         var xmlMatches = xmlCodeRegex.Matches(result);
         var offset = 0;
         foreach (Match match in xmlMatches)
         {
-            codeBlocks.Add(match.Groups[1].Value);
+            codeBlocks.Add(match.Value);
             var codeBlockPlaceholder = string.Format(placeholder, codeBlocks.Count - 1);
-            result = result.Remove(match.Index - offset, match.Length);
-            result = result.Insert(match.Index - offset, codeBlockPlaceholder);
-            offset += match.Length - codeBlockPlaceholder.Length;
+            result = result.Replace(match.Value, codeBlockPlaceholder, StringComparison.Ordinal);
         }
         
         // Process identifier links in the non-code content
@@ -167,7 +165,8 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
             match =>
             {
                 var identifier = match.Groups["identifier"].Value;
-                return $"<xref href=\"{identifier}?text={identifier}\" />";
+                var uid = "link." + identifier.ToLower().Replace(" ", ".");
+                return $"<xref href=\"{uid}?text={identifier}\" />";
             });
         
         // Restore code blocks
@@ -175,17 +174,7 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
         {
             var codeBlockPlaceholder = string.Format(placeholder, i);
             var codeBlock = codeBlocks[i];
-            
-            // If it's a markdown code block (starts with ```), restore as-is
-            if (codeBlock.StartsWith("```", StringComparison.Ordinal))
-            {
-                result = result.Replace(codeBlockPlaceholder, codeBlock, StringComparison.Ordinal);
-            }
-            else
-            {
-                // Otherwise it's XML code block content, wrap it back
-                result = result.Replace(codeBlockPlaceholder, $"<code>{codeBlock}</code>", StringComparison.Ordinal);
-            }
+            result = result.Replace(codeBlockPlaceholder, codeBlock, StringComparison.Ordinal);
         }
         
         return result;
@@ -509,7 +498,7 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
     [GeneratedRegex("<xref\\s+href=\"(?<uid>[^\"]+)\"[^>]*>(?<inner>.*?)</xref>", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex XrefRegex();
 
-    [GeneratedRegex("\\[(?<identifier>[A-Za-z_][A-Za-z0-9._]*)\\](?!\\()", RegexOptions.Compiled)]
+    [GeneratedRegex("\\[(?<identifier>[A-Za-z_][A-Za-z0-9._ ]*)\\](?!\\()", RegexOptions.Compiled)]
     private static partial Regex IdentifierLinkRegex();
 
     private sealed class MetadataIndex

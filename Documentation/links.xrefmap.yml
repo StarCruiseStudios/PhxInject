@@ -1,22 +1,25 @@
 ﻿references:
-  - uid: Activator
-    name: Activator
+  - uid: link.activator
     href: ~/index.md#activators
-  - uid: Builder
-    name: Builder
+  - uid: link.builder
     href: ~/index.md#builders
-  - uid: Factory
-    name: Factory
+  - uid: link.builder.reference
+    href: ~/index.md#factory-and-builder-references
+  - uid: link.child.injector
+    href: ~/index.md#child-injectors
+  - uid: link.dependency
+    href: ~/index.md#child-injectors
+  - uid: link.dependency.specification
+    href: ~/index.md#child-injectors
+  - uid: link.factory
     href: ~/index.md#factories
-  - uid: Injector
-    name: Injector
+  - uid: link.factory.reference
+    href: ~/index.md#factory-and-builder-references
+  - uid: link.injector
     href: ~/index.md#injectors
-  - uid: Provider
-    name: Provider
+  - uid: link.provider
     href: ~/index.md#providers
-  - uid: Specification
-    name: Specification
+  - uid: link.specification
     href: ~/index.md#specifications
-  - uid: Qualifier
-    name: Qualifier
+  - uid: link.qualifier
     href: ~/index.md#qualifiers

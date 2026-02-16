@@ -2,9 +2,9 @@
 items:
 - name: Documentation
   items:
-  - uid: Injector
+  - uid: link.injector
     name: Injectors
-  - uid: Specification
+  - uid: link.specification
     name: Specifications
 - name: API Reference
   items:

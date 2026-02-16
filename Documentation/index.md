@@ -23,148 +23,9 @@ at runtime, and quick identification of dependency issues at compile time.
 :::api-snippet Phx.Inject.InjectorAttribute.remarks[ApiDoc:Activator]
 :::api-snippet Phx.Inject.InjectorAttribute.example[ApiDoc:Activator]
 
-### Scope
-By default, all factories will construct a new instance each time they are
-invoked. This behavior can be changed so that a factory will construct an
-instance the first time it is invoked, and return the same instance each time it
-is invoked after that. The lifetime of this "scoped" dependency is tied to the
-lifetime of the injector. i.e. a single injector will always use the same scoped
-instance, but creating a new injector will create a new instance.
-```csharp
-[Specification]
-internal static TestSpecification {
-    [Factory(FabricationMode.Scoped)]
-    internal static MyClass GetMyClass() {
-        return new MyClass();
-    }
-}
-
-[Injector(
-    typeof(TestSpecification)
-)]
-public interface ITestInjector {
-    public MyClass GetMyClass();
-}
-```
-```csharp
-var injector = new GeneratedTestInjector();
-var myClass1a = injector.GetMyClass();
-var myClass1b = injector.GetMyClass();
-
-var injector2 = new GeneratedTestInjector();
-var myClass2 = injector2.GetMyClass();
-
-Verify.That(Object.ReferenceEquals(myClass1a, myClass1b).IsTrue());
-Verify.That(Object.ReferenceEquals(myClass1a, myClass2).IsFalse());
-```
-
 ### Child Injectors
-A child injector is an injector that is not constructed directly by the calling
-code, but that is constructed by another "parent" injector. This child injector
-will have access to the dependencies provided by the parent injector through an
-`Dependency` specification interface, but the parent will not have implicit access to
-dependencies provided by the child. `Dependency` specifications can only define
-Factories, not Factory References, Builders, or BuilderReferences, and the
-factories cannot accept any arguments.
-
-```csharp
-[Specification]
-internal static ChildSpecification {
-    internal static MyClass GetMyClass(int intValue) {
-        return new MyClass(intValue);
-    }
-}
-
-/// The dependency interface defines the types that must be provided
-/// by the parent injector.
-[Specification]
-internal interface IChildDependencies {
-    /// Qualifier attributes could also be used to differentiate dependencies
-    /// with the same type.
-    [Factory]
-    public int GetIntValue();
-}
-
-[Injector(
-    typeof(ChildSpecification)
-)]
-[Dependency(typeof(IChildDependencies))]
-internal interface IChildInjector {
-    public MyClass GetMyClass();
-}
-```
-```csharp
-[Specification]
-internal static ParentSpecification {
-    internal static int GetIntValue() {
-        return 10;
-    }
-}
-
-[Injector(
-    typeof(ParentSpecification)
-)]
-internal interface IParentInjector {
-    [ChildInjector]
-    public IChildInjector GetChildInjector();
-}
-```
-```csharp
-var parentInjector = new GeneratedParentInjector();
-var childInjector = parentInjector.GetChildInjector();
-var myClass = childInjector.GetMyClass();
-
-Verify.That(myClass.Value.IsEqualTo(10));
-```
-
-Child injectors can be useful for defining different scopes and lifetimes within
-a single dependency graph.
-
-```csharp
-[Injector(...)]
-internal interface IApplicationInjector {
-    /// All dependencies share the same application config.
-    public AppConfig GetApplicationConfig();
-    
-    [ChildInjector]
-    public ISessionInjector GetSessionInjector();
-}
-
-[Injector(...)]
-[Dependency(...)]
-internal interface ISessionInjector {
-    /// Session credentials are shared by all dependencies created within a
-    /// session.
-    public Credentials GetSessionCredentials();
-    
-    [ChildInjector]
-    public IRequestInjector GetRequestInjector();
-}
-
-[Injector(...)]
-[Dependency(...)]
-internal interface IRequestInjector {
-    /// A unique request ID is shared by all dependencies while a request is
-    /// processing.
-    public string GetRequestId();
-}
-```
-
-```csharp
-// On Application startup:
-var appInjector = new GeneratedAppInjector();
-
-// Each time a new session is started within the same application:
-var sessionInjector = appInjector.GetSessionInjector();
-
-// Each time a new request is created within a session:
-var requestInjector = sessionInjector.GetRequestInjector();
-
-requestInjector.GetRequestId();
-```
-> **Note:** The dependency interface implementation does not accept values from the child injector.
-> This means that factory defined in the parent cannot be injected with a value from the child,
-> if it is invoked from a factory on the child.
+:::api-snippet Phx.Inject.ChildInjectorAttribute.remarks[ApiDoc]
+:::api-snippet Phx.Inject.ChildInjectorAttribute.example
 
 ### Constructed Injectors
 Sometimes a dependency is not known at compile time and has to be inserted into
@@ -246,6 +107,41 @@ internal static class TestSpecification {
         return new MyClass(intValue);
     }
 }
+```
+
+### Scope
+By default, all factories will construct a new instance each time they are
+invoked. This behavior can be changed so that a factory will construct an
+instance the first time it is invoked, and return the same instance each time it
+is invoked after that. The lifetime of this "scoped" dependency is tied to the
+lifetime of the injector. i.e. a single injector will always use the same scoped
+instance, but creating a new injector will create a new instance.
+```csharp
+[Specification]
+internal static TestSpecification {
+    [Factory(FabricationMode.Scoped)]
+    internal static MyClass GetMyClass() {
+        return new MyClass();
+    }
+}
+
+[Injector(
+    typeof(TestSpecification)
+)]
+public interface ITestInjector {
+    public MyClass GetMyClass();
+}
+```
+```csharp
+var injector = new GeneratedTestInjector();
+var myClass1a = injector.GetMyClass();
+var myClass1b = injector.GetMyClass();
+
+var injector2 = new GeneratedTestInjector();
+var myClass2 = injector2.GetMyClass();
+
+Verify.That(Object.ReferenceEquals(myClass1a, myClass1b).IsTrue());
+Verify.That(Object.ReferenceEquals(myClass1a, myClass2).IsFalse());
 ```
 
 ### Partial Factories
