@@ -14,32 +14,46 @@ namespace Phx.Inject;
 /// An [Injector] is the interface used to construct and access dependencies in
 /// the dependency graph. An injector will always be an interface annotated with
 /// the <see cref="InjectorAttribute"/> and will contain [Provider] and 
-/// [Activator] methods used by your application as access points into the  
+/// [Activator] methods used by your application as access points into the
 /// dependency graph. Each [Injector] also has a list of [Specification] types
 /// that provide the framework with the dependencies used to construct the
 /// dependency graph.
 /// </remarks>
 /// <example>
-/// This example shows how to define an [Injector] interface with a single
-/// [Specification]. The [Injector] interface will be used to access a
-/// dependency defined in the [Specification].
-/// 
 /// <code>
+/// // An injector interface with a single specification.
 /// [Injector(typeof(MySpecification))]
 /// public interface IMyInjector {
 ///     MyService GetService();
 /// }
 /// </code>
 /// </example>
+/// <remarks>
+/// <!-- ApiDoc -->
+/// [Providers] are parameterless methods that are defined on the [Injector]
+/// interface. They will be linked to a [Factory] in the [Injector]'s set of
+/// [Specification]s based on the return type and [Qualifier] attributes of the
+/// [Providers].
+/// </remarks>
 /// <example>
-/// This example shows how to define an [Injector] interface with a single
-/// [Specification]. The [Injector] interface will be used to access a
-/// dependency defined in the [Specification].
-/// 
 /// <code>
-/// [Injector(typeof(MySpecification))]
-/// public interface IMyInjector {
-///     MyService GetService();
+/// [Injector(
+///     typeof(TestSpecification)
+/// )]
+/// public interface ITestInjector {
+///     /// Providers must always be parameterless and have a non void return
+///     /// type. They can have any name.
+///     public int GetMyInt();
+///     
+///     /// Qualifiers can be used to differentiate between dependencies of the
+///     /// same type.
+///     [Label("MyLabel")]
+///     public int GetOtherInt();
+///     
+///     /// Providers are linked based on the qualifiers AND return type. So 
+///     /// qualifier attributes can be reused with different types.
+///     [Label("MyLabel")]
+///     public string GetString();
 /// }
 /// </code>
 /// </example>
@@ -52,28 +66,39 @@ namespace Phx.Inject;
 public class InjectorAttribute : Attribute {
     /// <summary> The name to use for the generated injector class. </summary>
     /// <remarks>
-    ///     This value may be <see langword="null" /> if no custom class name is specified. If no 
-    ///     custom name is specified, a default value of "GeneratedXyz" will be used, where Xyz is 
-    ///     the annotated interface's name with the leading "I" removed, if present.
+    /// <!-- ApiDoc -->
+    /// By default, the generated [Injector] will be named by prefixing the name
+    /// of the [Injector] interface with "Generated", after removing the "I"
+    /// prefix if there is one.
+    /// - <c>ITestInjector</c> generates <c>GeneratedTestInjector</c>.
+    /// - <c>ApplicationInjector</c> generates <c>GeneratedApplicationInjector</c>.
+    ///
+    /// To explicitly define the generated injector name, use the optional
+    /// <see cref="GeneratedClassName"/> property.
+    ///
+    /// The generated injector will always use the same namespace as the
+    /// injector interface.
     /// </remarks>
+    /// <example>
+    /// This example will generate an injector class named
+    /// <c>CustomInjector</c>.
+    /// 
+    /// <code>
+    /// [Injector(
+    ///     generatedClassName: "CustomInjector",
+    ///     typeof(TestSpecification))]
+    /// public interface ITestInjector {
+    ///     // ...
+    /// }
+    /// </code>
+    /// </example>
     public string? GeneratedClassName { get; set; } = null;
-
-    /// <summary> Gets a collection of specification types used by this injector. </summary>
-    /// <value>
-    ///     An enumerable of specification types. This collection defines which specifications
-    ///     provide factories and builders for this injector.
-    /// </value>
     public IEnumerable<Type> Specifications { get; }
 
-    /// <summary> Initializes a new instance of the <see cref="InjectorAttribute"/> class. </summary>
-    /// <param name="specifications"> A collection of specification types used by this injector. </param>
     public InjectorAttribute(params Type[] specifications) {
         Specifications = specifications;
     }
     
-    /// <summary> Initializes a new instance of the <see cref="InjectorAttribute"/> class. </summary>
-    /// <param name="generatedClassName"> The name to use for the generated injector class. </param>
-    /// <param name="specifications"> A collection of specification types used by this injector. </param>
     public InjectorAttribute(string? generatedClassName, params Type[] specifications) {
         GeneratedClassName = generatedClassName;
         Specifications = specifications;

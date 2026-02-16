@@ -1,3 +1,11 @@
+// -----------------------------------------------------------------------------
+//  <copyright file="ApiSnippetBuildStep.cs" company="Star Cruise Studios LLC">
+//      Copyright (c) 2026 Star Cruise Studios LLC. All rights reserved.
+//      Licensed under the Apache License 2.0 License.
+//      See https://www.apache.org/licenses/LICENSE-2.0 for full license information.
+//  </copyright>
+// -----------------------------------------------------------------------------
+
 using System.Collections.Immutable;
 using System.Composition;
 using System.Text.Json;
@@ -28,6 +36,8 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
     ];
 
     private static readonly Lazy<MetadataIndex> Metadata = new(LoadMetadataIndex);
+
+    private sealed record ListIndexRange(int Start, int? End);
 
     public string Name => nameof(ApiSnippetBuildStep);
 
@@ -87,7 +97,7 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
             var rawSpec = directive.Groups["spec"].Value.Trim();
             var parsedSpec = ParseSpec(rawSpec);
             var item = Metadata.Value.GetItem(parsedSpec.Uid);
-            var snippet = RenderSnippet(item, parsedSpec.Field, parsedSpec.Tag);
+            var snippet = RenderSnippet(item, parsedSpec.Field, parsedSpec.Tag, parsedSpec.ListIndex);
 
             if (!string.IsNullOrWhiteSpace(snippet))
             {
@@ -130,34 +140,49 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
             });
     }
 
-    private static (string Uid, string Field, string? Tag) ParseSpec(string spec)
+    private static (string Uid, string Field, string? Tag, ListIndexRange? ListIndex) ParseSpec(string spec)
     {
-        var lastDot = spec.LastIndexOf('.');
-        if (lastDot <= 0 || lastDot == spec.Length - 1)
+        // Find the bracket position to avoid parsing dots inside bracket notation
+        var bracketPosition = spec.IndexOf('[');
+        var searchRange = bracketPosition >= 0 ? spec[..bracketPosition] : spec;
+        
+        var lastDot = searchRange.LastIndexOf('.');
+        if (lastDot <= 0 || lastDot == searchRange.Length - 1)
         {
-            throw new InvalidOperationException($"Invalid api-snippet directive '{spec}'. Use <uid>.<field> or <uid>.<field>[tag].");
+            throw new InvalidOperationException($"Invalid api-snippet directive '{spec}'. Use <uid>.<field>, <uid>.<field>[tag], <uid>.<field>[n], or <uid>.<field>[..n].");
         }
 
-        var uid = spec[..lastDot].Trim();
-        var fieldPart = spec[(lastDot + 1)..].Trim().ToLowerInvariant();
+        var uid = searchRange[..lastDot].Trim();
+        var remainder = spec[(lastDot + 1)..].Trim().ToLowerInvariant();
 
-        // Check for [tag] syntax: field[tag]
         string field;
         string? tag = null;
-        var bracketIndex = fieldPart.IndexOf('[');
+        ListIndexRange? listIndex = null;
+        var fieldBracketIndex = remainder.IndexOf('[');
         
-        if (bracketIndex > 0)
+        if (fieldBracketIndex > 0)
         {
-            field = fieldPart[..bracketIndex].Trim();
-            var closeBracket = fieldPart.IndexOf(']', bracketIndex);
-            if (closeBracket > bracketIndex + 1)
+            field = remainder[..fieldBracketIndex].Trim();
+            var closeBracket = remainder.IndexOf(']', fieldBracketIndex);
+            if (closeBracket > fieldBracketIndex + 1)
             {
-                tag = fieldPart[(bracketIndex + 1)..closeBracket].Trim();
+                var bracketed = remainder[(fieldBracketIndex + 1)..closeBracket].Trim();
+                
+                // Check if it's a list index/range (numeric or .. range syntax)
+                if (IsListIndexOrRange(bracketed))
+                {
+                    listIndex = ParseListIndexRange(bracketed);
+                }
+                else
+                {
+                    // It's a tag
+                    tag = bracketed;
+                }
             }
         }
         else
         {
-            field = fieldPart;
+            field = remainder;
         }
 
         if (!SupportedFields.Contains(field, StringComparer.Ordinal))
@@ -166,20 +191,58 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
                 $"Unsupported api-snippet field '{field}'. Supported fields: {string.Join(", ", SupportedFields)}.");
         }
 
-        return (uid, field, tag);
+        return (uid, field, tag, listIndex);
     }
 
-    private static string RenderSnippet(MetadataItem item, string field, string? tag = null)
+    private static bool IsListIndexOrRange(string bracketed)
     {
+        // Single numeric index: "0", "5", etc.
+        if (int.TryParse(bracketed, out _))
+        {
+            return true;
+        }
+
+        // Up-to range syntax: "..3", "..10", etc.
+        if (bracketed.StartsWith("..") && bracketed.Length > 2)
+        {
+            return int.TryParse(bracketed[2..], out _);
+        }
+
+        return false;
+    }
+
+    private static ListIndexRange ParseListIndexRange(string bracketed)
+    {
+        // Single index
+        if (int.TryParse(bracketed, out var index))
+        {
+            return new ListIndexRange(index, index);
+        }
+
+        // Up-to range: "..n"
+        if (bracketed.StartsWith("..") && bracketed.Length > 2)
+        {
+            if (int.TryParse(bracketed[2..], out var count))
+            {
+                return new ListIndexRange(0, count);
+            }
+        }
+
+        throw new InvalidOperationException($"Invalid list index syntax: [{bracketed}]. Use [n] for single element or [..n] for up to n elements.");
+    }
+
+    private static string RenderSnippet(MetadataItem item, string field, string? tag = null, ListIndexRange? listIndex = null)
+    {
+        // Apply list indexing before rendering (if applicable)
         var content = field switch
         {
             "summary" => NormalizeXrefs(item.Summary).TrimEnd(),
             "remarks" => NormalizeXrefs(item.Remarks).TrimEnd(),
             "syntax" => RenderSyntax(item.SyntaxContent),
-            "example" => RenderList(item.Example.Select(NormalizeXrefs)),
-            "seealso" => RenderList(item.SeeAlso.Select(link => $"- <xref:{link}>")),
-            "inheritance" => RenderList(item.Inheritance.Select(link => $"- <xref:{link}>")),
-            "attributes" => RenderList(item.Attributes.Select(link => $"- <xref:{link}>")),
+            "example" => RenderList(ApplyListIndexing(item.Example, listIndex).Select(NormalizeXrefs)),
+            "seealso" => RenderList(ApplyListIndexing(item.SeeAlso, listIndex).Select(link => $"- <xref:{link}>")),
+            "inheritance" => RenderList(ApplyListIndexing(item.Inheritance, listIndex).Select(link => $"- <xref:{link}>")),
+            "attributes" => RenderList(ApplyListIndexing(item.Attributes, listIndex).Select(link => $"- <xref:{link}>")),
             _ => throw new InvalidOperationException($"Unsupported field '{field}'.")
         };
 
@@ -190,6 +253,37 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
         }
 
         return content;
+    }
+
+    private static IReadOnlyList<T> ApplyListIndexing<T>(IReadOnlyList<T> list, ListIndexRange? range) where T : class
+    {
+        if (range == null)
+        {
+            return list;
+        }
+
+        if (range.Start == range.End)
+        {
+            // Single element access - throw error if out of bounds
+            if (range.Start < 0 || range.Start >= list.Count)
+            {
+                throw new InvalidOperationException($"List index {range.Start} is out of bounds (list has {list.Count} elements).");
+            }
+            return [list[range.Start]];
+        }
+        else
+        {
+            // Up-to range access - clamp to available elements
+            var count = range.End ?? list.Count;
+            var actual = Math.Min(count, list.Count);
+            
+            if (actual <= 0)
+            {
+                return [];
+            }
+
+            return list.Take(actual).ToList();
+        }
     }
 
     private static string ExtractTaggedSection(string content, string tag)
@@ -352,7 +446,7 @@ public sealed partial class ApiSnippetBuildStep : IDocumentBuildStep
                     GetScalarSequence(mapping, "example"),
                     GetMappedSequenceValues(mapping, "seealso", "linkId"),
                     GetScalarSequence(mapping, "inheritance"),
-                    GetMappedSequenceValues(mapping, "attributes", "type")
+                    GetMappedSequenceValues(mapping, "attributes", "type"));
             }
 
             throw new InvalidOperationException($"UID '{uid}' was not found in '{yamlPath}'.");

@@ -11,33 +11,21 @@ at runtime, and quick identification of dependency issues at compile time.
 :::api-snippet Phx.Inject.InjectorAttribute.remarks[ApiDoc]
 
 
-:::api-snippet Phx.Inject.InjectorAttribute.example
+:::api-snippet Phx.Inject.InjectorAttribute.example[0]
 
 ### Generated Injector Naming
-By default, the generated injector will be named by prefixing the name of the
-injector interface with "Generated", after removing the "I" prefix if there is
-one.
-* The interface `ITestInjector` generates `GeneratedTestInjector`.
-* The interface `ApplicationInjector` generates `GeneratedApplicationInjector`.
+:::api-snippet Phx.Inject.InjectorAttribute.GeneratedClassName.remarks[ApiDoc]
 
-To explicitly define the generated injector name, use the optional
-`GeneratedClassName` property on the `Injector` attribute of the interface.
-```csharp
-[Injector(
-    generatedClassName: "CustomInjector",
-    typeof(TestSpecification)
-)]
-public interface ITestInjector {
-    // ...
-}
-```
-The generated injector will always use the same namespace as the injector
-interface.
+
+:::api-snippet Phx.Inject.InjectorAttribute.GeneratedClassName.example
 
 ### Providers
-Providers are parameterless methods that are defined on the injector interface.
-They will be linked to a factory in the injector's set of specifications based
-on the return type and qualifier attributes of the provider.
+:::api-snippet Phx.Inject.InjectorAttribute.remarks[ApiDoc][1]
+
+
+:::api-snippet Phx.Inject.InjectorAttribute.example[1]
+
+
 ```csharp
 [Injector(
     typeof(TestSpecification)
