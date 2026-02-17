@@ -370,16 +370,13 @@ public ValueTask<ISymbol?> ResolveSymbolAsync(string name) {
 
 ### Braces
 
-Use Allman style (enforced by .editorconfig):
+Use K&R style (opening brace on the same line):
 
 ```csharp
-if (condition)
-{
-    // Brace on new line
-}
-else
-{
-    // Else on separate line
+if (condition) {
+    // Brace on same line
+} else {
+    // Else on same line
 }
 ```
 
