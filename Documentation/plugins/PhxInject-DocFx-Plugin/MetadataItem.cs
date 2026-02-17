@@ -13,16 +13,8 @@ namespace PhxInject.DocFx.Plugins;
 /// </summary>
 /// <param name="Summary"> The summary documentation for the item. </param>
 /// <param name="Remarks"> The remarks documentation for the item. </param>
-/// <param name="SyntaxContent"> The syntax content for the item (e.g., method signature). </param>
 /// <param name="Example"> The example documentation sections for the item. </param>
-/// <param name="SeeAlso"> The "see also" reference UIDs for the item. </param>
-/// <param name="Inheritance"> The inheritance chain UIDs for the item. </param>
-/// <param name="Attributes"> The attribute type UIDs for the item. </param>
 internal sealed record MetadataItem(
     string Summary,
     string Remarks,
-    string SyntaxContent,
-    IReadOnlyList<string> Example,
-    IReadOnlyList<string> SeeAlso,
-    IReadOnlyList<string> Inheritance,
-    IReadOnlyList<string> Attributes);
+    IReadOnlyList<string> Example);

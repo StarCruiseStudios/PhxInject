@@ -6,7 +6,9 @@
 //  </copyright>
 // -----------------------------------------------------------------------------
 
+using System.Collections.Immutable;
 using System.Text.Json;
+using Docfx.Plugins;
 using YamlDotNet.RepresentationModel;
 
 namespace PhxInject.DocFx.Plugins;
@@ -15,32 +17,23 @@ namespace PhxInject.DocFx.Plugins;
 ///     Provides access to DocFX metadata YAML files via a manifest-based index.
 /// </summary>
 internal sealed class MetadataIndex {
+    private static string BaseDirectory => EnvironmentContext.BaseDirectory;
+    private static string MetadataRoot => Path.Combine(BaseDirectory, "../src/Phx.Inject.Generator/bin/docs");
+    private static string ManifestFileName => ".manifest";
+    private static string ManifestPath => Path.Combine(MetadataRoot, ManifestFileName);
+    
     private readonly string metadataRoot;
     private readonly Dictionary<string, string> manifest;
     private readonly Dictionary<string, MetadataItem> cache = new(StringComparer.Ordinal);
 
-    private sealed record MetadataLocation(string MetadataRoot, string ManifestPath);
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="MetadataIndex" /> class.
-    /// </summary>
-    /// <param name="metadataRoot"> The root directory containing metadata YAML files. </param>
-    /// <param name="manifest"> The manifest dictionary mapping UIDs to relative file paths. </param>
     public MetadataIndex(string metadataRoot, Dictionary<string, string> manifest) {
         this.metadataRoot = metadataRoot;
         this.manifest = manifest;
     }
 
-    /// <summary>
-    ///     Loads the metadata index based on the provided options.
-    /// </summary>
-    /// <param name="options"> The metadata resolution options. </param>
-    /// <returns> A new <see cref="MetadataIndex" /> instance. </returns>
-    public static MetadataIndex Load(DocFxPluginOptions.MetadataOptions options) {
-        var location = ResolveLocation(options);
-        var manifest = LoadManifest(location.ManifestPath);
-
-        return new MetadataIndex(location.MetadataRoot, manifest);
+    public static MetadataIndex Load() {
+        var manifest = LoadManifest(ManifestPath);
+        return new MetadataIndex(MetadataRoot, manifest);
     }
 
     /// <summary>
@@ -68,34 +61,6 @@ internal sealed class MetadataIndex {
         return item;
     }
 
-    private static MetadataLocation ResolveLocation(DocFxPluginOptions.MetadataOptions options) {
-        if (!string.IsNullOrWhiteSpace(options.ManifestPath)) {
-            var manifestPath = ResolvePath(options.BaseDirectory, options.ManifestPath);
-            var root = Path.GetDirectoryName(manifestPath)
-                ?? throw new InvalidOperationException("Manifest path has no directory component.");
-
-            return new MetadataLocation(root, manifestPath);
-        }
-
-        if (!string.IsNullOrWhiteSpace(options.MetadataRoot)) {
-            var metadataRoot = ResolvePath(options.BaseDirectory, options.MetadataRoot);
-            var manifestPath = Path.Combine(metadataRoot, options.ManifestFileName);
-
-            return new MetadataLocation(metadataRoot, manifestPath);
-        }
-
-        foreach (var candidate in options.CandidateRoots) {
-            var metadataRoot = ResolvePath(options.BaseDirectory, candidate);
-            var manifestPath = Path.Combine(metadataRoot, options.ManifestFileName);
-            if (File.Exists(manifestPath)) {
-                return new MetadataLocation(metadataRoot, manifestPath);
-            }
-        }
-
-        throw new InvalidOperationException(
-            "DocFX metadata manifest not found. Update the DocFxPluginOptions metadata configuration.");
-    }
-
     private static Dictionary<string, string> LoadManifest(string manifestPath) {
         if (!File.Exists(manifestPath)) {
             throw new InvalidOperationException($"DocFX metadata manifest not found: {manifestPath}");
@@ -106,12 +71,6 @@ internal sealed class MetadataIndex {
             ?? throw new InvalidOperationException($"Unable to parse manifest file: {manifestPath}");
 
         return manifest;
-    }
-
-    private static string ResolvePath(string baseDirectory, string path) {
-        return Path.IsPathRooted(path)
-            ? path
-            : Path.GetFullPath(Path.Combine(baseDirectory, path));
     }
 
     private static MetadataItem ParseMetadataItem(string yamlPath, string uid) {
@@ -137,11 +96,7 @@ internal sealed class MetadataIndex {
             return new MetadataItem(
                 GetScalar(mapping, "summary"),
                 GetScalar(mapping, "remarks"),
-                GetSyntaxContent(mapping),
-                GetScalarSequence(mapping, "example"),
-                GetMappedSequenceValues(mapping, "seealso", "linkId"),
-                GetScalarSequence(mapping, "inheritance"),
-                GetMappedSequenceValues(mapping, "attributes", "type"));
+                GetScalarSequence(mapping, "example"));
         }
 
         throw new InvalidOperationException($"UID '{uid}' was not found in '{yamlPath}'.");

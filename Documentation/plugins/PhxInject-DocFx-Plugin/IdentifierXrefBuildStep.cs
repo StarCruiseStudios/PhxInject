@@ -23,29 +23,27 @@ namespace PhxInject.DocFx.Plugins;
 /// </remarks>
 [Export("ConceptualDocumentProcessor", typeof(IDocumentBuildStep))]
 public sealed partial class IdentifierXrefBuildStep : IDocumentBuildStep {
-    private const string CodeBlockPlaceholderFormat = "<<<DOCFX_CODE_BLOCK_{0}>>>";
+    [GeneratedRegex("\\[(?<identifier>[A-Za-z_][A-Za-z0-9._ ]*)\\](?!\\()", RegexOptions.Compiled)]
+    private static partial Regex IdentifierRegex();
+    
+    [GeneratedRegex(@"```[\s\S]*?```", RegexOptions.Compiled | RegexOptions.Singleline)]
+    private static partial Regex MarkdownCodeBlockRegex();
 
-    private static readonly DocFxPluginOptions Options = DocFxPluginOptions.Load();
-    private static readonly Regex MarkdownCodeBlockRegex = new(
-        @"```[\s\S]*?```",
-        RegexOptions.Compiled | RegexOptions.Singleline);
+    [GeneratedRegex("<code>.*?</code>", RegexOptions.Compiled | RegexOptions.Singleline)]
+    private static partial Regex XmlCodeBlockRegex();
+    
+    private const string XrefLinkPattern = @"<xref href=""link.{0}?text={1}"" />";
 
-    private static readonly Regex XmlCodeBlockRegex = new(
-        @"<code>.*?</code>",
-        RegexOptions.Compiled | RegexOptions.Singleline);
-
-    /// <inheritdoc />
+    /// <inheritdoc cref="IDocumentBuildStep.Name"/>
     public string Name => nameof(IdentifierXrefBuildStep);
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="IDocumentBuildStep.BuildOrder"/>
     public int BuildOrder => -900;
 
-    /// <inheritdoc />
-    public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host) {
-        return models;
-    }
+    /// <inheritdoc cref="IDocumentBuildStep.Prebuild"/>
+    public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host) => models;
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="IDocumentBuildStep.Build"/>
     public void Build(FileModel model, IHostService host) {
         if (model.Content is not IDictionary<string, object> content) {
             return;
@@ -55,37 +53,40 @@ public sealed partial class IdentifierXrefBuildStep : IDocumentBuildStep {
             return;
         }
 
-        if (!Options.IdentifierXref.IdentifierRegex.IsMatch(markdown)) {
+        if (!IdentifierRegex().IsMatch(markdown)) {
             return;
         }
 
-        var rewritten = AutoLinkIdentifiers(markdown);
-        content["conceptual"] = rewritten;
+        content["conceptual"] = RewriteIdentifiers(markdown);
     }
 
     /// <inheritdoc />
-    public void Postbuild(ImmutableList<FileModel> models, IHostService host) {
-    }
+    public void Postbuild(ImmutableList<FileModel> models, IHostService host) { }
 
-    private static string AutoLinkIdentifiers(string markdown) {
+    private static string RewriteIdentifiers(string markdown) {
         // Temporarily replace code blocks to prevent link conversion inside them.
         var codeBlocks = new List<string>();
-        var result = ReplaceWithPlaceholders(markdown, MarkdownCodeBlockRegex, codeBlocks);
-        result = ReplaceWithPlaceholders(result, XmlCodeBlockRegex, codeBlocks);
+        var result = markdown.ReplaceWithCodeBlockPlaceholders(MarkdownCodeBlockRegex(), codeBlocks);
+        result = result.ReplaceWithCodeBlockPlaceholders(XmlCodeBlockRegex(), codeBlocks);
 
-        result = Options.IdentifierXref.IdentifierRegex.Replace(
+        result = IdentifierRegex().Replace(
             result,
             match => {
                 var identifier = match.Groups["identifier"].Value;
-                var normalized = NormalizeIdentifier(identifier, Options.IdentifierXref);
-                var uid = Options.IdentifierXref.LinkPrefix + normalized;
-                return $"<xref href=\"{uid}?text={identifier}\" />";
+                var uid = identifier
+                    .Replace(" ", ".", StringComparison.Ordinal)
+                    .ToLowerInvariant();
+                return string.Format(XrefLinkPattern, uid, identifier);
             });
 
-        return RestorePlaceholders(result, codeBlocks);
+        return result.RestorePlaceholders(codeBlocks);
     }
+}
 
-    private static string ReplaceWithPlaceholders(string text, Regex regex, List<string> codeBlocks) {
+internal static class PlaceholderExtensions {
+    private const string CodeBlockPlaceholderFormat = "<<<DOCFX_CODE_BLOCK_{0}>>>";
+    
+    internal static string ReplaceWithCodeBlockPlaceholders(this string text, Regex regex, List<string> codeBlocks) {
         return regex.Replace(
             text,
             match => {
@@ -93,8 +94,8 @@ public sealed partial class IdentifierXrefBuildStep : IDocumentBuildStep {
                 return string.Format(CodeBlockPlaceholderFormat, codeBlocks.Count - 1);
             });
     }
-
-    private static string RestorePlaceholders(string text, IReadOnlyList<string> codeBlocks) {
+    
+    internal static string RestorePlaceholders(this string text, IReadOnlyList<string> codeBlocks) {
         var result = text;
         for (var i = 0; i < codeBlocks.Count; i++) {
             var codeBlockPlaceholder = string.Format(CodeBlockPlaceholderFormat, i);
@@ -102,19 +103,5 @@ public sealed partial class IdentifierXrefBuildStep : IDocumentBuildStep {
         }
 
         return result;
-    }
-
-    private static string NormalizeIdentifier(string identifier, DocFxPluginOptions.IdentifierXrefOptions options) {
-        var normalized = identifier;
-
-        if (!string.IsNullOrEmpty(options.SpaceReplacement)) {
-            normalized = normalized.Replace(" ", options.SpaceReplacement, StringComparison.Ordinal);
-        }
-
-        return options.IdentifierCase switch {
-            DocFxPluginOptions.IdentifierCase.Lower => normalized.ToLowerInvariant(),
-            DocFxPluginOptions.IdentifierCase.Upper => normalized.ToUpperInvariant(),
-            _ => normalized
-        };
     }
 }
