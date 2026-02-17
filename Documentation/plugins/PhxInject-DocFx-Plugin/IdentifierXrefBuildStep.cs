@@ -19,11 +19,21 @@ namespace PhxInject.DocFx.Plugins;
 /// <remarks>
 ///     This step runs after <see cref="ApiSnippetReplacementBuildStep" /> to ensure snippets are expanded
 ///     before identifier links are processed. It converts <c>[Identifier]</c> patterns (not followed by parentheses)
-///     into <c>&lt;xref href="link.identifier"&gt;</c> references, while preserving code blocks.
+///     into xref references based on the configured prefix and normalization rules, while preserving code blocks.
 /// </remarks>
 [Export("ConceptualDocumentProcessor", typeof(IDocumentBuildStep))]
-public sealed partial class IdentifierXrefBuildStep : IDocumentBuildStep
-{
+public sealed partial class IdentifierXrefBuildStep : IDocumentBuildStep {
+    private const string CodeBlockPlaceholderFormat = "<<<DOCFX_CODE_BLOCK_{0}>>>";
+
+    private static readonly DocFxPluginOptions Options = DocFxPluginOptions.Load();
+    private static readonly Regex MarkdownCodeBlockRegex = new(
+        @"```[\s\S]*?```",
+        RegexOptions.Compiled | RegexOptions.Singleline);
+
+    private static readonly Regex XmlCodeBlockRegex = new(
+        @"<code>.*?</code>",
+        RegexOptions.Compiled | RegexOptions.Singleline);
+
     /// <inheritdoc />
     public string Name => nameof(IdentifierXrefBuildStep);
 
@@ -31,21 +41,21 @@ public sealed partial class IdentifierXrefBuildStep : IDocumentBuildStep
     public int BuildOrder => -900;
 
     /// <inheritdoc />
-    public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
-    {
+    public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host) {
         return models;
     }
 
     /// <inheritdoc />
-    public void Build(FileModel model, IHostService host)
-    {
-        if (model.Content is not IDictionary<string, object> content)
-        {
+    public void Build(FileModel model, IHostService host) {
+        if (model.Content is not IDictionary<string, object> content) {
             return;
         }
 
-        if (!content.TryGetValue("conceptual", out var conceptualObject) || conceptualObject is not string markdown)
-        {
+        if (!content.TryGetValue("conceptual", out var conceptualObject) || conceptualObject is not string markdown) {
+            return;
+        }
+
+        if (!Options.IdentifierXref.IdentifierRegex.IsMatch(markdown)) {
             return;
         }
 
@@ -54,59 +64,57 @@ public sealed partial class IdentifierXrefBuildStep : IDocumentBuildStep
     }
 
     /// <inheritdoc />
-    public void Postbuild(ImmutableList<FileModel> models, IHostService host)
-    {
+    public void Postbuild(ImmutableList<FileModel> models, IHostService host) {
     }
 
-    private static string AutoLinkIdentifiers(string markdown)
-    {
-        // Temporarily replace code blocks to prevent link conversion inside them
+    private static string AutoLinkIdentifiers(string markdown) {
+        // Temporarily replace code blocks to prevent link conversion inside them.
         var codeBlocks = new List<string>();
-        var placeholder = "<<<CODE_BLOCK_{0}>>>";
+        var result = ReplaceWithPlaceholders(markdown, MarkdownCodeBlockRegex, codeBlocks);
+        result = ReplaceWithPlaceholders(result, XmlCodeBlockRegex, codeBlocks);
 
-        var result = markdown;
-
-        // Extract markdown ``` code blocks
-        var markdownCodeRegex = new Regex(@"```[\s\S]*?```", RegexOptions.Compiled | RegexOptions.Singleline);
-        var markdownMatches = markdownCodeRegex.Matches(markdown);
-        foreach (Match match in markdownMatches)
-        {
-            codeBlocks.Add(match.Value);
-            var codeBlockPlaceholder = string.Format(placeholder, codeBlocks.Count - 1);
-            result = result.Replace(match.Value, codeBlockPlaceholder, StringComparison.Ordinal);
-        }
-
-        // Extract XML <code> blocks
-        var xmlCodeRegex = new Regex(@"<code>.*?</code>", RegexOptions.Compiled | RegexOptions.Singleline);
-        var xmlMatches = xmlCodeRegex.Matches(result);
-        foreach (Match match in xmlMatches)
-        {
-            codeBlocks.Add(match.Value);
-            var codeBlockPlaceholder = string.Format(placeholder, codeBlocks.Count - 1);
-            result = result.Replace(match.Value, codeBlockPlaceholder, StringComparison.Ordinal);
-        }
-
-        // Process identifier links in the non-code content
-        result = IdentifierLinkRegex().Replace(
+        result = Options.IdentifierXref.IdentifierRegex.Replace(
             result,
-            match =>
-            {
+            match => {
                 var identifier = match.Groups["identifier"].Value;
-                var uid = "link." + identifier.ToLower().Replace(" ", ".");
+                var normalized = NormalizeIdentifier(identifier, Options.IdentifierXref);
+                var uid = Options.IdentifierXref.LinkPrefix + normalized;
                 return $"<xref href=\"{uid}?text={identifier}\" />";
             });
 
-        // Restore code blocks
-        for (var i = 0; i < codeBlocks.Count; i++)
-        {
-            var codeBlockPlaceholder = string.Format(placeholder, i);
-            var codeBlock = codeBlocks[i];
-            result = result.Replace(codeBlockPlaceholder, codeBlock, StringComparison.Ordinal);
+        return RestorePlaceholders(result, codeBlocks);
+    }
+
+    private static string ReplaceWithPlaceholders(string text, Regex regex, List<string> codeBlocks) {
+        return regex.Replace(
+            text,
+            match => {
+                codeBlocks.Add(match.Value);
+                return string.Format(CodeBlockPlaceholderFormat, codeBlocks.Count - 1);
+            });
+    }
+
+    private static string RestorePlaceholders(string text, IReadOnlyList<string> codeBlocks) {
+        var result = text;
+        for (var i = 0; i < codeBlocks.Count; i++) {
+            var codeBlockPlaceholder = string.Format(CodeBlockPlaceholderFormat, i);
+            result = result.Replace(codeBlockPlaceholder, codeBlocks[i], StringComparison.Ordinal);
         }
 
         return result;
     }
 
-    [GeneratedRegex("\\[(?<identifier>[A-Za-z_][A-Za-z0-9._ ]*)\\](?!\\()", RegexOptions.Compiled)]
-    private static partial Regex IdentifierLinkRegex();
+    private static string NormalizeIdentifier(string identifier, DocFxPluginOptions.IdentifierXrefOptions options) {
+        var normalized = identifier;
+
+        if (!string.IsNullOrEmpty(options.SpaceReplacement)) {
+            normalized = normalized.Replace(" ", options.SpaceReplacement, StringComparison.Ordinal);
+        }
+
+        return options.IdentifierCase switch {
+            DocFxPluginOptions.IdentifierCase.Lower => normalized.ToLowerInvariant(),
+            DocFxPluginOptions.IdentifierCase.Upper => normalized.ToUpperInvariant(),
+            _ => normalized
+        };
+    }
 }

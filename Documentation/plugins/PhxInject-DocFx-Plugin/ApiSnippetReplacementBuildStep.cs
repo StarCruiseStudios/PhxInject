@@ -17,20 +17,10 @@ namespace PhxInject.DocFx.Plugins;
 ///     DocFX build step that replaces <c>:::api-snippet</c> directives with content from DocFX metadata files.
 /// </summary>
 [Export("ConceptualDocumentProcessor", typeof(IDocumentBuildStep))]
-public sealed partial class ApiSnippetReplacementBuildStep : IDocumentBuildStep
-{
-    private static readonly string[] SupportedFields =
-    [
-        "summary",
-        "remarks",
-        "syntax",
-        "example",
-        "seealso",
-        "inheritance",
-        "attributes"
-    ];
-
-    private static readonly Lazy<MetadataIndex> Metadata = new(MetadataIndex.LoadFromStandardLocation);
+public sealed partial class ApiSnippetReplacementBuildStep : IDocumentBuildStep {
+    private static readonly DocFxPluginOptions Options = DocFxPluginOptions.Load();
+    private static readonly Lazy<MetadataIndex> Metadata = new(() => MetadataIndex.Load(Options.Metadata));
+    private static readonly string[] LineSeparators = ["\r\n", "\n"];
 
     private sealed record ListIndexRange(int Start, int? End);
 
@@ -41,83 +31,70 @@ public sealed partial class ApiSnippetReplacementBuildStep : IDocumentBuildStep
     public int BuildOrder => -1000;
 
     /// <inheritdoc />
-    public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
-    {
+    public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host) {
         return models;
     }
 
     /// <inheritdoc />
-    public void Build(FileModel model, IHostService host)
-    {
-        if (model.Content is not IDictionary<string, object> content)
-        {
+    public void Build(FileModel model, IHostService host) {
+        if (model.Content is not IDictionary<string, object> content) {
             return;
         }
 
-        if (!content.TryGetValue("conceptual", out var conceptualObject) || conceptualObject is not string markdown)
-        {
+        if (!content.TryGetValue("conceptual", out var conceptualObject) || conceptualObject is not string markdown) {
             return;
         }
 
-        if (!markdown.Contains(":::api-snippet", StringComparison.Ordinal))
-        {
+        if (!Options.Snippet.DirectiveRegex.IsMatch(markdown)) {
             return;
         }
 
-        var rewritten = RewriteMarkdown(markdown, model.File);
+        var rewritten = RewriteMarkdown(markdown);
         content["conceptual"] = rewritten;
     }
 
     /// <inheritdoc />
-    public void Postbuild(ImmutableList<FileModel> models, IHostService host)
-    {
+    public void Postbuild(ImmutableList<FileModel> models, IHostService host) {
     }
 
-    private static string RewriteMarkdown(string markdown, string file)
-    {
-        var lines = markdown.Split(["\r\n", "\n"], StringSplitOptions.None);
+    private static string RewriteMarkdown(string markdown) {
+        var lines = markdown.Split(LineSeparators, StringSplitOptions.None);
         var output = new List<string>(lines.Length + 32);
+        var snippetOptions = Options.Snippet;
 
         var index = 0;
-        while (index < lines.Length)
-        {
+        while (index < lines.Length) {
             var line = lines[index];
-            var directive = ApiSnippetDirectiveRegex().Match(line);
-            if (!directive.Success)
-            {
+            var directive = snippetOptions.DirectiveRegex.Match(line);
+            if (!directive.Success) {
                 output.Add(line);
                 index++;
                 continue;
             }
 
             var rawSpec = directive.Groups["spec"].Value.Trim();
-            var parsedSpec = ParseSpec(rawSpec);
+            var parsedSpec = ParseSpec(rawSpec, snippetOptions);
             var item = Metadata.Value.GetItem(parsedSpec.Uid);
             var snippet = RenderSnippet(item, parsedSpec.Field, parsedSpec.Tag, parsedSpec.ListIndex);
 
-            if (!string.IsNullOrWhiteSpace(snippet))
-            {
-                output.AddRange(snippet.Split(["\r\n", "\n"], StringSplitOptions.None));
+            if (!string.IsNullOrWhiteSpace(snippet)) {
+                output.AddRange(snippet.Split(LineSeparators, StringSplitOptions.None));
                 output.Add(string.Empty);
             }
 
             index++;
 
-            if (index < lines.Length && string.IsNullOrWhiteSpace(lines[index].Trim(':', ' ', '\t')))
-            {
+            if (index < lines.Length && string.IsNullOrWhiteSpace(lines[index].Trim(':', ' ', '\t'))) {
                 index++;
             }
 
-            if (index < lines.Length && ApiSnippetStartRegex().IsMatch(lines[index]))
-            {
+            if (index < lines.Length && snippetOptions.StartBlockRegex.IsMatch(lines[index])) {
                 index++;
-                while (index < lines.Length && !ApiSnippetEndRegex().IsMatch(lines[index]))
-                {
+                while (index < lines.Length && !snippetOptions.EndBlockRegex.IsMatch(lines[index])) {
                     index++;
                 }
 
-                if (index < lines.Length)
-                {
+                if (index < lines.Length) {
                     index++;
                 }
             }
@@ -126,102 +103,90 @@ public sealed partial class ApiSnippetReplacementBuildStep : IDocumentBuildStep
         return string.Join(Environment.NewLine, output);
     }
 
-    private static (string Uid, string Field, string? Tag, ListIndexRange? ListIndex) ParseSpec(string spec)
-    {
+    private static (string Uid, string Field, string? Tag, ListIndexRange? ListIndex) ParseSpec(
+        string spec,
+        DocFxPluginOptions.SnippetOptions options) {
         // Find the bracket position to avoid parsing dots inside bracket notation
         var bracketPosition = spec.IndexOf('[');
         var searchRange = bracketPosition >= 0 ? spec[..bracketPosition] : spec;
 
         var lastDot = searchRange.LastIndexOf('.');
-        if (lastDot <= 0 || lastDot == searchRange.Length - 1)
-        {
-            throw new InvalidOperationException($"Invalid api-snippet directive '{spec}'. Use <uid>.<field>, <uid>.<field>[tag], <uid>.<field>[n], or <uid>.<field>[..n].");
+        if (lastDot <= 0 || lastDot == searchRange.Length - 1) {
+            throw new InvalidOperationException(
+                $"Invalid api-snippet directive '{spec}'. Use <uid>.<field>, <uid>.<field>[tag], " +
+                "<uid>.<field>[n], or <uid>.<field>[..n].");
         }
 
         var uid = searchRange[..lastDot].Trim();
-        var remainder = spec[(lastDot + 1)..].Trim().ToLowerInvariant();
+        var remainder = spec[(lastDot + 1)..].Trim();
 
         string field;
         string? tag = null;
         ListIndexRange? listIndex = null;
         var fieldBracketIndex = remainder.IndexOf('[');
 
-        if (fieldBracketIndex > 0)
-        {
+        if (fieldBracketIndex > 0) {
             field = remainder[..fieldBracketIndex].Trim();
             var closeBracket = remainder.IndexOf(']', fieldBracketIndex);
-            if (closeBracket > fieldBracketIndex + 1)
-            {
+            if (closeBracket > fieldBracketIndex + 1) {
                 var bracketed = remainder[(fieldBracketIndex + 1)..closeBracket].Trim();
 
                 // Check if it's a list index/range (numeric or .. range syntax)
-                if (IsListIndexOrRange(bracketed))
-                {
+                if (IsListIndexOrRange(bracketed)) {
                     listIndex = ParseListIndexRange(bracketed);
-                }
-                else
-                {
+                } else {
                     // It's a tag
                     tag = bracketed;
                 }
             }
-        }
-        else
-        {
+        } else {
             field = remainder;
         }
 
-        if (!SupportedFields.Contains(field, StringComparer.Ordinal))
-        {
+        field = field.Trim().ToLowerInvariant();
+
+        if (!options.SupportedFields.Contains(field)) {
             throw new InvalidOperationException(
-                $"Unsupported api-snippet field '{field}'. Supported fields: {string.Join(", ", SupportedFields)}.");
+                $"Unsupported api-snippet field '{field}'. Supported fields: {string.Join(", ", options.SupportedFields)}.");
         }
 
         return (uid, field, tag, listIndex);
     }
 
-    private static bool IsListIndexOrRange(string bracketed)
-    {
+    private static bool IsListIndexOrRange(string bracketed) {
         // Single numeric index: "0", "5", etc.
-        if (int.TryParse(bracketed, out _))
-        {
+        if (int.TryParse(bracketed, out _)) {
             return true;
         }
 
         // Up-to range syntax: "..3", "..10", etc.
-        if (bracketed.StartsWith("..") && bracketed.Length > 2)
-        {
+        if (bracketed.StartsWith("..") && bracketed.Length > 2) {
             return int.TryParse(bracketed[2..], out _);
         }
 
         return false;
     }
 
-    private static ListIndexRange ParseListIndexRange(string bracketed)
-    {
+    private static ListIndexRange ParseListIndexRange(string bracketed) {
         // Single index
-        if (int.TryParse(bracketed, out var index))
-        {
+        if (int.TryParse(bracketed, out var index)) {
             return new ListIndexRange(index, index);
         }
 
         // Up-to range: "..n"
-        if (bracketed.StartsWith("..") && bracketed.Length > 2)
-        {
-            if (int.TryParse(bracketed[2..], out var count))
-            {
+        if (bracketed.StartsWith("..") && bracketed.Length > 2) {
+            if (int.TryParse(bracketed[2..], out var count)) {
                 return new ListIndexRange(0, count);
             }
         }
 
-        throw new InvalidOperationException($"Invalid list index syntax: [{bracketed}]. Use [n] for single element or [..n] for up to n elements.");
+        throw new InvalidOperationException(
+            $"Invalid list index syntax: [{bracketed}]. Use [n] for single element or [..n] for up to n elements.");
     }
 
-    private static string RenderSnippet(MetadataItem item, string field, string? tag = null, ListIndexRange? listIndex = null)
-    {
+    private static string RenderSnippet(MetadataItem item, string field, string? tag = null, ListIndexRange? listIndex = null) {
         // Apply list indexing before rendering (if applicable)
-        var content = field switch
-        {
+        var content = field switch {
             "summary" => NormalizeXrefs(item.Summary).TrimEnd(),
             "remarks" => RenderList(ApplyListIndexing(SplitRemarksIntoSections(item.Remarks), listIndex).Select(NormalizeXrefs)),
             "syntax" => RenderSyntax(item.SyntaxContent),
@@ -233,38 +198,31 @@ public sealed partial class ApiSnippetReplacementBuildStep : IDocumentBuildStep
         };
 
         // If a tag is specified, extract only the tagged section
-        if (!string.IsNullOrWhiteSpace(tag))
-        {
+        if (!string.IsNullOrWhiteSpace(tag)) {
             content = ExtractTaggedSection(content, tag);
         }
 
         return content;
     }
 
-    private static IReadOnlyList<T> ApplyListIndexing<T>(IReadOnlyList<T> list, ListIndexRange? range) where T : class
-    {
-        if (range == null)
-        {
+    private static IReadOnlyList<T> ApplyListIndexing<T>(IReadOnlyList<T> list, ListIndexRange? range) {
+        if (range == null) {
             return list;
         }
 
-        if (range.Start == range.End)
-        {
+        if (range.Start == range.End) {
             // Single element access - throw error if out of bounds
-            if (range.Start < 0 || range.Start >= list.Count)
-            {
-                throw new InvalidOperationException($"List index {range.Start} is out of bounds (list has {list.Count} elements).");
+            if (range.Start < 0 || range.Start >= list.Count) {
+                throw new InvalidOperationException(
+                    $"List index {range.Start} is out of bounds (list has {list.Count} elements).");
             }
             return [list[range.Start]];
-        }
-        else
-        {
+        } else {
             // Up-to range access - clamp to available elements
             var count = range.End ?? list.Count;
             var actual = Math.Min(count, list.Count);
 
-            if (actual <= 0)
-            {
+            if (actual <= 0) {
                 return [];
             }
 
@@ -272,33 +230,31 @@ public sealed partial class ApiSnippetReplacementBuildStep : IDocumentBuildStep
         }
     }
 
-    private static IReadOnlyList<string> SplitRemarksIntoSections(string remarks)
-    {
-        if (string.IsNullOrWhiteSpace(remarks))
-        {
+    private static IReadOnlyList<string> SplitRemarksIntoSections(string remarks) {
+        if (string.IsNullOrWhiteSpace(remarks)) {
             return [];
+        }
+
+        var dividerRegex = Options.Snippet.RemarksSectionDividerRegex;
+        if (dividerRegex is null) {
+            return [remarks.Trim()];
         }
 
         // Split remarks by section dividers (<!-- ... -->) to identify section boundaries
         var sections = new List<string>();
-        var pattern = @"<!--\s*\.\.\.\s*-->";
-        var commentMatches = Regex.Matches(remarks, pattern);
+        var commentMatches = dividerRegex.Matches(remarks);
 
-        if (commentMatches.Count == 0)
-        {
+        if (commentMatches.Count == 0) {
             // No section dividers found, return the whole remarks as a single section
             return [remarks.Trim()];
         }
 
         var lastIndex = 0;
-        foreach (Match match in commentMatches)
-        {
+        foreach (Match match in commentMatches) {
             // Get content before this divider (if any)
-            if (match.Index > lastIndex)
-            {
+            if (match.Index > lastIndex) {
                 var before = remarks[lastIndex..match.Index].Trim();
-                if (!string.IsNullOrWhiteSpace(before))
-                {
+                if (!string.IsNullOrWhiteSpace(before)) {
                     sections.Add(before);
                 }
             }
@@ -307,11 +263,9 @@ public sealed partial class ApiSnippetReplacementBuildStep : IDocumentBuildStep
         }
 
         // Add any remaining content after the last divider
-        if (lastIndex < remarks.Length)
-        {
+        if (lastIndex < remarks.Length) {
             var remaining = remarks[lastIndex..].Trim();
-            if (!string.IsNullOrWhiteSpace(remaining))
-            {
+            if (!string.IsNullOrWhiteSpace(remaining)) {
                 sections.Add(remaining);
             }
         }
@@ -319,40 +273,33 @@ public sealed partial class ApiSnippetReplacementBuildStep : IDocumentBuildStep
         return sections.Count == 0 ? [remarks.Trim()] : sections;
     }
 
-    private static string ExtractTaggedSection(string content, string tag)
-    {
-        // Parse the tag to check for a label (e.g., "ApiDoc:Injector")
+    private static string ExtractTaggedSection(string content, string tag) {
+        // Parse the tag to check for a label (e.g., "DocTag:Label")
         var (tagName, label) = ParseTagWithLabel(tag);
 
         // Look for <!-- tagName --> or <!-- tagName:label --> and extract content between them
-        // Pattern matches: <!-- ApiDoc --> or <!-- ApiDoc:Injector --> etc.
+        // Pattern matches: <!-- DocTag --> or <!-- DocTag:Label -->
         string pattern;
-        if (string.IsNullOrWhiteSpace(label))
-        {
-            // Match any ApiDoc tag regardless of label
+        if (string.IsNullOrWhiteSpace(label)) {
+            // Match any tag regardless of label
             pattern = $@"<!--\s*{Regex.Escape(tagName)}(?::[^-]*)?\s*-->(.*?)(?=<!--|$)";
-        }
-        else
-        {
-            // Match only ApiDoc tags with the specific label
+        } else {
+            // Match only tags with the specific label
             pattern = $@"<!--\s*{Regex.Escape(tagName)}:{Regex.Escape(label)}\s*-->(.*?)(?=<!--|$)";
         }
 
         var regex = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
         var matches = regex.Matches(content);
 
-        if (matches.Count == 0)
-        {
+        if (matches.Count == 0) {
             return string.Empty;
         }
 
         // Combine all matching sections
         var sections = new List<string>();
-        foreach (Match match in matches)
-        {
+        foreach (Match match in matches) {
             var section = match.Groups[1].Value.Trim();
-            if (!string.IsNullOrWhiteSpace(section))
-            {
+            if (!string.IsNullOrWhiteSpace(section)) {
                 sections.Add(section);
             }
         }
@@ -360,21 +307,17 @@ public sealed partial class ApiSnippetReplacementBuildStep : IDocumentBuildStep
         return sections.Count == 0 ? string.Empty : string.Join(Environment.NewLine, sections);
     }
 
-    private static (string TagName, string? Label) ParseTagWithLabel(string tag)
-    {
+    private static (string TagName, string? Label) ParseTagWithLabel(string tag) {
         var colonIndex = tag.IndexOf(':');
-        if (colonIndex > 0 && colonIndex < tag.Length - 1)
-        {
+        if (colonIndex > 0 && colonIndex < tag.Length - 1) {
             return (tag[..colonIndex].Trim(), tag[(colonIndex + 1)..].Trim());
         }
 
         return (tag, null);
     }
 
-    private static string RenderSyntax(string syntaxContent)
-    {
-        if (string.IsNullOrWhiteSpace(syntaxContent))
-        {
+    private static string RenderSyntax(string syntaxContent) {
+        if (string.IsNullOrWhiteSpace(syntaxContent)) {
             return string.Empty;
         }
 
@@ -387,43 +330,29 @@ public sealed partial class ApiSnippetReplacementBuildStep : IDocumentBuildStep
             ]);
     }
 
-    private static string RenderList(IEnumerable<string> lines)
-    {
+    private static string RenderList(IEnumerable<string> lines) {
         var filtered = lines.Where(static line => !string.IsNullOrWhiteSpace(line)).ToArray();
         return filtered.Length == 0 ? string.Empty : string.Join(Environment.NewLine, filtered);
     }
 
-    private static string NormalizeXrefs(string? text)
-    {
-        if (string.IsNullOrWhiteSpace(text))
-        {
+    private static string NormalizeXrefs(string? text) {
+        if (string.IsNullOrWhiteSpace(text)) {
             return string.Empty;
         }
 
         return XrefRegex().Replace(
             text,
-            match =>
-            {
+            match => {
                 var uid = match.Groups["uid"].Value;
                 var inner = match.Groups["inner"].Value;
 
-                if (string.IsNullOrWhiteSpace(inner))
-                {
+                if (string.IsNullOrWhiteSpace(inner)) {
                     return $"<xref:{uid}>";
                 }
 
                 return $"[{inner}](xref:{uid})";
             });
     }
-
-    [GeneratedRegex("^\\s*:::\\s*api-snippet\\s+(?<spec>.+?)\\s*$", RegexOptions.Compiled)]
-    private static partial Regex ApiSnippetDirectiveRegex();
-
-    [GeneratedRegex("^\\s*<!--\\s*api-snippet:start\\s+.*-->\\s*$", RegexOptions.Compiled)]
-    private static partial Regex ApiSnippetStartRegex();
-
-    [GeneratedRegex("^\\s*<!--\\s*api-snippet:end\\s*-->\\s*$", RegexOptions.Compiled)]
-    private static partial Regex ApiSnippetEndRegex();
 
     [GeneratedRegex("<xref\\s+href=\"(?<uid>[^\"]+)\"[^>]*>(?<inner>.*?)</xref>", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex XrefRegex();
